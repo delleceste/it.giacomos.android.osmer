@@ -178,7 +178,7 @@ public class ODoubleLayerImageView extends ImageView
 			mPaint.setStrokeWidth(strokeWidth);
 
 			/* remove from image */
-			float y = 0;
+			float y = 0, x = 3;
 			Rect txtR = new Rect();
 			String txtLoc = "", txtAddr = "";
 			if(!mSubLocality.isEmpty())
@@ -191,9 +191,9 @@ public class ODoubleLayerImageView extends ImageView
 			int densityDpi = this.getResources().getDisplayMetrics().densityDpi;
 			
 			if(densityDpi == DisplayMetrics.DENSITY_XHIGH)
-				mPaint.setTextSize(19.5f);
+				mPaint.setTextSize(20f);
 			else if(densityDpi == DisplayMetrics.DENSITY_HIGH)
-				mPaint.setTextSize(11);
+				mPaint.setTextSize(12);
 			else
 				mPaint.setTextSize(8);
 
@@ -202,12 +202,12 @@ public class ODoubleLayerImageView extends ImageView
 				txtAddr = mAddress + " ~"  + String.format("%.1f", mLocation.getAccuracy()) + this.getResources().getString(R.string.meters);
 				mPaint.getTextBounds(txtAddr, 0, txtAddr.length(), txtR);
 				y = 4 + txtR.height();
-				canvas.drawText(txtAddr, 4, y, mPaint);
+				canvas.drawText(txtAddr, x, y, mPaint);
 			}
 			
 			mPaint.getTextBounds(txtLoc, 0, txtLoc.length(), txtR);
 			y += 3 + txtR.height();
-			canvas.drawText(txtLoc, 4, y, mPaint);
+			canvas.drawText(txtLoc, x, y, mPaint);
 		}
 	}
 	

@@ -349,6 +349,7 @@ GeocodeAddressUpdateListener
 	
 	@Override
 	public void onProviderDisabled(String provider) {
+		Log.e("onProviderDisabled", provider);
 		// TODO Auto-generated method stub
 		
 	}
@@ -356,12 +357,13 @@ GeocodeAddressUpdateListener
 	@Override
 	public void onProviderEnabled(String provider) {
 		// TODO Auto-generated method stub
-		
+		Log.e("onProviderEnabled", provider);
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
+		Log.e("onStatusChanged", provider + ": " + status);
 		
 	}
 	

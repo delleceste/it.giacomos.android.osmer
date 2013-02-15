@@ -140,9 +140,9 @@ implements LatestObservationCacheChangeListener
 			mPaint.setARGB(255, 0, 0, 0);
 			
 			if(mDensityDpi == DisplayMetrics.DENSITY_XHIGH)
-				mPaint.setTextSize(18);
+				mPaint.setTextSize(19);
 			else if(mDensityDpi == DisplayMetrics.DENSITY_HIGH)
-				mPaint.setTextSize(10);
+				mPaint.setTextSize(12);
 			else
 				mPaint.setTextSize(8);
 			
@@ -160,7 +160,7 @@ implements LatestObservationCacheChangeListener
 				mDensityDpi == DisplayMetrics.DENSITY_LOW)
 			mPaint.setTextSize(10);
 		else if(mDensityDpi == DisplayMetrics.DENSITY_HIGH)
-			mPaint.setTextSize(21);
+			mPaint.setTextSize(20);
 		else if(mDensityDpi == DisplayMetrics.DENSITY_XHIGH)
 			mPaint.setTextSize(23);
 		
