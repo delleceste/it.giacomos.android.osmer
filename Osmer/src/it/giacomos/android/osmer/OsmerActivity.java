@@ -19,6 +19,7 @@ import it.giacomos.android.osmer.guiHelpers.ToggleButtonGroupHelper;
 import it.giacomos.android.osmer.instanceSnapshotManager.SnapshotManager;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressUpdateListener;
+import it.giacomos.android.osmer.locationUtils.LocationComparer;
 import it.giacomos.android.osmer.locationUtils.LocationInfo;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
@@ -103,12 +104,6 @@ GeocodeAddressUpdateListener
 		 * 5000 the LocationManager could potentially rest for minTime milliseconds between location updates to conserve power.
 		 * If minDistance is greater than 0, a location will only be broadcasted if the device moves by minDistance meters.
 		 */
-		m_locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 50, 
-				(OMapView) findViewById(R.id.mapview));
-		/* GPS */
-		m_locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 50, 
-				(OMapView) findViewById(R.id.mapview));
-		
 		m_locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 50, this);
 		m_locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 50, this);
 	}
@@ -120,7 +115,6 @@ GeocodeAddressUpdateListener
 		 */
 		m_downloadManager.onPause(this);
 		((OMapView) findViewById(R.id.mapview)).onPause();
-		m_locationManager.removeUpdates((OMapView) (findViewById(R.id.mapview)));
 		m_locationManager.removeUpdates(this);
 	}
 		
@@ -337,19 +331,21 @@ GeocodeAddressUpdateListener
 	
 	@Override
 	public void onLocationChanged(Location location) {
-		// TODO Auto-generated method stub
-		((ODoubleLayerImageView) findViewById(R.id.homeImageView)).onLocationChanged(location);
-		((ODoubleLayerImageView) findViewById(R.id.todayImageView)).onLocationChanged(location);
-		((ODoubleLayerImageView) findViewById(R.id.tomorrowImageView)).onLocationChanged(location);
-		((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).onLocationChanged(location);
-		mCurrentLocation = location;
-		if(this.m_downloadManager.state().name() == StateName.Online)
-			new GeocodeAddressTask(this.getApplicationContext(), this).execute(mCurrentLocation);
+		LocationComparer locationComparer = new LocationComparer();
+		if(locationComparer.isBetterLocation(location, mCurrentLocation))
+		{	
+			((ODoubleLayerImageView) findViewById(R.id.homeImageView)).onLocationChanged(location);
+			((ODoubleLayerImageView) findViewById(R.id.todayImageView)).onLocationChanged(location);
+			((ODoubleLayerImageView) findViewById(R.id.tomorrowImageView)).onLocationChanged(location);
+			((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).onLocationChanged(location);
+			mCurrentLocation = location;
+			if(this.m_downloadManager.state().name() == StateName.Online)
+				new GeocodeAddressTask(this.getApplicationContext(), this).execute(mCurrentLocation);
+		}
 	}
 	
 	@Override
 	public void onProviderDisabled(String provider) {
-		Log.e("onProviderDisabled", provider);
 		// TODO Auto-generated method stub
 		
 	}
@@ -357,17 +353,13 @@ GeocodeAddressUpdateListener
 	@Override
 	public void onProviderEnabled(String provider) {
 		// TODO Auto-generated method stub
-		Log.e("onProviderEnabled", provider);
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-		Log.e("onStatusChanged", provider + ": " + status);
-		
+		// TODO Auto-generated method stub		
 	}
 	
-
 	/** Installs listeners for the button click events 
 	 * 
 	 */

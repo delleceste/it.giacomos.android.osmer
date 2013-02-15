@@ -4,13 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import it.giacomos.android.osmer.OMapViewEventListener;
-import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.observations.ObservationData;
 import it.giacomos.android.osmer.observations.ObservationDrawableIdPicker;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
-import it.giacomos.android.osmer.preferences.Settings;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -24,13 +22,10 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
-
-import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-public class OMapView extends MapView implements LocationListener
+public class OMapView extends MapView
 {
 	public final int minLatitude = GeoCoordinates.bottomRight.getLatitudeE6();
 	public final int maxLatitude = GeoCoordinates.topLeft.getLatitudeE6();
@@ -92,43 +87,6 @@ public class OMapView extends MapView implements LocationListener
 	public MyLocationOverlay getMyLocationOverlay()
 	{
 		return mMyLocationOverlay;
-	}
-
-	@Override
-	public void onLocationChanged(Location location) {
-
-		//		double lat = location.getLatitude() * 1000000;
-		//		double lon = location.getLongitude() * 1000000;
-		//	
-		//		if(lat > GeoCoordinates.bottomRight.getLatitudeE6() && lat < GeoCoordinates.topLeft.getLatitudeE6()
-		//				&& lon > GeoCoordinates.topLeft.getLongitudeE6() && 
-		//				lon < GeoCoordinates.bottomRight.getLongitudeE6())
-		//		{
-		//			mMyLocationOverlay.enableMyLocation();
-		//		}
-		//		else
-		//		{
-		//			mMyLocationOverlay.disableMyLocation();
-		//			Toast.makeText(getContext(), "Location outside view", Toast.LENGTH_LONG).show();
-		//		}
-	}
-
-	@Override
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public Parcelable onSaveInstanceState()
