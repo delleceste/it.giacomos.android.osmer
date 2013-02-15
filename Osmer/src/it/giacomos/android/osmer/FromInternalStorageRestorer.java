@@ -24,7 +24,6 @@ import android.util.Log;
 public class FromInternalStorageRestorer {
 	FromInternalStorageRestorer(OsmerActivity a)
 	{
-		Log.e("FromInternalStorageRestorer", "RESTORING");
 		/* save text views */
 		OTextView ov = (OTextView) a.findViewById(R.id.homeTextView);
 		ov.restoreFromInternalStorage();

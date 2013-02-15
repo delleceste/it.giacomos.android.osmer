@@ -115,8 +115,6 @@ implements LatestObservationCacheChangeListener
 			}
 			this.invalidate();
 		}
-		else
-			Log.e("SituationImage", "map size " + mMap.size());
 	}
 
 	protected void onDraw(Canvas canvas)
@@ -309,7 +307,6 @@ implements LatestObservationCacheChangeListener
 
 	public boolean onTouchEvent (MotionEvent event)
 	{
-		Log.e("SituationImage", "onTouchEvent");
 		if(event.getAction() == MotionEvent.ACTION_DOWN)
 		{
 			mCurrentTouchedPoint.x = event.getX();

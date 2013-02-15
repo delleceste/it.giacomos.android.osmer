@@ -45,8 +45,6 @@ public class Online extends State implements BitmapListener, TextListener {
 			mStartTextTask(m_urls.situationUrl(), StringType.HOME);
 			mGetObservationsTable(ObservationTime.LATEST);
 		}
-		else
-			Log.i("Online", "download complete or not old");
 	}
 
 	public StateName name() { return StateName.Online; }
@@ -56,7 +54,6 @@ public class Online extends State implements BitmapListener, TextListener {
 	
 	public void getSituation()
 	{
-		Log.e("Online.java", "getSituation");
 		if(!DownloadStatus.Instance().todayBmpDownloaded())
 		{
 			startBitmapTask(m_urls.todayImageUrl(), BitmapType.TODAY);
@@ -137,7 +134,7 @@ public class Online extends State implements BitmapListener, TextListener {
 		m_stateUpdateListener.onTextUpdate(s, st, errorMessage);
 		/* publish progress , after DownloadStatus state has been updated */
 		mCurrentStep++;
-		Log.e("ontextUpdate" , "tot steps " + mTotSteps + " current step " + mCurrentStep);
+	//	Log.i("ontextUpdate" , "tot steps " + mTotSteps + " current step " + mCurrentStep);
 		m_stateUpdateListener.onProgressUpdate(mCurrentStep, mTotSteps);
 		mProgressNeedsReset();
 	}
@@ -161,7 +158,7 @@ public class Online extends State implements BitmapListener, TextListener {
 
 		/* publish progress, after DownloadStatus state has been updated */
 		mCurrentStep++;
-		Log.e("onBitmapUpdate" , "tot steps " + mTotSteps + " current step " + mCurrentStep);
+	//	Log.i("onBitmapUpdate" , "tot steps " + mTotSteps + " current step " + mCurrentStep);
 		m_stateUpdateListener.onProgressUpdate(mCurrentStep, mTotSteps);
 		mProgressNeedsReset();
 	}

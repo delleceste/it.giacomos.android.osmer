@@ -27,7 +27,7 @@ public class TableToMap {
 		 * above, and the limit parameter does not apply there.) 
 		 */
 		String [] lines = table.split("\n");
-		Log.e("TableToMap", "Processing lines start   " + t);
+	//	Log.e("TableToMap", "Processing lines start   " + t);
 		
 		/* cnt points to the first line containing Barcis */
 		for(int i = 0; i < lines.length; i++)
@@ -79,7 +79,7 @@ public class TableToMap {
 				//	Log.e("no match", "no match in LATEST_TABLE line " + lines[i]);
 			}	
 		}
-		Log.e("TableToMap", "Processing lines end  lines processed " + t);
+	//	Log.e("TableToMap", "Processing lines end  lines processed " + t);
 		return map;	
 	}
 

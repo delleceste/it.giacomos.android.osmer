@@ -49,7 +49,7 @@ public class ToggleButtonGroupHelper {
 	public void setClicked(View v) {
 		
 		// TODO Auto-generated method stub
-		Log.e("onCheckChanged " + v.getId(), "checked " + ((CompoundButton) v).isChecked());
+	//	Log.e("onCheckChanged " + v.getId(), "checked " + ((CompoundButton) v).isChecked());
 		for(int i = 0; i < mIdList.size(); i++)
 		{
 			if(mIdList.get(i) != v.getId())

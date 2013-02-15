@@ -105,9 +105,9 @@ public class ODoubleLayerImageView extends ImageView
 		layers[1] = new BitmapDrawable(getContext().getResources(), bitmap);
 		LayerDrawable layerDrawable = new LayerDrawable(layers);
 		setImageDrawable(layerDrawable);
-		Log.e("SetBitmap ODoubleLayerImageView", "Bitmap size " + fvgBackgroundBmp.getWidth() +
-				"x" + fvgBackgroundBmp.getHeight() + " view size " + this.getWidth() + "x" +
-				this.getHeight() + bitmap.getHeight() + bitmap.getWidth());
+//		Log.e("SetBitmap ODoubleLayerImageView", "Bitmap size " + fvgBackgroundBmp.getWidth() +
+//				"x" + fvgBackgroundBmp.getHeight() + " view size " + this.getWidth() + "x" +
+//				this.getHeight() + bitmap.getHeight() + bitmap.getWidth());
 	}
 
 	public boolean isRestoreSuccessful() {

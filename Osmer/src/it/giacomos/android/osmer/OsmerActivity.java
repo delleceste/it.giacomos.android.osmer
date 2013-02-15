@@ -92,9 +92,7 @@ GeocodeAddressUpdateListener
 		/* registers network status monitor broadcast receiver (for this it needs `this')
 		 * Must be called _after_ instance restorer's onResume!
 		 */
-		m_downloadManager.onResume(this);
-		Log.i("onResume", "onResume");	
-		
+		m_downloadManager.onResume(this);		
 		
 		/* Location Manager */
 		OMapView omv = (OMapView)findViewById(R.id.mapview);

@@ -41,7 +41,6 @@ public class MapBaloon extends LinearLayout implements OnClickListener {
 	public void setText(String t)
 	{
 		TextView tv = (TextView) findViewById(R.id.baloon_text);
-		Log.e("MapBaloon", "text " + t + " has " + t.split("\n").length + " lines");
 		tv.setMinLines(t.split("\n").length + 2);
 		tv.setMaxLines(t.split("\n").length + 2);
 		tv.setText(t);

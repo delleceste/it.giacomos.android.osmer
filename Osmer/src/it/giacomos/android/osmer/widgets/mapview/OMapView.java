@@ -79,7 +79,6 @@ public class OMapView extends MapView
 
 	public void updateObservations(HashMap<String, ObservationData> map)
 	{
-		Log.e("OMapView", "updateObservations: zoom level is " + this.getZoomLevel() + " map size is " + map.size());
 		mObservationsItemizedOverlay.update(map, getZoomLevel());
 		this.invalidate(); /* redraw */
 	}
@@ -112,7 +111,6 @@ public class OMapView extends MapView
 		if(b.containsKey("measureEnabled"))
 		{
 			setMeasureEnabled(b.getBoolean("measureEnabled"));
-			Log.e("OmapView onRestoreInstanceState", " Enableing measure ? " + b.getBoolean("measureEnabled"));
 			mMapViewEventListener.onMeasureEnabled(b.getBoolean("measureEnabled"));
 			if(mCircleOverlay != null)
 				mCircleOverlay.restoreState(state);
@@ -125,11 +123,8 @@ public class OMapView extends MapView
 	{
 		if(m.equals(mMode))
 		{
-			Log.e("OmapView", "EQUALS");
 			return;
 		}
-		else
-			Log.e("OmapView", "DONT EQUALS");
 		
 		mMode = m;
 		new BaloonOffMap(this);
@@ -137,13 +132,12 @@ public class OMapView extends MapView
 		/* remove our overlays except MyLocationOverlay and MapButtonsOverlay */
 		while(overlays.size() > 1)
 		{
-			Log.e("OMapView", "removing overlay " + overlays.get(overlays.size() - 1).getClass().getName());
+		//	Log.e("OMapView", "removing overlay " + overlays.get(overlays.size() - 1).getClass().getName());
 			overlays.remove(overlays.size() - 1);
 		}
 		switch(m.currentType)
 		{
 		case RADAR:
-			Log.e("OMapView", "RADAR OVERLAY CERATED");
 			mRadarOverlay = new RadarOverlay();
 			overlays.add(mRadarOverlay);
 			setOnZoomChangeListener(null);

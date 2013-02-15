@@ -74,7 +74,6 @@ public class SkyDrawableIdPicker {
 				id = (R.drawable.weather_clouds_night);
 			else
 			{
-				Log.e("factory", "setting wwather clouds");
 				id = (R.drawable.weather_clouds);
 			}
 		}

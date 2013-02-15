@@ -31,16 +31,12 @@ public class BaloonOnMap {
 		MapBaloon oldBaloon = (MapBaloon) mapView.findViewById(R.id.mapbaloon);
 		if(oldBaloon != null)
 		{
-			Log.e("BaloonOnMap", "removing old baloon");
 			/* remove old baloon */
 			mapView.removeView(oldBaloon);
 			/* This view is invisible, and it doesn't take any space for layout purposes. */
 			oldBaloon.setVisibility(View.GONE);
 		}
-		else
-			Log.e("BaloonOnMap", "NOT removing old baloon - null");
 
-		
 		LayoutInflater  layoutInflater = (LayoutInflater) mapView.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         MapBaloon mapBaloon = (MapBaloon) layoutInflater.inflate(R.layout.mapbaloon, null);
         MapView.LayoutParams layoutParams = new MapView.LayoutParams(
