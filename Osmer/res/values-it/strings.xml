@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Osmer Oservatorio Regionale Friuli Venezia Giulia</string>
+    <string name="app_name">Osmer FVG</string>
+    <string name="version">versione</string>
+    <string name="data_source">Fonte dati: http://www.meteo.fvg.it</string>
+    <string name="author">&#169; 2013</string>
+    <string name="author_web">http://www.giacomos.it</string>
+    <string name="link_osmer">http://www.meteo.fvg.it</string>
+    <string name="today_button">Oggi</string>
+    <string name="tomorrow_button">Domani</string>
+    <string name="twodays_button">2 Giorni</string>
+    <string name="radar_button">Radar</string>
+    <string name="dailyobs_button_land">Oss.\ngiorn.</string>
+    <string name="latestobs_button_land">Oss.\nultim\'ora</string>
+    <string name="dailyobs_button_port">Osservazioni\ngiornaliere</string>
+    <string name="latestobs_button_port">Osservazioni\nultim\'ora</string>
+    <string name="sat_button">Satellite</string>
+    <string name="today_text">Caricamento in corso&#8230;</string>
+    <string name="tomorrow_text">Testo domani</string>
+    <string name="Home">home_button</string>
+    <string name="home_button">Home</string>
+    <string name="home_title">OSMER FVG - Home</string>
+    <string name="today_title">OSMER FVG - Oggi</string>
+    <string name="tomorrow_title">OSMER FVG - Domani</string>
+    <string name="two_days_title">OSMER FVG - Dopodomani</string>
+    <string name="radar_title">OSMER FVG - Radar</string>
+    <string name="sat_title">OSMER FVG - Satellite View</string>
+    
+    <string name="observations_title_daily">OSMER FVG - Osservazioni Giornaliere</string>
+    <string name="observations_title_daily_sky">Osservazioni Giornaliere - Cielo</string>
+    <string name="observations_title_daily_tmin">Osservazioni Giornaliere - Temp. Min</string>
+    <string name="observations_title_daily_tmean">Osservazioni Giornaliere - Temp. Media</string>
+    <string name="observations_title_daily_tmax">Osservazioni Giornaliere - Temp. Max</string>
+    <string name="observations_title_daily_hmean">Osservazioni Giornaliere - Umidita` Media</string>
+    <string name="observations_title_daily_wmean">Osservazioni Giornaliere - Vento Medio</string>
+    <string name="observations_title_daily_wmax">Osservazioni Giornaliere - Vento Massimo</string>
+    <string name="observations_title_daily_rain">Osservazioni Giornaliere - Pioggia</string>
+    
+    <string name="observations_title_latest">OSMER FVG - Osservazioni Ultim\'ora</string>
+    <string name="observations_title_latest_sky">Osservazioni Ultim\'ora - Cielo</string>
+    <string name="observations_title_latest_temp">Osservazioni Ultim\'ora - Temperatura</string>
+    <string name="observations_title_latest_humidity">Osservazioni Ultim\'ora - Umidita`</string>
+    <string name="observations_title_latest_pressure">Osservazioni Ultim\'ora - Pressione</string>
+    <string name="observations_title_latest_wind">Osservazioni Ultim\'ora - Vento</string>
+    <string name="observations_title_latest_rain">Osservazioni Ultim\'ora - Pioggia</string>
+    <string name="observations_title_latest_sea">Osservazioni Ultim\'ora - Mare -</string>
+    <string name="observations_title_latest_snow">Osservazioni Ultim\'ora - Neve -</string>
+    
+    <string name="reliability">Affidabilità</string>
+    <string name="emission_date">Emessa il: </string>
+    <string name="hours">ore</string>
+    <string name="offline">Offline</string>  
+    <string name="online">Online</string>
+    <string name="downloadingToast">Aggiornamento dati&#8230;</string>
+    <string name="netUnavailableToast">La rete non è disponibile.\nI dati saranno aggiornati non appena vi sarà connessione.</string>
+    <string name="completingDownloadToast">Completo il download dei dati&#8230;</string>
+    <string name="netBmpErrorToast">Errore nello scaricamento di un\'immagine.</string>
+    <string name="netTextErrorToast">Errore nello scaricamento del testo.</string>
+    <string name="situation">Situazione generale</string>
+    <string name="network_error">Errore di rete</string>
+    <string name="dataExpiredToast">aggiornamento dei dati&#8230;</string>
+    <string name="radarUpdateToast">aggiorno l\'immagine del radar&#8230;</string>
+    <string name="min_temp">Temperatura Minima</string>
+    <string name="max_temp">Temperatura Massima</string>
+    <string name="min_temp_abbr">Min.T</string>
+    <string name="max_temp_abbr">Max.T</string>
+    <string name="humidity">Umidità</string>
+    <string name="wind">Vento</string>
+    <string name="mean_wind">Vento V.Media</string>
+    <string name="max_wind">Vento V.Max</string>
+    <string name="sky">Cielo</string>
+    <string name="rain">Pioggia</string>
+    <string name="temp">Temperatura</string>
+    <string name="mean_temp">Temperatura media</string>
+    <string name="mean_temp_abbr">T.Media</string>
+    <string name="sea">Mare</string>
+    <string name="mean_humidity">Umidità media</string>
+    <string name="snow">Neve</string>
+    <string name="pressure">Pressione</string>
+    <string name="not_available">n.d.</string>
+    <string name="city_click">Clicca su una località&#8230;</string>
+    <string name="select_obs_type_daily">Seleziona Osservazioni Giornaliere</string>
+    <string name="select_obs_type_latest">Seleziona Osservazioni dell\'ultim\'ora</string>
+    <string name="position">posizione</string>    
+    <string name="unavailable">non disponibile</string>
+    <string name="pos_accuracy">accuratezza</string>
+    <string name="from">da</string>
+    <string name="mainpage_icon_hint">Tocca un\'icona per ulteriori dettagli&#8230;</string>
+    
+        <!--  hint toasts -->
+    <string name="hint_home_icons">Suggerimento: tocca un\'icona e leggi i dettagli in basso a sinistra</string>
+    <string name="hint_tap_on_map_markers">Tocca un\'icona per ottenere maggiori dettagli</string>
+    <string name="hint_swipe">Scorri il dito sullo schermo per passare alla pagina seguente o precedente</string>
+    <string name="hint_scroll_buttons">Trascina la barra dei bottoni per scorrerne i contenuti</string>
+    <string name="hint_move_to_measure_on_map">Tocca la mappa e sposta la freccia per misurare</string>
+    <string name="hint_move_location_to_measure_on_map">Tocca il punto con la tua posizione e spostalo per cambiare centro di misura</string>
+    
+    <string-array name="observation_types">
+        <item>Temperatura Minima</item>
+        <item>Temperatura Massima</item>
+        <item>Umidità</item>
+        <item>Vento</item>
+        <item>Pioggia</item>
+    </string-array>
+
+        <!--  MENU -->
+    <string name="menu_info">Info&#8230;</string>
+    <string name="menu_position">La mia posizione&#8230;</string>
+	<string name="menu_refresh">Info su aggiornamento dati</string>
+	<string name="locality_unavailable">Località non disponibile</string>
+	<string name="getting_locality_wait">Attendi&#8230; recupero località&#8230;</string>
+	<string name="ok_button">Ok</string>
+	<string name="popup_position_title">Informazioni sulla posizione</string>
+	<string name="popup_info_title">Osmer app info e copyright</string>
+	<string name="popup_data_update_title">Aggiornamento automatico dei dati</string>
+	<string name="meters">m</string>
+	<string name="error_message">Messaggio d\'errore</string>
+    
+	 <string name="popup_data_update_info">
+       <![CDATA[
+       <h6>Gestione dell\'aggiornamento dei dati meteo</h6>
+        <p>
+        La fonte delle osservazioni e le previsioni del tempo è rappresentata dal sito web
+        <a href="http://www.meteo.fvg.it"> http://www.meteo.fvg.it</a>.
+        
+        <br/>I dati sono automaticamente scaricati dall\'applicazione in modo tale che l\'informazione
+        disponibile si può considerare sempre ragionevolmente aggiornata.
+        <br/>Per questo motivo, non è previsto un bottone di <cite>aggiornamento</cite> dei dati su
+        richiesta dell\'utente.
+        
+        </p>
+        <h6>Come funziona</h6>
+        <p>
+        I dati vengono aggiornati quando: <br/>
+        - sono passati più di <cite>trenta</cite> secondi dal precedente aggiornamento  <strong>e</strong>: <br/>
+        - la rete diventa disponibile dopo un periodo di rete mancante <strong>o</strong> l\'applicazione 
+          diventa attiva sullo schermo del dispositivo  <strong>o</strong> il dispositivo cambia orientazione
+          (e quindi Android la chiude e la riavvia).
+          
+          <br/>
+        - <strong>Nota</strong>: l\'immagine del <strong>radar</strong> viene aggiornata <cite>ogni volta che il bottone
+        del radar viene toccato</cite>.
+        </p>
+        
+        <p>Quando l\'applicazione viene fermata, salva i dati disponibili in quel momento, e li ripresenta al riavvio,
+         fino a quando le nuove informazioni vengono scaricate dal sito 
+         <a href="http://www.meteo.fvg.it"> http://www.meteo.fvg.it</a>.
+         
+         <br/>
+         
+         Di conseguenza, <cite>l\'informazione mostrata all\'avvio dell\'applicazione si riferisce a quella salvata 
+         durante l\'esecuzione precedente e potrebbe essere non aggiornata</cite>, fino a quando la rete 
+         diviene disponibile e, con essa, i nuovi dati.
+         
+         </p>
+        
+			]]>		 
+        
+        </string>
+	
+	
+	<string name="popup_app_info">
+		<![CDATA[
+	    <h6>Fonte dei dati</h6>
+	    <p>Il testo e ogni altra informazione meteo provengono da 
+	        <a href="http://www.meteo.fvg.it"> http://www.meteo.fvg.it</a>
+	        
+	    </p>
+	    
+	    <h6>Autore</h6>
+	    
+	    <p>Copyright &#169; 2013 Giacomo Strangolino</p>
+	    
+	    <p>
+	    
+	    L\'applicazione Osmer per Android è stata sviluppata da Giacomo Strangolino.
+	    <br/>
+	    
+	    - <a href="http://www.giacomos.it">http://www.giacomos.it</a>
+	    
+	    <br/>
+	    <br/>
+	    
+	    - <a href="http://www.giacomos.it/osmerandroid/index.html">Ulteriori informazioni e guida online</a><br/>
+	    
+	    </p>
+	    
+	    <p>
+	    
+	    L\'applicazione Osmer per Android fa uso di icone prese da:
+	    
+	    - <a href="http://www.oxygen-icons.org">KDE oxygen icons</a>
+	    	
+	    <br/>
+	    
+	    - <a href="http://findicons.com/icon/547662/radar_utilities?width=48">findicons.com radar icon</a> (Creative Commons Attribution License);
+	    
+	    <br/>	
+	    	
+	     - <a href="http://icons.mysitemyway.com/free-clipart-icons/1/sparkling-eye-icon-id/125439/style-id/905/matte-white-square-icons/people-things/">
+	     http://icons.mysitemyway.com/free-clipart-icons (observations icon)</a> (Royalty Free Stock Icon/Clipart (Id:125439));
+	    			
+	    </p>
+	    
+	     <p>
+	    
+	    L\'applicazione Osmer per Android utilizza le Google Maps, API v1.
+	    
+	    - <a href="https://developers.google.com/maps/documentation/android/v1/index">Google Maps API v1</a>
+	    	
+	    </p>
+	    
+	    <p>
+	    
+	   
+	   	Questa applicazione è rilasciata sotto licenza <a href="http://www.gnu.org/licenses/lgpl-3.0.txt">LGPLv3</a> 
+	   	e una copia della licenza è inclusa nel pacchetto del progetto Osmer per Android. Il nome del file è <cite>lgpl-3.0.txt</cite>
+	    
+	    </p>
+	    
+	    <h6>Esonero di responsabilità</h6>
+	    
+	    <p>
+	    Benché l\'applicazione sia stata progettata per aggiornare i dati da <a href="http://www.meteo.fvg.it"> http://www.meteo.fvg.it</a>
+	    ogni volta che questa è portata in primo piano dal sistema operativo, dopo un opportuno intervallo temporale dall\'ultimo scaricamento dei dati al fine di 
+	    evitare un inadeguato traffico di rete, l\'autore non garantisce che l\'informazione mostrata, graficamente o sottoforma di testo,
+	    sia aggiornata all\'ultima versione disponibile su <a href="http://www.meteo.fvg.it"> http://www.meteo.fvg.it</a>.
+	      			
+	    </p>
+	    
+	    <p>
+	    Non è altresì garantita la correttezza dell\'<cite>estrazione</cite> dei dati dai file di testo informativi scaricati da 
+	    <a href="http://www.meteo.fvg.it"> http://www.meteo.fvg.it</a>. <br/>
+	    La precisione delle <cite>informazioni sulla posizione geografica</cite> mostrate dall\'applicativo dipendono dal 
+	    <cite>location provider</cite> 
+	    in uso (<cite>rete dati, wi-fi, GPS</cite>, ordinati dalla fonte meno precisa alla più precisa). Delle <cite>informazioni sulla 
+	    posizione geografica</cite> fanno parte l\'indicatore di posizione a forma di croce disegnato sopra un circolo bianco, 
+	    il testo che riporta la <cite>località</cite> e l\'indirizzo sulle 
+	    immagini delle osservazioni e delle previsioni e il circolo blu nelle <cite>google maps</cite>. In ogni caso, 
+	    l\'autore non si assume alcuna responsabiltà sulla presenza 
+	    né sulla precisione dell\'informazione che concerne la posizione geografica.
+	    </p>
+	    
+	    <p>
+	    L\'applicazione è distribuita per scopi meramente didattici, ludici o informativi (con le note di esonero di responsabilità
+	    testé riportate).
+	    Non è stata progettata per essere utilizzata per progetti di impianti, di altri prodotti, né per l\'uso professionale.
+	    Soprattutto, non deve essere considerata fonte affidabile di osservazione e previsione del tempo nel contesto di organizzazioni di gite, 
+	    escursioni, esplorazioni, programmazione di interventi ambientali, cantieri, opere, e in ogni altra situazione in cui siano richieste
+	     osservazioni e previsioni di eventi atmosferici impetuosi o incontrollabili.
+	    </p>
+	
+	]]>		    
+	</string>
+	
+</resources>

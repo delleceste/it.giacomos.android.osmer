@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/mainRelativeLayout"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:layout_height="match_parent"
+	android:orientation="horizontal"
+	android:background="@drawable/shape_background_landscape">
+
+	<it.giacomos.android.osmer.widgets.OViewFlipper
+		android:id="@+id/viewFlipper1" android:layout_height="match_parent"
+		android:layout_width="450dp" android:layout_toLeftOf="@+id/buttonHome" android:layout_alignParentLeft="true">
+
+		<LinearLayout
+		    android:id="@+id/homeRelativeLayout"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:orientation="horizontal" >
+
+			<it.giacomos.android.osmer.widgets.SituationImage
+			    android:id="@+id/homeImageView"
+			    android:layout_width="0dip"
+			    android:layout_height="fill_parent"
+			    android:layout_weight="1.0"
+			    android:src="@drawable/fvg_background2" />
+
+			<ScrollView
+			    android:id="@+id/homeTextScrollView"
+			    android:layout_width="0dp"
+			    android:layout_height="match_parent"
+			    android:layout_weight="1.0" >
+
+				<it.giacomos.android.osmer.widgets.HomeTextView
+				    android:id="@+id/homeTextView"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:inputType="none" >
+					<requestFocus></requestFocus>
+				</it.giacomos.android.osmer.widgets.HomeTextView>
+			</ScrollView>
+		</LinearLayout>
+
+		<LinearLayout android:id="@+id/todayRelativeLayout"
+			android:layout_width="match_parent" android:layout_height="match_parent"
+			android:orientation="horizontal">
+
+			<it.giacomos.android.osmer.widgets.ODoubleLayerImageView
+			    android:id="@+id/todayImageView"
+			    android:layout_width="0dp"
+			    android:layout_height="fill_parent"
+			    android:layout_weight="1.0"
+			    android:src="@drawable/fvg_background2" />
+
+			<ScrollView
+			    android:id="@+id/todayTextScrollView"
+			    android:layout_width="0dp"
+			    android:layout_height="match_parent"
+			    android:layout_weight="1.0" >
+
+				<it.giacomos.android.osmer.widgets.ForecastTextView
+					android:inputType="none" 
+					android:layout_width="match_parent" 
+					android:layout_height="wrap_content"
+					android:id="@+id/todayTextView">
+					<requestFocus></requestFocus>
+				</it.giacomos.android.osmer.widgets.ForecastTextView>
+			</ScrollView>
+		</LinearLayout>
+
+		<LinearLayout android:id="@+id/tomorrowRelativeLayout"
+			android:layout_width="match_parent" android:layout_height="match_parent"
+			android:orientation="horizontal">
+
+			<it.giacomos.android.osmer.widgets.ODoubleLayerImageView
+			    android:id="@+id/tomorrowImageView"
+			    android:layout_width="0dip"
+			    android:layout_height="fill_parent"
+			    android:layout_weight="1.0"
+			    android:src="@drawable/fvg_background2" />
+
+			<ScrollView
+			    android:id="@+id/tomorrowTextScrollView"
+			    android:layout_width="0dp"
+			    android:layout_height="match_parent"
+			    android:layout_weight="1.0"  >
+
+				<it.giacomos.android.osmer.widgets.ForecastTextView
+					android:inputType="none" android:layout_height="wrap_content"
+					android:layout_width="match_parent" android:id="@+id/tomorrowTextView">
+					<requestFocus></requestFocus>
+				</it.giacomos.android.osmer.widgets.ForecastTextView>
+			</ScrollView>
+		</LinearLayout>
+ 
+		<LinearLayout android:id="@+id/twoDaysRelativeLayout"
+			android:layout_width="match_parent" android:layout_height="match_parent"
+			android:orientation="horizontal">
+
+			<it.giacomos.android.osmer.widgets.ODoubleLayerImageView
+			    android:id="@+id/twoDaysImageView"
+			    android:layout_width="0dip"
+			    android:layout_height="fill_parent"
+			    android:layout_weight="1.0"
+			    android:src="@drawable/fvg_background2" />
+
+			<ScrollView
+			    android:id="@+id/twoDaysTextScrollView"
+			    android:layout_width="0dp"
+			    android:layout_height="match_parent"
+			    android:layout_weight="1.0" >
+
+				<it.giacomos.android.osmer.widgets.ForecastTextView
+					android:inputType="none" android:layout_height="wrap_content"
+					android:layout_width="match_parent" android:id="@+id/twoDaysTextView">
+					<requestFocus></requestFocus>
+				</it.giacomos.android.osmer.widgets.ForecastTextView>
+			</ScrollView>
+		</LinearLayout>
+
+		<RelativeLayout android:id="@+id/mapRelativeLayout"
+			android:layout_width="match_parent" android:orientation="vertical"
+			android:layout_height="wrap_content">
+			<it.giacomos.android.osmer.widgets.mapview.OMapView
+				android:id="@+id/mapview" android:layout_width="fill_parent"
+				android:layout_height="fill_parent" android:clickable="true"
+				android:apiKey="0AspVUt7XvDhAh_n6QG0MOW4uljL5qW6Iay0abw"
+				>
+			</it.giacomos.android.osmer.widgets.mapview.OMapView>
+			
+				
+			<!-- debug  0AspVUt7XvDg8GeJotja4Y01qyL579hov2J2JPw -->
+			
+			<!--release  0AspVUt7XvDhAh_n6QG0MOW4uljL5qW6Iay0abw -->
+			
+			<ToggleButton android:layout_width="35dp"
+        		android:layout_height="35dp" 
+				android:textOff=""
+				android:textOn=""
+        		android:layout_marginLeft="5dp"
+        		android:layout_marginTop="5dp"
+        		android:background="@drawable/earth"
+        		android:layout_alignParentLeft="true"
+        		android:layout_alignParentTop="true" 
+        		android:id="@+id/satelliteViewButton" />
+        		
+        	<ToggleButton android:layout_width="35dp"
+				android:textOff=""
+				android:textOn=""
+        		android:layout_height="35dp" 
+        		android:background="@drawable/measure"
+        		android:layout_marginLeft="5dp"
+        		android:layout_marginTop="5dp"
+        		android:layout_alignParentLeft="true"
+        		android:layout_below="@id/satelliteViewButton" 
+        		android:id="@+id/measureToggleButton" />
+			
+		</RelativeLayout>
+
+	</it.giacomos.android.osmer.widgets.OViewFlipper>
+
+		<ToggleButton
+		    android:id="@+id/buttonHome"
+		    android:layout_width="50dp"
+		    android:layout_height="50dp"
+		    android:layout_alignParentRight="true"
+
+		    android:background="@drawable/home_button"
+		    android:padding="10dp"
+		    android:textOff=""
+		    android:textOn="" >
+
+</ToggleButton>
+
+		<ViewFlipper
+		    android:id="@+id/buttonsFlipper"
+		    android:layout_width="wrap_content"
+		    android:layout_height="match_parent"
+		    android:layout_alignLeft="@+id/buttonHome"
+		    android:layout_below="@+id/buttonHome" >
+			
+			<LinearLayout android:id="@+id/RelativeLayoutButtonsPage1"
+				android:orientation="vertical"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content">
+
+				<ToggleButton
+				    android:id="@+id/buttonToday"
+				    android:layout_width="50dp"
+				    android:layout_height="50dp"
+				    android:background="@drawable/forecast_button"
+				    android:textOff=""
+				    android:textOn="" >
+
+</ToggleButton>
+
+				<ToggleButton
+				    android:id="@+id/buttonTomorrow"
+				    android:layout_width="50dp"
+				    android:layout_height="50dp"
+				    android:background="@drawable/forecast_1_button"
+				    android:padding="10dp"
+				    android:textOff=""
+				    android:textOn="" >
+</ToggleButton>
+
+				<ToggleButton
+				    android:id="@+id/buttonTwoDays"
+				    android:layout_width="50dp"
+				    android:layout_height="50dp"
+				    android:background="@drawable/forecast_2_button"
+				    android:padding="10dp"
+				    android:textOff=""
+				    android:textOn="" >
+</ToggleButton>
+
+				<ToggleButton
+				    android:id="@+id/buttonMap"
+				    android:layout_width="50dp"
+				    android:layout_height="50dp"
+				    android:background="@drawable/fvg_button"
+				    android:padding="10dp"
+				    android:textOff=""
+				    android:textOn="" >
+</ToggleButton>
+			</LinearLayout>
+			
+			<LinearLayout
+			    android:id="@+id/RelativeLayoutButtonsPage2"
+			    android:layout_width="wrap_content"
+			    android:layout_height="match_parent"
+			    android:orientation="vertical" >
+
+				<ToggleButton android:textOff=""
+					android:textOn="" 
+					android:id="@+id/buttonRadar"
+					android:padding="10dp" android:background="@drawable/radar"
+					android:layout_width="50dp"
+					android:layout_height="50dp"></ToggleButton>
+				<ToggleButton android:textOff=""
+					android:textOn=""
+					android:id="@+id/buttonDailyObs"
+					android:padding="10dp" android:background="@drawable/daily_observations"
+					android:layout_height="50dp" 
+					android:layout_width="50dp"></ToggleButton>
+				<ToggleButton android:textOff=""
+					android:textOn=""
+					android:padding="10dp"
+					android:background="@drawable/last_observations" 
+					android:id="@+id/buttonLastObs"
+					android:layout_width="50dp" 
+					android:layout_height="50dp" 
+					></ToggleButton>
+			</LinearLayout>
+			
+			<!--  Daily observations  -->
+			<ScrollView 
+			android:id="@+id/dailyObsButtonScrollView" 
+			android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+			<LinearLayout android:orientation="vertical"
+				android:id="@+id/RelativeLayoutButtonsPageDailyObs"
+				 android:layout_width="wrap_content"
+				 android:layout_height="wrap_content"
+				 >
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonMapInsideDaily"
+					android:background="@drawable/fvg_button"
+					android:layout_width="50dp" 
+					android:layout_height="50dp"
+				 	android:padding="1dp"></ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonDailySky"
+					android:background="@drawable/observations"
+					android:layout_height="50dp" 
+					android:layout_width="50dp"
+				 	android:padding="10dp">
+					</ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonTMin"
+					android:background="@drawable/temp_min"
+					android:layout_width="50dp" 
+					android:layout_height="50dp"
+				 	android:padding="10dp">
+					</ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonTMean"
+					android:background="@drawable/temp_med" 
+					android:layout_height="50dp" 
+					android:layout_width="50dp"
+				 	android:padding="10dp">
+					</ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonTMax"
+					 android:background="@drawable/temp_max"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+				 	android:padding="10dp">
+					</ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonHumMean"
+					android:background="@drawable/drop" 
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+				 	android:padding="10dp">
+					</ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonWMean"
+					android:background="@drawable/wind" 
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+				 	android:padding="10dp">
+					</ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonWMax"
+					android:background="@drawable/wind_max" 
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+				 	android:padding="10dp">
+				</ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonDailyRain"
+					android:background="@drawable/rain" 
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+				 	android:padding="10dp">
+					</ToggleButton>
+			</LinearLayout>
+		</ScrollView>
+			
+		
+		<!--  Latest observations  -->
+		<ScrollView 
+			android:id="@+id/latestObsButtonScrollView" 
+			android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+			<LinearLayout android:orientation="vertical"
+				android:id="@+id/RelativeLayoutButtonsPageLatestObs"
+				 android:layout_width="wrap_content"
+				 android:layout_height="wrap_content">
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonMapInsideLatest"
+					android:background="@drawable/fvg_button"
+					android:layout_width="50dp" 
+					android:layout_height="50dp"
+				 	android:padding="10dp"></ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonLatestSky"
+					android:background="@drawable/observations"
+					android:layout_height="50dp" 
+					android:layout_width="50dp"
+				 	android:padding="10dp">
+					</ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonTemp"
+					android:background="@drawable/temp"
+					android:layout_width="50dp" 
+					android:layout_height="50dp"
+				 	android:padding="10dp">
+					</ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonHumidity"
+					android:background="@drawable/drop" 
+					android:layout_height="50dp" 
+					android:layout_width="50dp"
+				 	android:padding="10dp">
+					</ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonPressure"
+					 android:background="@drawable/gauge"
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+				 	android:padding="10dp">
+					</ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonWind"
+					android:background="@drawable/wind" 
+					android:layout_width="50dp"
+					android:layout_height="50dp">
+					</ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonLatestRain"
+					android:background="@drawable/rain" 
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+				 	android:padding="10dp">
+					</ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonSea"
+					android:background="@drawable/sea_temp" 
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+				 	android:padding="10dp">
+				</ToggleButton>
+				<ToggleButton android:textOff="" android:textOn=""
+					android:id="@+id/buttonSnow"
+					android:background="@drawable/snow" 
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+				 	android:padding="10dp">
+				</ToggleButton>
+			</LinearLayout>
+		</ScrollView>
+
+		
+			
+		</ViewFlipper>
+</RelativeLayout>
