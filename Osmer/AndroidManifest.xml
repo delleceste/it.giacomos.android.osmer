@@ -18,7 +18,7 @@
           android:protectionLevel="signature"/>
         <uses-permission android:name="it.giacomos.android.osmer.permission.MAPS_RECEIVE"/ -->
         
-    <application android:label="@string/app_name" android:debuggable="true" android:icon="@drawable/ic_launcher">
+    <application android:label="@string/app_name" android:debuggable="false" android:icon="@drawable/ic_launcher">
         <activity android:name=".OsmerActivity"
                   android:label="@string/app_name">
             <intent-filter>
