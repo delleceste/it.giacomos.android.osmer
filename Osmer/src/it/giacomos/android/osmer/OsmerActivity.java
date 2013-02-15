@@ -24,6 +24,7 @@ import it.giacomos.android.osmer.locationUtils.LocationInfo;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCache;
+import it.giacomos.android.osmer.textToImage.TextDecoderListener;
 import it.giacomos.android.osmer.widgets.InfoHtmlBuilder;
 import it.giacomos.android.osmer.widgets.LocationToImgPixelMapper;
 import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
@@ -36,6 +37,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -72,7 +74,8 @@ FlipperChildChangeListener,
 SnapshotManagerListener,
 OMapViewEventListener,
 LocationListener,
-GeocodeAddressUpdateListener
+GeocodeAddressUpdateListener,
+TextDecoderListener
 {
 	/** Called when the activity is first created. */
 	@Override
@@ -356,6 +359,29 @@ GeocodeAddressUpdateListener
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub		
+	}
+	
+	
+	
+	@Override
+	/**
+	 * called by textToImage.TextChangeListener when a new text has been set on a text view.
+	 * This method, according to the string type (today, tomorrow or 2 days forecast
+	 */
+	public void onTextDecoded(StringType t, int drawable_on, int drawable_off) 
+	{
+		Drawable drawable = null;
+		switch(t)
+		{
+		case TODAY:
+			
+			break;
+		case TOMORROW:
+			break;
+		case TWODAYS:
+			break;
+		}
+		
 	}
 	
 	/** Installs listeners for the button click events 
@@ -691,6 +717,4 @@ GeocodeAddressUpdateListener
 	
 	/// temp
 	int availCnt = 0;
-
-	
 }

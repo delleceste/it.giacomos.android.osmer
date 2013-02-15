@@ -17,7 +17,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.TextView;
 
-public class OTextView extends TextView implements StateSaver{
+public class OTextView extends TextView implements StateSaver
+{
 
 	public OTextView(Context context, AttributeSet attrs) {
 		super(context, attrs);	
