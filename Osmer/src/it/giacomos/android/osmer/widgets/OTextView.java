@@ -1,5 +1,8 @@
 package it.giacomos.android.osmer.widgets;
 
+import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.textToImage.TextChangeListener;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -11,6 +14,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
@@ -25,6 +29,8 @@ public class OTextView extends TextView implements StateSaver
 		mRestoreSuccessful = false;
 		this.setTextColor(Color.BLACK);
 		this.setPadding(10, 10, 10, 10);
+		mTextChangeListener = null;
+		mStringType = StringType.HOME;
 		//setMovementMethod(LinkMovementMethod.getInstance());
 	}
 
@@ -59,6 +65,7 @@ public class OTextView extends TextView implements StateSaver
 		try {
 			String line;
 			BufferedReader in = new BufferedReader(new FileReader(getContext().getFilesDir().getAbsolutePath() + "/" + makeFileName()));
+			
 			try {
 				line = in.readLine();
 				while(line != null)
@@ -66,6 +73,7 @@ public class OTextView extends TextView implements StateSaver
 					html += line + "\n";
 					line = in.readLine();
 				}
+				html = html.substring(0, html.length() - 1);
 			} 
 			catch (IOException e) {}		
 		} 
@@ -83,8 +91,24 @@ public class OTextView extends TextView implements StateSaver
 	public final void setHtml(String html)
 	{
 		/* store raw html for save and restore purposes */
-		mHtml = html;
-		setText(Html.fromHtml(html));
+//		if(mHtml != null)
+//			Log.i("setHtml mHtml was", "\"" + mHtml + "\"");
+//		else
+//			Log.i("setHtml mHtml is null", "null mHtml");
+//		
+//		Log.i("setHtml new html is ", "\"" + html + "\"");
+		if(mHtml == null || !html.equals(mHtml))
+		{
+			Spanned fromHtml = Html.fromHtml(html);
+			if(mTextChangeListener != null)
+				mTextChangeListener.onTextChanged(fromHtml.toString(), mStringType);
+
+			mHtml = html;
+			setText(fromHtml);
+		}
+//		else
+//			Log.i("OTextView.setHtml", "htm dont differ");
+		
 	}
 	
 	public Parcelable onSaveInstanceState()
@@ -112,6 +136,16 @@ public class OTextView extends TextView implements StateSaver
 		super.onRestoreInstanceState(b.getParcelable("OTextViewState"));
 	}
 	
+	public void setStringType(StringType t)
+	{
+		mStringType = t;
+	}
+	
+	public StringType getStringType()
+	{
+		return mStringType;
+	}
+	
 	public String getHtml() {
 		return mHtml;
 	}
@@ -127,5 +161,18 @@ public class OTextView extends TextView implements StateSaver
 		return "textViewHtml_" + this.getId() + "txt";
 	}
 	
+	/*
+	 * it.giacomos.android.osmer.textToImage.TextChangeListener
+	 */
+	public void setTextChangeListener(TextChangeListener l)
+	{
+		Log.i("setTextChangeListener", "initializing text change listener");
+		mTextChangeListener = l;
+	}
+	
 	private boolean mRestoreSuccessful;
+	
+	private TextChangeListener mTextChangeListener;
+	
+	private StringType mStringType;
 }

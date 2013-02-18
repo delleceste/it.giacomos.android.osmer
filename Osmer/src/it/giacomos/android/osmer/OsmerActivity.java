@@ -24,10 +24,11 @@ import it.giacomos.android.osmer.locationUtils.LocationInfo;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCache;
+import it.giacomos.android.osmer.textToImage.TextDecoder;
 import it.giacomos.android.osmer.textToImage.TextDecoderListener;
 import it.giacomos.android.osmer.widgets.InfoHtmlBuilder;
-import it.giacomos.android.osmer.widgets.LocationToImgPixelMapper;
 import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
+import it.giacomos.android.osmer.widgets.OTextView;
 import it.giacomos.android.osmer.widgets.OViewFlipper;
 import it.giacomos.android.osmer.widgets.mapview.OMapView;
 import it.giacomos.android.osmer.widgets.mapview.MapViewMode;
@@ -91,12 +92,12 @@ TextDecoderListener
 	public void onResume()
 	{	
 		super.onResume();
-		
+
 		/* registers network status monitor broadcast receiver (for this it needs `this')
 		 * Must be called _after_ instance restorer's onResume!
 		 */
 		m_downloadManager.onResume(this);		
-		
+
 		/* Location Manager */
 		OMapView omv = (OMapView)findViewById(R.id.mapview);
 		omv.onResume();
@@ -108,7 +109,7 @@ TextDecoderListener
 		m_locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 50, this);
 		m_locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 50, this);
 	}
-	
+
 	public void onPause()
 	{
 		super.onPause();
@@ -118,63 +119,70 @@ TextDecoderListener
 		((OMapView) findViewById(R.id.mapview)).onPause();
 		m_locationManager.removeUpdates(this);
 	}
-		
+
 	public void onStop()
 	{
 		super.onStop();
 		m_observationsCache.saveLatestToStorage(this);
 		new InternalStorageSaver(this);
 	}
-	
+
 	public void onRestart()
 	{
 		super.onRestart();
 	}
-	
+
 	public void onStart()
 	{
 		super.onStart();
 	}
-	
+
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.menu, menu);
-	    return true;
+		inflater.inflate(R.menu.menu, menu);
+		return true;
 	}
-	
+
 	public boolean onOptionsItemSelected(MenuItem item) 
 	{
 		this.closeOptionsMenu();
 		if(mMenuActionsManager == null)
 			mMenuActionsManager = new MenuActionsManager(this);
-		
+
 		boolean ret = mMenuActionsManager.itemSelected(item);
 		return ret;
 	}
-	
+
 	@Override
 	public Dialog onCreateDialog(int id, Bundle args)
 	{
 		if(id == MenuActionsManager.TEXT_DIALOG)
 		{
 			// Use the Builder class for convenient dialog construction
-	        Builder builder = new AlertDialog.Builder(this);
-	        builder.setPositiveButton(getResources().getString(R.string.ok_button), null);
-	        AlertDialog dialog = builder.create();
-	        dialog.setTitle(args.getString("title"));
-	        dialog.setCancelable(true);
-	        dialog.setMessage(Html.fromHtml(args.getString("text")));
-	        dialog.show();
-	        ((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
-	        
+			Builder builder = new AlertDialog.Builder(this);
+			builder.setPositiveButton(getResources().getString(R.string.ok_button), null);
+			AlertDialog dialog = builder.create();
+			dialog.setTitle(args.getString("title"));
+			dialog.setCancelable(true);
+			dialog.setMessage(Html.fromHtml(args.getString("text")));
+			dialog.show();
+			((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+
 		}
 		return super.onCreateDialog(id, args);
 	}
 
-	
+
 	public void init()
 	{
+		((OTextView) findViewById(R.id.todayTextView)).setTextChangeListener(new TextDecoder(this));
+		((OTextView) findViewById(R.id.tomorrowTextView)).setTextChangeListener(new TextDecoder(this));
+		((OTextView) findViewById(R.id.twoDaysTextView)).setTextChangeListener(new TextDecoder(this));
+		((OTextView) findViewById(R.id.todayTextView)).setStringType(StringType.TODAY);
+		((OTextView) findViewById(R.id.tomorrowTextView)).setStringType(StringType.TOMORROW);
+		((OTextView) findViewById(R.id.twoDaysTextView)).setStringType(StringType.TWODAYS);
+
 		((OMapView) findViewById(R.id.mapview)).setMapViewEventListener(this);
 		/* install listeners on buttons */
 		installButtonListener();
@@ -211,13 +219,13 @@ TextDecoderListener
 				new GeocodeAddressTask(this.getApplicationContext(), this).execute(mCurrentLocation);
 		}
 	}
-	
+
 	protected void onSaveInstanceState(Bundle outState)
 	{
 		super.onSaveInstanceState(outState);
 		new SnapshotManager().save(outState, this);
 	}
-	
+
 	protected void onRestoreInstanceState(Bundle inState)
 	{
 		super.onRestoreInstanceState(inState);
@@ -226,7 +234,7 @@ TextDecoderListener
 		 */
 		new SnapshotManager().restore(inState, this);
 	}
-	
+
 	public void getSituation()
 	{
 		m_downloadManager.getSituation();
@@ -251,19 +259,19 @@ TextDecoderListener
 	{
 		m_downloadManager.getRadarImage();
 	}
-	
+
 	void satellite()
 	{
 		//TextView textView = (TextView) findViewById(R.id.mainTextView);
 	}
-	
+
 	@Override
 	public void onDownloadProgressUpdate(int step, int total)
 	{
 		new TitlebarUpdater(this);
 		setProgress((int) (ProgressBarParams.MAX_PB_VALUE * step /  total));
 	}
-	
+
 	@Override
 	public void onTextUpdate(String txt, StringType t)
 	{
@@ -271,17 +279,17 @@ TextDecoderListener
 		{
 		case HOME: case TODAY: case TOMORROW: case TWODAYS:
 			new TextViewUpdater(this, txt, t);
-		break;
+			break;
 		default:
 			/* situation image will be updated directly by the cache, since SituationImage is 
 			 * listening to the ObservationCache through the LatestObservationCacheChangeListener
 			 * interface.
 			 */
 			m_observationsCache.store(txt, t);
-		break;
+			break;
 		}
 	}
-	
+
 	@Override
 	public void onDownloadStart(DownloadReason reason)
 	{
@@ -291,12 +299,12 @@ TextDecoderListener
 			Toast.makeText(this, R.string.completingDownloadToast, Toast.LENGTH_SHORT).show();
 		else if(reason == DownloadReason.DataExpired)
 			Toast.makeText(this, R.string.dataExpiredToast, Toast.LENGTH_SHORT).show();
-		
+
 		setProgressBarVisibility(true);
 		ProgressBarParams.currentValue = 0;
 		setProgress(0);
 	}
-	
+
 	@Override
 	public void onTextUpdateError(StringType t, String errorMessage)
 	{
@@ -304,19 +312,19 @@ TextDecoderListener
 		new TextViewUpdater(this, text, t);
 		new NetworkGuiErrorManager(this, errorMessage);
 	}
-	
+
 	@Override
 	public void onBitmapUpdate(Bitmap bmp, BitmapType bType)
 	{
 		new ImageViewUpdater(this, bmp, bType);
 	}
-	
+
 	@Override
 	public void onBitmapUpdateError(BitmapType bType, String errorMessage)
 	{
 		new NetworkGuiErrorManager(this, errorMessage);
 	}
-	
+
 	/* executed when a new locality / address becomes available.
 	 */
 	public void onGeocodeAddressUpdate(LocationInfo locInfo)
@@ -329,7 +337,7 @@ TextDecoderListener
 			((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).onLocalityChanged(locInfo.locality, locInfo.subLocality, locInfo.address);
 		}
 	}
-	
+
 	@Override
 	public void onLocationChanged(Location location) {
 		LocationComparer locationComparer = new LocationComparer();
@@ -344,11 +352,11 @@ TextDecoderListener
 				new GeocodeAddressTask(this.getApplicationContext(), this).execute(mCurrentLocation);
 		}
 	}
-	
+
 	@Override
 	public void onProviderDisabled(String provider) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -360,30 +368,39 @@ TextDecoderListener
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub		
 	}
-	
-	
-	
+
+
+
 	@Override
 	/**
 	 * called by textToImage.TextChangeListener when a new text has been set on a text view.
 	 * This method, according to the string type (today, tomorrow or 2 days forecast
 	 */
-	public void onTextDecoded(StringType t, int drawable_on, int drawable_off) 
+	public void onTextDecoded(StringType t, int resId) 
 	{
-		Drawable drawable = null;
-		switch(t)
+		if(resId != 0)
 		{
-		case TODAY:
-			
-			break;
-		case TOMORROW:
-			break;
-		case TWODAYS:
-			break;
+			Log.i("OsmerActivity:onTextDecoded", "got " + resId);
+			ToggleButton b = null;
+			switch(t)
+			{
+			case TODAY:
+				b = (ToggleButton) findViewById(R.id.buttonToday);
+				break;
+			case TOMORROW:
+				b = (ToggleButton) findViewById(R.id.buttonTomorrow);
+				break;
+			case TWODAYS:
+				b = (ToggleButton) findViewById(R.id.buttonTwoDays);
+				break;
+			default:
+				break;
+			}
+
+			b.setBackgroundResource(resId);
 		}
-		
 	}
-	
+
 	/** Installs listeners for the button click events 
 	 * 
 	 */
@@ -392,7 +409,7 @@ TextDecoderListener
 		mToggleButtonGroupHelper = new ToggleButtonGroupHelper(this);
 		new ButtonListenerInstaller(this, mToggleButtonGroupHelper);
 	}
-	
+
 	protected void installOnTouchListener()
 	{
 		new OnTouchListenerInstaller(this);
@@ -402,11 +419,11 @@ TextDecoderListener
 	{
 		new ObservationTypeGetter(this, oTime, -1);
 	}
-	
+
 
 	@Override
 	public void onSatelliteEnabled(boolean en) {
-				
+
 	}
 
 	@Override
@@ -431,11 +448,11 @@ TextDecoderListener
 		// TODO Auto-generated method stub
 		Button b = (Button) v;
 		OViewFlipper viewFlipper = (OViewFlipper) this.findViewById(R.id.viewFlipper1);
-	//	viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.hyperspace_out));
-	//	viewFlipper.setInAnimation(null);
+		//	viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.hyperspace_out));
+		//	viewFlipper.setInAnimation(null);
 
 		ViewFlipper buttonsFlipper = (ViewFlipper) findViewById(R.id.buttonsFlipper);
-		
+
 		//if(!mToggleButtonGroupHelper.isOn(v.getId()))
 		{
 			/* if not already checked, changed flipper page */
@@ -464,13 +481,13 @@ TextDecoderListener
 			case R.id.buttonMapInsideDaily:
 			case R.id.buttonMapInsideLatest:
 				((ToggleButton)findViewById(R.id.measureToggleButton)).setChecked(false);
-				
+
 				viewFlipper.setDisplayedChild(FlipperChildren.MAP);
 				buttonsFlipper.setDisplayedChild(1);
-//				/* do not set the map button clicked, but the radar one 
-//				 * because the buttonsFlipper child has changed.
-//				 */
-//				mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonRadar));
+				//				/* do not set the map button clicked, but the radar one 
+				//				 * because the buttonsFlipper child has changed.
+				//				 */
+				//				mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonRadar));
 				break;
 			case R.id.measureToggleButton:
 			case R.id.satelliteViewButton:
@@ -480,7 +497,7 @@ TextDecoderListener
 				mToggleButtonGroupHelper.setClicked(b);
 				break;
 			}
-			
+
 			/* hints on buttons */
 			switch(b.getId())
 			{
@@ -494,7 +511,7 @@ TextDecoderListener
 					mSwipeHintCount++; /* don't be silly, just once per start */
 				}
 				break;
-				
+
 			case R.id.buttonDailySky:
 			case R.id.buttonHumMean:
 			case R.id.buttonWMax:
@@ -515,14 +532,14 @@ TextDecoderListener
 					Toast.makeText(this, R.string.hint_scroll_buttons, Toast.LENGTH_LONG).show();
 					mSettings.setObsScrollIconsHintEnabled(false);
 				}
-					
+
 				break;
 			default:
 				break;	
 			}
 		}
-		
-		
+
+
 		/* buttons that can have effect even offline */
 		switch(b.getId())
 		{
@@ -550,8 +567,8 @@ TextDecoderListener
 		case R.id.buttonTMax:
 			onSelectionDone(ObservationType.MAX_TEMP, ObservationTime.DAILY);
 			break;
-			
-		/* latest */
+
+			/* latest */
 		case R.id.buttonLatestSky:
 			onSelectionDone(ObservationType.SKY, ObservationTime.LATEST);
 			break;
@@ -576,17 +593,17 @@ TextDecoderListener
 		case R.id.buttonTemp:
 			onSelectionDone(ObservationType.TEMP, ObservationTime.LATEST);
 			break;
-			
+
 			/* satellite or map on MapView */
 		case R.id.satelliteViewButton:
 			OMapView omv = (OMapView) findViewById(R.id.mapview);
 			omv.setSatellite(((ToggleButton)b).isChecked());
 			break;
-			
+
 		case R.id.measureToggleButton:
 			OMapView omv1 = (OMapView) findViewById(R.id.mapview);
 			boolean buttonChecked = ((ToggleButton)b).isChecked();
-			
+
 			if(buttonChecked && mSettings.isMapMoveToMeasureHintEnabled())
 			{
 				Toast.makeText(this, R.string.hint_move_to_measure_on_map, Toast.LENGTH_LONG).show();
@@ -599,7 +616,7 @@ TextDecoderListener
 			omv1.setMeasureEnabled(buttonChecked);
 			break;	
 		}
-		
+
 		/* 
 		 * FIXME 
 		 * daily and latest observations are cached in the ObservationCache, so it is 
@@ -628,9 +645,9 @@ TextDecoderListener
 			if(b.getId() ==  R.id.buttonMap || b.getId() == R.id.buttonMapInsideDaily
 					|| b.getId() == R.id.buttonMapInsideLatest)
 			{
-		//		int id = mToggleButtonGroupHelper.buttonOn();
-			//	if(id == R.id.buttonRadar)
-					radar();
+				//		int id = mToggleButtonGroupHelper.buttonOn();
+				//	if(id == R.id.buttonRadar)
+				radar();
 			}
 			else if(b.getId() == R.id.buttonRadar)
 				radar();
@@ -648,26 +665,26 @@ TextDecoderListener
 			}
 			else if(b.getId() == R.id.buttonHome)
 			{
-				
+
 			}
 		}
-		
+
 		ToggleButton measureButton = (ToggleButton) findViewById(R.id.measureToggleButton);
 		if(mToggleButtonGroupHelper.isOn(R.id.buttonRadar))
 			measureButton.setVisibility(View.VISIBLE);
 		else
 			measureButton.setVisibility(View.GONE);
-		
+
 		new TitlebarUpdater(this);
 	}
-	
+
 	public DownloadManager stateMachine() { return m_downloadManager; }
-	
+
 	public ToggleButtonGroupHelper getToggleButtonGroupHelper() 
 	{
 		return mToggleButtonGroupHelper;
 	}
-	
+
 	@Override
 	public void onFlipperChildChangeEvent(int child) {
 		// TODO Auto-generated method stub
@@ -711,10 +728,10 @@ TextDecoderListener
 	ToggleButtonGroupHelper mToggleButtonGroupHelper;
 	private Settings mSettings;
 	private int mSwipeHintCount, mTapOnMarkerHintCount;
-	
-	
+
+
 	Urls m_urls;
-	
+
 	/// temp
 	int availCnt = 0;
 }

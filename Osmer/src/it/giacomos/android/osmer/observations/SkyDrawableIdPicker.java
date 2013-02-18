@@ -99,7 +99,7 @@ public class SkyDrawableIdPicker {
 		}
 		else if(sky.contains("neve") && sky.contains("pioggia"))
 		{
-				id = (R.drawable.weather_snow_rain);
+				id = (R.drawable.snow_rain);
 		}
 		else if(sky.contains("temporale"))
 		{
@@ -110,11 +110,11 @@ public class SkyDrawableIdPicker {
 		}
 		else if(sky.contains("grandine"))
 		{
-			id = (R.drawable.weather_hail);
+			id = (R.drawable.hail);
 		}
 		else if(sky.contains("pioggia") && sky.contains("ghiac"))
 		{
-			id = (R.drawable.weather_freezing_rain);
+			id = (R.drawable.freezing_rain);
 		}
 		else if(sky.contains("nebbia"))
 			id = (R.drawable.weather_mist);

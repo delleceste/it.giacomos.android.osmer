@@ -23,8 +23,11 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 		super(context, attrs);	
 		mRestoreSuccessful = false;
 		mDisableMove = false;
+		mSwipeHintEnabled = false;
 		mSettings = new Settings(context);
-		mSwipeHintEnabled = mSettings.isSwipeHintEnabled();
+		/* problems in editor with shared preferences */
+		if(!this.isInEditMode())
+			mSwipeHintEnabled = mSettings.isSwipeHintEnabled();
 	}
 
 	public void setDisplayedChild(int child)

@@ -22,7 +22,7 @@ public class InfoTextExtractor {
 	
 	public void process(String s)
 	{
-		System.out.println(s);
+	//	System.out.println(s);
 		m_text = s;
 		m_emissionDate = "--:--:--";
 		m_emissionHour = "--:--";
