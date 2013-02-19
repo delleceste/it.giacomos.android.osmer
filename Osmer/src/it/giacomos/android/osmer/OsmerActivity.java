@@ -81,6 +81,7 @@ TextDecoderListener
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		Log.i("onCreate", "application created");
 		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_PROGRESS);
 		/* left icon for logo, right for connection status */
@@ -91,6 +92,7 @@ TextDecoderListener
 
 	public void onResume()
 	{	
+		Log.i("onResume", "application resumed");
 		super.onResume();
 
 		/* registers network status monitor broadcast receiver (for this it needs `this')
@@ -112,6 +114,7 @@ TextDecoderListener
 
 	public void onPause()
 	{
+		Log.i("onPause", "application paused");
 		super.onPause();
 		/* unregisters network status monitor broadcast receiver (for this it needs `this')
 		 */
@@ -122,18 +125,25 @@ TextDecoderListener
 
 	public void onStop()
 	{
+		Log.i("onStop", "application stopped");
 		super.onStop();
 		m_observationsCache.saveLatestToStorage(this);
+		/* saves text and images on the internal storage 
+		 * calling saveOnInternalStorage on OTextViews and ODoubleLayerImageViews,
+		 * that implement the StateSaver interface.
+		 */
 		new InternalStorageSaver(this);
 	}
 
 	public void onRestart()
 	{
+		Log.i("onRestart", "application restarted");
 		super.onRestart();
 	}
 
 	public void onStart()
 	{
+		Log.i("onStart", "application started");
 		super.onStart();
 	}
 
@@ -380,7 +390,7 @@ TextDecoderListener
 	{
 		if(resId != 0)
 		{
-			Log.i("OsmerActivity:onTextDecoded", "got " + resId);
+//			Log.i("OsmerActivity:onTextDecoded", "got " + resId);
 			ToggleButton b = null;
 			switch(t)
 			{

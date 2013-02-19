@@ -21,6 +21,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.TextView;
 
+/** Text change listener is installed here because this class restores from internal storage on her own
+ * If it wasn't for that, the text change event may be triggered elsewhere (for the text to image decoding)
+ * @author giacomo
+ *
+ */
 public class OTextView extends TextView implements StateSaver
 {
 
@@ -31,6 +36,7 @@ public class OTextView extends TextView implements StateSaver
 		this.setPadding(10, 10, 10, 10);
 		mTextChangeListener = null;
 		mStringType = StringType.HOME;
+		mHtml  = null;
 		//setMovementMethod(LinkMovementMethod.getInstance());
 	}
 
@@ -44,6 +50,7 @@ public class OTextView extends TextView implements StateSaver
 		try {
 			fos = getContext().openFileOutput(makeFileName(), Context.MODE_PRIVATE);
 			try {
+				Log.i("saveOnInternalStorage", "OTextView: saving on File");
 				fos.write(mHtml.getBytes());
 				fos.close();
 				return true; /* success */
@@ -60,6 +67,7 @@ public class OTextView extends TextView implements StateSaver
 
 	public boolean restoreFromInternalStorage()
 	{
+		Log.i("restoreFromInternalStorage", "restore text");
 		String html = "";
 		/* Open a private file associated with this Context's application package for reading. */
 		try {
@@ -104,11 +112,9 @@ public class OTextView extends TextView implements StateSaver
 				mTextChangeListener.onTextChanged(fromHtml.toString(), mStringType);
 
 			mHtml = html;
+//			Log.i("setHtml", "calling setText()");
 			setText(fromHtml);
 		}
-//		else
-//			Log.i("OTextView.setHtml", "htm dont differ");
-		
 	}
 	
 	public Parcelable onSaveInstanceState()

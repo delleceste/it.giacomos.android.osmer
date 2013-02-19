@@ -42,8 +42,6 @@ public class FromInternalStorageRestorer {
 		dliv = (ODoubleLayerImageView) a.findViewById(R.id.tomorrowImageView);
 		dliv.restoreFromInternalStorage();
 		dliv = (ODoubleLayerImageView) a.findViewById(R.id.twoDaysImageView);
-		dliv.restoreFromInternalStorage();
-		
-		
+		dliv.restoreFromInternalStorage();		
 	}
 }

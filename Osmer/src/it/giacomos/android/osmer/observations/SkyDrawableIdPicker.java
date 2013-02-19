@@ -82,14 +82,14 @@ public class SkyDrawableIdPicker {
 			/* the same for day and night */
 			id = (R.drawable.weather_many_clouds);
 		}
-		else if(sky.contains("variabile"))
+		else if(sky.contains("variabil"))
 		{
 			if(night)
-				id = (R.drawable.weather_showers_night);
+				id = (R.drawable.weather_variable_showers_night);
 			else
-				id = (R.drawable.weather_showers_day);
+				id = (R.drawable.weather_variable_showers);
 		}	
-		else if(sky.contains("pioggia"))
+		else if(sky.contains("piogg"))
 		{
 			id = (R.drawable.weather_showers);
 		}
@@ -97,22 +97,22 @@ public class SkyDrawableIdPicker {
 		{
 				id = (R.drawable.weather_snow);
 		}
-		else if(sky.contains("neve") && sky.contains("pioggia"))
+		else if(sky.contains("neve") && sky.contains("piogg"))
 		{
 				id = (R.drawable.snow_rain);
 		}
-		else if(sky.contains("temporale"))
+		else if(sky.contains("temporal"))
 		{
 			if(night)
 				id = (R.drawable.weather_storm_night);
 			else
-				id = (R.drawable.weather_storm_day);
+				id = (R.drawable.weather_storm);
 		}
-		else if(sky.contains("grandine"))
+		else if(sky.contains("grandin"))
 		{
 			id = (R.drawable.hail);
 		}
-		else if(sky.contains("pioggia") && sky.contains("ghiac"))
+		else if(sky.contains("piogg") && sky.contains("ghiac"))
 		{
 			id = (R.drawable.freezing_rain);
 		}
