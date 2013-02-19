@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Osmer Oservatorio Regionale Friuli Venezia Giulia</string>
+    <string name="hello">Meteo FVG Oservatorio Regionale Friuli Venezia Giulia</string>
     <string name="app_name">Meteo.FVG</string>
     <string name="version">versione</string>
     <string name="data_source">Fonte dati: http://www.meteo.fvg.it</string>
@@ -20,14 +20,14 @@
     <string name="tomorrow_text">Testo domani</string>
     <string name="Home">home_button</string>
     <string name="home_button">Home</string>
-    <string name="home_title">OSMER FVG - Home</string>
-    <string name="today_title">OSMER FVG - Oggi</string>
-    <string name="tomorrow_title">OSMER FVG - Domani</string>
-    <string name="two_days_title">OSMER FVG - Dopodomani</string>
-    <string name="radar_title">OSMER FVG - Radar</string>
-    <string name="sat_title">OSMER FVG - Satellite View</string>
+    <string name="home_title">METEO FVG - Home</string>
+    <string name="today_title">METEO FVG - Oggi</string>
+    <string name="tomorrow_title">METEO FVG - Domani</string>
+    <string name="two_days_title">METEO FVG - Dopodomani</string>
+    <string name="radar_title">METEO FVG - Radar</string>
+    <string name="sat_title">METEO FVG - Satellite View</string>
     
-    <string name="observations_title_daily">OSMER FVG - Osservazioni Giornaliere</string>
+    <string name="observations_title_daily">METEO FVG - Osservazioni Giornaliere</string>
     <string name="observations_title_daily_sky">Osservazioni Giornaliere - Cielo</string>
     <string name="observations_title_daily_tmin">Osservazioni Giornaliere - Temp. Min</string>
     <string name="observations_title_daily_tmean">Osservazioni Giornaliere - Temp. Media</string>
@@ -37,7 +37,7 @@
     <string name="observations_title_daily_wmax">Osservazioni Giornaliere - Vento Massimo</string>
     <string name="observations_title_daily_rain">Osservazioni Giornaliere - Pioggia</string>
     
-    <string name="observations_title_latest">OSMER FVG - Osservazioni Ultim\'ora</string>
+    <string name="observations_title_latest">METEO FVG - Osservazioni Ultim\'ora</string>
     <string name="observations_title_latest_sky">Osservazioni Ultim\'ora - Cielo</string>
     <string name="observations_title_latest_temp">Osservazioni Ultim\'ora - Temperatura</string>
     <string name="observations_title_latest_humidity">Osservazioni Ultim\'ora - Umidita`</string>
@@ -112,7 +112,7 @@
 	<string name="getting_locality_wait">Attendi&#8230; recupero località&#8230;</string>
 	<string name="ok_button">Ok</string>
 	<string name="popup_position_title">Informazioni sulla posizione</string>
-	<string name="popup_info_title">Osmer app info e copyright</string>
+	<string name="popup_info_title">Meteo FVG app info e copyright</string>
 	<string name="popup_data_update_title">Aggiornamento automatico dei dati</string>
 	<string name="meters">m</string>
 	<string name="error_message">Messaggio d\'errore</string>
@@ -174,7 +174,7 @@
 	    
 	    <p>
 	    
-	    L\'applicazione Osmer per Android è stata sviluppata da Giacomo Strangolino.
+	    L\'applicazione Meteo FVG per Android è stata sviluppata da Giacomo Strangolino.
 	    <br/>
 	    
 	    - <a href="http://www.giacomos.it">http://www.giacomos.it</a>
@@ -188,7 +188,7 @@
 	    
 	    <p>
 	    
-	    L\'applicazione Osmer per Android fa uso di icone prese da:
+	    L\'applicazione Meteo FVG per Android fa uso di icone prese da:
 	    
 	    - <a href="http://www.oxygen-icons.org">KDE oxygen icons</a>
 	    	
@@ -205,7 +205,7 @@
 	    
 	     <p>
 	    
-	    L\'applicazione Osmer per Android utilizza le Google Maps, API v1.
+	    L\'applicazione Meteo FVG per Android utilizza le Google Maps, API v1.
 	    
 	    - <a href="https://developers.google.com/maps/documentation/android/v1/index">Google Maps API v1</a>
 	    	
@@ -215,7 +215,7 @@
 	    
 	   
 	   	Questa applicazione è rilasciata sotto licenza <a href="http://www.gnu.org/licenses/lgpl-3.0.txt">LGPLv3</a> 
-	   	e una copia della licenza è inclusa nel pacchetto del progetto Osmer per Android. Il nome del file è <cite>lgpl-3.0.txt</cite>
+	   	e una copia della licenza è inclusa nel pacchetto del progetto Meteo FVG per Android. Il nome del file è <cite>lgpl-3.0.txt</cite>
 	    
 	    </p>
 	    

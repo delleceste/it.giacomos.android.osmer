@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Osmer Oservatorio Regionale Friuli Venezia Giulia</string>
+    <string name="hello">Meteo FVG Oservatorio Regionale Friuli Venezia Giulia</string>
     <string name="app_name">Meteo.FVG</string>
     <string name="version">version</string>
     <string name="data_source">Data source: http://www.meteo.fvg.it</string>
@@ -18,14 +18,14 @@
     <string name="tomorrow_text">"Tomorrow's text"</string>
     <string name="Home">home_button</string>
     <string name="home_button">Home</string>
-    <string name="home_title">OSMER FVG - Home</string>
-    <string name="today_title">OSMER FVG - Today</string>
-    <string name="tomorrow_title">OSMER FVG - Tomorrow</string>
-    <string name="two_days_title">OSMER FVG - Two Days Forecast</string>
-    <string name="radar_title">OSMER FVG - Radar</string>
-    <string name="sat_title">OSMER FVG - Satellite View</string>
+    <string name="home_title">Meteo FVG - Home</string>
+    <string name="today_title">Meteo FVG - Today</string>
+    <string name="tomorrow_title">Meteo FVG - Tomorrow</string>
+    <string name="two_days_title">Meteo FVG - Two Days Forecast</string>
+    <string name="radar_title">Meteo FVG - Radar</string>
+    <string name="sat_title">Meteo FVG - Satellite View</string>
     
-    <string name="observations_title_daily">OSMER FVG - Daily Observations</string>
+    <string name="observations_title_daily">Meteo FVG - Daily Observations</string>
     <string name="observations_title_daily_sky">Daily Observations - Sky</string>
     <string name="observations_title_daily_tmin">Daily Observations - Min. T.</string>
     <string name="observations_title_daily_tmean">Daily Observations - Mean. T.</string>
@@ -35,7 +35,7 @@
     <string name="observations_title_daily_wmax">Daily Observations - Max Wind</string>
     <string name="observations_title_daily_rain">Daily Observations - Rain</string>
     
-    <string name="observations_title_latest">OSMER FVG - Latest Observations</string>
+    <string name="observations_title_latest">Meteo FVG - Latest Observations</string>
     <string name="observations_title_latest_sky">Latest Observations - Sky</string>
     <string name="observations_title_latest_temp">Latest Observations - Temperature</string>
     <string name="observations_title_latest_humidity">Latest Observations - Humidity</string>
@@ -171,7 +171,7 @@
 	    
 	    <p>
 	    
-	    The <strong>Osmer for Android</strong> application has been developed by Giacomo Strangolino.
+	    The <strong>Meteo FVG for Android</strong> application has been developed by Giacomo Strangolino.
 	    <br/>
 	    
 	    - <a href="http://www.giacomos.it">http://www.giacomos.it</a>
@@ -185,7 +185,7 @@
 	    
 	    <p>
 	    
-	    The <cite>Osmer for Android</cite> application makes use of icons taken from:
+	    The <cite>Meteo FVG for Android</cite> application makes use of icons taken from:
 	    
 	    <br/>
 	    
@@ -204,7 +204,7 @@
 	    
 	       <p>
 	    
-	    The application Osmer for Android makes use of the Google Maps API v1.
+	    The application Meteo FVG for Android makes use of the Google Maps API v1.
 	    
 	    - <a href="https://developers.google.com/maps/documentation/android/v1/index">Google Maps API v1</a>
 	    	
