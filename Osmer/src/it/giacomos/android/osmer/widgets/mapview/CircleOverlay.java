@@ -328,10 +328,16 @@ public class CircleOverlay extends Overlay {
 	public Parcelable saveState(Bundle bundle)
 	{
 		bundle.putBoolean("customCenter", mCustomCenter);
-		bundle.putInt("centerGeoPointLat", mCenterGeoPoint.getLatitudeE6());
-		bundle.putInt("centerGeoPointLong", mCenterGeoPoint.getLongitudeE6());
-		bundle.putInt("currentGeoPointLat", mCurrentGeoPoint.getLatitudeE6());
-		bundle.putInt("currentGeoPointLong", mCurrentGeoPoint.getLongitudeE6());
+		if(mCenterGeoPoint != null)
+		{
+			bundle.putInt("centerGeoPointLat", mCenterGeoPoint.getLatitudeE6());
+			bundle.putInt("centerGeoPointLong", mCenterGeoPoint.getLongitudeE6());
+		}
+		if(mCurrentGeoPoint != null)
+		{
+			bundle.putInt("currentGeoPointLat", mCurrentGeoPoint.getLatitudeE6());
+			bundle.putInt("currentGeoPointLong", mCurrentGeoPoint.getLongitudeE6());
+		}
 		return bundle;
 	}
 
