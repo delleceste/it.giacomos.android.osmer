@@ -171,7 +171,6 @@ public class OTextView extends TextView implements StateSaver
 	 */
 	public void setTextChangeListener(TextChangeListener l)
 	{
-		Log.i("setTextChangeListener", "initializing text change listener");
 		mTextChangeListener = l;
 	}
 	

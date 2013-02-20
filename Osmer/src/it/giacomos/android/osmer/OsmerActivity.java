@@ -140,6 +140,12 @@ TextDecoderListener
 		 */
 		super.onStop();
 	}
+	
+	protected void onDestroy()
+	{
+		Log.i("onDestroy", "application destroyed");
+		super.onDestroy();
+	}
 
 	public void onRestart()
 	{
