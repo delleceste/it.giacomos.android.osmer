@@ -213,6 +213,7 @@ GeocodeAddressUpdateListener
 	{
 		super.onSaveInstanceState(outState);
 		new SnapshotManager().save(outState, this);
+		mToggleButtonGroupHelper.saveButtonsState(outState);
 	}
 	
 	protected void onRestoreInstanceState(Bundle inState)
@@ -222,6 +223,7 @@ GeocodeAddressUpdateListener
 		 * close to current timestamp
 		 */
 		new SnapshotManager().restore(inState, this);
+		mToggleButtonGroupHelper.restoreButtonsState(inState);
 	}
 	
 	public void getSituation()
@@ -438,7 +440,8 @@ GeocodeAddressUpdateListener
 			case R.id.buttonMapInsideDaily:
 			case R.id.buttonMapInsideLatest:
 				((ToggleButton)findViewById(R.id.measureToggleButton)).setChecked(false);
-				
+				/* remove itemized overlays (observations), if present, and restore radar view */
+				((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 				viewFlipper.setDisplayedChild(FlipperChildren.MAP);
 				buttonsFlipper.setDisplayedChild(1);
 //				/* do not set the map button clicked, but the radar one 

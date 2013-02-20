@@ -51,6 +51,7 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 
 	public Parcelable onSaveInstanceState()
 	{
+		Log.e("Flipper", "onSaveInstanceState");
 		Parcelable p = super.onSaveInstanceState();
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("OViewFlipper", p);
@@ -60,6 +61,7 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 
 	public void onRestoreInstanceState (Parcelable state)
 	{
+		Log.e("Flipper", "onRestoreInstanceState");
 		Bundle b = (Bundle) state;
 		mRestoreSuccessful = b.containsKey("displayedChild");
 		if(mRestoreSuccessful)

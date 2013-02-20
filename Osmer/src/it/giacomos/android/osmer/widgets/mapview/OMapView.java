@@ -123,6 +123,7 @@ public class OMapView extends MapView
 	{
 		if(m.equals(mMode))
 		{
+			Log.e("OMapView", "m.equals(mMode)");
 			return;
 		}
 		
@@ -130,9 +131,10 @@ public class OMapView extends MapView
 		new BaloonOffMap(this);
 		List<Overlay> overlays = getOverlays();
 		/* remove our overlays except MyLocationOverlay and MapButtonsOverlay */
+		Log.e("OMapView", "overlays size" + overlays.size());
 		while(overlays.size() > 1)
 		{
-		//	Log.e("OMapView", "removing overlay " + overlays.get(overlays.size() - 1).getClass().getName());
+			Log.e("OMapView", "removing overlay " + overlays.get(overlays.size() - 1).getClass().getName());
 			overlays.remove(overlays.size() - 1);
 		}
 		switch(m.currentType)
