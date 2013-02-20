@@ -54,7 +54,6 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 
 	public Parcelable onSaveInstanceState()
 	{
-		Log.e("Flipper", "onSaveInstanceState");
 		Parcelable p = super.onSaveInstanceState();
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("OViewFlipper", p);
@@ -64,7 +63,6 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 
 	public void onRestoreInstanceState (Parcelable state)
 	{
-		Log.e("Flipper", "onRestoreInstanceState");
 		Bundle b = (Bundle) state;
 		mRestoreSuccessful = b.containsKey("displayedChild");
 		if(mRestoreSuccessful)
@@ -73,9 +71,7 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 	}
 
 	public boolean onTouch(View v, MotionEvent touchevent) {
-		// Get the action that was donAndroide on this touch event
 
-	//	Log.e("onTouch ", "displayedCHild " + getDisplayedChild());
 		if(getDisplayedChild() == FlipperChildren.MAP)
 			return false;
 		

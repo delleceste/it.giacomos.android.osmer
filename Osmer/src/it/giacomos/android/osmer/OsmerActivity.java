@@ -121,18 +121,24 @@ TextDecoderListener
 		m_downloadManager.onPause(this);
 		((OMapView) findViewById(R.id.mapview)).onPause();
 		m_locationManager.removeUpdates(this);
-	}
-
-	public void onStop()
-	{
-		Log.i("onStop", "application stopped");
-		super.onStop();
+		
 		m_observationsCache.saveLatestToStorage(this);
 		/* saves text and images on the internal storage 
 		 * calling saveOnInternalStorage on OTextViews and ODoubleLayerImageViews,
 		 * that implement the StateSaver interface.
 		 */
 		new InternalStorageSaver(this);
+	}
+
+	public void onStop()
+	{
+		Log.i("onStop", "application stopped");
+		/* From Android documentation:
+		 * Note that this method may never be called, in low memory situations where 
+		 * the system does not have enough memory to keep your activity's process running 
+		 * after its onPause() method is called. 
+		 */
+		super.onStop();
 	}
 
 	public void onRestart()
@@ -455,7 +461,6 @@ TextDecoderListener
 		/* switch the working mode of the map view */
 		OMapView map = (OMapView) findViewById(R.id.mapview);
 		map.setMode(new MapViewMode(type, oTime));
-		Log.e("onSelectioniDone", "updateObservations " + type + oTime);
 		map.updateObservations(m_observationsCache.getObservationData(oTime));
 	}
 
@@ -470,7 +475,6 @@ TextDecoderListener
 		//	viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.hyperspace_out));
 		//	viewFlipper.setInAnimation(null);
 
-		Log.e("onClick", "Clicked " + v.getId());
 		ViewFlipper buttonsFlipper = (ViewFlipper) findViewById(R.id.buttonsFlipper);
 
 		//if(!mToggleButtonGroupHelper.isOn(v.getId()))
@@ -580,7 +584,6 @@ TextDecoderListener
 			onSelectionDone(ObservationType.SKY, ObservationTime.DAILY);
 			break;
 		case R.id.buttonHumMean:
-			Log.e("onClick", "buttonHumMean");
 			onSelectionDone(ObservationType.MEAN_HUMIDITY, ObservationTime.DAILY);
 			break;
 		case R.id.buttonWMax:

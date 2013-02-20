@@ -71,12 +71,7 @@ public class ObservationsCache implements TableToMapUpdateListener
 			break;
 		}
 		if(mObservationsCacheUpdateListener != null)
-		{
-			Log.e("ObservationsCache", "mObservationsCacheUpdateListener != null: onObserva");
 			mObservationsCacheUpdateListener.onObservationsCacheUpdate(map, t);
-		}
-		else
-			Log.e("ObservationsCache","mObservationsCacheUpdateListener IS null: onObserva");
 	}
 	
 	public void store(String s, StringType t)
@@ -108,13 +103,11 @@ public class ObservationsCache implements TableToMapUpdateListener
 
 	public HashMap <String, ObservationData> getDailyObservationData()
 	{
-		Log.e("getDailyObservationData", "size " + mDailyMap.size());
 		return mDailyMap;
 	}
 
 	public HashMap<String, ObservationData> getLatestObservationData()
 	{
-		Log.e("getDailyObservationData", "size " + mDailyMap.size());
 		return mLatestMap;
 	}
 
@@ -158,8 +151,6 @@ public class ObservationsCache implements TableToMapUpdateListener
 				stringType = StringType.DAILY_TABLE;
 
 			this.store(data, stringType);
-			
-			Log.e("ObservationsCache: restoreFromStorage", "restored" + mDailyMap.size() + ", latest" + mLatestMap.size());
 		}
 
 		return true;

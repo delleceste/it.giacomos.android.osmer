@@ -50,7 +50,6 @@ public class OTextView extends TextView implements StateSaver
 		try {
 			fos = getContext().openFileOutput(makeFileName(), Context.MODE_PRIVATE);
 			try {
-				Log.i("saveOnInternalStorage", "OTextView: saving on File");
 				fos.write(mHtml.getBytes());
 				fos.close();
 				return true; /* success */
@@ -67,7 +66,6 @@ public class OTextView extends TextView implements StateSaver
 
 	public boolean restoreFromInternalStorage()
 	{
-		Log.i("restoreFromInternalStorage", "restore text");
 		String html = "";
 		/* Open a private file associated with this Context's application package for reading. */
 		try {
@@ -81,7 +79,8 @@ public class OTextView extends TextView implements StateSaver
 					html += line + "\n";
 					line = in.readLine();
 				}
-				html = html.substring(0, html.length() - 1);
+				if(html.length() > 0)
+					html = html.substring(0, html.length() - 1);
 			} 
 			catch (IOException e) {}		
 		} 
