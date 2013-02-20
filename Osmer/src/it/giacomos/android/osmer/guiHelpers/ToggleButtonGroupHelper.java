@@ -79,26 +79,20 @@ public class ToggleButtonGroupHelper {
 	public void restoreButtonsState(Bundle b)
 	{
 		ArrayList<Integer> checkedButtons = b.getIntegerArrayList("checkedButtons");
-		Log.e("ToggleButtonGroupHelper:", "buttons checked " + checkedButtons.size());
 		for(int i = 0; i < checkedButtons.size(); i++)
 		{
-			Log.e("settingClicked", "id: " + checkedButtons.get(i));
 			CompoundButton bt = (CompoundButton) mActivity.findViewById(checkedButtons.get(i));
 			View  par = (View) bt.getParent();
 			if(par.getId() == R.id.RelativeLayoutButtonsPageDailyObs)
 			{
-				Log.e("restoreButtonsState", "parent is daily obs");
 				mActivity.onClick(mActivity.findViewById(R.id.buttonMap));
 				mActivity.onClick(mActivity.findViewById(R.id.buttonDailyObs));
 			}
 			else if(par.getId() == R.id.RelativeLayoutButtonsPageLatestObs)
 			{
-				Log.e("restoreButtonsState", "parent is latest obs");
 				mActivity.onClick(mActivity.findViewById(R.id.buttonMap));
 				mActivity.onClick(mActivity.findViewById(R.id.buttonLastObs));
 			}
-			else
-				Log.e("restoreButtonsState", "no parent interesting");
 			
 			this.setClicked(mActivity.findViewById(checkedButtons.get(i)));
 			mActivity.onClick(mActivity.findViewById(checkedButtons.get(i)));

@@ -402,7 +402,6 @@ GeocodeAddressUpdateListener
 		/* switch the working mode of the map view */
 		OMapView map = (OMapView) findViewById(R.id.mapview);
 		map.setMode(new MapViewMode(type, oTime));
-		Log.e("onSelectioniDone", "updateObservations " + type + oTime);
 		map.updateObservations(m_observationsCache.getObservationData(oTime));
 	}
 
@@ -417,7 +416,6 @@ GeocodeAddressUpdateListener
 	//	viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.hyperspace_out));
 	//	viewFlipper.setInAnimation(null);
 
-		Log.e("onClick", "Clicked " + v.getId());
 		ViewFlipper buttonsFlipper = (ViewFlipper) findViewById(R.id.buttonsFlipper);
 		
 		//if(!mToggleButtonGroupHelper.isOn(v.getId()))
