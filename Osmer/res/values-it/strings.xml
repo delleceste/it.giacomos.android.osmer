@@ -186,11 +186,8 @@
 	    
 	    <p>
 	    
-<<<<<<< HEAD
-	    L\'applicazione Meteo FVG per Android fa uso di icone prese da:
-=======
+
 	    L\'applicazione Meteo.FVG per Android fa uso di icone prese da:
->>>>>>> refs/heads/branch_1_0
 	    
 	    - <a href="http://www.oxygen-icons.org">KDE oxygen icons</a>
 	    	
@@ -207,11 +204,7 @@
 	    
 	     <p>
 	    
-<<<<<<< HEAD
-	    L\'applicazione Meteo FVG per Android utilizza le Google Maps, API v1.
-=======
 	    L\'applicazione Meteo.FVG per Android utilizza le Google Maps, API v1.
->>>>>>> refs/heads/branch_1_0
 	    
 	    - <a href="https://developers.google.com/maps/documentation/android/v1/index">Google Maps API v1</a>
 	    	
@@ -221,11 +214,7 @@
 	    
 	   
 	   	Questa applicazione è rilasciata sotto licenza <a href="http://www.gnu.org/licenses/lgpl-3.0.txt">LGPLv3</a> 
-<<<<<<< HEAD
-	   	e una copia della licenza è inclusa nel pacchetto del progetto Meteo FVG per Android. Il nome del file è <cite>lgpl-3.0.txt</cite>
-=======
 	   	e una copia della licenza è inclusa nel pacchetto del progetto Meteo.FVG per Android. Il nome del file è <cite>lgpl-3.0.txt</cite>
->>>>>>> refs/heads/branch_1_0
 	    
 	    </p>
 	    
