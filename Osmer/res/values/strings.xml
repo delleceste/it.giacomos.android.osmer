@@ -206,11 +206,7 @@
 	    
 	       <p>
 	    
-<<<<<<< HEAD
-	    The application Meteo FVG for Android makes use of the Google Maps API v1.
-=======
-	    The application Meteo.FVG for Android makes use of the Google Maps API v1.
->>>>>>> refs/heads/branch_1_0
+		The application Meteo.FVG for Android makes use of the Google Maps API v1.
 	    
 	    - <a href="https://developers.google.com/maps/documentation/android/v1/index">Google Maps API v1</a>
 	    	
