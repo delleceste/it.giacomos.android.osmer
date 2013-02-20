@@ -172,13 +172,19 @@ GeocodeAddressUpdateListener
 	
 	public void init()
 	{
-		((OMapView) findViewById(R.id.mapview)).setMapViewEventListener(this);
+		OMapView map = (OMapView) findViewById(R.id.mapview);
+		map.setMapViewEventListener(this);
 		/* install listeners on buttons */
 		installButtonListener();
 		installOnTouchListener();
 		((OViewFlipper) findViewById(R.id.viewFlipper1)).setOnChildPageChangedListener(this);
 		m_downloadManager = new DownloadManager(this);
 		m_observationsCache = new ObservationsCache();
+		/* map updates the observation data in ItemizedOverlay when new observations are available
+		 *
+		 */
+		m_observationsCache.installObservationsCacheUpdateListener(map);
+		
 		SituationImage situationImage = (SituationImage) findViewById(R.id.homeImageView);
 		/* Situation Image will listen for cache changes, which happen on store() call
 		 * in this class or when cache is restored from the internal storage.
@@ -396,6 +402,7 @@ GeocodeAddressUpdateListener
 		/* switch the working mode of the map view */
 		OMapView map = (OMapView) findViewById(R.id.mapview);
 		map.setMode(new MapViewMode(type, oTime));
+		Log.e("onSelectioniDone", "updateObservations " + type + oTime);
 		map.updateObservations(m_observationsCache.getObservationData(oTime));
 	}
 
@@ -410,6 +417,7 @@ GeocodeAddressUpdateListener
 	//	viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.hyperspace_out));
 	//	viewFlipper.setInAnimation(null);
 
+		Log.e("onClick", "Clicked " + v.getId());
 		ViewFlipper buttonsFlipper = (ViewFlipper) findViewById(R.id.buttonsFlipper);
 		
 		//if(!mToggleButtonGroupHelper.isOn(v.getId()))
@@ -438,10 +446,20 @@ GeocodeAddressUpdateListener
 				break;
 			case R.id.buttonMap:
 			case R.id.buttonMapInsideDaily:
-			case R.id.buttonMapInsideLatest:
 				((ToggleButton)findViewById(R.id.measureToggleButton)).setChecked(false);
 				/* remove itemized overlays (observations), if present, and restore radar view */
 				((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
+				viewFlipper.setDisplayedChild(FlipperChildren.MAP);
+				buttonsFlipper.setDisplayedChild(1);
+//				/* do not set the map button clicked, but the radar one 
+//				 * because the buttonsFlipper child has changed.
+//				 */
+//				mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonRadar));
+				break;
+			case R.id.buttonMapInsideLatest:
+				((ToggleButton)findViewById(R.id.measureToggleButton)).setChecked(false);
+				/* remove itemized overlays (observations), if present, and restore radar view */
+				((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.LATEST));
 				viewFlipper.setDisplayedChild(FlipperChildren.MAP);
 				buttonsFlipper.setDisplayedChild(1);
 //				/* do not set the map button clicked, but the radar one 
@@ -507,6 +525,7 @@ GeocodeAddressUpdateListener
 			onSelectionDone(ObservationType.SKY, ObservationTime.DAILY);
 			break;
 		case R.id.buttonHumMean:
+			Log.e("onClick", "buttonHumMean");
 			onSelectionDone(ObservationType.MEAN_HUMIDITY, ObservationTime.DAILY);
 			break;
 		case R.id.buttonWMax:

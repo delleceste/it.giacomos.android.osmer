@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import it.giacomos.android.osmer.OMapViewEventListener;
+import it.giacomos.android.osmer.StringType;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.observations.ObservationData;
 import it.giacomos.android.osmer.observations.ObservationDrawableIdPicker;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
+import it.giacomos.android.osmer.observations.ObservationsCacheUpdateListener;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -25,7 +27,7 @@ import com.google.android.maps.OverlayItem;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-public class OMapView extends MapView
+public class OMapView extends MapView implements ObservationsCacheUpdateListener
 {
 	public final int minLatitude = GeoCoordinates.bottomRight.getLatitudeE6();
 	public final int maxLatitude = GeoCoordinates.topLeft.getLatitudeE6();
@@ -77,10 +79,21 @@ public class OMapView extends MapView
 		this.invalidate();
 	}
 
+	@Override
+	public void onObservationsCacheUpdate(HashMap<String, ObservationData> map, StringType t) 
+	{
+		if((t == StringType.DAILY_TABLE && mMode.currentMode == ObservationTime.DAILY ) ||
+				(t == StringType.LATEST_TABLE && mMode.currentMode == ObservationTime.LATEST))
+			this.updateObservations(map);
+	}
+	
 	public void updateObservations(HashMap<String, ObservationData> map)
 	{
-		mObservationsItemizedOverlay.update(map, getZoomLevel());
-		this.invalidate(); /* redraw */
+		if(mObservationsItemizedOverlay != null)
+		{
+			mObservationsItemizedOverlay.update(map, getZoomLevel());
+			this.invalidate(); /* redraw */
+		}
 	}
 
 	public MyLocationOverlay getMyLocationOverlay()
@@ -137,6 +150,7 @@ public class OMapView extends MapView
 			Log.e("OMapView", "removing overlay " + overlays.get(overlays.size() - 1).getClass().getName());
 			overlays.remove(overlays.size() - 1);
 		}
+		
 		switch(m.currentType)
 		{
 		case RADAR:
@@ -225,4 +239,5 @@ public class OMapView extends MapView
 
 	private ZoomChangeListener mZoomChangeListener;
 	private OMapViewEventListener mMapViewEventListener;
+
 }

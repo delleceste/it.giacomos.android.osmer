@@ -22,8 +22,14 @@ public class ObservationsCache implements TableToMapUpdateListener
 		mLatestObservation = "";
 		mDailyObservation = "";
 		mLatestObservationCacheChangeListener = null;
+		mObservationsCacheUpdateListener = null;
 	}
 
+	public void installObservationsCacheUpdateListener(ObservationsCacheUpdateListener l)
+	{
+		mObservationsCacheUpdateListener = l;
+	}
+	
 	/* register a cache update listener. 
 	 * SituationImage in package widgets is a listener.
 	 * If registered, whenever the cache changes, the listener is modified.
@@ -64,6 +70,13 @@ public class ObservationsCache implements TableToMapUpdateListener
 				mLatestObservationCacheChangeListener.onCacheUpdate(this);
 			break;
 		}
+		if(mObservationsCacheUpdateListener != null)
+		{
+			Log.e("ObservationsCache", "mObservationsCacheUpdateListener != null: onObserva");
+			mObservationsCacheUpdateListener.onObservationsCacheUpdate(map, t);
+		}
+		else
+			Log.e("ObservationsCache","mObservationsCacheUpdateListener IS null: onObserva");
 	}
 	
 	public void store(String s, StringType t)
@@ -95,11 +108,13 @@ public class ObservationsCache implements TableToMapUpdateListener
 
 	public HashMap <String, ObservationData> getDailyObservationData()
 	{
+		Log.e("getDailyObservationData", "size " + mDailyMap.size());
 		return mDailyMap;
 	}
 
 	public HashMap<String, ObservationData> getLatestObservationData()
 	{
+		Log.e("getDailyObservationData", "size " + mDailyMap.size());
 		return mLatestMap;
 	}
 
@@ -143,6 +158,8 @@ public class ObservationsCache implements TableToMapUpdateListener
 				stringType = StringType.DAILY_TABLE;
 
 			this.store(data, stringType);
+			
+			Log.e("ObservationsCache: restoreFromStorage", "restored" + mDailyMap.size() + ", latest" + mLatestMap.size());
 		}
 
 		return true;
@@ -186,5 +203,6 @@ public class ObservationsCache implements TableToMapUpdateListener
 	private HashMap <String, ObservationData> mDailyMap;
 	private HashMap <String, ObservationData> mLatestMap;
 	private String mLatestObservation, mDailyObservation;
+	private  ObservationsCacheUpdateListener mObservationsCacheUpdateListener;
 
 }
