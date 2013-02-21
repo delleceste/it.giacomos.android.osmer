@@ -28,28 +28,28 @@ public class ObservationDrawableIdPicker {
 		case MAX_TEMP:
 		case MEAN_TEMP:
 		case MIN_TEMP:
-			id = R.drawable.temp_off;
+			id = R.drawable.temp_map;
 			break;
 		case HUMIDITY:
 		case MEAN_HUMIDITY:
-			id = R.drawable.drop_off;
+			id = R.drawable.drop_map;
 			break;
 		case RAIN:
-			id = R.drawable.rain_off;
+			id = R.drawable.rain_map;
 			break;
 		case PRESSURE:
-			id = R.drawable.gauge_off;
+			id = R.drawable.gauge_map;
 			break;
 		case SNOW:
-			id = R.drawable.snow_off;
+			id = R.drawable.snow_map;
 			break;
 		case SEA:
-			id = R.drawable.sea_temp_off;
+			id = R.drawable.sea_temp_map;
 			break;
 		case WIND:
 		case MEAN_WIND:
 		case MAX_WIND:
-			id = R.drawable.wind_off;
+			id = R.drawable.wind_map;
 			break;
 		default:
 			id = R.drawable.weather_none_available;
