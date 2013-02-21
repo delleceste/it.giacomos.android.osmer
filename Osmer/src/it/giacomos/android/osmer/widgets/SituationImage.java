@@ -274,27 +274,32 @@ implements LatestObservationCacheChangeListener
 				mPaint.setARGB(255, 16, 85, 45);
 				String text = "";
 				
-				if(d.hasRain() && Float.parseFloat(d.getRain()) > 0.0f)
+				if(d.hasRain())
 				{
-					text =  mRainStr + ": " + d.getRain() + "mm";
-					canvas.drawText(text, 4, y, mPaint);
-					y -= (mTxtRect.height() + 5); 
+					String rain = d.getRain();
+					rain = rain.replaceAll("[^\\d+\\.)]", "");
+					if(Float.parseFloat(rain) > 0.0f)
+					{
+						text =  mRainStr + ": " + d.getRain();
+						canvas.drawText(text, 4, y, mPaint);
+						y -= (mTxtRect.height() + 5);
+					}
 				}
 				if(d.hasSnow())
 				{
-					text = mSnowStr + ": " + d.getSnow() + "cm";
+					text = mSnowStr + ": " + d.getSnow();
 					canvas.drawText(text, 4, y, mPaint);
 					y -= (mTxtRect.height() + 5); 
 				}
 				if(d.hasWaterTemp())
 				{
-					text = mSeaStr + ": " + d.getWaterTemp() + "C";
+					text = mSeaStr + ": " + d.getWaterTemp();
 					canvas.drawText(text, 4, y, mPaint);
 					y -= (mTxtRect.height() + 5); 
 				}
 				if(d.hasTemp())
 				{
-					text = d.getTemp() + "C";
+					text = d.getTemp();
 					canvas.drawText(text, 4, y, mPaint);
 					y -= (mTxtRect.height() + 5); 
 				}

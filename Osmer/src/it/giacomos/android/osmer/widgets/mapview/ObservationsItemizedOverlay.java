@@ -25,6 +25,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
@@ -56,6 +57,7 @@ public class ObservationsItemizedOverlay<Item extends OverlayItem> extends Itemi
 		mMapView = mapView;
 		mPaint = new Paint();
 		mRes = mMapView.getResources();
+		mDensityDpi = mapView.getResources().getDisplayMetrics().densityDpi;
 	}
 
 	/**
@@ -104,8 +106,12 @@ public class ObservationsItemizedOverlay<Item extends OverlayItem> extends Itemi
 
 		/* get the necessary font height to draw the text below the marker */
 		Rect r = new Rect();
-		mPaint.setFakeBoldText(true);
-		mPaint.setTextSize(25);
+		/* adjust font according to display resolution */
+		if(mDensityDpi == DisplayMetrics.DENSITY_XHIGH)
+			mPaint.setTextSize(21);
+		else
+			mPaint.setTextSize(19);
+		mPaint.setAntiAlias(true);
 		int textColor= Color.BLACK;
 		
 		switch(mObservationType)
@@ -165,10 +171,10 @@ public class ObservationsItemizedOverlay<Item extends OverlayItem> extends Itemi
 				mPaint.setColor(Color.WHITE);	
 				mPaint.setAlpha(190);
 				rectf.left = pt.x - 4;
-				rectf.top = pt.y;
+				rectf.top = pt.y - 4;
 				rectf.right = pt.x + r.width() + 4;
-				rectf.bottom =rectf.top + r.height() + 4;
-				canvas.drawRoundRect(rectf, 8, 8, mPaint);
+				rectf.bottom =rectf.top + r.height() + 8;
+				canvas.drawRoundRect(rectf, 6, 6, mPaint);
 				mPaint.setColor(textColor);
 				canvas.drawText(text, pt.x, pt.y + yoffset, mPaint);
 			}
@@ -236,4 +242,5 @@ public class ObservationsItemizedOverlay<Item extends OverlayItem> extends Itemi
 	private Paint mPaint;
 	MapView mMapView;
 	Resources mRes;
+	private int mDensityDpi;
 }

@@ -43,13 +43,13 @@ public class TableToMap {
 					o.location = m.group(1).trim();
 					o.time = m.group(2).trim();
 					o.sky = m.group(3).trim();
-					o.tMin = m.group(4).trim();
-					o.tMed = m.group(5).trim();
-					o.tMax = m.group(6).trim();
-					o.uMed = m.group(7).trim();
-					o.vMed = m.group(8).trim();
-					o.vMax = m.group(9).trim();
-					o.rain = m.group(10).trim();
+					o.tMin = m.group(4).trim() + "\u00b0C";
+					o.tMed = m.group(5).trim() + "\u00b0C";
+					o.tMax = m.group(6).trim() + "\u00b0C";
+					o.uMed = m.group(7).trim() + "%";
+					o.vMed = m.group(8).trim() + "km/h";
+					o.vMax = m.group(9).trim() + "km/h";
+					o.rain = m.group(10).trim() + "mm";
 		//			Log.e("TableToMap", "inserting into DAILY map location " + o.location);
 					map.put(o.location, o);
 				}
@@ -65,13 +65,13 @@ public class TableToMap {
 					o.location = m.group(1).trim();
 					o.time = m.group(2).trim();
 					o.sky = m.group(3).trim();
-					o.temp = m.group(4).trim();
-					o.humidity = m.group(5).trim();
-					o.pressure = m.group(6).trim();
-					o.wind = m.group(7).trim();
-					o.rain = m.group(8).trim();
-					o.sea = m.group(9).trim();
-					o.snow = m.group(10).trim();
+					o.temp = m.group(4).trim() + "\u00b0C";
+					o.humidity = m.group(5).trim() + "%";
+					o.pressure = m.group(6).trim() + "hPA";
+					o.wind = m.group(7).trim() + "km/h";
+					o.rain = m.group(8).trim() + "mm";
+					o.sea = m.group(9).trim() + "\u00b0C";
+					o.snow = m.group(10).trim() + "cm";
 					map.put(o.location, o);
 				//Log.e("TableToMap", "inserting into LATEST map location " + o.location);
 				}
