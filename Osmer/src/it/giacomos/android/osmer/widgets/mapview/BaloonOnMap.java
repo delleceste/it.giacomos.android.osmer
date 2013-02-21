@@ -74,30 +74,30 @@ public class BaloonOnMap {
 				hasTMax = od.has(ObservationType.MAX_TEMP);
 				/* tmin and tmax abbreviated on the same line */
 				if(hasTMin)
-					txt += res.getString(R.string.min_temp_abbr) + ": " + od.tMin + "[C] ";
+					txt += res.getString(R.string.min_temp_abbr) + ": " + od.tMin;
 				if(hasTMax)
-					txt += res.getString(R.string.max_temp_abbr) + ": " + od.tMax + "[C]";
+					txt += res.getString(R.string.max_temp_abbr) + ": " + od.tMax;
 				if(hasTMin || hasTMax) /* newline if necessary */
 					txt += "\n";
 				if(od.has(ObservationType.MEAN_TEMP))
-					txt += res.getString(R.string.mean_temp) + ": " + od.tMed + "[C]\n";
+					txt += res.getString(R.string.mean_temp) + ": " + od.tMed + "\n";
 			}
 			else if(m.currentType == ObservationType.RAIN)
 			{
 				if(od.has(ObservationType.RAIN) && Float.parseFloat(od.rain) > 0.0f)
-					txt += res.getString(R.string.rain) + ": " + od.rain + "[mm]\n";
+					txt += res.getString(R.string.rain) + ": " + od.rain + "\n";
 			}
 			else if(m.currentType == ObservationType.MAX_WIND || m.currentType == ObservationType.MEAN_WIND)
 			{
 				if(od.has(ObservationType.MEAN_WIND))
-					txt += res.getString(R.string.mean_wind) + ": " + od.vMed + "[km/h]\n";
+					txt += res.getString(R.string.mean_wind) + ": " + od.vMed + "\n";
 				if(od.has(ObservationType.MAX_WIND))
-					txt += res.getString(R.string.max_wind) + ": " + od.vMax + "[km/h]\n";
+					txt += res.getString(R.string.max_wind) + ": " + od.vMax + "\n";
 			}
 			else if(m.currentType == ObservationType.MEAN_HUMIDITY)
 			{
 				if(od.has(ObservationType.MEAN_HUMIDITY))
-					txt += res.getString(R.string.mean_humidity) + ": " + od.uMed + "[%]\n";
+					txt += res.getString(R.string.mean_humidity) + ": " + od.uMed + "\n";
 			}
 		}
 		else 
@@ -109,21 +109,21 @@ public class BaloonOnMap {
 					m.currentType == ObservationType.RAIN)
 			{
 				if(od.has(ObservationType.TEMP))
-					txt += res.getString(R.string.temp) + ": " + od.temp + "[C]\n";
+					txt += res.getString(R.string.temp) + ": " + od.temp + "\n";
 				if(od.has(ObservationType.SEA))
-					txt += res.getString(R.string.sea) + ": " + od.sea + "[C]\n";
+					txt += res.getString(R.string.sea) + ": " + od.sea + "\n";
 				if(od.has(ObservationType.SNOW))
-					txt += res.getString(R.string.snow) + ": " + od.snow + "[cm]\n";
+					txt += res.getString(R.string.snow) + ": " + od.snow + "\n";
 				if(od.has(ObservationType.RAIN) && Float.parseFloat(od.rain) > 0.0f)
-					txt += res.getString(R.string.rain) + ": " + od.rain + "[mm]\n";
+					txt += res.getString(R.string.rain) + ": " + od.rain + "\n";
 			}
 			else if(m.currentType == ObservationType.HUMIDITY && od.has(ObservationType.HUMIDITY))
-				txt += res.getString(R.string.humidity) + ": " + od.humidity + "[%]\n";
+				txt += res.getString(R.string.humidity) + ": " + od.humidity + "\n";
 			else if(m.currentType == ObservationType.PRESSURE && od.has(ObservationType.PRESSURE))
-				txt += res.getString(R.string.pressure) + ": " + od.pressure + "[hPa]\n";
+				txt += res.getString(R.string.pressure) + ": " + od.pressure + "\n";
 			
 			else if(m.currentType == ObservationType.WIND && od.has(ObservationType.WIND))
-				txt += res.getString(R.string.wind) + ": " + od.wind + "[km/h]\n";
+				txt += res.getString(R.string.wind) + ": " + od.wind + "\n";
 		}
 
 		return txt;
