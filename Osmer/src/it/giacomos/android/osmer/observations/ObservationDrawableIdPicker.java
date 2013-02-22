@@ -52,7 +52,7 @@ public class ObservationDrawableIdPicker {
 			id = R.drawable.wind_map;
 			break;
 		default:
-			id = R.drawable.w_none_available;
+			id = R.drawable.weather_none_available_map;
 			break;
 		}
 		return id;

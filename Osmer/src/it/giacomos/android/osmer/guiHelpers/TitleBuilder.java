@@ -70,6 +70,8 @@ public class TitleBuilder {
 				t += res.getString(R.string.observations_title_latest_pressure);
 			else if(th.isOn(R.id.buttonWind))
 				t += res.getString(R.string.observations_title_latest_wind);
+			else if(th.isOn(R.id.buttonLatestRain))
+				t += res.getString(R.string.observations_title_latest_rain);
 			else if(th.isOn(R.id.buttonSnow))
 				t += res.getString(R.string.observations_title_latest_snow);
 			else if(th.isOn(R.id.buttonSea))

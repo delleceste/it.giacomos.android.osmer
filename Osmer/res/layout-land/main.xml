@@ -269,7 +269,7 @@
 				 	android:padding="1dp"></ToggleButton>
 				<ToggleButton android:textOff="" android:textOn=""
 					android:id="@+id/buttonDailySky"
-					android:background="@drawable/weather_few_clouds"
+					android:background="@drawable/weather_few_clouds_button"
 					android:layout_height="50dp" 
 					android:layout_width="50dp"
 				 	android:padding="10dp">
