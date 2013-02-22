@@ -44,8 +44,8 @@
     <string name="observations_title_latest_pressure">Osservazioni Ultim\'ora - Pressione</string>
     <string name="observations_title_latest_wind">Osservazioni Ultim\'ora - Vento</string>
     <string name="observations_title_latest_rain">Osservazioni Ultim\'ora - Pioggia</string>
-    <string name="observations_title_latest_sea">Osservazioni Ultim\'ora - Mare -</string>
-    <string name="observations_title_latest_snow">Osservazioni Ultim\'ora - Neve -</string>
+    <string name="observations_title_latest_sea">Osservazioni Ultim\'ora - Mare</string>
+    <string name="observations_title_latest_snow">Osservazioni Ultim\'ora - Neve</string>
     
     <string name="reliability">Affidabilità</string>
     <string name="emission_date">Emessa il: </string>
@@ -203,7 +203,14 @@
 	    	
 	     <br/>		
 	    
-	    - <a href="http://www.icons-land.com/>icons-land.com</a>
+	    - <a href="http://www.icons-land.com">/www.icons-land.com</a>
+	     	
+	     <br/>		
+	    - <a href="http://www.iconspedia.com/icon/black-water-sea-icon-31955.html">www.iconspedia.com</a>
+	    
+	     <br/>		
+	    - <a href="http://www.iconfinder.com/icondetails/15233/128/antenna_radar_radio_satelite_icon">www.iconfinder.com</a>, licenza <cite>Free for commercial
+	       use</cite>, realizzata da <a href="http://www.woothemes.com">WooThemes</a>.
 	    
 	    </p>
 	    

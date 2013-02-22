@@ -47,8 +47,8 @@ public class TableToMap {
 					o.tMed = m.group(5).trim() + "\u00b0C";
 					o.tMax = m.group(6).trim() + "\u00b0C";
 					o.uMed = m.group(7).trim() + "%";
-					o.vMed = m.group(8).trim() + "km/h";
-					o.vMax = m.group(9).trim() + "km/h";
+					o.vMed = m.group(8).trim() + " [km/h]";
+					o.vMax = m.group(9).trim() + " [km/h]";
 					o.rain = m.group(10).trim() + "mm";
 		//			Log.e("TableToMap", "inserting into DAILY map location " + o.location);
 					map.put(o.location, o);
@@ -68,7 +68,7 @@ public class TableToMap {
 					o.temp = m.group(4).trim() + "\u00b0C";
 					o.humidity = m.group(5).trim() + "%";
 					o.pressure = m.group(6).trim() + "hPA";
-					o.wind = m.group(7).trim() + "km/h";
+					o.wind = m.group(7).trim() + " [km/h]";
 					o.rain = m.group(8).trim() + "mm";
 					o.sea = m.group(9).trim() + "\u00b0C";
 					o.snow = m.group(10).trim() + "cm";
