@@ -151,6 +151,27 @@ GeocodeAddressUpdateListener
 	}
 	
 	@Override
+	public void onBackPressed()
+	{
+		ViewFlipper buttonFlipper = (ViewFlipper) findViewById(R.id.buttonsFlipper);
+		int displayedChild = buttonFlipper.getDisplayedChild();
+		switch(displayedChild)
+		{
+		case 1: /* sat, daily, last obs: just as clicking home */
+			this.onClick(findViewById(R.id.buttonHome));
+			break;
+		case 2: /* daily observations, like pressing fvg button to go back to the satellite */
+			this.onClick(findViewById(R.id.buttonMapInsideDaily));
+			break;
+		case 3:
+			this.onClick(findViewById(R.id.buttonMapInsideLatest));
+			break;
+		default:
+			super.onBackPressed();
+		}
+	}
+	
+	@Override
 	public Dialog onCreateDialog(int id, Bundle args)
 	{
 		if(id == MenuActionsManager.TEXT_DIALOG)

@@ -48,10 +48,7 @@ public class BaloonOnMap {
         mapBaloon.setText(makeText(observationData, oMapView));
         mapBaloon.setIcon(SkyDrawableIdPicker.get(observationData.sky));
         mapView.addView(mapBaloon);
-        mapBaloon.setVisibility(View.VISIBLE);
-        
-        
-        
+        mapBaloon.setVisibility(View.VISIBLE);   
 	}
 	
 	private String makeText(ObservationData od, OMapView mapView)
@@ -84,8 +81,8 @@ public class BaloonOnMap {
 			}
 			else if(m.currentType == ObservationType.RAIN)
 			{
-				if(od.has(ObservationType.RAIN) && Float.parseFloat(od.rain) > 0.0f)
-					txt += res.getString(R.string.rain) + ": " + od.rain + "\n";
+				if(od.has(ObservationType.RAIN))
+					txt += res.getString(R.string.rain) + ": " + od.rain + "\n";	
 			}
 			else if(m.currentType == ObservationType.MAX_WIND || m.currentType == ObservationType.MEAN_WIND)
 			{
@@ -114,8 +111,14 @@ public class BaloonOnMap {
 					txt += res.getString(R.string.sea) + ": " + od.sea + "\n";
 				if(od.has(ObservationType.SNOW))
 					txt += res.getString(R.string.snow) + ": " + od.snow + "\n";
-				if(od.has(ObservationType.RAIN) && Float.parseFloat(od.rain) > 0.0f)
-					txt += res.getString(R.string.rain) + ": " + od.rain + "\n";
+				if(od.has(ObservationType.RAIN))
+				{
+					String rain = od.rain;
+					rain = rain.replaceAll("[^\\d+\\.)]", "");
+					/* when observation type is rain, show rain even if rain is 0.0 */
+					if(Float.parseFloat(rain) > 0.0f || m.currentType == ObservationType.RAIN)
+						txt += res.getString(R.string.rain) + ": " + od.rain + "\n";
+				}
 			}
 			else if(m.currentType == ObservationType.HUMIDITY && od.has(ObservationType.HUMIDITY))
 				txt += res.getString(R.string.humidity) + ": " + od.humidity + "\n";
