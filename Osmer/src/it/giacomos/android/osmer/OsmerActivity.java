@@ -434,8 +434,8 @@ GeocodeAddressUpdateListener
 		// TODO Auto-generated method stub
 		Button b = (Button) v;
 		OViewFlipper viewFlipper = (OViewFlipper) this.findViewById(R.id.viewFlipper1);
-	//	viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.hyperspace_out));
-	//	viewFlipper.setInAnimation(null);
+		viewFlipper.setOutAnimation(null);
+		viewFlipper.setInAnimation(null);
 
 		ViewFlipper buttonsFlipper = (ViewFlipper) findViewById(R.id.buttonsFlipper);
 		
