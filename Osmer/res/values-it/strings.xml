@@ -202,7 +202,7 @@
 	    	
 	     <br/>		
 	    
-	    - <a href="http://www.icons-land.com">/www.icons-land.com</a>
+	    - <a href="http://www.icons-land.com">www.icons-land.com</a>
 	     	
 	     <br/>		
 	    - <a href="http://www.iconspedia.com/icon/black-water-sea-icon-31955.html">www.iconspedia.com</a>
@@ -243,6 +243,11 @@
 	    <p>
 	    Non è altresì garantita la correttezza dell\'<cite>estrazione</cite> dei dati dai file di testo informativi scaricati da 
 	    <a href="http://www.meteo.fvg.it"> http://www.meteo.fvg.it</a>. <br/>
+	    
+	    Pertanto, <cite><a href="http://www.meteo.fvg.it"> http://www.meteo.fvg.it</a> non ha alcuna responsabilità qualora i dati
+	    apparissero errati o mancanti, in tutto o in parte</cite>.
+	    <br/>
+	    
 	    La precisione delle <cite>informazioni sulla posizione geografica</cite> mostrate dall\'applicativo dipendono dal 
 	    <cite>location provider</cite> 
 	    in uso (<cite>rete dati, wi-fi, GPS</cite>, ordinati dalla fonte meno precisa alla più precisa). Delle <cite>informazioni sulla 

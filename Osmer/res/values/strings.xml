@@ -204,7 +204,7 @@
 	    	
 	     <br/>		
 	    
-	    - <a href="http://www.icons-land.com">/www.icons-land.com</a>
+	    - <a href="http://www.icons-land.com">www.icons-land.com</a>
 	     	
 	     <br/>		
 	    - <a href="http://www.iconspedia.com/icon/black-water-sea-icon-31955.html">www.iconspedia.com</a>
@@ -246,6 +246,11 @@
 	    The correct parsing of the text files obtained from <a href="http://www.meteo.fvg.it"> http://www.meteo.fvg.it</a> is not
 	    guaranteed.
 	    <br/>
+	    
+	    For this reason, <cite><a href="http://www.meteo.fvg.it"> http://www.meteo.fvg.it</a> is not responsible for partially 
+	    or completely wrong or missing information on this application</cite>.
+	    <br/>
+
 	    
 	    The geographical position marked in the maps and the consistency of the <cite>locality</cite> and <cite>address</cite>
 	    displayed on the observations and forecast map with respect to the actual position of the device are not guaranteed to be correct.

@@ -114,49 +114,6 @@ public class ObservationsItemizedOverlay<Item extends OverlayItem> extends Itemi
 		mPaint.setAntiAlias(true);
 		int textColor= Color.BLACK;
 		
-		switch(mObservationType)
-		{
-		case MIN_TEMP:
-			textColor = Color.BLUE;
-			break;
-		case MAX_TEMP:
-			textColor = Color.RED;
-			break;
-		case MEAN_TEMP:
-			textColor = Color.GREEN;
-			break;
-		case HUMIDITY:
-		case MEAN_HUMIDITY:
-			textColor = Color.BLACK;
-			break;
-		case RAIN:
-			textColor = Color.DKGRAY;
-			break;
-		case WIND:
-			textColor = Color.BLACK;
-			break;
-		case MAX_WIND:
-			textColor = Color.BLACK;
-			break;
-		case PRESSURE:
-			textColor = Color.BLACK;
-			break;
-		case SEA:
-			textColor = Color.BLUE;
-			break;
-		case SKY:
-			textColor = Color.BLUE;
-			break;
-		case SNOW:
-			textColor = Color.DKGRAY;
-			break;
-			
-		default:
-				break;
-		}
-		
-		
-		
 		RectF rectf = new RectF();
 		for(OverlayItem item : mOverlayItems)
 		{
