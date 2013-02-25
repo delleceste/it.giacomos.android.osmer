@@ -24,7 +24,7 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
 	public BitmapTask(BitmapListener bitmapUpdateListener, BitmapType bt)
 	{
 		m_stateUpdateListener = bitmapUpdateListener;
-		m_errorMessage = "Bitmap Task Error";
+		m_errorMessage = "";
 		m_bitmapType = bt;
 	}
 	

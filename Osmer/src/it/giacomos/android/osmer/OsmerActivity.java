@@ -16,6 +16,7 @@ import it.giacomos.android.osmer.guiHelpers.OnTouchListenerInstaller;
 import it.giacomos.android.osmer.guiHelpers.TextViewUpdater;
 import it.giacomos.android.osmer.guiHelpers.TitlebarUpdater;
 import it.giacomos.android.osmer.guiHelpers.ToggleButtonGroupHelper;
+import it.giacomos.android.osmer.guiHelpers.WebcamMapUpdater;
 import it.giacomos.android.osmer.instanceSnapshotManager.SnapshotManager;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressUpdateListener;
@@ -38,7 +39,6 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -46,14 +46,12 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -315,6 +313,11 @@ TextDecoderListener
 	{
 		//TextView textView = (TextView) findViewById(R.id.mainTextView);
 	}
+	
+	void webcams()
+	{
+		m_downloadManager.getWebcamList();
+	}
 
 	@Override
 	public void onDownloadProgressUpdate(int step, int total)
@@ -330,6 +333,10 @@ TextDecoderListener
 		{
 		case HOME: case TODAY: case TOMORROW: case TWODAYS:
 			new TextViewUpdater(this, txt, t);
+			break;
+		case WEBCAMLIST_OSMER:
+		case WEBCAMLIST_OTHER:
+			new WebcamMapUpdater(this, txt, t);
 			break;
 		default:
 			/* situation image will be updated directly by the cache, since SituationImage is 
@@ -488,7 +495,8 @@ TextDecoderListener
 		/* switch the working mode of the map view */
 		OMapView map = (OMapView) findViewById(R.id.mapview);
 		map.setMode(new MapViewMode(type, oTime));
-		map.updateObservations(m_observationsCache.getObservationData(oTime));
+		if(type != ObservationType.WEBCAM)
+			map.updateObservations(m_observationsCache.getObservationData(oTime));
 	}
 
 	/* (non-Javadoc)
@@ -658,6 +666,11 @@ TextDecoderListener
 			onSelectionDone(ObservationType.TEMP, ObservationTime.LATEST);
 			break;
 
+			/* webcam */
+		case R.id.buttonWebcam:
+			onSelectionDone(ObservationType.WEBCAM, ObservationTime.WEBCAM);
+			break;
+			
 			/* satellite or map on MapView */
 		case R.id.satelliteViewButton:
 			OMapView omv = (OMapView) findViewById(R.id.mapview);
@@ -730,6 +743,10 @@ TextDecoderListener
 			else if(b.getId() == R.id.buttonHome)
 			{
 
+			}
+			else if(b.getId() == R.id.buttonWebcam)
+			{
+				webcams();
 			}
 		}
 

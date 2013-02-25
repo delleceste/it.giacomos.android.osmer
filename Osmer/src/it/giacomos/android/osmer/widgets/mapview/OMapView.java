@@ -1,9 +1,11 @@
 package it.giacomos.android.osmer.widgets.mapview;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import it.giacomos.android.osmer.OMapViewEventListener;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.StringType;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.observations.ObservationData;
@@ -11,6 +13,7 @@ import it.giacomos.android.osmer.observations.ObservationDrawableIdPicker;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCacheUpdateListener;
+import it.giacomos.android.osmer.webcams.WebcamData;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -79,12 +82,28 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		this.invalidate();
 	}
 
+	public void updateWebcamList(ArrayList<WebcamData> webcams)
+	{
+		if(mMode.currentMode == ObservationTime.WEBCAM && 
+				mMode.currentType == ObservationType.WEBCAM &&
+						mWebcamItemizedOverlay != null)
+		{
+			Log.i("OMapView:: updateWebcamList", "updating overlay " + webcams.size() + " new items");
+			if(mWebcamItemizedOverlay.update(webcams))
+				this.invalidate();
+		}
+	}
+	
 	@Override
 	public void onObservationsCacheUpdate(HashMap<String, ObservationData> map, StringType t) 
 	{
 		if((t == StringType.DAILY_TABLE && mMode.currentMode == ObservationTime.DAILY ) ||
 				(t == StringType.LATEST_TABLE && mMode.currentMode == ObservationTime.LATEST))
+		{
 			this.updateObservations(map);
+			/* forces android.View to call onDraw(canvas) at some time in the future */
+			this.invalidate();
+		}
 	}
 	
 	public void updateObservations(HashMap<String, ObservationData> map)
@@ -156,6 +175,16 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 			setOnZoomChangeListener(null);
 			break;
 		case SAT:
+			break;
+		case WEBCAM:
+			Drawable webcamIcon = getResources().getDrawable(R.drawable.camera_web_map);
+			if(webcamIcon != null)
+			{
+				Log.i("OMapView", "Creating WebcamItemizedOverlay");
+				mWebcamItemizedOverlay = new WebcamItemizedOverlay(webcamIcon, this);
+				setOnZoomChangeListener(mWebcamItemizedOverlay);
+				overlays.add(mWebcamItemizedOverlay);
+			}
 			break;
 		default:
 			int resId = ObservationDrawableIdPicker.pick(m.currentType);
@@ -230,11 +259,13 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 	private RadarOverlay mRadarOverlay = null;
 	private CircleOverlay mCircleOverlay = null;
 	private ObservationsItemizedOverlay<OverlayItem> mObservationsItemizedOverlay = null;
-
+	private WebcamItemizedOverlay<OverlayItem> mWebcamItemizedOverlay = null;
+	
 	private MapViewMode mMode = null;
 	private int mOldZoomLevel;
 
 	private ZoomChangeListener mZoomChangeListener;
 	private OMapViewEventListener mMapViewEventListener;
+	
 
 }

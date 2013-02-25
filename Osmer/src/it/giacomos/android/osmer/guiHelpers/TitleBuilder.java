@@ -76,6 +76,8 @@ public class TitleBuilder {
 				t += res.getString(R.string.observations_title_latest_snow);
 			else if(th.isOn(R.id.buttonSea))
 				t += res.getString(R.string.observations_title_latest_sea);
+			else if(th.isOn(R.id.buttonWebcam))
+				t += res.getString(R.string.title_webcam);
 			
 			break;
 			

@@ -135,6 +135,11 @@ public class ButtonListenerInstaller
 		ToggleButton buttonMapInsideLatest = (ToggleButton) a.findViewById(R.id.buttonMapInsideLatest);
 		buttonMapInsideLatest.setOnClickListener(a);
 		mToggleButtonGroupHelper.addButton(R.id.buttonMapInsideLatest);
+		
+		ToggleButton buttonWebcam = (ToggleButton) a.findViewById(R.id.buttonWebcam);
+		buttonWebcam.setOnClickListener(a);
+		mToggleButtonGroupHelper.addButton(R.id.buttonWebcam);
+		
 	}
 }
 

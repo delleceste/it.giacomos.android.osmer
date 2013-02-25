@@ -80,6 +80,11 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 		m_state.getRadarImage();
 	}
 	
+	public void getWebcamList() 
+	{
+		m_state.getWebcamList();
+	}
+	
 	public void getObservationsTable(ObservationTime oTime) {
 		// TODO Auto-generated method stub
 		m_state.getObservationsTable(oTime);
@@ -124,5 +129,6 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 	private State m_state;
 	private DownloadUpdateListener m_downloadUpdateListener;
 	private NetworkStatusMonitor m_networkStatusMonitor;
+	
 	
 }

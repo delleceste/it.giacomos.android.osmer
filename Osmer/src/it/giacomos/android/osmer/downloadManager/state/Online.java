@@ -120,6 +120,19 @@ public class Online extends State implements BitmapListener, TextListener {
 		}
 	}
 	
+	/* for now, webcam list is obtained by a couple of files
+	 * http://www.osmer.fvg.it/GOOGLE/DatiWebcams1.php
+	 * and WebcamsList.xml
+	 */
+	public void getWebcamList()
+	{
+		if(!DownloadStatus.Instance().webcamListDownloaded())
+		{
+			startTextTask(m_urls.webcamMapData(), StringType.WEBCAMLIST_OSMER);
+			startTextTask(m_urls.webcamsListXML(), StringType.WEBCAMLIST_OTHER);
+		}
+	}
+	
 	public void getObservationsTable(ObservationTime oTime) 
 	{
 		mTotSteps++;
@@ -134,7 +147,7 @@ public class Online extends State implements BitmapListener, TextListener {
 		m_stateUpdateListener.onTextUpdate(s, st, errorMessage);
 		/* publish progress , after DownloadStatus state has been updated */
 		mCurrentStep++;
-	//	Log.i("ontextUpdate" , "tot steps " + mTotSteps + " current step " + mCurrentStep);
+		Log.e("ontextUpdate" , "tot steps " + mTotSteps + " current step " + mCurrentStep);
 		m_stateUpdateListener.onProgressUpdate(mCurrentStep, mTotSteps);
 		mProgressNeedsReset();
 	}

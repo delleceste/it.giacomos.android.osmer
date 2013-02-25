@@ -44,6 +44,7 @@
     <string name="observations_title_latest_rain">Osservazioni Ultim\'ora - Pioggia</string>
     <string name="observations_title_latest_sea">Osservazioni Ultim\'ora - Mare</string>
     <string name="observations_title_latest_snow">Osservazioni Ultim\'ora - Neve</string>
+    <string name="title_webcam">Mappa webcam</string>
     
     <string name="reliability">Affidabilità</string>
     <string name="emission_date">Emessa il: </string>
@@ -114,6 +115,10 @@
 	<string name="popup_data_update_title">Aggiornamento automatico dei dati</string>
 	<string name="meters">m</string>
 	<string name="error_message">Messaggio d\'errore</string>
+	
+	
+	<!--  WEBCAM -->
+	<string name="webcam_getting_image">Scarico l\'immagine webcam&#8230;</string>
     
 	 <string name="popup_data_update_info">
        <![CDATA[

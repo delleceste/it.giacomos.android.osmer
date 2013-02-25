@@ -276,6 +276,19 @@
 			    android:textOff=""
 			    android:textOn="" >
 </ToggleButton>
+
+			
+
+			<ToggleButton
+			    android:id="@+id/buttonWebcam"
+			    android:layout_width="60dp"
+			    android:layout_height="60dp"
+			    android:background="@drawable/camera_web"
+			    android:padding="10dp"
+			    android:textOff=""
+			    android:textOn="" >
+	</ToggleButton>
+			
 		</LinearLayout>
 
 		<!--  Daily observations  -->

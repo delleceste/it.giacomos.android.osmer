@@ -45,6 +45,7 @@
     <string name="observations_title_latest_rain">Latest Observations - Rain</string>
     <string name="observations_title_latest_sea">Latest Observations - Sea -</string>
     <string name="observations_title_latest_snow">Latest Observations - Snow -</string>
+    <string name="title_webcam">Webcam map</string>
     
     <string name="reliability">Affidabilit&amp;agrave;</string>
     <string name="emission_date">Emessa il: </string>
@@ -114,6 +115,11 @@
 	<string name="popup_data_update_title">Data automatic refresh</string>
 	<string name="meters">m</string>
 	<string name="error_message">Error message</string>
+	
+	
+	<!--  WEBCAM -->
+	<string name="webcam_getting_image">Downloading webcam image&#8230;</string>
+	
 	
     <string name="popup_data_update_info">
        <![CDATA[

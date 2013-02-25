@@ -27,6 +27,7 @@ public class LocationNamesMap {
 		mMap.put("Pontebba", new GeoPoint(46504354, 13305738));
 		mMap.put("Zoncolan (1750 m)", new GeoPoint(46500000	,12916670));
 		mMap.put("M.Zoncolan", new GeoPoint(46500000	,12916670));
+		mMap.put("Zoncolan", new GeoPoint(46500000	,12916670));
 		mMap.put("Forni di Sopra", new GeoPoint(46423140,	12583460));
 		mMap.put("Barcis", new GeoPoint(46190718,12559284));
 		mMap.put("Talmassons", new GeoPoint(45930543,13119952));
@@ -41,6 +42,8 @@ public class LocationNamesMap {
 		mMap.put("S.Vito al Tgl.", new GeoPoint(45917978,12857311));
 		mMap.put("Brugnera", new GeoPoint(45901993,12526491));
 		mMap.put("Piancavallo", new GeoPoint(46107436,12522217));
+		mMap.put("Ligosullo", new GeoPoint(46539706,13076066));
+		mMap.put("Sauris", new GeoPoint(46466675, 12697044));
 		
 	}
 	

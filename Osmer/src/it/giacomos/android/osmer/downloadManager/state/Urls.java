@@ -100,4 +100,21 @@ public class Urls {
 
 		return "";
 	}
+	
+	public static String webcamImagesPath()
+	{
+		return "http://www.osmer.fvg.it/~cel/WEBCAMS/Webcam";
+	}
+	
+	public String webcamMapData()
+	{
+		return "http://www.osmer.fvg.it/GOOGLE/DatiWebcams1.php";
+	}
+	
+	public String webcamsListXML()
+	{
+		return "www.osmer.fvg.it/GOOGLE/WebcamsList.xml";
+	}
+	
+	
 }

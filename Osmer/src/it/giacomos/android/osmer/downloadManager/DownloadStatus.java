@@ -31,6 +31,12 @@ public class DownloadStatus {
 	 */
 	public boolean radarImageDownloaded() { return false;	}
 	
+	/* suppose that the webcam list is to be downloaded every time, since, for now
+	 * the information about date and timed is stored in a web page and an html
+	 * page.
+	 */
+	public boolean webcamListDownloaded() { return false; }
+	
 	public boolean lastCompleteDownloadIsOld()
 	{
 		return System.currentTimeMillis() - m_lastUpdateCompletedOn > 30000;

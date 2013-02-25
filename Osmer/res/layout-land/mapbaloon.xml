@@ -5,28 +5,23 @@
   android:orientation="vertical"
   android:layout_width="wrap_content"
   android:layout_height="wrap_content"
-    android:paddingLeft="5px"
-    android:paddingTop="5px"
-    android:paddingRight="5px"
-    android:paddingBottom="5px">
+    android:paddingLeft="5dp"
+    android:paddingTop="5dp"
+    android:paddingRight="5dp"
+    android:paddingBottom="5dp">
     <RelativeLayout
       xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
-      <ImageView
-            android:id="@+id/baloon_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:paddingRight="10px"
-             />
-            
+      
         <TextView
             android:id="@+id/baloon_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/baloon_icon"/>
+            android:layout_alignBottom="@+id/baloon_close_button"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/baloon_close_button" />
         
         <ImageView
             android:id="@+id/baloon_close_button"
@@ -34,19 +29,29 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:paddingRight="10px"       
+            android:paddingRight="10dp"       
             android:src="@drawable/window_close"
             android:clickable="true"
         />
         
+        <ImageView
+            android:id="@+id/baloon_icon"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/baloon_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="10dp"
+             />
+        
+        
+        
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
-            android:paddingLeft="5px"
-            android:paddingRight="5px"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:id="@+id/baloon_text"
             android:layout_below="@id/baloon_icon"
-            android:maxLength="160"   
             android:textSize="5pt"   
         />
     </RelativeLayout>

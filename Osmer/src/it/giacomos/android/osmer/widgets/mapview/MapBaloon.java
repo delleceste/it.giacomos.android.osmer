@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
@@ -44,6 +45,12 @@ public class MapBaloon extends LinearLayout implements OnClickListener {
 		tv.setMinLines(t.split("\n").length + 2);
 		tv.setMaxLines(t.split("\n").length + 2);
 		tv.setText(t);
+	}
+	
+	public void setIcon(Drawable dra)
+	{
+		ImageView iv = (ImageView) findViewById(R.id.baloon_icon);
+		iv.setBackgroundDrawable(dra);
 	}
 	
 	public void setIcon(int id)

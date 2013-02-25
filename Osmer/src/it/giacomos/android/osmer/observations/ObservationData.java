@@ -34,6 +34,8 @@ public class ObservationData {
 			return vMax;
 		case MEAN_HUMIDITY:
 			return uMed;
+		case WEBCAM:
+			return "webcam";
 		}
 		return null;
 	}

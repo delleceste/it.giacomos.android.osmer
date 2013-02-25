@@ -5,6 +5,7 @@ import com.google.android.maps.MapView;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +26,8 @@ public class BaloonOnMap {
 		
 	}
 
-	public BaloonOnMap(MapView mapView, ObservationData observationData, GeoPoint point) 
+	public void buildBaloon(MapView mapView, String title, String text, int icon, GeoPoint point) 
 	{
-		OMapView oMapView = (OMapView) mapView;
 		MapBaloon oldBaloon = (MapBaloon) mapView.findViewById(R.id.mapbaloon);
 		if(oldBaloon != null)
 		{
@@ -35,6 +35,7 @@ public class BaloonOnMap {
 			mapView.removeView(oldBaloon);
 			/* This view is invisible, and it doesn't take any space for layout purposes. */
 			oldBaloon.setVisibility(View.GONE);
+			oldBaloon = null;
 		}
 
 		LayoutInflater  layoutInflater = (LayoutInflater) mapView.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -42,13 +43,28 @@ public class BaloonOnMap {
         MapView.LayoutParams layoutParams = new MapView.LayoutParams(
         		300, LayoutParams.WRAP_CONTENT,
          		point, MapView.LayoutParams.BOTTOM_CENTER);
-        mapBaloon.setLayoutParams(layoutParams);  
+        mapBaloon.setLayoutParams(layoutParams);
         
-        mapBaloon.setTitle(observationData.location);
-        mapBaloon.setText(makeText(observationData, oMapView));
-        mapBaloon.setIcon(SkyDrawableIdPicker.get(observationData.sky));
+        mapBaloon.setTitle(title);
+        mapBaloon.setText(text);
+        mapBaloon.setIcon(icon); 
+        
         mapView.addView(mapBaloon);
-        mapBaloon.setVisibility(View.VISIBLE);   
+        mapBaloon.setVisibility(View.VISIBLE);  
+	}
+	
+	public BaloonOnMap(MapView mapView, String title, String text, int icon, GeoPoint point)
+	{
+		buildBaloon(mapView, title, text, icon, point);
+	}
+	
+	public BaloonOnMap(MapView mapView, ObservationData observationData, GeoPoint point) 
+	{   
+        String title = observationData.location;
+        String text = makeText(observationData, (OMapView)mapView);
+        int icon = SkyDrawableIdPicker.get(observationData.sky);
+        
+        buildBaloon(mapView, title, text, icon, point);
 	}
 	
 	private String makeText(ObservationData od, OMapView mapView)
