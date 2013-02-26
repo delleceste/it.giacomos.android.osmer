@@ -4,6 +4,7 @@ import it.giacomos.android.osmer.BitmapType;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.downloadManager.state.BitmapListener;
 import it.giacomos.android.osmer.downloadManager.state.BitmapTask;
+import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.webcams.WebcamData;
 
 import java.net.MalformedURLException;
@@ -12,16 +13,28 @@ import java.util.ArrayList;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.GeoPoint;
+import com.google.android.maps.Projection;
 
 public class WebcamItemizedOverlay<Item extends OverlayItem> extends ItemizedOverlay<OverlayItem> 
 implements ZoomChangeListener, BitmapListener
@@ -32,6 +45,8 @@ implements ZoomChangeListener, BitmapListener
 		populate();
 		mMap = map;
 		mWebcams = new ArrayList<WebcamData>();
+		mPaint = new Paint();
+		mDensityDpi = map.getResources().getDisplayMetrics().densityDpi;
 	}
 
 	/**
@@ -78,6 +93,7 @@ implements ZoomChangeListener, BitmapListener
 		  try 
 		  {
 			URL webcamUrl = new URL(wd.url);
+			Log.i("onTap: gettng url", webcamUrl.toString());
 			webcamImageTask.execute(webcamUrl);
 		  }
 		  catch (MalformedURLException e) 
@@ -88,8 +104,10 @@ implements ZoomChangeListener, BitmapListener
 		  Toast t = Toast.makeText(mMap.getContext(), message, Toast.LENGTH_SHORT);
 		  t.setGravity(Gravity.CENTER|Gravity.BOTTOM, 0, 0);
 		  t.show();
-		  new BaloonOnMap(mMap, location, wd.text, R.drawable.camera_web_map, item.getPoint());
-		  mMap.getController().animateTo(item.getPoint());
+		  new BaloonOnMap(mMap, location, wd.text, R.drawable.webcam_download, item.getPoint(), true);
+		  int regionExtensionLatitude = GeoCoordinates.fvgTopLeft.getLatitudeE6() - GeoCoordinates.fvgBottomRight.getLatitudeE6();
+		  GeoPoint target = new GeoPoint(regionExtensionLatitude * 3 /4 + item.getPoint().getLatitudeE6(),  item.getPoint().getLongitudeE6());
+		  mMap.getController().animateTo(target);
 	  }
 	  return true;
 	}
@@ -97,7 +115,7 @@ implements ZoomChangeListener, BitmapListener
 	@Override
 	public void onBitmapUpdate(Bitmap bmp, BitmapType bt, String errorMessage) 
 	{
-		if(bt == BitmapType.WEBCAM)
+		if(bt == BitmapType.WEBCAM && bmp != null)
 		{
 			Log.i("WebcamItemizedOverlay: onBitmapUpdate", "received BITMAP");
 			if(!errorMessage.isEmpty())
@@ -113,12 +131,7 @@ implements ZoomChangeListener, BitmapListener
 				    {
 				    	MapBaloon baloon = (MapBaloon) nextChild;
 				    	if(baloon != null)
-				    	{
-				    		Log.i("WebcamItemizedOverlay: onBitmapUpdate", "setting iconn!!");
 				    		baloon.setIcon(new BitmapDrawable(bmp));
-				    	}
-				    	else
-				    		Log.e("WebcamItemizedOverlay: onBitmapUpdate", "cannot cast to baloon");
 				    	break;
 				    }
 				}
@@ -127,6 +140,47 @@ implements ZoomChangeListener, BitmapListener
 		
 	}
 
+	public void draw(Canvas canvas, MapView mapView, boolean shadow)
+	{
+		super.draw(canvas, mapView, false); /* no shadow on icons */
+		int yoffset;
+		Projection proj = mapView.getProjection();
+
+		/* get the necessary font height to draw the text below the marker */
+		Rect r = new Rect();
+		/* adjust font according to display resolution */
+		if(mDensityDpi == DisplayMetrics.DENSITY_XHIGH)
+			mPaint.setTextSize(16);
+		else
+			mPaint.setTextSize(14);
+		mPaint.setAntiAlias(true);
+		int textColor= Color.BLACK;
+		
+		RectF rectf = new RectF();
+		for(OverlayItem item : mOverlayItems)
+		{
+			String text = item.getTitle();
+			Point pt = proj.toPixels(item.getPoint(), null);
+			mPaint.setARGB(255, 137, 218, 248);
+			canvas.drawCircle(pt.x, pt.y, 3, mPaint);
+			if(text != null && text != "")
+			{
+				mPaint.getTextBounds(text, 0, text.length(), r);
+				yoffset = r.height();
+				mPaint.setColor(Color.WHITE);	
+				mPaint.setAlpha(190);
+				rectf.left = pt.x - 4;
+				rectf.top = pt.y - 4;
+				rectf.right = pt.x + r.width() + 4;
+				rectf.bottom =rectf.top + r.height() + 8;
+				canvas.drawRoundRect(rectf, 6, 6, mPaint);
+				mPaint.setColor(textColor);
+				canvas.drawText(text, pt.x, pt.y + yoffset, mPaint);
+			}
+		}
+	}
+	
+	
 	@Override
 	public void onZoomLevelChanged(int level) 
 	{
@@ -167,4 +221,6 @@ implements ZoomChangeListener, BitmapListener
 	private OMapView mMap;
 	private ArrayList<OverlayItem> mOverlayItems = new ArrayList<OverlayItem>();
 	private ArrayList<WebcamData> mWebcams;
+	private int mDensityDpi;
+	private Paint mPaint;
 }

@@ -548,6 +548,9 @@ TextDecoderListener
 //				 */
 //				mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonRadar));
 				break;
+			case R.id.buttonRadar:
+				
+				break;
 			case R.id.buttonMapInsideLatest:
 				((ToggleButton)findViewById(R.id.measureToggleButton)).setChecked(false);
 				
@@ -727,7 +730,11 @@ TextDecoderListener
 				radar();
 			}
 			else if(b.getId() == R.id.buttonRadar)
+			{
+				/* remove itemized overlays (observations), if present, and restore radar view */
+				((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 				radar();
+			}
 			else if(b.getId() == R.id.buttonToday)
 			{
 				getTodayForecast();

@@ -4,9 +4,11 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -26,8 +28,9 @@ public class BaloonOnMap {
 		
 	}
 
-	public void buildBaloon(MapView mapView, String title, String text, int icon, GeoPoint point) 
+	public void buildBaloon(MapView mapView, String title, String text, int icon, GeoPoint point, boolean webcamBaloon) 
 	{
+		mIsWebcamBaloon = webcamBaloon;
 		MapBaloon oldBaloon = (MapBaloon) mapView.findViewById(R.id.mapbaloon);
 		if(oldBaloon != null)
 		{
@@ -39,32 +42,69 @@ public class BaloonOnMap {
 		}
 
 		LayoutInflater  layoutInflater = (LayoutInflater) mapView.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        MapBaloon mapBaloon = (MapBaloon) layoutInflater.inflate(R.layout.mapbaloon, null);
-        MapView.LayoutParams layoutParams = new MapView.LayoutParams(
-        		300, LayoutParams.WRAP_CONTENT,
-         		point, MapView.LayoutParams.BOTTOM_CENTER);
+        MapBaloon mapBaloon = null;
+        
+        Resources r = mapView.getResources();
+        float width;
+        float height;
+        MapView.LayoutParams layoutParams = null;
+        
+        if(webcamBaloon)
+        {
+        	/* transform dpi into pixels */
+        	if(mapView.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        	{
+        		width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 310, r.getDisplayMetrics());
+        		height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 280, r.getDisplayMetrics());
+        	}
+        	else 
+        	{
+        		width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 270, r.getDisplayMetrics());
+        		height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 250, r.getDisplayMetrics());
+        	}
+        	mapBaloon = (MapBaloon) layoutInflater.inflate(R.layout.webcam_mapbaloon, null);
+            layoutParams = new MapView.LayoutParams(
+            		(int)width, (int)height,
+             		point, MapView.LayoutParams.BOTTOM_CENTER);
+            
+
+            mapBaloon.setText(title + " - " + text);
+            mapBaloon.setIcon(icon); 
+        }
+        else
+        {
+        	mapBaloon = (MapBaloon) layoutInflater.inflate(R.layout.mapbaloon, null);
+        	width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, r.getDisplayMetrics());
+            height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, r.getDisplayMetrics());
+        	mapBaloon = (MapBaloon) layoutInflater.inflate(R.layout.webcam_mapbaloon, null);
+            layoutParams = new MapView.LayoutParams(
+            		(int)width, (int)height,
+             		point, MapView.LayoutParams.BOTTOM_CENTER);
+            
+            mapBaloon.setTitle(title);
+            mapBaloon.setText(text);
+            mapBaloon.setIcon(icon); 
+        }
+
         mapBaloon.setLayoutParams(layoutParams);
         
-        mapBaloon.setTitle(title);
-        mapBaloon.setText(text);
-        mapBaloon.setIcon(icon); 
         
         mapView.addView(mapBaloon);
         mapBaloon.setVisibility(View.VISIBLE);  
 	}
 	
-	public BaloonOnMap(MapView mapView, String title, String text, int icon, GeoPoint point)
+	public BaloonOnMap(MapView mapView, String title, String text, int icon, GeoPoint point, boolean webcamBaloon)
 	{
-		buildBaloon(mapView, title, text, icon, point);
+		buildBaloon(mapView, title, text, icon, point, webcamBaloon);
 	}
 	
-	public BaloonOnMap(MapView mapView, ObservationData observationData, GeoPoint point) 
+	public BaloonOnMap(MapView mapView, ObservationData observationData, GeoPoint point, boolean webcamBaloon) 
 	{   
         String title = observationData.location;
         String text = makeText(observationData, (OMapView)mapView);
         int icon = SkyDrawableIdPicker.get(observationData.sky);
         
-        buildBaloon(mapView, title, text, icon, point);
+        buildBaloon(mapView, title, text, icon, point, webcamBaloon);
 	}
 	
 	private String makeText(ObservationData od, OMapView mapView)
@@ -148,4 +188,5 @@ public class BaloonOnMap {
 		return txt;
 	}
 
+	private boolean mIsWebcamBaloon;
 }

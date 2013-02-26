@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<it.giacomos.android.osmer.widgets.mapview.MapBaloon
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/mapbaloon"
-  android:orientation="vertical"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content"
+<it.giacomos.android.osmer.widgets.mapview.MapBaloon xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mapbaloon"
+    style="@style/ImageView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="5dp"
     android:paddingLeft="5dp"
-    android:paddingTop="5dp"
     android:paddingRight="5dp"
-    android:paddingBottom="5dp">
+    android:paddingTop="5dp" >
+
     <RelativeLayout
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
       
+        <!--  Title -->
+
         <TextView
             android:id="@+id/baloon_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/baloon_close_button"
+            android:layout_alignBottom="@id/baloon_close_button"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/baloon_close_button" />
         
+        <!--  Close button  -->
         <ImageView
             android:id="@+id/baloon_close_button"
             android:layout_width="wrap_content"
@@ -34,17 +38,22 @@
             android:clickable="true"
         />
         
+        <!--  WEBCAM IMAGE -->
+
         <ImageView
             android:id="@+id/baloon_icon"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/baloon_title"
+            style="@style/ImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/baloon_title"
             android:paddingRight="10dp"
-             />
+            android:scaleType="fitCenter"
+            android:color="#0000FF00"
+            android:src="@drawable/webcam_ligosullo" />
         
-        
-        
+        <!--  WEBCAM associated text -->
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"

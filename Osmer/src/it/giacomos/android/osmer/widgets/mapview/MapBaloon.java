@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.view.View;
@@ -29,27 +30,33 @@ public class MapBaloon extends LinearLayout implements OnClickListener {
 		super.onFinishInflate();
 		ImageView iv = (ImageView) findViewById(R.id.baloon_close_button);
 		iv.setOnClickListener(this);
-		
 	}
 	
 	public void setTitle(String t)
 	{
 		TextView tv = (TextView) findViewById(R.id.baloon_title);
-		tv.setTextSize(20.0f);
-		tv.setText(t);
+		if(tv != null)
+		{
+			tv.setTextSize(18.0f);
+			tv.setText(t);
+		}
 	}
 	
 	public void setText(String t)
 	{
 		TextView tv = (TextView) findViewById(R.id.baloon_text);
-		tv.setMinLines(t.split("\n").length + 2);
-		tv.setMaxLines(t.split("\n").length + 2);
-		tv.setText(t);
+		if(tv != null)
+		{
+			tv.setMinLines(t.split("\n").length + 2);
+			tv.setMaxLines(t.split("\n").length + 2);
+			tv.setText(t);
+		}
 	}
 	
 	public void setIcon(Drawable dra)
 	{
 		ImageView iv = (ImageView) findViewById(R.id.baloon_icon);
+		iv.setScaleType(ScaleType.CENTER_CROP);
 		iv.setBackgroundDrawable(dra);
 	}
 	

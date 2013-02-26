@@ -17,7 +17,7 @@ public class OsmerWebcamListDecoder implements WebcamListDecoder
 		LocationNamesMap namesMap = new LocationNamesMap();
 		
 		/* the 3 things we need to build webcam data */
-		Pattern filenameP = Pattern.compile(Regexps.WEBCAM_FILENAME);
+	//	Pattern filenameP = Pattern.compile(Regexps.WEBCAM_FILENAME);
 		Pattern locationP = Pattern.compile(Regexps.WEBCAM_LOCATION);
 		Pattern textP = Pattern.compile(Regexps.WEBCAM_TEXT);
 		String filteredText = "", line = "";
@@ -30,9 +30,11 @@ public class OsmerWebcamListDecoder implements WebcamListDecoder
 		{
 			line = lines[i];
 			Matcher locationMatcher = locationP.matcher(line);
-			Matcher filenameMatcher = filenameP.matcher(line);
+	//		Matcher filenameMatcher = filenameP.matcher(line);
 			Matcher textMatcher = textP.matcher(line);
-			if(locationMatcher.find(0) || filenameMatcher.find(0) || textMatcher.find(0))
+			if(locationMatcher.find(0) 
+					/* || filenameMatcher.find(0) */
+					|| textMatcher.find(0))
 				filteredText += line + "\n";
 	
 			i++;
@@ -42,7 +44,7 @@ public class OsmerWebcamListDecoder implements WebcamListDecoder
 		
 		/* now work on cleaned text */
 		lines = filteredText.split("\n");
-		while(i + 3 < lines.length )
+		while(i + 1 < lines.length )
 		{
 			WebcamData wd = new WebcamData();
 			line = lines[i];
@@ -52,23 +54,24 @@ public class OsmerWebcamListDecoder implements WebcamListDecoder
 			
 			wd.geoPoint = namesMap.get(wd.location);
 			
-			
-			/* next line contains file name */
-			line = lines[i + 1];
-			Matcher filenameMatcher = filenameP.matcher(line);
-			if(filenameMatcher.find())
-				fileName = filenameMatcher.group(1);
-			
+			fileName = wd.location;
 			if(!fileName.isEmpty())
 				wd.url = Urls.webcamImagesPath() + fileName + ".jpg";
 			
+			/* next line contains file name */
+			line = lines[i + 1];
+	//		Matcher filenameMatcher = filenameP.matcher(line);
+	//		if(filenameMatcher.find())
+	//			fileName = filenameMatcher.group(1);
+			
+			
 			/* next line contains text  */
-			line = lines[i + 2];
+			line = lines[i + 1];
 			Matcher textMatcher = textP.matcher(line);
 			if(textMatcher.find())
 				wd.text = textMatcher.group(1);
 			
-			i = i + 3;
+			i = i + 2;
 			
 			/* add valid data only to the list */
 			if(!wd.url.isEmpty() && !wd.location.isEmpty() && !wd.text.isEmpty() && wd.geoPoint != null)

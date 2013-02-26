@@ -103,7 +103,7 @@ public class Urls {
 	
 	public static String webcamImagesPath()
 	{
-		return "http://www.osmer.fvg.it/~cel/WEBCAMS/Webcam";
+		return "http://www.osmer.fvg.it/COMMON/WEBCAM/Webcam";
 	}
 	
 	public String webcamMapData()

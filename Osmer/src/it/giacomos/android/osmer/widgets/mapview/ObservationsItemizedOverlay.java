@@ -145,7 +145,8 @@ public class ObservationsItemizedOverlay<Item extends OverlayItem> extends Itemi
 	  String location = item.getTitle();
 	  if(mMap.containsKey(location))
 	  {
-		  new BaloonOnMap(mMapView, mMap.get(location), item.getPoint());
+		  /* false: not a webcam baloon, inflates a different xml */
+		  new BaloonOnMap(mMapView, mMap.get(location), item.getPoint(), false);
 		  mMapView.getController().animateTo(item.getPoint());
 		  /* disable marker hints from now on */
 		  Settings s = new Settings(mMapView.getContext());

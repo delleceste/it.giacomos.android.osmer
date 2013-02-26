@@ -155,6 +155,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 	{
 		if(m.equals(mMode))
 		{
+			Log.i("setMode", "new mode equals");
 			return;
 		}
 		
@@ -162,6 +163,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		new BaloonOffMap(this);
 		List<Overlay> overlays = getOverlays();
 		/* remove our overlays except MyLocationOverlay and MapButtonsOverlay */
+		Log.i("OMApView ", "switching mode overlays " + overlays.size());
 		while(overlays.size() > 1)
 		{
 			overlays.remove(overlays.size() - 1);
