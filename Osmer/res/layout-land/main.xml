@@ -161,8 +161,8 @@
 		    android:layout_width="50dp"
 		    android:layout_height="50dp"
 		    android:layout_alignParentRight="true"
-
 		    android:background="@drawable/home_button"
+		    android:checked="true"
 		    android:padding="10dp"
 		    android:textOff=""
 		    android:textOn="" >

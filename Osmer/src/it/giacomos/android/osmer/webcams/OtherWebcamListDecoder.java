@@ -7,7 +7,7 @@ public class OtherWebcamListDecoder implements WebcamListDecoder
 {
 
 	@Override
-	public ArrayList<WebcamData> decode(String rawData) 
+	public ArrayList<WebcamData> decode(String rawData, boolean saveOnCache) 
 	{
 		ArrayList<WebcamData> wcData = new ArrayList<WebcamData>();
 		

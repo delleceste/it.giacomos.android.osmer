@@ -6,6 +6,7 @@ import java.util.Date;
 import android.util.Log;
 import it.giacomos.android.osmer.BitmapType;
 import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.webcams.WebcamDataCache;
 import it.giacomos.android.osmer.widgets.CurrentScreen;
 
 public class DownloadStatus {
@@ -31,11 +32,12 @@ public class DownloadStatus {
 	 */
 	public boolean radarImageDownloaded() { return false;	}
 	
-	/* suppose that the webcam list is to be downloaded every time, since, for now
-	 * the information about date and timed is stored in a web page and an html
-	 * page.
-	 */
-	public boolean webcamListDownloaded() { return false; }
+	
+	public boolean webcamListDownloaded() 
+	{ 
+		WebcamDataCache webcamDataCache = WebcamDataCache.getInstance();
+		return !webcamDataCache.dataIsOld();
+	}
 	
 	public boolean lastCompleteDownloadIsOld()
 	{
@@ -45,7 +47,7 @@ public class DownloadStatus {
 	public boolean observationsNeedUpdate()
 	{
 		Date now = Calendar.getInstance().getTime();
-		if(now.getSeconds() - m_observationsSavedOn.getSeconds() > 60)
+		if((now.getTime() - m_observationsSavedOn.getTime())/1000 > 60)
 			return true;
 		return false;
 	}
@@ -81,6 +83,22 @@ public class DownloadStatus {
 			state = (state & ~FORECAST_DOWNLOAD_REQUESTED);
 	}
 
+	public void setWebcamListsDownloadRequested(boolean requested)
+	{
+		if(requested)
+		{
+			state = (state | WEBCAM_OSMER_DOWNLOAD_REQUESTED);
+			state = (state | WEBCAM_OTHER_DOWNLOAD_REQUESTED);
+			state = (state & ~WEBCAM_OSMER_DOWNLOADED);
+			state = (state & ~WEBCAM_OTHER_DOWNLOADED);
+		}
+		else
+		{
+			state = (state & ~WEBCAM_OSMER_DOWNLOAD_REQUESTED);
+			state = (state & ~WEBCAM_OTHER_DOWNLOAD_REQUESTED);
+		}
+	}
+	
 	public void setDownloadErrorCondition(boolean err)
 	{
 		if(err)
@@ -101,6 +119,11 @@ public class DownloadStatus {
 				state = (state | TOMORROW_DOWNLOADED);
 			else if(st == StringType.TWODAYS)
 				state = (state | TWODAYS_DOWNLOADED);
+			else if(st == StringType.WEBCAMLIST_OSMER)
+				state = (state | WEBCAM_OSMER_DOWNLOADED);
+			else if(st == StringType.WEBCAMLIST_OTHER)
+				state = (state | WEBCAM_OTHER_DOWNLOADED);
+			
 			m_lastUpdateCompletedOn = System.currentTimeMillis();
 		}
 		else
@@ -113,6 +136,10 @@ public class DownloadStatus {
 				state = (state & ~TOMORROW_DOWNLOADED);
 			else if(st == StringType.TWODAYS)
 				state = (state & ~TWODAYS_DOWNLOADED);
+			else if(st == StringType.WEBCAMLIST_OSMER)
+				state = (state & ~WEBCAM_OSMER_DOWNLOADED);
+			else if(st == StringType.WEBCAMLIST_OTHER)
+				state = (state & ~WEBCAM_OTHER_DOWNLOADED);
 		}
 		
 		if(!downloaded)
@@ -161,7 +188,7 @@ public class DownloadStatus {
 	public  static final long INIT = 0x0;
 
 	/* text related */
-	public static final long  HOME_DOWNLOADED = 0x01;
+	public static final long HOME_DOWNLOADED = 0x01;
 	public static final long TODAY_DOWNLOADED = 0x02;
 	public static final long TOMORROW_DOWNLOADED = 0x04;
 	public static final long TWODAYS_DOWNLOADED = 0x08;
@@ -171,11 +198,15 @@ public class DownloadStatus {
 	public static final long TWODAYS_IMAGE_DOWNLOADED = 0x40;
 	public static final long RADAR_IMAGE_DOWNLOADED = 0x80;
 	
-	
 	public static final long FORECAST_DOWNLOAD_REQUESTED = 0x100;
 	
+	/* webcam related */
+	public static final long WEBCAM_OSMER_DOWNLOAD_REQUESTED = 0x200;
+	public static final long WEBCAM_OTHER_DOWNLOAD_REQUESTED = 0x400;
+	public static final long WEBCAM_OSMER_DOWNLOADED = 0x800;
+	public static final long WEBCAM_OTHER_DOWNLOADED = 0x1000;
 	
-	public static final long DOWNLOAD_ERROR_CONDITION = 0x200;
+	public static final long DOWNLOAD_ERROR_CONDITION = 0x10000000;
 	
 	
 	private DownloadStatus()

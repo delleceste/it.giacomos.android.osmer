@@ -13,21 +13,17 @@ public class ButtonListenerInstaller
 		mToggleButtonGroupHelper.addButton(R.id.buttonHome);
 		buttonHome.setOnClickListener(a);
 
-
 		ToggleButton buttonToday = (ToggleButton)a.findViewById(R.id.buttonToday);
 		mToggleButtonGroupHelper.addButton(R.id.buttonToday);
 		buttonToday.setOnClickListener(a);
-
 
 		ToggleButton buttonTomorrow = (ToggleButton)a.findViewById(R.id.buttonTomorrow);
 		mToggleButtonGroupHelper.addButton(R.id.buttonTomorrow);
 		buttonTomorrow.setOnClickListener(a);
 
-
 		ToggleButton buttonTwoDays = (ToggleButton)a.findViewById(R.id.buttonTwoDays);
 		mToggleButtonGroupHelper.addButton(R.id.buttonTwoDays);
 		buttonTwoDays.setOnClickListener(a);
-
 
 		ToggleButton buttonMap = (ToggleButton)a.findViewById(R.id.buttonMap);
 		buttonMap.setOnClickListener(a);
@@ -46,6 +42,7 @@ public class ButtonListenerInstaller
 		ToggleButton radarButton = (ToggleButton) a.findViewById(R.id.buttonRadar);
 		radarButton.setOnClickListener(a);
 		mToggleButtonGroupHelper.addButton(R.id.buttonRadar);
+		
 		ToggleButton dailyObsButton = (ToggleButton) a.findViewById(R.id.buttonDailyObs);
 		dailyObsButton.setOnClickListener(a);
 		mToggleButtonGroupHelper.addButton(R.id.buttonDailyObs);

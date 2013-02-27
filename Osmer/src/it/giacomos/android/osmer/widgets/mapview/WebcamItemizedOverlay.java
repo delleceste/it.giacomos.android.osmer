@@ -5,12 +5,19 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.downloadManager.state.BitmapListener;
 import it.giacomos.android.osmer.downloadManager.state.BitmapTask;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
+import it.giacomos.android.osmer.webcams.ExternalImageViewerLauncher;
+import it.giacomos.android.osmer.webcams.LastImageCache;
 import it.giacomos.android.osmer.webcams.WebcamData;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -25,6 +32,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -37,7 +45,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.Projection;
 
 public class WebcamItemizedOverlay<Item extends OverlayItem> extends ItemizedOverlay<OverlayItem> 
-implements ZoomChangeListener, BitmapListener
+implements ZoomChangeListener, BitmapListener, OnClickListener
 {
 
 	public WebcamItemizedOverlay(Drawable defaultMarker, OMapView map) {
@@ -106,7 +114,13 @@ implements ZoomChangeListener, BitmapListener
 		  t.show();
 		  new BaloonOnMap(mMap, location, wd.text, R.drawable.webcam_download, item.getPoint(), true);
 		  int regionExtensionLatitude = GeoCoordinates.fvgTopLeft.getLatitudeE6() - GeoCoordinates.fvgBottomRight.getLatitudeE6();
-		  GeoPoint target = new GeoPoint(regionExtensionLatitude * 3 /4 + item.getPoint().getLatitudeE6(),  item.getPoint().getLongitudeE6());
+		  GeoPoint target = null;
+		  if(mMap.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+			  target = new GeoPoint(regionExtensionLatitude  /2 + item.getPoint().getLatitudeE6(),  item.getPoint().getLongitudeE6());
+		  else
+			  target = new GeoPoint(regionExtensionLatitude *3/4 + item.getPoint().getLatitudeE6(),  item.getPoint().getLongitudeE6());
+
+		 
 		  mMap.getController().animateTo(target);
 	  }
 	  return true;
@@ -132,14 +146,29 @@ implements ZoomChangeListener, BitmapListener
 				    	MapBaloon baloon = (MapBaloon) nextChild;
 				    	if(baloon != null)
 				    		baloon.setIcon(new BitmapDrawable(bmp));
+				    	
+				    	/* save image on cache in order to display it in external viewer */
+				    	LastImageCache saver = new LastImageCache();
+				    	boolean success = saver.save(bmp, mMap.getContext());
+						if(success)
+							baloon.findViewById(R.id.baloon_icon).setOnClickListener(this);
+						else
+							baloon.setOnClickListener(null); /* no clicks */
 				    	break;
 				    }
 				}
+				
 			}
 		}
 		
 	}
 
+	@Override
+	public void onClick(View imageView) 
+	{
+		new ExternalImageViewerLauncher(mMap.getContext());	
+	}
+	
 	public void draw(Canvas canvas, MapView mapView, boolean shadow)
 	{
 		super.draw(canvas, mapView, false); /* no shadow on icons */

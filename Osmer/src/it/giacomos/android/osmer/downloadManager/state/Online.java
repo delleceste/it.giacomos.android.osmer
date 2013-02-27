@@ -128,6 +128,7 @@ public class Online extends State implements BitmapListener, TextListener {
 	{
 		if(!DownloadStatus.Instance().webcamListDownloaded())
 		{
+			DownloadStatus.Instance().setWebcamListsDownloadRequested(true);
 			startTextTask(m_urls.webcamMapData(), StringType.WEBCAMLIST_OSMER);
 			startTextTask(m_urls.webcamsListXML(), StringType.WEBCAMLIST_OTHER);
 		}
@@ -143,12 +144,17 @@ public class Online extends State implements BitmapListener, TextListener {
 	@Override
 	public void onTextUpdate(String s, StringType st, String errorMessage) 
 	{
-		DownloadStatus.Instance().updateState(st, s != null);
+		DownloadStatus downloadStatus = DownloadStatus.Instance();
+		long oldState = downloadStatus.state;
+		if(!errorMessage.isEmpty())
+			Log.e("onTextUpdate(Online)", "error" + errorMessage);
+		DownloadStatus.Instance().updateState(st, errorMessage.isEmpty());
 		m_stateUpdateListener.onTextUpdate(s, st, errorMessage);
 		/* publish progress , after DownloadStatus state has been updated */
 		mCurrentStep++;
 		Log.e("ontextUpdate" , "tot steps " + mTotSteps + " current step " + mCurrentStep);
 		m_stateUpdateListener.onProgressUpdate(mCurrentStep, mTotSteps);
+		m_stateUpdateListener.onStateChanged(oldState, downloadStatus.state);
 		mProgressNeedsReset();
 	}
 

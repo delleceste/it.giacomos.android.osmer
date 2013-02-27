@@ -16,4 +16,6 @@ public interface DownloadUpdateListener {
 	public void onDownloadStart(DownloadReason reason);
 	
 	public void networkStatusChanged(boolean online);
+	
+	public void onStateChanged(long previousState, long state);
 }

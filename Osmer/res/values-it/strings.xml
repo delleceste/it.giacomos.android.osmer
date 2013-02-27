@@ -60,6 +60,8 @@
     <string name="network_error">Errore di rete</string>
     <string name="dataExpiredToast">aggiornamento dei dati&#8230;</string>
     <string name="radarUpdateToast">aggiorno l\'immagine del radar&#8230;</string>
+    <string name="webcamUpdateToast">aggiorno la lista delle webcam, se necessario&#8230;</string>
+    <string name="webcam_lists_downloaded">lista webcam aggiornata</string>
     <string name="min_temp">Temperatura Minima</string>
     <string name="max_temp">Temperatura Massima</string>
     <string name="min_temp_abbr">Min.T</string>

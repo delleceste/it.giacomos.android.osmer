@@ -23,7 +23,7 @@ public class TextTask extends AsyncTask<URL, Integer, String> {
 	public TextTask(TextListener textListener, StringType t)
 	{
 		m_textUpdateListener = textListener;
-		m_errorMessage = "Text task error";
+		m_errorMessage = "";
 		m_type = t;
 		mReferer = null;
 	}
@@ -33,18 +33,22 @@ public class TextTask extends AsyncTask<URL, Integer, String> {
 		mReferer = ref;
 	}
 
+	public boolean error()
+	{
+		return !m_errorMessage.isEmpty();
+	}
+	
 	public void onPostExecute(String doc)
 	{
 		m_textUpdateListener.onTextUpdate(doc, m_type, m_errorMessage);
 	}
 
-	boolean error() { return m_errorMessage != null; }
-
 	String errorMessage() { return m_errorMessage; }
 
 	protected String doInBackground(URL... urls) 
 	{
-		String doc = "empty doc";
+		String doc = "";
+		m_errorMessage = "";
 		if(urls.length == 1)
 		{
 			URLConnection urlConnection = null;

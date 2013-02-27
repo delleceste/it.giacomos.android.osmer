@@ -20,6 +20,11 @@ public class CurrentViewUpdater {
 				a.radar();
 				Toast.makeText(a, a.getString(R.string.radarUpdateToast), Toast.LENGTH_SHORT).show();
 			}
+			if(mapMode.currentType == ObservationType.WEBCAM)
+			{
+				a.webcams();
+				Toast.makeText(a, a.getString(R.string.webcamUpdateToast), Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 

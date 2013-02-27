@@ -5,6 +5,6 @@ import java.util.ArrayList;
 
 public interface WebcamListDecoder {
 	
-	public ArrayList<WebcamData> decode(String rawData);
+	public ArrayList<WebcamData> decode(String rawData, boolean saveOnCache);
 
 }

@@ -113,7 +113,7 @@ public class Urls {
 	
 	public String webcamsListXML()
 	{
-		return "www.osmer.fvg.it/GOOGLE/WebcamsList.xml";
+		return "http://www.osmer.fvg.it/GOOGLE/WebcamsList.xml";
 	}
 	
 	

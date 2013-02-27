@@ -4,9 +4,8 @@
 package it.giacomos.android.osmer.downloadManager.state;
 
 import android.os.AsyncTask;
-import android.util.Log;
+// import android.util.Log;
 import it.giacomos.android.osmer.BitmapType;
-import it.giacomos.android.osmer.downloadManager.DownloadManagerUpdateListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,9 +27,15 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
 		m_bitmapType = bt;
 	}
 	
+	public boolean error()
+	{
+		return !m_errorMessage.isEmpty();
+	}
+	
 	protected Bitmap doInBackground(URL... urls) 
 	{
 		Bitmap bitmap = null;
+		m_errorMessage = "";
         if(urls.length == 1)
         {
         	URL url = urls[0];

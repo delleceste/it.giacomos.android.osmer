@@ -10,13 +10,15 @@ import it.giacomos.android.osmer.widgets.mapview.*;
 
 public class WebcamMapUpdater 
 {
-		public WebcamMapUpdater(OsmerActivity a, String text, StringType t)
+	public WebcamMapUpdater(OsmerActivity a, String text, StringType t, boolean saveOnCache)
+	{
+		if(!text.isEmpty())
 		{
 			switch(t)
 			{
 			case WEBCAMLIST_OSMER:
 				OsmerWebcamListDecoder osmerDec = new OsmerWebcamListDecoder();
-				ArrayList<WebcamData> wcData = osmerDec.decode(text);
+				ArrayList<WebcamData> wcData = osmerDec.decode(text, saveOnCache);
 				OMapView map = (OMapView) a.findViewById(R.id.mapview);
 				map.updateWebcamList(wcData);
 				break;
@@ -26,4 +28,5 @@ public class WebcamMapUpdater
 				break;
 			}
 		}
+	}
 }

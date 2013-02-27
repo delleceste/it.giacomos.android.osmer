@@ -126,6 +126,11 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 		m_downloadUpdateListener.onDownloadStart(reason);
 	}
 		
+	public void onStateChanged(long oldState, long state)
+	{
+		m_downloadUpdateListener.onStateChanged(oldState, state);
+	}
+	
 	private State m_state;
 	private DownloadUpdateListener m_downloadUpdateListener;
 	private NetworkStatusMonitor m_networkStatusMonitor;

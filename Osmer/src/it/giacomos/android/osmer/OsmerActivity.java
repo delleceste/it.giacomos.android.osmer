@@ -27,6 +27,7 @@ import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCache;
 import it.giacomos.android.osmer.textToImage.TextDecoder;
 import it.giacomos.android.osmer.textToImage.TextDecoderListener;
+import it.giacomos.android.osmer.webcams.WebcamDataCache;
 import it.giacomos.android.osmer.widgets.InfoHtmlBuilder;
 import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
 import it.giacomos.android.osmer.widgets.OTextView;
@@ -108,6 +109,9 @@ TextDecoderListener
 		 */
 		m_locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 50, this);
 		m_locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 50, this);
+		
+		/* create WebcamDataCache with the Context */
+		WebcamDataCache.getInstance(getApplicationContext());
 	}
 
 	public void onPause()
@@ -316,6 +320,20 @@ TextDecoderListener
 	
 	void webcams()
 	{
+		/* The download manager checks whether the webcam data is old or not.
+		 * If it is old, new data will be downloaded. If not, it does nothing.
+		 * If data is not old, we can populate the webcam overlay on the map
+		 * with the cached data.
+		 * 
+		 * 
+		 */
+		WebcamDataCache webcamData = WebcamDataCache.getInstance();
+		if(!webcamData.dataIsTooOld())
+		{
+			/* false: do not save on cache because we are already reusing cached data */
+			new WebcamMapUpdater(this, webcamData.getFromCache(StringType.WEBCAMLIST_OSMER), StringType.WEBCAMLIST_OSMER, false);
+			new WebcamMapUpdater(this, webcamData.getFromCache(StringType.WEBCAMLIST_OTHER), StringType.WEBCAMLIST_OTHER, false);
+		}
 		m_downloadManager.getWebcamList();
 	}
 
@@ -336,7 +354,10 @@ TextDecoderListener
 			break;
 		case WEBCAMLIST_OSMER:
 		case WEBCAMLIST_OTHER:
-			new WebcamMapUpdater(this, txt, t);
+			/* true: save data on cache: onTextUpdate is called after a Download Task, so the data
+			 * passed to WebcamMapUpdater is fresh: store it into cache.
+			 */
+			new WebcamMapUpdater(this, txt, t, true);
 			break;
 		default:
 			/* situation image will be updated directly by the cache, since SituationImage is 
@@ -383,6 +404,13 @@ TextDecoderListener
 		new NetworkGuiErrorManager(this, errorMessage);
 	}
 
+	@Override
+	public void onStateChanged(long previousState, long state) 
+	{
+		if((state & DownloadStatus.WEBCAM_OSMER_DOWNLOADED) != 0 /*&&  (state & DownloadStatus.WEBCAM_OTHER_DOWNLOADED) == 1) */)
+			Toast.makeText(getApplicationContext(), R.string.webcam_lists_downloaded, Toast.LENGTH_SHORT).show();
+			
+	}
 	/* executed when a new locality / address becomes available.
 	 */
 	public void onGeocodeAddressUpdate(LocationInfo locInfo)
@@ -549,7 +577,7 @@ TextDecoderListener
 //				mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonRadar));
 				break;
 			case R.id.buttonRadar:
-				
+				mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonRadar));
 				break;
 			case R.id.buttonMapInsideLatest:
 				((ToggleButton)findViewById(R.id.measureToggleButton)).setChecked(false);
@@ -822,4 +850,5 @@ TextDecoderListener
 
 	/// temp
 	int availCnt = 0;
+
 }
