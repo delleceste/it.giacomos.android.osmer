@@ -1,5 +1,7 @@
 package it.giacomos.android.osmer.widgets.mapview;
 
+import com.google.android.maps.GeoPoint;
+
 import it.giacomos.android.osmer.R;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -8,28 +10,24 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
-public class MapBaloon extends LinearLayout implements OnClickListener {
+// import android.util.Log;
+
+public class MapBaloon extends LinearLayout {
 
 	public MapBaloon(Context context, AttributeSet attrs) 
 	{
 		super(context, attrs);
+		mGeoPoint = null;
 	}
 	
 	protected void onFinishInflate ()
 	{
 		super.onFinishInflate();
-		ImageView iv = (ImageView) findViewById(R.id.baloon_close_button);
-		iv.setOnClickListener(this);
 	}
 	
 	public void setTitle(String t)
@@ -37,7 +35,6 @@ public class MapBaloon extends LinearLayout implements OnClickListener {
 		TextView tv = (TextView) findViewById(R.id.baloon_title);
 		if(tv != null)
 		{
-			tv.setTextSize(18.0f);
 			tv.setText(t);
 		}
 	}
@@ -75,6 +72,16 @@ public class MapBaloon extends LinearLayout implements OnClickListener {
 		}
 	}
 	
+	public GeoPoint getGeoPoint()
+	{
+		return mGeoPoint;
+	}
+	
+	public void setGeoPoint(GeoPoint p)
+	{
+		mGeoPoint = p;
+	}
+	
 	@Override
     protected void dispatchDraw(Canvas canvas) {       
 		int wid = getWidth();
@@ -89,7 +96,7 @@ public class MapBaloon extends LinearLayout implements OnClickListener {
        
         RectF baloonRect = new RectF();
         baloonRect.set(0,0, wid, balRectHeight);
-        panelPaint.setARGB(230, 255, 255, 255);       
+        panelPaint.setARGB(240, 255, 255, 255);       
         canvas.drawRoundRect(baloonRect, 10, 10, panelPaint);
        
         Path baloonTip = new Path();
@@ -101,13 +108,6 @@ public class MapBaloon extends LinearLayout implements OnClickListener {
                
         super.dispatchDraw(canvas);
     }
-
-	@Override
-	public void onClick(View v) {
-		
-       // Animation fadeOut = AnimationUtils.loadAnimation(getContext(), R.anim.fade);
-        //this.startAnimation(fadeOut);
-        this.setVisibility(View.GONE);
-	}
-
+	
+	private GeoPoint mGeoPoint;
 }

@@ -101,7 +101,20 @@ public class Settings
 		e.commit();
 	}
 
+	public void setMapClickOnBaloonImageHintEnabled(boolean b) 
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putBoolean("HINT_MAP_CLICK_ON_BALOON_IMAGE", b);
+		e.commit();
+	}
+
+	public boolean isMapClickOnBaloonImageHintEnabled() 
+	{
+		boolean res = mSharedPreferences.getBoolean("HINT_MAP_CLICK_ON_BALOON_IMAGE", true);
+		return res;
+	}
 	
 	private final String PREFERENCES_NAME = "Osmer.conf";
 	private SharedPreferences mSharedPreferences;
+	
 }

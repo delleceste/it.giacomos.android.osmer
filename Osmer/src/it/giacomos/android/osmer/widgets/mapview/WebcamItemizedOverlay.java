@@ -5,6 +5,7 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.downloadManager.state.BitmapListener;
 import it.giacomos.android.osmer.downloadManager.state.BitmapTask;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
+import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.webcams.ExternalImageViewerLauncher;
 import it.giacomos.android.osmer.webcams.LastImageCache;
 import it.giacomos.android.osmer.webcams.WebcamData;
@@ -55,6 +56,8 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 		mWebcams = new ArrayList<WebcamData>();
 		mPaint = new Paint();
 		mDensityDpi = map.getResources().getDisplayMetrics().densityDpi;
+		Settings s = new Settings(mMap.getContext());
+		mMapClickOnBaloonImageHintEnabled = s.isMapClickOnBaloonImageHintEnabled();
 	}
 
 	/**
@@ -94,7 +97,7 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 	  OverlayItem item = mOverlayItems.get(index);
 	  String location = item.getTitle();
 	  WebcamData wd = getDataByGeoPoint(item.getPoint());
-	  String message = res.getString(R.string.webcam_getting_image);
+	  String message = "";
 	  if(wd != null)
 	  {
 		  BitmapTask webcamImageTask = new BitmapTask(this, BitmapType.WEBCAM);
@@ -108,17 +111,21 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 		  {
 			// TODO Auto-generated catch block
 			  message = res.getString(R.string.error_message) + ": " + e.getLocalizedMessage();
+			  Toast.makeText(mMap.getContext(), message, Toast.LENGTH_SHORT).show();
 		  }
-		  Toast t = Toast.makeText(mMap.getContext(), message, Toast.LENGTH_SHORT);
-		  t.setGravity(Gravity.CENTER|Gravity.BOTTOM, 0, 0);
-		  t.show();
+		  
+		  /* creates a webcam baloon and adds it to the map */
 		  new BaloonOnMap(mMap, location, wd.text, R.drawable.webcam_download, item.getPoint(), true);
+		  /* install button close click listener */
+		  MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);
+		  baloon.findViewById(R.id.baloon_close_button).setOnClickListener(this);
+		  
 		  int regionExtensionLatitude = GeoCoordinates.fvgTopLeft.getLatitudeE6() - GeoCoordinates.fvgBottomRight.getLatitudeE6();
 		  GeoPoint target = null;
 		  if(mMap.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
 			  target = new GeoPoint(regionExtensionLatitude  /2 + item.getPoint().getLatitudeE6(),  item.getPoint().getLongitudeE6());
 		  else
-			  target = new GeoPoint(regionExtensionLatitude *3/4 + item.getPoint().getLatitudeE6(),  item.getPoint().getLongitudeE6());
+			  target = new GeoPoint(regionExtensionLatitude / 8 * 5 + item.getPoint().getLatitudeE6(),  item.getPoint().getLongitudeE6());
 
 		 
 		  mMap.getController().animateTo(target);
@@ -151,7 +158,11 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 				    	LastImageCache saver = new LastImageCache();
 				    	boolean success = saver.save(bmp, mMap.getContext());
 						if(success)
+						{
 							baloon.findViewById(R.id.baloon_icon).setOnClickListener(this);
+							if(mMapClickOnBaloonImageHintEnabled)
+								Toast.makeText(mMap.getContext(), R.string.hint_click_on_map_baloon_webcam_image, Toast.LENGTH_LONG).show();
+						}
 						else
 							baloon.setOnClickListener(null); /* no clicks */
 				    	break;
@@ -164,9 +175,27 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 	}
 
 	@Override
-	public void onClick(View imageView) 
+	public void onClick(View view) 
 	{
-		new ExternalImageViewerLauncher(mMap.getContext());	
+		if(view.getId() == R.id.baloon_close_button)
+		{
+			MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);
+			if(baloon != null)
+			{
+				/* remove baloon */
+				mMap.removeView(baloon);
+				/* restore previous position of the map */
+				mMap.getController().animateTo(baloon.getGeoPoint());
+				baloon = null;
+			}
+		}
+		else if(view.getId() == R.id.baloon_icon)
+		{
+			new ExternalImageViewerLauncher(mMap.getContext());
+			Settings s = new Settings(mMap.getContext());
+			s.setMapClickOnBaloonImageHintEnabled(false);
+			mMapClickOnBaloonImageHintEnabled = false;
+		}
 	}
 	
 	public void draw(Canvas canvas, MapView mapView, boolean shadow)
@@ -252,4 +281,6 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 	private ArrayList<WebcamData> mWebcams;
 	private int mDensityDpi;
 	private Paint mPaint;
+	/* stores settings value locally in order not to query Settings every time */
+	private boolean mMapClickOnBaloonImageHintEnabled;
 }

@@ -10,6 +10,7 @@ import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.SkyDrawableIdPicker;
 import it.giacomos.android.osmer.preferences.Settings;
+import it.giacomos.android.osmer.webcams.ExternalImageViewerLauncher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +28,8 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
@@ -40,7 +43,8 @@ import com.google.android.maps.Projection;
  *
  */
 public class ObservationsItemizedOverlay<Item extends OverlayItem> extends ItemizedOverlay<OverlayItem> 
-	implements ZoomChangeListener
+	implements ZoomChangeListener,
+	OnClickListener
 {
 
 	public ObservationsItemizedOverlay(Drawable defaultMarker, 
@@ -145,14 +149,38 @@ public class ObservationsItemizedOverlay<Item extends OverlayItem> extends Itemi
 	  String location = item.getTitle();
 	  if(mMap.containsKey(location))
 	  {
-		  /* false: not a webcam baloon, inflates a different xml */
+		  /* BaloonOnMap creates a baloon and shows it on the map
+		   * false: not a webcam baloon, inflates a different xml 
+		   */
 		  new BaloonOnMap(mMapView, mMap.get(location), item.getPoint(), false);
+		  
+		  /* install button close click listener */
+		  MapBaloon baloon = (MapBaloon) mMapView.findViewById(R.id.mapbaloon);
+		  baloon.findViewById(R.id.baloon_close_button).setOnClickListener(this);
+		  /* animate the map to center on the item */
 		  mMapView.getController().animateTo(item.getPoint());
 		  /* disable marker hints from now on */
 		  Settings s = new Settings(mMapView.getContext());
 		  s.setMapMarkerHintEnabled(false);
 	  }
 	  return true;
+	}
+	
+	@Override
+	public void onClick(View view) 
+	{
+		if(view.getId() == R.id.baloon_close_button)
+		{
+			MapBaloon baloon = (MapBaloon) mMapView.findViewById(R.id.mapbaloon);
+			if(baloon != null)
+			{
+				/* remove baloon */
+				mMapView.removeView(baloon);
+				/* restore previous position of the map */
+				mMapView.getController().animateTo(baloon.getGeoPoint());
+				baloon = null;
+			}
+		}
 	}
 	
 	@Override

@@ -88,6 +88,7 @@
     <string name="pos_accuracy">accuratezza</string>
     <string name="from">da</string>
     <string name="mainpage_icon_hint">Tocca un\'icona per ulteriori dettagli&#8230;</string>
+    <string name="close_button">Chiudi</string>
     
         <!--  hint toasts -->
     <string name="hint_home_icons">Suggerimento: tocca un\'icona e leggi i dettagli in basso a sinistra</string>
@@ -96,6 +97,7 @@
     <string name="hint_scroll_buttons">Trascina la barra dei bottoni per scorrerne i contenuti</string>
     <string name="hint_move_to_measure_on_map">Tocca la mappa e sposta la freccia per misurare</string>
     <string name="hint_move_location_to_measure_on_map">Tocca il punto con la tua posizione e spostalo per cambiare centro di misura</string>
+    <string name="hint_click_on_map_baloon_webcam_image">Tocca la foto per vederla nel visualizzatore di immagini</string>
     
     <string-array name="observation_types">
         <item>Temperatura Minima</item>

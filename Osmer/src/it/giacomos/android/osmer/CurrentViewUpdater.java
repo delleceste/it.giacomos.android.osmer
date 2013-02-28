@@ -23,7 +23,7 @@ public class CurrentViewUpdater {
 			if(mapMode.currentType == ObservationType.WEBCAM)
 			{
 				a.webcams();
-				Toast.makeText(a, a.getString(R.string.webcamUpdateToast), Toast.LENGTH_SHORT).show();
+				//Toast.makeText(a, a.getString(R.string.webcamUpdateToast), Toast.LENGTH_SHORT).show();
 			}
 		}
 	}

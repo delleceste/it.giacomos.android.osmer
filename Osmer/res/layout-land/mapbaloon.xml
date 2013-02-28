@@ -1,52 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<it.giacomos.android.osmer.widgets.mapview.MapBaloon
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/mapbaloon"
-  android:orientation="vertical"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content"
+<it.giacomos.android.osmer.widgets.mapview.MapBaloon xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mapbaloon"
+    android:layout_width="200dp"
+    android:layout_height="120dp"
+    android:orientation="horizontal"
+    android:paddingBottom="5dp"
     android:paddingLeft="5dp"
-    android:paddingTop="5dp"
     android:paddingRight="5dp"
-    android:paddingBottom="5dp">
+    android:paddingTop="5dp" >
+
     <RelativeLayout
       xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
+
       <ImageView
-            android:id="@+id/baloon_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:paddingRight="10dp"
-             />
+          android:id="@+id/baloon_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentTop="true" />
             
         <TextView
             android:id="@+id/baloon_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/baloon_icon"/>
+            android:layout_toLeftOf="@+id/baloon_close_button"
+            android:layout_toRightOf="@id/baloon_icon"
+            android:textSize="14sp" />
         
         <ImageView
             android:id="@+id/baloon_close_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"    
-            android:src="@drawable/window_close"
+            android:layout_alignParentTop="true"
             android:clickable="true"
-        />
+            android:src="@drawable/window_close" />
         
         <TextView
-            android:layout_height="wrap_content"
+            android:id="@+id/baloon_text"
             android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/baloon_icon"
+            android:contentDescription="@string/close_button"
+            android:maxLength="160"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:id="@+id/baloon_text"
-            android:layout_below="@id/baloon_icon"
-            android:maxLength="160"   
-            android:textSize="5pt"   
-        />
+            android:textSize="12sp" />
+
     </RelativeLayout>
 </it.giacomos.android.osmer.widgets.mapview.MapBaloon>

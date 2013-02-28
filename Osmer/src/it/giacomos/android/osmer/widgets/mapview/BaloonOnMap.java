@@ -6,16 +6,9 @@ import com.google.android.maps.MapView;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.observations.ObservationData;
 import it.giacomos.android.osmer.observations.ObservationTime;
@@ -23,10 +16,6 @@ import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.SkyDrawableIdPicker;
 
 public class BaloonOnMap {
-	public BaloonOnMap(OMapView mapView, ObservationData od)
-	{
-		
-	}
 
 	public void buildBaloon(MapView mapView, String title, String text, int icon, GeoPoint point, boolean webcamBaloon) 
 	{
@@ -40,7 +29,6 @@ public class BaloonOnMap {
 			oldBaloon.setVisibility(View.GONE);
 			oldBaloon = null;
 		}
-
 		LayoutInflater  layoutInflater = (LayoutInflater) mapView.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         MapBaloon mapBaloon = null;
         
@@ -74,9 +62,8 @@ public class BaloonOnMap {
         else
         {
         	mapBaloon = (MapBaloon) layoutInflater.inflate(R.layout.mapbaloon, null);
-        	width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, r.getDisplayMetrics());
-            height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, r.getDisplayMetrics());
-        	mapBaloon = (MapBaloon) layoutInflater.inflate(R.layout.webcam_mapbaloon, null);
+        	width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 170, r.getDisplayMetrics());
+            height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, r.getDisplayMetrics());
             layoutParams = new MapView.LayoutParams(
             		(int)width, (int)height,
              		point, MapView.LayoutParams.BOTTOM_CENTER);
@@ -87,7 +74,8 @@ public class BaloonOnMap {
         }
 
         mapBaloon.setLayoutParams(layoutParams);
-        
+        /* store geo point */
+        mapBaloon.setGeoPoint(point);
         
         mapView.addView(mapBaloon);
         mapBaloon.setVisibility(View.VISIBLE);  

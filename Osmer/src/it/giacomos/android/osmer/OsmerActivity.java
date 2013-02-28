@@ -109,7 +109,7 @@ TextDecoderListener
 		 */
 		m_locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 50, this);
 		m_locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 50, this);
-		
+
 		/* create WebcamDataCache with the Context */
 		WebcamDataCache.getInstance(getApplicationContext());
 	}
@@ -123,7 +123,7 @@ TextDecoderListener
 		m_downloadManager.onPause(this);
 		((OMapView) findViewById(R.id.mapview)).onPause();
 		m_locationManager.removeUpdates(this);
-		
+
 		m_observationsCache.saveLatestToStorage(this);
 		/* saves text and images on the internal storage 
 		 * calling saveOnInternalStorage on OTextViews and ODoubleLayerImageViews,
@@ -142,7 +142,7 @@ TextDecoderListener
 		 */
 		super.onStop();
 	}
-	
+
 	protected void onDestroy()
 	{
 		Log.i("onDestroy", "application destroyed");
@@ -181,24 +181,34 @@ TextDecoderListener
 	@Override
 	public void onBackPressed()
 	{
-		ViewFlipper buttonFlipper = (ViewFlipper) findViewById(R.id.buttonsFlipper);
-		int displayedChild = buttonFlipper.getDisplayedChild();
-		switch(displayedChild)
+		/* first of all, if there's a baloon on the map, close it */
+		ViewFlipper mainFlipper = (ViewFlipper) findViewById(R.id.viewFlipper1);
+		OMapView map = (OMapView) findViewById(R.id.mapview);
+		if(mainFlipper.getDisplayedChild() == 4 && map.baloonVisible()) /* map view visible */
 		{
-		case 1: /* sat, daily, last obs: just as clicking home */
-			this.onClick(findViewById(R.id.buttonHome));
-			break;
-		case 2: /* daily observations, like pressing fvg button to go back to the satellite */
-			this.onClick(findViewById(R.id.buttonMapInsideDaily));
-			break;
-		case 3:
-			this.onClick(findViewById(R.id.buttonMapInsideLatest));
-			break;
-		default:
-			super.onBackPressed();
+				map.removeBaloon();
+		}
+		else
+		{
+			ViewFlipper buttonFlipper = (ViewFlipper) findViewById(R.id.buttonsFlipper);
+			int displayedChild = buttonFlipper.getDisplayedChild();
+			switch(displayedChild)
+			{
+			case 1: /* sat, daily, last obs: just as clicking home */
+				this.onClick(findViewById(R.id.buttonHome));
+				break;
+			case 2: /* daily observations, like pressing fvg button to go back to the satellite */
+				this.onClick(findViewById(R.id.buttonMapInsideDaily));
+				break;
+			case 3:
+				this.onClick(findViewById(R.id.buttonMapInsideLatest));
+				break;
+			default:
+				super.onBackPressed();
+			}
 		}
 	}
-	
+
 	@Override
 	public Dialog onCreateDialog(int id, Bundle args)
 	{
@@ -240,7 +250,7 @@ TextDecoderListener
 		 *
 		 */
 		m_observationsCache.installObservationsCacheUpdateListener(map);
-		
+
 		SituationImage situationImage = (SituationImage) findViewById(R.id.homeImageView);
 		/* Situation Image will listen for cache changes, which happen on store() call
 		 * in this class or when cache is restored from the internal storage.
@@ -317,7 +327,7 @@ TextDecoderListener
 	{
 		//TextView textView = (TextView) findViewById(R.id.mainTextView);
 	}
-	
+
 	void webcams()
 	{
 		/* The download manager checks whether the webcam data is old or not.
@@ -409,7 +419,7 @@ TextDecoderListener
 	{
 		if((state & DownloadStatus.WEBCAM_OSMER_DOWNLOADED) != 0 /*&&  (state & DownloadStatus.WEBCAM_OTHER_DOWNLOADED) == 1) */)
 			Toast.makeText(getApplicationContext(), R.string.webcam_lists_downloaded, Toast.LENGTH_SHORT).show();
-			
+
 	}
 	/* executed when a new locality / address becomes available.
 	 */
@@ -466,7 +476,7 @@ TextDecoderListener
 	{
 		if(resId != 0)
 		{
-//			Log.i("OsmerActivity:onTextDecoded", "got " + resId);
+			//			Log.i("OsmerActivity:onTextDecoded", "got " + resId);
 			ToggleButton b = null;
 			switch(t)
 			{
@@ -537,7 +547,7 @@ TextDecoderListener
 		OViewFlipper viewFlipper = (OViewFlipper) this.findViewById(R.id.viewFlipper1);
 		viewFlipper.setOutAnimation(null);
 		viewFlipper.setInAnimation(null);
-		
+
 		ViewFlipper buttonsFlipper = (ViewFlipper) findViewById(R.id.buttonsFlipper);
 
 		//if(!mToggleButtonGroupHelper.isOn(v.getId()))
@@ -571,17 +581,17 @@ TextDecoderListener
 				((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 				viewFlipper.setDisplayedChild(FlipperChildren.MAP);
 				buttonsFlipper.setDisplayedChild(1);
-//				/* do not set the map button clicked, but the radar one 
-//				 * because the buttonsFlipper child has changed.
-//				 */
-//				mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonRadar));
+				//				/* do not set the map button clicked, but the radar one 
+				//				 * because the buttonsFlipper child has changed.
+				//				 */
+				//				mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonRadar));
 				break;
 			case R.id.buttonRadar:
 				mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonRadar));
 				break;
 			case R.id.buttonMapInsideLatest:
 				((ToggleButton)findViewById(R.id.measureToggleButton)).setChecked(false);
-				
+
 				/* remove itemized overlays (observations), if present, and restore radar view */
 				((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.LATEST));
 
@@ -701,7 +711,7 @@ TextDecoderListener
 		case R.id.buttonWebcam:
 			onSelectionDone(ObservationType.WEBCAM, ObservationTime.WEBCAM);
 			break;
-			
+
 			/* satellite or map on MapView */
 		case R.id.satelliteViewButton:
 			OMapView omv = (OMapView) findViewById(R.id.mapview);

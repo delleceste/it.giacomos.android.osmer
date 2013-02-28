@@ -88,6 +88,7 @@
     <string name="unavailable">unavailable</string>
     <string name="from">from</string>
     <string name="mainpage_icon_hint">Touch an element for details&#8230;</string>
+    <string name="close_button">Close</string>
     
     <!--  hint toasts -->
     <string name="hint_home_icons">Touch an icon to read further details</string>
@@ -96,6 +97,7 @@
     <string name="hint_scroll_buttons">Scroll on the buttons bar to access more contents</string>
     <string name="hint_move_to_measure_on_map">Touch the map and move the arrow to measure distances</string>
     <string name="hint_move_location_to_measure_on_map">Touch your location point and move it to change the center of the measurement</string>
+    <string name="hint_click_on_map_baloon_webcam_image">Tap on the image to open it on the image viewer</string>
     
     <string-array name="observation_types">
         <item>Minimum Temperature</item>

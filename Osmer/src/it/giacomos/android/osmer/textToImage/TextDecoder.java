@@ -134,10 +134,10 @@ public class TextDecoder implements TextChangeListener
 				mTextDecoderListener.onTextDecoded(t, R.drawable.weather_storm_state);
 				break;
 			case TOMORROW:
-				mTextDecoderListener.onTextDecoded(t, R.drawable.weather_storm_state);
+				mTextDecoderListener.onTextDecoded(t, R.drawable.weather_storm_state_1);
 				break;
 			case TWODAYS:
-				mTextDecoderListener.onTextDecoded(t, R.drawable.weather_storm_state);
+				mTextDecoderListener.onTextDecoded(t, R.drawable.weather_storm_state_2);
 			}
 			return;
 		}
@@ -213,7 +213,7 @@ public class TextDecoder implements TextChangeListener
 				mTextDecoderListener.onTextDecoded(t, R.drawable.weather_variable_showers_state_1);
 				break;
 			case TWODAYS:
-				mTextDecoderListener.onTextDecoded(t, R.drawable.weather_variable_showers_state_1);
+				mTextDecoderListener.onTextDecoded(t, R.drawable.weather_variable_showers_state_2);
 			}
 			return;
 		}
@@ -287,10 +287,10 @@ public class TextDecoder implements TextChangeListener
 				mTextDecoderListener.onTextDecoded(t, R.drawable.weather_showers_scattered_state);
 				break;
 			case TOMORROW:
-				mTextDecoderListener.onTextDecoded(t, R.drawable.weather_showers_scattered_state);
+				mTextDecoderListener.onTextDecoded(t, R.drawable.weather_showers_scattered_1_state);
 				break;
 			case TWODAYS:
-				mTextDecoderListener.onTextDecoded(t, R.drawable.weather_showers_scattered_state);
+				mTextDecoderListener.onTextDecoded(t, R.drawable.weather_showers_scattered_2_state);
 			}
 			return;
 		}

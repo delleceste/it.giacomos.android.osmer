@@ -20,6 +20,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.maps.MapController;
 import com.google.android.maps.MyLocationOverlay;
@@ -238,6 +239,25 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 			mCircleOverlay = null;
 		}
 		this.invalidate();
+	}
+	
+	public boolean baloonVisible()
+	{
+		MapBaloon baloon = (MapBaloon) findViewById(R.id.mapbaloon);
+		return (baloon != null && baloon.getVisibility() == View.VISIBLE);
+	}
+	
+	public void removeBaloon()
+	{
+		MapBaloon baloon = (MapBaloon) findViewById(R.id.mapbaloon);
+		if(baloon != null)
+		{
+			/* remove baloon */
+			removeView(baloon);
+			/* restore previous position of the map */
+			getController().animateTo(baloon.getGeoPoint());
+			baloon = null;
+		}
 	}
 	
 	public void setMapViewEventListener(OMapViewEventListener l)
