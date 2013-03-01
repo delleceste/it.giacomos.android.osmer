@@ -53,7 +53,10 @@ implements LatestObservationCacheChangeListener
 		mSensibleArea = new RectF(); /* used in draw */
 		mLocationToImgPixelMapper = new LocationToImgPixelMapper(); /* used in draw */
 		mSettings = new Settings(context);
-		mShowIconsHint = mSettings.isHomeIconsHintEnabled();
+		if(this.isInEditMode())
+			mShowIconsHint = false;
+		else
+			mShowIconsHint = mSettings.isHomeIconsHintEnabled();
 		mShowIconsHintToastCount = 0;
 		mDensityDpi = this.getResources().getDisplayMetrics().densityDpi;
 		/* in this class we use mPaint which is allocated in superclass */

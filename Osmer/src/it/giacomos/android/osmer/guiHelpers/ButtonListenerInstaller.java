@@ -30,6 +30,8 @@ public class ButtonListenerInstaller
 		mToggleButtonGroupHelper.addButton(R.id.buttonMap);
 		
 		/* switches between map and satellite view on MapView.
+		 * measure mode
+		 * radar info button
 		 * do not add to ToggleButtonGroupHelper
 		 */
 		ToggleButton satelliteViewButtonOnMap = (ToggleButton) a.findViewById(R.id.satelliteViewButton);
@@ -38,6 +40,8 @@ public class ButtonListenerInstaller
 		ToggleButton measureMode = (ToggleButton) a.findViewById(R.id.measureToggleButton);
 		measureMode.setOnClickListener(a);
 		
+		ToggleButton buttonInfoRadar = (ToggleButton) a.findViewById(R.id.radarInfoButton);
+		buttonInfoRadar.setOnClickListener(a);		
 		
 		ToggleButton radarButton = (ToggleButton) a.findViewById(R.id.buttonRadar);
 		radarButton.setOnClickListener(a);

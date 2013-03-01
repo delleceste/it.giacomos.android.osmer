@@ -7,6 +7,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -20,8 +21,8 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 	{
 		super();
 		mPaint = new Paint();
-		mPaint.setAlpha(45);
 		mPaint.setFilterBitmap(true);
+        mPaint.setAntiAlias(true);
 	}
 
 	@Override
@@ -50,8 +51,14 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 //	        		" dst " + dst.toShortString() + "Density " + mBitmap.getDensity() +
 //	        		"draw rect " + canvas.getClipBounds().toShortString());
 	        mPaint.setStyle(Paint.Style.STROKE);
+	        mPaint.setAlpha(50);
 	        canvas.drawCircle(dst.centerX(), dst.centerY(), dst.width()/2, mPaint);
 	        canvas.drawBitmap(mBitmap, src, dst, mPaint);
+	        mPaint.setAlpha(160);
+	        Bitmap dbzScale = BitmapFactory.decodeResource(mapView.getResources(), R.drawable.scala_vmi_4);
+	        canvas.drawBitmap(dbzScale, 
+	        		dst.centerX() + dst.width() / 2 + 15,
+	        		dst.centerY() - dbzScale.getHeight() / 2 , mPaint);
 		}
 		return false;
 	}

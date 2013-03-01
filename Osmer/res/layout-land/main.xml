@@ -130,8 +130,8 @@
 			
 			<!--release  0AspVUt7XvDhAh_n6QG0MOW4uljL5qW6Iay0abw -->
 			
-			<ToggleButton android:layout_width="35dp"
-        		android:layout_height="35dp" 
+			<ToggleButton android:layout_width="28dp"
+        		android:layout_height="28dp" 
 				android:textOff=""
 				android:textOn=""
         		android:layout_marginLeft="5dp"
@@ -141,17 +141,42 @@
         		android:layout_alignParentTop="true" 
         		android:id="@+id/satelliteViewButton" />
         		
-        	<ToggleButton android:layout_width="35dp"
+        	<ToggleButton android:layout_width="28dp"
 				android:textOff=""
 				android:textOn=""
-        		android:layout_height="35dp" 
+        		android:layout_height="28dp" 
         		android:background="@drawable/measure"
         		android:layout_marginLeft="5dp"
         		android:layout_marginTop="5dp"
         		android:layout_alignParentLeft="true"
         		android:layout_below="@id/satelliteViewButton" 
         		android:id="@+id/measureToggleButton" />
-			
+					
+        	   		
+        	<ToggleButton android:layout_width="28dp"
+				android:textOff=""
+				android:textOn=""
+        		android:layout_height="28dp" 
+        		android:background="@drawable/radar_info"
+        		android:layout_marginLeft="5dp"
+        		android:layout_marginTop="5dp"
+        		android:layout_alignParentLeft="true"
+        		android:layout_below="@id/measureToggleButton" 
+        		android:id="@+id/radarInfoButton" />	
+        		
+        	<TextView
+        	    android:id="@+id/radarInfoTextView"
+        	    android:layout_width="400dp"
+        	    android:layout_height="wrap_content"
+        	    android:layout_centerInParent="true"
+        	    android:background="@drawable/rounded_text_box"
+        	    android:linksClickable="true"
+        	    android:padding="5dp"
+        	    android:scrollbars="vertical"
+        	    android:textColor="@android:color/black"
+        	    android:textSize="12sp"
+        	    android:visibility="visible" />
+        		
 		</RelativeLayout>
 
 	</it.giacomos.android.osmer.widgets.OViewFlipper>

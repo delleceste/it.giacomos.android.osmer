@@ -112,6 +112,14 @@ TextDecoderListener
 
 		/* create WebcamDataCache with the Context */
 		WebcamDataCache.getInstance(getApplicationContext());
+
+		/* hide Radar information text view on google map view */
+		ToggleButton radarInfoButton = (ToggleButton) findViewById(R.id.radarInfoButton);
+		View radarInfoTextView = findViewById(R.id.radarInfoTextView);
+		if(radarInfoButton.isChecked())
+			radarInfoTextView.setVisibility(View.VISIBLE);
+		else
+			radarInfoTextView.setVisibility(View.GONE);
 	}
 
 	public void onPause()
@@ -263,6 +271,10 @@ TextDecoderListener
 		mMenuActionsManager = null;
 		mSwipeHintCount = mTapOnMarkerHintCount = 0;
 		mCurrentLocation = null;
+		
+		/* set html text on Radar info text view */
+		TextView radarInfoTextView = (TextView)findViewById(R.id.radarInfoTextView);
+		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
 	}	
 
 
@@ -606,6 +618,14 @@ TextDecoderListener
 			case R.id.satelliteViewButton:
 				/* no call to mToggleButtonGroupHelper.setClicked(b); */
 				break;
+			case R.id.radarInfoButton:
+				ToggleButton radarInfoB = (ToggleButton) v;
+				View radarInfoTextView = findViewById(R.id.radarInfoTextView);
+				if(radarInfoB.isChecked())
+					radarInfoTextView.setVisibility(View.VISIBLE);
+				else
+					radarInfoTextView.setVisibility(View.GONE);
+				break;
 			default:
 				mToggleButtonGroupHelper.setClicked(b);
 				break;
@@ -795,11 +815,24 @@ TextDecoderListener
 			}
 		}
 
-		ToggleButton measureButton = (ToggleButton) findViewById(R.id.measureToggleButton);
+		/* hide measure and radar button from the map view when not in
+		 * radar mode
+		 */
+		View measureButton =  findViewById(R.id.measureToggleButton);
+		ToggleButton radarInfoButton = (ToggleButton) findViewById(R.id.radarInfoButton);
 		if(mToggleButtonGroupHelper.isOn(R.id.buttonRadar))
+		{
 			measureButton.setVisibility(View.VISIBLE);
+			radarInfoButton.setVisibility(View.VISIBLE);
+		}
 		else
+		{
+			radarInfoButton.setChecked(false);
+			radarInfoButton.setVisibility(View.GONE);
 			measureButton.setVisibility(View.GONE);
+			/* always hide radar info text view from map when not in radar mode */
+			findViewById(R.id.radarInfoTextView).setVisibility(View.GONE);
+		}
 
 		new TitlebarUpdater(this);
 	}

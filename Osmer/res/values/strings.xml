@@ -282,4 +282,29 @@
 	]]>		    
 	</string>
 	
+	
+	<string name="radar_info">
+	    <![CDATA[
+	    <h6>Radar map</h6>
+	    
+This radar map (VMI, acronym of Vertical Maximum Intensity) represents the maximum reflectivity value present on the vertical of every point.
+
+The VMI can be used for a general monitoring, because it allows to distinguish very well the areas in which occur important 
+phenomena and to classify them basing on their typology (fronts, convective systems, etc).
+
+The riflectivity Z is directly correlated to the density, and therefore to the content of water, of the cloud. Values of Z over 10-15 dBZ usually (but not necessarily) mean a precipitation at the ground. 
+The precipitation becomes intense in the areas where the reflectivity 
+is over 40 dBZ and very intense when the values reach and come through the 50 dBZ (typically in correspondence to storms).	
+
+<br/>
+		The coloured scale representing the <cite>dBZ</cite> values can be observed on the right of the circle that encloses the radar image.
+
+<br/>
+Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.meteo.fvg.it</a> 
+
+
+]]>		
+</string>
+	
+	
 </resources>

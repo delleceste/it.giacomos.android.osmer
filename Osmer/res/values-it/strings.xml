@@ -279,4 +279,24 @@
 	]]>		    
 	</string>
 	
+	<string name="radar_info">
+	    
+		<![CDATA[
+		<h6>Mappa radar</h6>
+	Questa mappa radar (VMI, acronimo di Vertical Maximum Intensity) rappresenta il valore massimo di riflettività presente sulla verticale di ogni punto.
+
+Il VMI può essere utilizzato per un monitoraggio generale, in quanto permette di distinguere molto bene le zone in cui sono in corso fenomeni 
+di un certo rilievo e di classificarli in base alla loro tipologia (fronti, sistemi convettivi, ecc.).
+La riflettività Z è una grandezza direttamente correlata alla densità, e quindi al contenuto d\'acqua, 
+della nube. Valori di Z superiori a 10-15 dBZ comportano solitamente (ma non necessariamente) una precipitazione al suolo, 
+che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto intensa quando vengono raggiunti e superati i 
+50 dBZ (tipicamente in corrispondenza ai nuclei temporaleschi).
+		La <cite>scala colorata</cite> con i valori dei <cite>dBZ</cite> può essere osservata alla destra del cerchio che delimita l\'immagine del radar.
+	<br/>
+	Informazioni prese da http://www.meteo.fvg.it
+
+	]]>		
+	
+	</string>
+	
 </resources>
