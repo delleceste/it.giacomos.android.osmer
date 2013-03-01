@@ -14,15 +14,31 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 
 // import android.util.Log;
 
 public class MapBaloon extends LinearLayout {
 
+	public enum Type { OBSERVATIONS, WEBCAM }
+	
 	public MapBaloon(Context context, AttributeSet attrs) 
 	{
 		super(context, attrs);
 		mGeoPoint = null;
+		mType = Type.OBSERVATIONS;
+	}
+	
+	public Type getType()
+	{
+		return mType;
+	}
+	
+	public void setType(Type t)
+	{
+		mType = t;
 	}
 	
 	protected void onFinishInflate ()
@@ -81,7 +97,7 @@ public class MapBaloon extends LinearLayout {
 	{
 		mGeoPoint = p;
 	}
-	
+
 	@Override
     protected void dispatchDraw(Canvas canvas) {       
 		int wid = getWidth();
@@ -109,5 +125,9 @@ public class MapBaloon extends LinearLayout {
         super.dispatchDraw(canvas);
     }
 	
+	private Type mType;
+	
 	private GeoPoint mGeoPoint;
+
+	
 }

@@ -14,6 +14,7 @@ import it.giacomos.android.osmer.observations.ObservationData;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.SkyDrawableIdPicker;
+import it.giacomos.android.osmer.widgets.mapview.MapBaloon.Type;
 
 public class BaloonOnMap {
 
@@ -40,34 +41,28 @@ public class BaloonOnMap {
         if(webcamBaloon)
         {
         	/* transform dpi into pixels */
-        	if(mapView.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-        	{
-        		width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 310, r.getDisplayMetrics());
-        		height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 280, r.getDisplayMetrics());
-        	}
-        	else 
-        	{
-        		width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 270, r.getDisplayMetrics());
-        		height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 250, r.getDisplayMetrics());
-        	}
+        	width = ((OMapView)mapView).suggestedBaloonWidth(MapBaloon.Type.WEBCAM);
+        	height = ((OMapView)mapView).suggestedBaloonHeight(MapBaloon.Type.WEBCAM);
+        	
         	mapBaloon = (MapBaloon) layoutInflater.inflate(R.layout.webcam_mapbaloon, null);
             layoutParams = new MapView.LayoutParams(
             		(int)width, (int)height,
              		point, MapView.LayoutParams.BOTTOM_CENTER);
             
-
+            mapBaloon.setType(Type.WEBCAM);
             mapBaloon.setText(title + " - " + text);
             mapBaloon.setIcon(icon); 
         }
         else
         {
         	mapBaloon = (MapBaloon) layoutInflater.inflate(R.layout.mapbaloon, null);
-        	width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 170, r.getDisplayMetrics());
-            height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, r.getDisplayMetrics());
+        	width = ((OMapView)mapView).suggestedBaloonWidth(MapBaloon.Type.OBSERVATIONS);
+        	height = ((OMapView)mapView).suggestedBaloonHeight(MapBaloon.Type.OBSERVATIONS);
             layoutParams = new MapView.LayoutParams(
             		(int)width, (int)height,
              		point, MapView.LayoutParams.BOTTOM_CENTER);
-            
+
+            mapBaloon.setType(Type.OBSERVATIONS);
             mapBaloon.setTitle(title);
             mapBaloon.setText(text);
             mapBaloon.setIcon(icon); 

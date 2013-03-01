@@ -32,6 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -58,6 +59,7 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 		mDensityDpi = map.getResources().getDisplayMetrics().densityDpi;
 		Settings s = new Settings(mMap.getContext());
 		mMapClickOnBaloonImageHintEnabled = s.isMapClickOnBaloonImageHintEnabled();
+		mZoomLevel = map.getZoomLevel();
 	}
 
 	/**
@@ -89,54 +91,69 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 		}
 		return needsRedraw;
 	}
-	
+
 	@Override
 	protected boolean onTap(int index) 
 	{
-	  Resources res = mMap.getResources();
-	  OverlayItem item = mOverlayItems.get(index);
-	  String location = item.getTitle();
-	  WebcamData wd = getDataByGeoPoint(item.getPoint());
-	  String message = "";
-	  if(wd != null)
-	  {
-		  BitmapTask webcamImageTask = new BitmapTask(this, BitmapType.WEBCAM);
-		  try 
-		  {
-			URL webcamUrl = new URL(wd.url);
-			Log.i("onTap: gettng url", webcamUrl.toString());
-			webcamImageTask.execute(webcamUrl);
-		  }
-		  catch (MalformedURLException e) 
-		  {
-			// TODO Auto-generated catch block
-			  message = res.getString(R.string.error_message) + ": " + e.getLocalizedMessage();
-			  Toast.makeText(mMap.getContext(), message, Toast.LENGTH_SHORT).show();
-		  }
-		  
-		  /* creates a webcam baloon and adds it to the map */
-		  new BaloonOnMap(mMap, location, wd.text, R.drawable.webcam_download, item.getPoint(), true);
-		  /* install button close click listener */
-		  MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);
-		  baloon.findViewById(R.id.baloon_close_button).setOnClickListener(this);
-		  
-		  int regionExtensionLatitude = GeoCoordinates.fvgTopLeft.getLatitudeE6() - GeoCoordinates.fvgBottomRight.getLatitudeE6();
-		  GeoPoint target = null;
-		  if(mMap.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-			  target = new GeoPoint(regionExtensionLatitude  /2 + item.getPoint().getLatitudeE6(),  item.getPoint().getLongitudeE6());
-		  else
-			  target = new GeoPoint(regionExtensionLatitude / 8 * 5 + item.getPoint().getLatitudeE6(),  item.getPoint().getLongitudeE6());
+		Resources res = mMap.getResources();
+		OverlayItem item = mOverlayItems.get(index);
+		String location = item.getTitle();
+		WebcamData wd = getDataByGeoPoint(item.getPoint());
+		String message = "";
+		if(wd != null)
+		{
+			BitmapTask webcamImageTask = new BitmapTask(this, BitmapType.WEBCAM);
+			try 
+			{
+				URL webcamUrl = new URL(wd.url);
+				Log.i("onTap: gettng url", webcamUrl.toString());
+				webcamImageTask.execute(webcamUrl);
+			}
+			catch (MalformedURLException e) 
+			{
+				// TODO Auto-generated catch block
+				message = res.getString(R.string.error_message) + ": " + e.getLocalizedMessage();
+				Toast.makeText(mMap.getContext(), message, Toast.LENGTH_SHORT).show();
+			}
 
-		 
-		  mMap.getController().animateTo(target);
-	  }
-	  return true;
+			/* creates a webcam baloon and adds it to the map */
+			new BaloonOnMap(mMap, location, wd.text, R.drawable.webcam_download, item.getPoint(), true);
+			/* install button close click listener */
+			MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);
+			baloon.findViewById(R.id.baloon_close_button).setOnClickListener(this);
+			
+			Projection projection = mMap.getProjection();
+			/* get the width/height used to create the baloon.
+			 * The map view has a method that returns the values.
+			 */
+			int baloonWidth = mMap.suggestedBaloonWidth(MapBaloon.Type.WEBCAM);
+			int baloonHeight = mMap.suggestedBaloonHeight(MapBaloon.Type.WEBCAM);
+			Point out = null;
+			out = projection.toPixels(item.getPoint(), out);
+			int dx, dy;
+			int markerX = out.x;
+			int markerY = out.y;
+			final int margin = 10;
+				
+			dx = markerX - baloonWidth / 2 - (mMap.getWidth() - baloonWidth) / 2;
+			dy = markerY - baloonHeight - margin;
+
+			mMap.getController().scrollBy(dx, dy);
+		}
+		return true;
 	}
 
 	@Override
 	public void onBitmapUpdate(Bitmap bmp, BitmapType bt, String errorMessage) 
 	{
-		if(bt == BitmapType.WEBCAM && bmp != null)
+		MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);
+		if(baloon != null && bmp == null && !errorMessage.isEmpty())
+		{
+			if(baloon != null)
+				baloon.setText("Error: " + errorMessage);
+
+		}
+		else if(baloon != null && bt == BitmapType.WEBCAM && bmp != null)
 		{
 			Log.i("WebcamItemizedOverlay: onBitmapUpdate", "received BITMAP");
 			if(!errorMessage.isEmpty())
@@ -144,34 +161,22 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 			else
 			{
 				Log.i("WebcamItemizedOverlay: onBitmapUpdate", " There are " + mMap.getChildCount() + " children");
-				for(int i=0; i < mMap.getChildCount(); ++i) 
+				baloon.setIcon(new BitmapDrawable(bmp));
+
+				Log.i("onTap: baloon coords ON BITMAP UPDATE" , "baloon (w,h): " + baloon.getWidth() + " " + baloon.getHeight() );
+				/* save image on cache in order to display it in external viewer */
+				LastImageCache saver = new LastImageCache();
+				boolean success = saver.save(bmp, mMap.getContext());
+				if(success)
 				{
-				    View nextChild = mMap.getChildAt(i);
-				    Log.i("WebcamItemizedOverlay: onBitmapUpdate", "class of child is " + nextChild.getClass());
-				    if(nextChild instanceof MapBaloon)
-				    {
-				    	MapBaloon baloon = (MapBaloon) nextChild;
-				    	if(baloon != null)
-				    		baloon.setIcon(new BitmapDrawable(bmp));
-				    	
-				    	/* save image on cache in order to display it in external viewer */
-				    	LastImageCache saver = new LastImageCache();
-				    	boolean success = saver.save(bmp, mMap.getContext());
-						if(success)
-						{
-							baloon.findViewById(R.id.baloon_icon).setOnClickListener(this);
-							if(mMapClickOnBaloonImageHintEnabled)
-								Toast.makeText(mMap.getContext(), R.string.hint_click_on_map_baloon_webcam_image, Toast.LENGTH_LONG).show();
-						}
-						else
-							baloon.setOnClickListener(null); /* no clicks */
-				    	break;
-				    }
+					baloon.findViewById(R.id.baloon_icon).setOnClickListener(this);
+					if(mMapClickOnBaloonImageHintEnabled)
+						Toast.makeText(mMap.getContext(), R.string.hint_click_on_map_baloon_webcam_image, Toast.LENGTH_LONG).show();
 				}
-				
+				else
+					baloon.setOnClickListener(null); /* no clicks */
 			}
 		}
-		
 	}
 
 	@Override
@@ -201,49 +206,52 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 	public void draw(Canvas canvas, MapView mapView, boolean shadow)
 	{
 		super.draw(canvas, mapView, false); /* no shadow on icons */
-		int yoffset;
-		Projection proj = mapView.getProjection();
-
-		/* get the necessary font height to draw the text below the marker */
-		Rect r = new Rect();
-		/* adjust font according to display resolution */
-		if(mDensityDpi == DisplayMetrics.DENSITY_XHIGH)
-			mPaint.setTextSize(16);
-		else
-			mPaint.setTextSize(14);
-		mPaint.setAntiAlias(true);
-		int textColor= Color.BLACK;
-		
-		RectF rectf = new RectF();
-		for(OverlayItem item : mOverlayItems)
+		if(mZoomLevel > 9)
 		{
-			String text = item.getTitle();
-			Point pt = proj.toPixels(item.getPoint(), null);
-			mPaint.setARGB(255, 137, 218, 248);
-			canvas.drawCircle(pt.x, pt.y, 3, mPaint);
-			if(text != null && text != "")
+			int yoffset;
+			Projection proj = mapView.getProjection();
+
+			/* get the necessary font height to draw the text below the marker */
+			Rect r = new Rect();
+			/* adjust font according to display resolution */
+			if(mDensityDpi == DisplayMetrics.DENSITY_XHIGH)
+				mPaint.setTextSize(16);
+			else
+				mPaint.setTextSize(14);
+			mPaint.setAntiAlias(true);
+			int textColor= Color.BLACK;
+
+			RectF rectf = new RectF();
+			for(OverlayItem item : mOverlayItems)
 			{
-				mPaint.getTextBounds(text, 0, text.length(), r);
-				yoffset = r.height();
-				mPaint.setColor(Color.WHITE);	
-				mPaint.setAlpha(190);
-				rectf.left = pt.x - 4;
-				rectf.top = pt.y - 4;
-				rectf.right = pt.x + r.width() + 4;
-				rectf.bottom =rectf.top + r.height() + 8;
-				canvas.drawRoundRect(rectf, 6, 6, mPaint);
-				mPaint.setColor(textColor);
-				canvas.drawText(text, pt.x, pt.y + yoffset, mPaint);
+				String text = item.getTitle();
+				Point pt = proj.toPixels(item.getPoint(), null);
+				mPaint.setARGB(255, 137, 218, 248);
+				canvas.drawCircle(pt.x, pt.y, 3, mPaint);
+				if(text != null && text != "")
+				{
+					mPaint.getTextBounds(text, 0, text.length(), r);
+					yoffset = r.height();
+					mPaint.setColor(Color.WHITE);	
+					mPaint.setAlpha(190);
+					rectf.left = pt.x - 4;
+					rectf.top = pt.y - 4;
+					rectf.right = pt.x + r.width() + 4;
+					rectf.bottom =rectf.top + r.height() + 8;
+					canvas.drawRoundRect(rectf, 6, 6, mPaint);
+					mPaint.setColor(textColor);
+					canvas.drawText(text, pt.x, pt.y + yoffset, mPaint);
+				}
 			}
 		}
 	}
-	
-	
+
+
 	@Override
 	public void onZoomLevelChanged(int level) 
 	{
-		
-		
+		mZoomLevel = level;
+		Log.i("onZoomLevelChanged", "zoom level: " + level);
 	}
 
 	@Override
@@ -267,7 +275,7 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 		}
 		return null;
 	}
-	
+
 	boolean webcamInList(WebcamData otherWebcamData)
 	{
 		for(WebcamData wd : mWebcams)
@@ -275,12 +283,13 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 				return true;
 		return false;
 	}
-	
+
 	private OMapView mMap;
 	private ArrayList<OverlayItem> mOverlayItems = new ArrayList<OverlayItem>();
 	private ArrayList<WebcamData> mWebcams;
 	private int mDensityDpi;
 	private Paint mPaint;
+	private int mZoomLevel;
 	/* stores settings value locally in order not to query Settings every time */
 	private boolean mMapClickOnBaloonImageHintEnabled;
 }

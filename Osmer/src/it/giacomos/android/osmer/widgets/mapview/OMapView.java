@@ -15,13 +15,17 @@ import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCacheUpdateListener;
 import it.giacomos.android.osmer.webcams.WebcamData;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
-
+import android.view.View.OnTouchListener;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.MapView;
@@ -277,6 +281,33 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		}
 	}
 
+	public int suggestedBaloonWidth(MapBaloon.Type t)
+	{
+		int  wpix = 170; /* observations */
+		Resources r = getResources();
+		int orientation = r.getConfiguration().orientation;
+		if(orientation == Configuration.ORIENTATION_PORTRAIT && t == MapBaloon.Type.WEBCAM)
+			wpix = 310;
+		else if(orientation == Configuration.ORIENTATION_LANDSCAPE && t == MapBaloon.Type.WEBCAM)
+			wpix = 270;
+		
+    	return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, wpix, r.getDisplayMetrics());
+	}
+	
+	public int suggestedBaloonHeight(MapBaloon.Type t)
+	{
+		int  hpix = 100; /* observations */
+		Resources r = getResources();
+		int orientation = r.getConfiguration().orientation;
+		if(orientation == Configuration.ORIENTATION_PORTRAIT && t == MapBaloon.Type.WEBCAM)
+			hpix = 280;
+		else if(orientation == Configuration.ORIENTATION_LANDSCAPE && t == MapBaloon.Type.WEBCAM)
+			hpix = 250;
+		
+    	return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, hpix, r.getDisplayMetrics());
+	}
+	
+	
 	private MyLocationOverlay mMyLocationOverlay = null;
 	private RadarOverlay mRadarOverlay = null;
 	private CircleOverlay mCircleOverlay = null;
@@ -288,6 +319,4 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 
 	private ZoomChangeListener mZoomChangeListener;
 	private OMapViewEventListener mMapViewEventListener;
-	
-
 }

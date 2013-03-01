@@ -417,7 +417,7 @@ TextDecoderListener
 	@Override
 	public void onStateChanged(long previousState, long state) 
 	{
-		if((state & DownloadStatus.WEBCAM_OSMER_DOWNLOADED) != 0 /*&&  (state & DownloadStatus.WEBCAM_OTHER_DOWNLOADED) == 1) */)
+		if(((state & DownloadStatus.WEBCAM_OSMER_DOWNLOADED) != 0) &&  ((state & DownloadStatus.WEBCAM_OTHER_DOWNLOADED) != 0 ))
 			Toast.makeText(getApplicationContext(), R.string.webcam_lists_downloaded, Toast.LENGTH_SHORT).show();
 
 	}

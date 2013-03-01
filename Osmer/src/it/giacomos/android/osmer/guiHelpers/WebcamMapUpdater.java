@@ -14,15 +14,19 @@ public class WebcamMapUpdater
 	{
 		if(!text.isEmpty())
 		{
+			ArrayList<WebcamData> wcData = null;
+			OMapView map = (OMapView) a.findViewById(R.id.mapview);
 			switch(t)
 			{
 			case WEBCAMLIST_OSMER:
 				OsmerWebcamListDecoder osmerDec = new OsmerWebcamListDecoder();
-				ArrayList<WebcamData> wcData = osmerDec.decode(text, saveOnCache);
-				OMapView map = (OMapView) a.findViewById(R.id.mapview);
+				wcData = osmerDec.decode(text, saveOnCache);
 				map.updateWebcamList(wcData);
 				break;
 			case WEBCAMLIST_OTHER:
+				OtherWebcamListDecoder otherDec = new OtherWebcamListDecoder();
+				wcData = otherDec.decode(text, saveOnCache);
+				map.updateWebcamList(wcData);
 				break;
 			default:
 				break;

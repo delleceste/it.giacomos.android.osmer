@@ -46,7 +46,7 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
         	}
         	catch(IOException e)
         	{
-        		m_errorMessage = "\"" + url.toString() + "\":\n" + e.getLocalizedMessage();
+        		m_errorMessage = "IOException: URL: \"" + url.toString() + "\":\n\"" + e.getLocalizedMessage() + "\"";
         	}
         	publishProgress(100);
         }    

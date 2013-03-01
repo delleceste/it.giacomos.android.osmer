@@ -20,10 +20,8 @@ public class WebcamData
 				this.url.equals(other.url);
 	}
 	
-	public void print() 
+	public String toString() 
 	{
-		Log.i("WebcamData: ", location + "/" + text + "/" + url);
-		// TODO Auto-generated method stub
-		
+		return "WebcamData: " + location + "/" + text + "/" + url + "(" + geoPoint.getLatitudeE6() + ", " + geoPoint.getLongitudeE6() + ")";
 	}
 }
