@@ -79,15 +79,15 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 				if(gp != null)
 				{ 
 					OverlayItem overlayitem = new OverlayItem(gp, wd.location, wd.text);
-					Log.i("WebcamItemizedOverlay: update()", "adding overlkay item " + wd.location + " webcams are " + mWebcams.size());
+//					Log.i("WebcamItemizedOverlay: update()", "adding overlkay item " + wd.location + " webcams are " + mWebcams.size());
 					mOverlayItems.add(overlayitem);
 					needsRedraw = true;
 					populate();
 					mWebcams.add(wd);
 				}
 			}
-			else
-				Log.i("WebcamItemizedOverlay: update()", "Webcam " + wd.location + ": " + wd.url + " already in list");
+//			else
+//				Log.i("WebcamItemizedOverlay: update()", "Webcam " + wd.location + ": " + wd.url + " already in list");
 		}
 		return needsRedraw;
 	}
@@ -160,10 +160,8 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 				Toast.makeText(mMap.getContext(), mMap.getResources().getString(R.string.error_message) + "\n" + errorMessage, Toast.LENGTH_LONG).show();
 			else
 			{
-				Log.i("WebcamItemizedOverlay: onBitmapUpdate", " There are " + mMap.getChildCount() + " children");
 				baloon.setIcon(new BitmapDrawable(bmp));
 
-				Log.i("onTap: baloon coords ON BITMAP UPDATE" , "baloon (w,h): " + baloon.getWidth() + " " + baloon.getHeight() );
 				/* save image on cache in order to display it in external viewer */
 				LastImageCache saver = new LastImageCache();
 				boolean success = saver.save(bmp, mMap.getContext());
@@ -251,7 +249,6 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 	public void onZoomLevelChanged(int level) 
 	{
 		mZoomLevel = level;
-		Log.i("onZoomLevelChanged", "zoom level: " + level);
 	}
 
 	@Override

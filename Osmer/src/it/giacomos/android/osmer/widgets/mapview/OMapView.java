@@ -93,7 +93,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 				mMode.currentType == ObservationType.WEBCAM &&
 						mWebcamItemizedOverlay != null)
 		{
-			Log.i("OMapView:: updateWebcamList", "updating overlay " + webcams.size() + " new items");
+//			Log.i("OMapView:: updateWebcamList", "updating overlay " + webcams.size() + " new items");
 			if(mWebcamItemizedOverlay.update(webcams))
 				this.invalidate();
 		}
@@ -160,7 +160,6 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 	{
 		if(m.equals(mMode))
 		{
-			Log.i("setMode", "new mode equals");
 			return;
 		}
 		
@@ -168,7 +167,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		new BaloonOffMap(this);
 		List<Overlay> overlays = getOverlays();
 		/* remove our overlays except MyLocationOverlay and MapButtonsOverlay */
-		Log.i("OMApView ", "switching mode overlays " + overlays.size());
+//		Log.i("OMApView ", "switching mode overlays " + overlays.size());
 		while(overlays.size() > 1)
 		{
 			overlays.remove(overlays.size() - 1);
@@ -187,7 +186,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 			Drawable webcamIcon = getResources().getDrawable(R.drawable.camera_web_map);
 			if(webcamIcon != null)
 			{
-				Log.i("OMapView", "Creating WebcamItemizedOverlay");
+//				Log.i("OMapView", "Creating WebcamItemizedOverlay");
 				mWebcamItemizedOverlay = new WebcamItemizedOverlay(webcamIcon, this);
 				setOnZoomChangeListener(mWebcamItemizedOverlay);
 				overlays.add(mWebcamItemizedOverlay);

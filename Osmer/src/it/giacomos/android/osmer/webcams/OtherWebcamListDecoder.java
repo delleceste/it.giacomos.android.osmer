@@ -70,7 +70,7 @@ public class OtherWebcamListDecoder implements WebcamListDecoder
 							}
 							if(!wd.location.isEmpty() && !wd.url.isEmpty() && wd.geoPoint != null)
 							{
-								Log.i("OtherWebcamListDecoder: decode()" , "decoded:" + wd.toString());
+//								Log.i("OtherWebcamListDecoder: decode()" , "decoded:" + wd.toString());
 								wcData.add(wd);
 							}
 							else

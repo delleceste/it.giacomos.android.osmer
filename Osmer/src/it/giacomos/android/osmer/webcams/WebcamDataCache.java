@@ -59,7 +59,7 @@ public class WebcamDataCache
 			try {
 				fos.write(s.getBytes());
 				fos.close();
-				Log.i("WebcamDataCache: saveToCache", "written on " + filename);
+//				Log.i("WebcamDataCache: saveToCache", "written on " + filename);
 				ret = true;
 			} 
 			catch (IOException e) { }
@@ -74,7 +74,7 @@ public class WebcamDataCache
 				try {
 					String date = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
 					fos.write(date.getBytes());
-					Log.i("WebcamDataCache: saveToCache", "marked save successful on " + date);
+//					Log.i("WebcamDataCache: saveToCache", "marked save successful on " + date);
 					fos.close();
 					ret = true;
 				} 
