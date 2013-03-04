@@ -29,6 +29,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -60,6 +61,7 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 		Settings s = new Settings(mMap.getContext());
 		mMapClickOnBaloonImageHintEnabled = s.isMapClickOnBaloonImageHintEnabled();
 		mZoomLevel = map.getZoomLevel();
+		mCurrentBitmapTask = null;
 	}
 
 	/**
@@ -102,12 +104,15 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 		String message = "";
 		if(wd != null)
 		{
-			BitmapTask webcamImageTask = new BitmapTask(this, BitmapType.WEBCAM);
+			/* see method documentation */
+			cancelCurrentWebcamTask();
+			
+			mCurrentBitmapTask = new BitmapTask(this, BitmapType.WEBCAM);
 			try 
 			{
 				URL webcamUrl = new URL(wd.url);
 				Log.i("onTap: gettng url", webcamUrl.toString());
-				webcamImageTask.execute(webcamUrl);
+				mCurrentBitmapTask.parallelExecute(webcamUrl);
 			}
 			catch (MalformedURLException e) 
 			{
@@ -149,13 +154,12 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 		MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);
 		if(baloon != null && bmp == null && !errorMessage.isEmpty())
 		{
-			if(baloon != null)
-				baloon.setText("Error: " + errorMessage);
+			Toast.makeText(mMap.getContext(), mMap.getResources().getString(R.string.error_message)
+					+ "\n" + errorMessage, Toast.LENGTH_LONG).show();
 
 		}
 		else if(baloon != null && bt == BitmapType.WEBCAM && bmp != null)
 		{
-			Log.i("WebcamItemizedOverlay: onBitmapUpdate", "received BITMAP");
 			if(!errorMessage.isEmpty())
 				Toast.makeText(mMap.getContext(), mMap.getResources().getString(R.string.error_message) + "\n" + errorMessage, Toast.LENGTH_LONG).show();
 			else
@@ -185,6 +189,7 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 			MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);
 			if(baloon != null)
 			{
+				cancelCurrentWebcamTask();
 				/* remove baloon */
 				mMap.removeView(baloon);
 				/* restore previous position of the map */
@@ -243,7 +248,23 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 			}
 		}
 	}
-
+	
+	/* Attempts to cancel execution of this task. This attempt will fail if the task 
+	 * has already completed, already been cancelled, or could not be cancelled for 
+	 * some other reason. If successful, and this task has not started when cancel 
+	 * is called, this task should never run. If the task has already started, then 
+	 * the mayInterruptIfRunning parameter determines 
+	 * whether the thread executing this task should be interrupted in an attempt to
+	 *  stop the task.
+	 *  Returns
+     * false if the task could not be cancelled, typically because it has already completed normally; 
+	 * true otherwise
+	 */
+	public void cancelCurrentWebcamTask()
+	{
+		if(mCurrentBitmapTask != null  && mCurrentBitmapTask.getStatus() == AsyncTask.Status.RUNNING)
+			mCurrentBitmapTask.cancel(false);
+	}
 
 	@Override
 	public void onZoomLevelChanged(int level) 
@@ -287,6 +308,7 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 	private int mDensityDpi;
 	private Paint mPaint;
 	private int mZoomLevel;
+	private BitmapTask mCurrentBitmapTask;
 	/* stores settings value locally in order not to query Settings every time */
 	private boolean mMapClickOnBaloonImageHintEnabled;
 }

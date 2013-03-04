@@ -6,10 +6,12 @@ import it.giacomos.android.osmer.locationUtils.GeocodeAddressUpdateListener;
 import it.giacomos.android.osmer.locationUtils.LocationInfo;
 import it.giacomos.android.osmer.widgets.SituationImage;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -18,6 +20,9 @@ import android.widget.Toast;
 public class MenuActionsManager implements GeocodeAddressUpdateListener
 {
 	public static final int TEXT_DIALOG = 10;
+	
+	private static final String AUTHOR_URL = "http://www.giacomos.it/curriculum/index.html";
+	private static final String DOC_URL = "http://www.giacomos.it/android/meteofvg/index.html";
 	
 	public MenuActionsManager(Activity activity)
 	{
@@ -36,7 +41,7 @@ public class MenuActionsManager implements GeocodeAddressUpdateListener
 			if(location != null)
 			{
 				GeocodeAddressTask gat = new GeocodeAddressTask(mActivity.getApplicationContext(), this);
-				gat.execute(location);
+				gat.parallelExecute(location);
 				Toast.makeText(mActivity.getApplicationContext(), res.getString(R.string.getting_locality_wait), Toast.LENGTH_SHORT).show();
 			}	
 			break;
@@ -64,6 +69,16 @@ public class MenuActionsManager implements GeocodeAddressUpdateListener
 			data.putString("text", res.getString(R.string.popup_data_update_info));
 			data.putString("title", res.getString(R.string.popup_data_update_title));
 			mActivity.showDialog(TEXT_DIALOG, data);
+			break;
+		case R.id.menu_online_guide:
+			Intent idoc = new Intent(Intent.ACTION_VIEW);
+			idoc.setData(Uri.parse(DOC_URL));
+			mActivity.startActivity(idoc);
+			break;
+		case R.id.menu_author_info:
+			Intent iauthor = new Intent(Intent.ACTION_VIEW);
+			iauthor.setData(Uri.parse(AUTHOR_URL));
+			mActivity.startActivity(iauthor);
 			break;
 		}
 		return true;

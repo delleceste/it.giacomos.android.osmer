@@ -4,12 +4,17 @@
 package it.giacomos.android.osmer.downloadManager.state;
 
 import android.os.AsyncTask;
+import android.os.Build;
+import android.util.Log;
+import android.widget.Toast;
 // import android.util.Log;
 import it.giacomos.android.osmer.BitmapType;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -17,6 +22,7 @@ import android.graphics.BitmapFactory;
  * @author giacomo
  *
  */
+@SuppressLint("NewApi")
 public class BitmapTask extends AsyncTask<URL, Integer, Bitmap> 
 {
 	/** the constructor */
@@ -25,6 +31,19 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
 		m_stateUpdateListener = bitmapUpdateListener;
 		m_errorMessage = "";
 		m_bitmapType = bt;
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public final AsyncTask<URL, Integer, Bitmap> parallelExecute (URL... urls)
+	{
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+		{
+			return super.executeOnExecutor(THREAD_POOL_EXECUTOR, urls);
+		}
+		else
+		{
+			return super.execute(urls);
+		}
 	}
 	
 	public boolean error()
@@ -51,6 +70,11 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
         	publishProgress(100);
         }    
         return bitmap;
+	}
+	
+	public void onCancelled(Bitmap bmp)
+	{
+		Log.i("BitmapTask", "Task cancelled");
 	}
 	
 	public void onPostExecute(Bitmap bmp)

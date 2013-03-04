@@ -111,6 +111,8 @@
     <string name="menu_info">Info&#8230;</string>
     <string name="menu_position">My position&#8230;</string>
 	<string name="menu_refresh">About data update&#8230;</string>
+	<string name="menu_online_guide">Online documentation</string>
+	<string name="menu_author_info">Author Info</string>
 	<string name="locality_unavailable">Locality unavailable</string>
 	<string name="getting_locality_wait">Wait&#8230; retrieving locality&#8230;</string>
 	<string name="ok_button">@android:string/ok</string>
@@ -190,7 +192,7 @@
 	    <br/>
 	    <br/>
 	    
-	    - <a href="http://www.giacomos.it/osmerandroid/index.html">Further information and users guide.</a><br/>
+	    - <a href="http://www.giacomos.it/android/meteofvg/index.html">Ulteriori informazioni e guida online</a><br/>
 	    
 	    </p>
 	    

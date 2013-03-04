@@ -18,6 +18,7 @@ import it.giacomos.android.osmer.guiHelpers.TitlebarUpdater;
 import it.giacomos.android.osmer.guiHelpers.ToggleButtonGroupHelper;
 import it.giacomos.android.osmer.guiHelpers.WebcamMapUpdater;
 import it.giacomos.android.osmer.instanceSnapshotManager.SnapshotManager;
+import it.giacomos.android.osmer.locationUtils.Constants;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressUpdateListener;
 import it.giacomos.android.osmer.locationUtils.LocationComparer;
@@ -107,8 +108,13 @@ TextDecoderListener
 		 * 5000 the LocationManager could potentially rest for minTime milliseconds between location updates to conserve power.
 		 * If minDistance is greater than 0, a location will only be broadcasted if the device moves by minDistance meters.
 		 */
-		m_locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 50, this);
-		m_locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 50, this);
+		m_locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 
+				Constants.LOCATION_UPDATES_NETWORK_MIN_TIME, 
+				Constants.LOCATION_UPDATES_NETWORK_MIN_DIST, this);
+		
+		m_locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 
+				Constants.LOCATION_UPDATES_GPS_MIN_TIME, 
+				Constants.LOCATION_UPDATES_GPS_MIN_TIME, this);
 
 		/* create WebcamDataCache with the Context */
 		WebcamDataCache.getInstance(getApplicationContext());
@@ -289,7 +295,7 @@ TextDecoderListener
 			new CurrentViewUpdater(this);
 			/* update locality if Location is available */
 			if(mCurrentLocation != null)
-				new GeocodeAddressTask(this.getApplicationContext(), this).execute(mCurrentLocation);
+				new GeocodeAddressTask(this.getApplicationContext(), this).parallelExecute(mCurrentLocation);
 		}
 	}
 
@@ -457,7 +463,7 @@ TextDecoderListener
 			((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).onLocationChanged(location);
 			mCurrentLocation = location;
 			if(this.m_downloadManager.state().name() == StateName.Online)
-				new GeocodeAddressTask(this.getApplicationContext(), this).execute(mCurrentLocation);
+				new GeocodeAddressTask(this.getApplicationContext(), this).parallelExecute(mCurrentLocation);
 		}
 	}
 

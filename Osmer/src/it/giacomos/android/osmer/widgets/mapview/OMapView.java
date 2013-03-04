@@ -255,6 +255,8 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		MapBaloon baloon = (MapBaloon) findViewById(R.id.mapbaloon);
 		if(baloon != null)
 		{
+			if(mWebcamItemizedOverlay != null)
+				mWebcamItemizedOverlay.cancelCurrentWebcamTask();
 			/* remove baloon */
 			removeView(baloon);
 			/* restore previous position of the map */
@@ -295,7 +297,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 	
 	public int suggestedBaloonHeight(MapBaloon.Type t)
 	{
-		int  hpix = 100; /* observations */
+		int  hpix = 130; /* observations */
 		Resources r = getResources();
 		int orientation = r.getConfiguration().orientation;
 		if(orientation == Configuration.ORIENTATION_PORTRAIT && t == MapBaloon.Type.WEBCAM)

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+   
+    
    <item android:id="@+id/menu_position"
           android:icon="@drawable/position"
           android:title="@string/menu_position" />
@@ -12,6 +15,14 @@
     <item android:id="@+id/menu_info"
           android:icon="@drawable/info"
           android:title="@string/menu_info" />
+    
+     <item android:id="@+id/menu_online_guide"
+          android:icon="@drawable/online_guide"
+          android:title="@string/menu_online_guide" />
 
+       
+     <item android:id="@+id/menu_author_info"
+          android:icon="@drawable/author_info"
+          android:title="@string/menu_author_info" />
 
 </menu>

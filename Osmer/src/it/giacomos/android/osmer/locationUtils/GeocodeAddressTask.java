@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import it.giacomos.android.osmer.locationUtils.LocationInfo;
 
 public class GeocodeAddressTask extends AsyncTask<Location, Integer, LocationInfo>
@@ -18,7 +20,20 @@ public class GeocodeAddressTask extends AsyncTask<Location, Integer, LocationInf
 		mContext = ctx;
 		mUpdateListener = listener;
 	}
-
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public final AsyncTask<Location, Integer, LocationInfo> parallelExecute (Location... location)
+	{
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+		{
+			return super.executeOnExecutor(THREAD_POOL_EXECUTOR, location);
+		}
+		else
+		{
+			return super.execute(location);
+		}
+	}
+	
 	protected LocationInfo doInBackground(Location... location)
 	{
 		/* get new address and locality only if lat and long are different from those 

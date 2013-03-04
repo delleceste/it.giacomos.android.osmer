@@ -14,7 +14,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 
+import android.annotation.TargetApi;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 
 public class TextTask extends AsyncTask<URL, Integer, String> {
@@ -36,6 +38,15 @@ public class TextTask extends AsyncTask<URL, Integer, String> {
 	public boolean error()
 	{
 		return !m_errorMessage.isEmpty();
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public final AsyncTask<URL, Integer, String> parallelExecute (URL... urls)
+	{
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) /* 11 */
+			return this.executeOnExecutor(THREAD_POOL_EXECUTOR, urls);
+		else
+			return this.execute(urls);
 	}
 	
 	public void onPostExecute(String doc)

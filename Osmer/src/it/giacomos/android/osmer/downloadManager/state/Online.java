@@ -201,7 +201,7 @@ public class Online extends State implements BitmapListener, TextListener {
 		BitmapTask bitmapTask = new BitmapTask(this, t);
 		try{
 			URL url = new URL(urlStr);
-			bitmapTask.execute(url);
+			bitmapTask.parallelExecute(url);
 		}
 		catch(MalformedURLException e)
 		{
@@ -214,7 +214,7 @@ public class Online extends State implements BitmapListener, TextListener {
 		TextTask textTask = new TextTask(this, t);
 		try{
 			URL url = new URL(urlStr);
-			textTask.execute(url);
+			textTask.parallelExecute(url);
 		}
 		catch(MalformedURLException e)
 		{
@@ -246,7 +246,7 @@ public class Online extends State implements BitmapListener, TextListener {
 		try{
 			URL url = new URL(surl);
 			textTask.setReferer(referer);
-			textTask.execute(url);
+			textTask.parallelExecute(url);
 		}
 		catch(MalformedURLException e)
 		{
