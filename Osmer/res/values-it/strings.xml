@@ -113,7 +113,7 @@
 	<string name="menu_refresh">Info su aggiornamento dati</string>
 	<string name="menu_online_guide">Documentazione Online</string>
 	<string name="menu_author_info">Informazioni sull\'autore</string>
-	<string name="menu_config_info">Note di funzionamento</string>
+	<string name="menu_config_info">Caratteristiche tecniche</string>
 	<string name="locality_unavailable">Località non disponibile</string>
 	<string name="getting_locality_wait">Attendi&#8230; recupero località&#8230;</string>
 	<string name="ok_button">Ok</string>
