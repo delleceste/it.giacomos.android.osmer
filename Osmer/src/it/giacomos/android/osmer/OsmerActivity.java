@@ -882,6 +882,11 @@ TextDecoderListener
 		}
 	}
 
+	public Location getCurrentLocation()
+	{
+		return mCurrentLocation;
+	}
+	
 	@Override
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub

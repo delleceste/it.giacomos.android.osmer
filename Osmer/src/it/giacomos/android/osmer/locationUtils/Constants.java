@@ -8,5 +8,7 @@ public class Constants {
 	public static  final float LOCATION_UPDATES_GPS_MIN_DIST = 20f;
 	
 	public static final int LOCATION_COMPARER_INTERVAL = 1000 * 60;
+	
+	public static final int LOCATION_COMPARER_ACCURACY = 200;
 
 }

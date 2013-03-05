@@ -108,11 +108,12 @@
     </string-array>
     
     <!--  MENU -->
-    <string name="menu_info">Info&#8230;</string>
+    <string name="menu_info">Application info&#8230;</string>
     <string name="menu_position">My position&#8230;</string>
 	<string name="menu_refresh">About data update&#8230;</string>
 	<string name="menu_online_guide">Online documentation</string>
 	<string name="menu_author_info">Author Info</string>
+	<string name="menu_config_info">Info about configuration</string>
 	<string name="locality_unavailable">Locality unavailable</string>
 	<string name="getting_locality_wait">Wait&#8230; retrieving locality&#8230;</string>
 	<string name="ok_button">@android:string/ok</string>

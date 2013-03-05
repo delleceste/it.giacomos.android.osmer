@@ -35,7 +35,7 @@ public class LocationComparer {
 	    int accuracyDelta = (int) (newLocation.getAccuracy() - currentBestLocation.getAccuracy());
 	    boolean isLessAccurate = accuracyDelta > 0;
 	    boolean isMoreAccurate = accuracyDelta < 0;
-	    boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+	    boolean isSignificantlyLessAccurate = accuracyDelta > Constants.LOCATION_COMPARER_ACCURACY;
 
 	    /* if the location comes from GPS, is newer and is not significantly less accurate, then
 	     * return true. Assume that GPS location is always worth to be used to update the position.

@@ -11,6 +11,10 @@ import it.giacomos.android.osmer.widgets.CurrentScreen;
 
 public class DownloadStatus {
 
+	public static final int DOWNLOAD_OLD_TIMEOUT = 60000;
+	public static final int DOWNLOAD_OBSERVATIONS_OLD_TIMEOUT = 60;
+	
+	
 	public static DownloadStatus Instance()
 	{
 		if(m_instance == null)
@@ -41,7 +45,7 @@ public class DownloadStatus {
 	
 	public boolean lastCompleteDownloadIsOld()
 	{
-		return System.currentTimeMillis() - m_lastUpdateCompletedOn > 30000;
+		return System.currentTimeMillis() - m_lastUpdateCompletedOn > DOWNLOAD_OLD_TIMEOUT;
 	}
 	
 	public boolean observationsNeedUpdate()
