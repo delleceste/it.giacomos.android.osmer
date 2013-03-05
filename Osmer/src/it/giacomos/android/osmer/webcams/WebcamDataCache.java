@@ -105,7 +105,6 @@ public class WebcamDataCache
 				while ((inputLine = in.readLine()) != null) 
 					text += inputLine + "\n";
 				text = text.substring(0, text.length() - 1);
-				Log.i("WebcamDataCache: saveToCache", "correctly read from cache");
 				in.close();
 			} 
 			catch (IOException e) 
@@ -119,7 +118,7 @@ public class WebcamDataCache
 			
 		}
 		if(text.isEmpty())
-			Log.e("WebcamDataCache: saveToCache", "could not read from cache");
+			Log.i("WebcamDataCache: saveToCache", "could not read from cache");
 		return text;
 		
 	}
@@ -135,11 +134,11 @@ public class WebcamDataCache
 		boolean old = true;
 		long secs = getSecondsFromLastUpdate();
 		old =  (secs > UPTODATE_INTERVAL);
-		
-	    if(old == false)
-	    	Log.i("WebcamDataCache: dataIsOld()", "data not old");
-	    else
-	    	Log.i("WebcamDataCache: dataIsOld()", "data is old");
+//		
+//	    if(old == false)
+//	    	Log.i("WebcamDataCache: dataIsOld()", "data not old");
+//	    else
+//	    	Log.i("WebcamDataCache: dataIsOld()", "data is old");
 	    
 		return old;
 	}

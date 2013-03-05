@@ -81,15 +81,13 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 				if(gp != null)
 				{ 
 					OverlayItem overlayitem = new OverlayItem(gp, wd.location, wd.text);
-//					Log.i("WebcamItemizedOverlay: update()", "adding overlkay item " + wd.location + " webcams are " + mWebcams.size());
+//					Log.i("WebcamItemizedOverlay: update()", "adding overlay item " + wd.location + " webcams are " + mWebcams.size());
 					mOverlayItems.add(overlayitem);
 					needsRedraw = true;
 					populate();
 					mWebcams.add(wd);
 				}
 			}
-//			else
-//				Log.i("WebcamItemizedOverlay: update()", "Webcam " + wd.location + ": " + wd.url + " already in list");
 		}
 		return needsRedraw;
 	}
@@ -111,7 +109,6 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 			try 
 			{
 				URL webcamUrl = new URL(wd.url);
-				Log.i("onTap: gettng url", webcamUrl.toString());
 				mCurrentBitmapTask.parallelExecute(webcamUrl);
 			}
 			catch (MalformedURLException e) 

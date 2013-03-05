@@ -146,13 +146,13 @@ public class Online extends State implements BitmapListener, TextListener {
 	{
 		DownloadStatus downloadStatus = DownloadStatus.Instance();
 		long oldState = downloadStatus.state;
-		if(!errorMessage.isEmpty())
-			Log.e("onTextUpdate(Online)", "error" + errorMessage);
+//		if(!errorMessage.isEmpty())
+//			Log.e("onTextUpdate(Online)", "error" + errorMessage);
 		DownloadStatus.Instance().updateState(st, errorMessage.isEmpty());
 		m_stateUpdateListener.onTextUpdate(s, st, errorMessage);
 		/* publish progress , after DownloadStatus state has been updated */
 		mCurrentStep++;
-		Log.e("ontextUpdate" , "tot steps " + mTotSteps + " current step " + mCurrentStep);
+//		Log.e("ontextUpdate" , "tot steps " + mTotSteps + " current step " + mCurrentStep);
 		m_stateUpdateListener.onProgressUpdate(mCurrentStep, mTotSteps);
 		m_stateUpdateListener.onStateChanged(oldState, downloadStatus.state);
 		mProgressNeedsReset();

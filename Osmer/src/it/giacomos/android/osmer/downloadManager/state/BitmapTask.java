@@ -74,7 +74,7 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
 	
 	public void onCancelled(Bitmap bmp)
 	{
-		Log.i("BitmapTask", "Task cancelled");
+		
 	}
 	
 	public void onPostExecute(Bitmap bmp)

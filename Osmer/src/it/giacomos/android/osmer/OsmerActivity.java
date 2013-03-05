@@ -159,19 +159,16 @@ TextDecoderListener
 
 	protected void onDestroy()
 	{
-		Log.i("onDestroy", "application destroyed");
 		super.onDestroy();
 	}
 
 	public void onRestart()
 	{
-		Log.i("onRestart", "application restarted");
 		super.onRestart();
 	}
 
 	public void onStart()
 	{
-		Log.i("onStart", "application started");
 		super.onStart();
 	}
 
@@ -468,22 +465,29 @@ TextDecoderListener
 	}
 
 	@Override
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
+	public void onProviderDisabled(String provider) 
+	{
+		
+	}
 
+	/** 
+	 * Called when the provider is enabled by the user.
+	 */
+	@Override
+	public void onProviderEnabled(String provider) 
+	{
+		/* hack to make MyLocationOverlay fix the location with GPS even when GPS is enabled
+		 * after MyLocationOverlay.enableMyLocation was called (problem turned out with Galaxy
+		 * S3/Android 4.1)
+		 */
+		((OMapView) findViewById(R.id.mapview)).onPositionProviderEnabled(provider);
 	}
 
 	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
+	public void onStatusChanged(String provider, int status, Bundle extras) 
+	{
+		
 	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub		
-	}
-
-
 
 	@Override
 	/**

@@ -37,7 +37,10 @@ public class LocationComparer {
 	    boolean isMoreAccurate = accuracyDelta < 0;
 	    boolean isSignificantlyLessAccurate = accuracyDelta > 200;
 
-	    if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) 
+	    /* if the location comes from GPS, is newer and is not significantly less accurate, then
+	     * return true. Assume that GPS location is always worth to be used to update the position.
+	     */
+	    if (isNewer && !isSignificantlyLessAccurate && newLocation.getProvider().equals("gps")) 
 	    {
 	        return true;
 	    }
@@ -54,19 +57,27 @@ public class LocationComparer {
 	    }
 
 	    // Determine location quality using a combination of timeliness and accuracy
-	    if (isMoreAccurate) {
+	    if (isMoreAccurate) 
+	    {
 	        return true;
 	    } 
-	    else if (isNewer && !isLessAccurate) {
+	    else if (isNewer && !isLessAccurate) 
+	    {
 	    	
 	        return true;
 	    } 
+	    else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) 
+	    {
+	        return true;
+	    }
 	    return false;
 	}
 
 	/** Checks whether two providers are the same */
-	private boolean isSameProvider(String provider1, String provider2) {
-	    if (provider1 == null) {
+	private boolean isSameProvider(String provider1, String provider2) 
+	{
+	    if (provider1 == null) 
+	    {
 	      return provider2 == null;
 	    }
 	    return provider1.equals(provider2);

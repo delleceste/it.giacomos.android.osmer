@@ -57,6 +57,29 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		mOldZoomLevel = this.getZoomLevel();
 	}
 
+	/** Bug on MyLocationOverlay on android 4??
+	 * If MyLocationOverlay enableMyLocation is called when GPS is disabled,
+	 * it does not request gps updates. So activating gps later on does not
+	 * make MyLocationOverlay get GPS updates.
+	 * This is a hack to make things work on my Galaxy S3 running 4.1.x
+	 * On 2.3.x things seem to work.
+	 * 
+	 * @param provider
+	 */
+	public void onPositionProviderEnabled(String provider)
+	{
+		if(provider.equals("gps") && mMyLocationOverlay.isMyLocationEnabled())
+		{
+			mMyLocationOverlay.disableMyLocation();
+			mMyLocationOverlay.enableMyLocation();
+		}
+	}
+	
+	public void onPositionProviderDisabled(String provider)
+	{
+		
+	}
+	
 	public void onResume()
 	{
 		mMyLocationOverlay.enableMyLocation();
@@ -93,7 +116,6 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 				mMode.currentType == ObservationType.WEBCAM &&
 						mWebcamItemizedOverlay != null)
 		{
-//			Log.i("OMapView:: updateWebcamList", "updating overlay " + webcams.size() + " new items");
 			if(mWebcamItemizedOverlay.update(webcams))
 				this.invalidate();
 		}
@@ -167,7 +189,6 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		new BaloonOffMap(this);
 		List<Overlay> overlays = getOverlays();
 		/* remove our overlays except MyLocationOverlay and MapButtonsOverlay */
-//		Log.i("OMApView ", "switching mode overlays " + overlays.size());
 		while(overlays.size() > 1)
 		{
 			overlays.remove(overlays.size() - 1);
@@ -186,7 +207,6 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 			Drawable webcamIcon = getResources().getDrawable(R.drawable.camera_web_map);
 			if(webcamIcon != null)
 			{
-//				Log.i("OMapView", "Creating WebcamItemizedOverlay");
 				mWebcamItemizedOverlay = new WebcamItemizedOverlay(webcamIcon, this);
 				setOnZoomChangeListener(mWebcamItemizedOverlay);
 				overlays.add(mWebcamItemizedOverlay);

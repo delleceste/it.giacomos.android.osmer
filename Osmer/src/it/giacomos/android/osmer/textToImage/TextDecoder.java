@@ -36,9 +36,7 @@ public class TextDecoder implements TextChangeListener
 	
 	@Override
 	public void onTextChanged(String text, StringType t) 
-	{
-	//	Log.i("TextDecoder::onTextChanged", text + t);
-		
+	{		
 		text = text.toLowerCase(Locale.ITALIAN);
 
 		Pattern snowP = Pattern.compile(P_SNOW);

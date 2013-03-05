@@ -15,9 +15,7 @@ public class ExternalImageViewerLauncher
 	 	 */
 		String filename = "file://" + ctx.getFilesDir().getAbsolutePath();
 		filename += "/" + LastImageCache.CACHE_IMAGE_FILENAME;
-//		Log.i("ExternalImageViewerLauncher", "viewing " + filename);
 		Intent intent = new Intent(); 
-		
 		intent.setAction(Intent.ACTION_VIEW);
 		intent.setDataAndType(Uri.parse(filename), "image/*"); 
 		ctx.startActivity(intent);
