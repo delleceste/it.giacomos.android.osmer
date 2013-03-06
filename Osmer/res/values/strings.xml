@@ -113,7 +113,7 @@
 	<string name="menu_refresh">About data update&#8230;</string>
 	<string name="menu_online_guide">Online documentation</string>
 	<string name="menu_author_info">Author Info</string>
-	<string name="menu_config_info">Info about configuration</string>
+	<string name="menu_config_info">Technical details</string>
 	<string name="locality_unavailable">Locality unavailable</string>
 	<string name="getting_locality_wait">Wait&#8230; retrieving locality&#8230;</string>
 	<string name="ok_button">@android:string/ok</string>
@@ -143,7 +143,9 @@
         <h6>How it works</h6>
         <p>
         Data is refreshed when: <br/>
-        - more than 30 seconds have elapsed since the last download <strong>and</strong>:<br/>
+        - more than N seconds have elapsed since the last download 
+        (for the value of N see Menu -> Technical details, <cite>Data Update Policy</cite> chapter)
+        <strong>and</strong>:<br/>
         - the network becomes available after being down <strong>or</strong> the application is brought to the foreground
           <strong>or</strong> the device changes its orientation (the application is restarted by Android).
           

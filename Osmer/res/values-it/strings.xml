@@ -143,7 +143,9 @@
         <h6>Come funziona</h6>
         <p>
         I dati vengono aggiornati quando: <br/>
-        - sono passati più di <cite>trenta</cite> secondi dal precedente aggiornamento  <strong>e</strong>: <br/>
+        - sono passati più di <cite>N</cite> secondi dal precedente aggiornamento (per il
+        valore di N si veda <cite>menu -> Caratteristiche Tecniche</cite>, capoverso <cite>Data Update Policy</cite>)
+          <strong>e</strong>: <br/>
         - la rete diventa disponibile dopo un periodo di rete mancante <strong>o</strong> l\'applicazione 
           diventa attiva sullo schermo del dispositivo  <strong>o</strong> il dispositivo cambia orientazione
           (e quindi Android la chiude e la riavvia).
