@@ -3,12 +3,14 @@ package it.giacomos.android.osmer;
 import it.giacomos.android.osmer.downloadManager.DownloadStatus;
 import it.giacomos.android.osmer.locationUtils.Constants;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.location.Location;
 import android.location.LocationManager;
-import android.text.format.DateFormat;
+import java.text.DateFormat;
 public class ConfigInfo {
 
 	public static String gatherInfo(Activity mActivity) 
@@ -28,6 +30,10 @@ public class ConfigInfo {
 			info += "- yes<br/>";
 			info += "- current provider: " + location.getProvider() + "<br/>";
 			info += "- accuracy: " + location.getAccuracy() + "m <br/>";
+			Date date = new Date(location.getTime());
+			DateFormat df = DateFormat.getDateTimeInstance();
+			String time = df.format(date);
+			info += "- last loc. timestamp: " + time + " <br/>";
 		}
 		
 		
@@ -56,15 +62,17 @@ public class ConfigInfo {
 		"* newer: delta = (currentLoc.time - previousLoc.time) > 0;<br/>" +
 		"* significantly newer: delta >" + Constants.LOCATION_COMPARER_INTERVAL + "ms;<br/>" +
 		"* significantly older: delta < -" + Constants.LOCATION_COMPARER_INTERVAL + "ms;<br/>" +
-		"* significantly older: delta < -" + Constants.LOCATION_COMPARER_INTERVAL + "ms;<br/>" +
 		"* significantly less accurate: newLoc.accuracy - prevLoc.accuracy > " 
 			+ Constants.LOCATION_COMPARER_ACCURACY + "(meters);<br/>";
 		
 		info += "<p><strong>Location update request parameters</strong>:<br/>" +
-				"* network, minTime: " + Constants.LOCATION_UPDATES_NETWORK_MIN_TIME + "ms<br/>" +
-				"* network, minDistance: " + Constants.LOCATION_UPDATES_NETWORK_MIN_DIST + "m<br/>" +
+				"* NETWORK, minTime: " + Constants.LOCATION_UPDATES_NETWORK_MIN_TIME + "ms<br/>" +
+				"* NETWORK, minDistance: " + Constants.LOCATION_UPDATES_NETWORK_MIN_DIST + "m<br/>" +
 				"* GPS, minTime: " + Constants.LOCATION_UPDATES_GPS_MIN_TIME + "ms<br/>" +
-				"* GPS, minDistance: " + Constants.LOCATION_UPDATES_GPS_MIN_DIST + "m<br/>";
+				"* GPS, minDistance: " + Constants.LOCATION_UPDATES_GPS_MIN_DIST + "m<br/>"; 
+		
+		//		"* PASSIVE, minTime: " + Constants.LOCATION_UPDATES_PASSIVE_MIN_TIME + "ms<br/>" +
+			//	"* PASSIVE, minDistance: " + Constants.LOCATION_UPDATES_PASSIVE_MIN_DIST + "m<br/>";
 		
 		info += "<br/><strong>Google Map location update strategy</strong><br/>" +
 				"Managed by MyLocationOverlay Google Map API v1";
