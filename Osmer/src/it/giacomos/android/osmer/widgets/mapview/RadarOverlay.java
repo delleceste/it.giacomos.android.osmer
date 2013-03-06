@@ -51,7 +51,7 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 //	        		" dst " + dst.toShortString() + "Density " + mBitmap.getDensity() +
 //	        		"draw rect " + canvas.getClipBounds().toShortString());
 	        mPaint.setStyle(Paint.Style.STROKE);
-	        mPaint.setAlpha(50);
+	        mPaint.setAlpha(45);
 	        canvas.drawCircle(dst.centerX(), dst.centerY(), dst.width()/2, mPaint);
 	        canvas.drawBitmap(mBitmap, src, dst, mPaint);
 	        mPaint.setAlpha(160);
