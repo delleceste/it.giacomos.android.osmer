@@ -29,6 +29,8 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.MapView;
@@ -54,7 +56,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		mMyLocationOverlay = new MyLocationOverlay(context, this);
 		getOverlays().add(mMyLocationOverlay);
 		
-		centerMap();
+		//centerMap();
 		mMode = null;
 		setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 		mOldZoomLevel = this.getZoomLevel();
@@ -95,6 +97,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 
 	public void centerMap()
 	{		
+		Log.e("OMapView: ", " centerMap called!!!!");
 		MapController mapController = getController();
 		mapController.animateTo(GeoCoordinates.center);
 		mapController.setCenter(GeoCoordinates.center);
@@ -159,12 +162,20 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		bundle.putBoolean("measureEnabled", mCircleOverlay != null);
 		if(mCircleOverlay != null)
 			mCircleOverlay.saveState(bundle);
+		
+		/* save center and zoom (1.1.5) */
+		GeoPoint mapCenter = getMapCenter();
+		bundle.putInt("centerLatitude", mapCenter.getLatitudeE6());
+		bundle.putInt("centerLongitude", mapCenter.getLongitudeE6());
+		bundle.putInt("zoomLevel", getZoomLevel());
 		return bundle;
 	}
 
 	public void onRestoreInstanceState (Parcelable state)
 	{
 		Bundle b = (Bundle) state;
+		super.onRestoreInstanceState(b.getParcelable("OMapViewState"));
+		
 		if(b.containsKey("RadarBitmap"))
 		{
 			Bitmap bmp = b.getParcelable("RadarBitmap");
@@ -177,8 +188,16 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 			if(mCircleOverlay != null)
 				mCircleOverlay.restoreState(state);
 		}
-		
-		super.onRestoreInstanceState(b.getParcelable("OMapViewState"));
+		/* restore center and zoom (1.1.5) */
+		if(b.containsKey("zoomLevel")) /* then also contains centerLatitude/Longitude */
+		{
+			Log.i("onRestore MapView", "restoring center and xoom level to " + b.getInt("zoomLevel"));
+			MapController controller = getController();
+			controller.setCenter(new GeoPoint(b.getInt("centerLatitude"), b.getInt("centerLongitude")));
+			controller.setZoom(b.getInt("zoomLevel"));
+		}
+		else
+			centerMap();
 	}
 
 	public void setMode(MapViewMode m)
@@ -202,6 +221,8 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		case RADAR:
 			if(mRadarOverlay == null)
 				mRadarOverlay = new RadarOverlay();
+			else
+				Log.i("OMapView: setMode", "Not recreating overlay for radar");
 			overlays.add(mRadarOverlay);
 			setOnZoomChangeListener(null);
 			break;
@@ -211,7 +232,9 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 			Drawable webcamIcon = getResources().getDrawable(R.drawable.camera_web_map);
 			ArrayList<WebcamData> webcamData = null;
 			if(mWebcamItemizedOverlay == null) 
-			{/* first time we enter webcam mode */
+			{
+				/* first time we enter webcam mode */
+				Log.i("OMapView: setMode", "getting additional webcams data");
 				webcamData = mGetAdditionalWebcamsData();
 				mWebcamItemizedOverlay = new WebcamItemizedOverlay<OverlayItem>(webcamIcon, this);
 				setOnZoomChangeListener(mWebcamItemizedOverlay);

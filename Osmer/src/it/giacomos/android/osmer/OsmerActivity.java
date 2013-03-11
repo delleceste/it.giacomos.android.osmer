@@ -261,6 +261,13 @@ TextDecoderListener
 
 		OMapView map = (OMapView) findViewById(R.id.mapview);
 		map.setMapViewEventListener(this);
+		/* fixed in 1.1.5: satellite view button checked if map is  satellite.
+		 * MapView saves somewhere its previous state and restores it.
+		 * It was difficult to find where. Here it seems to be the right place to check or
+		 * uncheck the satellite view button.
+		 */
+		((ToggleButton) findViewById(R.id.satelliteViewButton)).setChecked(map.isSatellite());
+		
 		/* install listeners on buttons */
 		installButtonListener();
 		installOnTouchListener();
@@ -550,8 +557,8 @@ TextDecoderListener
 
 
 	@Override
-	public void onSatelliteEnabled(boolean en) {
-
+	public void onSatelliteEnabled(boolean en) 
+	{
 	}
 
 	@Override

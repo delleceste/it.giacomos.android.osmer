@@ -170,7 +170,7 @@
 			<it.giacomos.android.osmer.widgets.mapview.OMapView
 				android:id="@+id/mapview" android:layout_width="fill_parent"
 				android:layout_height="fill_parent" android:clickable="true"
-				android:apiKey="0AspVUt7XvDhAh_n6QG0MOW4uljL5qW6Iay0abw">
+				android:apiKey="0AspVUt7XvDg8GeJotja4Y01qyL579hov2J2JPw">
 			</it.giacomos.android.osmer.widgets.mapview.OMapView>
 			
 
@@ -179,10 +179,10 @@
 			
 			<!--release  0AspVUt7XvDhAh_n6QG0MOW4uljL5qW6Iay0abw -->
 
-			<ToggleButton android:layout_width="28dp"
+			<ToggleButton android:layout_width="32dp"
 				android:textOff=""
 				android:textOn=""
-        		android:layout_height="28dp" 
+        		android:layout_height="32dp" 
         		android:background="@drawable/earth"
         		android:layout_marginLeft="5dp"
         		android:layout_marginTop="5dp"
@@ -190,10 +190,10 @@
         		android:layout_alignParentTop="true" 
         		android:id="@+id/satelliteViewButton" />
         		
-        	<ToggleButton android:layout_width="28dp"
+        	<ToggleButton android:layout_width="32dp"
 				android:textOff=""
 				android:textOn=""
-        		android:layout_height="28dp" 
+        		android:layout_height="32dp" 
         		android:background="@drawable/measure"
         		android:layout_marginLeft="5dp"
         		android:layout_marginTop="5dp"
@@ -202,10 +202,10 @@
         		android:id="@+id/measureToggleButton" />	
         		
         		
-        	<ToggleButton android:layout_width="28dp"
+        	<ToggleButton android:layout_width="32dp"
 				android:textOff=""
 				android:textOn=""
-        		android:layout_height="28dp" 
+        		android:layout_height="32dp" 
         		android:background="@drawable/radar_info"
         		android:layout_marginLeft="5dp"
         		android:layout_marginTop="5dp"
