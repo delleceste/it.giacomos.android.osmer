@@ -19,6 +19,9 @@ public class LocationNamesMap {
 		mMap.put("Tarvisio", new GeoPoint(46505402, 13578493));
 		mMap.put("Cividale d.F.", new GeoPoint(46090648, 13435000));
 		mMap.put("Grado", new GeoPoint(45678462, 13395962));
+		mMap.put("GradoMare", new GeoPoint(45675688, 13394426));
+		mMap.put("Aurisina", new GeoPoint(45740805, 13669846));
+		mMap.put("Claut", new GeoPoint(46217788, 12472057));
 		mMap.put("Lignano", new GeoPoint(45690989, 13138748));
 		mMap.put("Faedis", new GeoPoint(46152939, 13346416));
 		mMap.put("S.Vito al Tgl.", new GeoPoint(45915116, 12856410));

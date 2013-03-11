@@ -13,7 +13,10 @@ import it.giacomos.android.osmer.observations.ObservationDrawableIdPicker;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCacheUpdateListener;
+import it.giacomos.android.osmer.webcams.AdditionalWebcams;
+import it.giacomos.android.osmer.webcams.OtherWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -197,7 +200,8 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		switch(m.currentType)
 		{
 		case RADAR:
-			mRadarOverlay = new RadarOverlay();
+			if(mRadarOverlay == null)
+				mRadarOverlay = new RadarOverlay();
 			overlays.add(mRadarOverlay);
 			setOnZoomChangeListener(null);
 			break;
@@ -205,13 +209,17 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 			break;
 		case WEBCAM:
 			Drawable webcamIcon = getResources().getDrawable(R.drawable.camera_web_map);
-			if(webcamIcon != null)
-			{
-				mWebcamItemizedOverlay = new WebcamItemizedOverlay(webcamIcon, this);
+			ArrayList<WebcamData> webcamData = null;
+			if(mWebcamItemizedOverlay == null) 
+			{/* first time we enter webcam mode */
+				webcamData = mGetAdditionalWebcamsData();
+				mWebcamItemizedOverlay = new WebcamItemizedOverlay<OverlayItem>(webcamIcon, this);
 				setOnZoomChangeListener(mWebcamItemizedOverlay);
-				overlays.add(mWebcamItemizedOverlay);
+				this.updateWebcamList(webcamData);
 			}
+			overlays.add(mWebcamItemizedOverlay);
 			break;
+			
 		default:
 			int resId = ObservationDrawableIdPicker.pick(m.currentType);
 			if(resId > -1)
@@ -220,6 +228,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 				drawable = getResources().getDrawable(resId);
 				if(drawable != null)
 				{
+					mObservationsItemizedOverlay = null;
 					mObservationsItemizedOverlay = new ObservationsItemizedOverlay<OverlayItem>(drawable, 
 							m.currentType, 
 							m.currentMode,
@@ -326,6 +335,18 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 			hpix = 250;
 		
     	return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, hpix, r.getDisplayMetrics());
+	}
+	
+	public ArrayList<WebcamData > mGetAdditionalWebcamsData()
+	{
+		ArrayList<WebcamData> webcamData = null;
+		String additionalWebcamsTxt = "";
+		/* get fixed additional webcams list from assets */
+		AdditionalWebcams additionalWebcams = new AdditionalWebcams((Activity)this.getContext());
+		additionalWebcamsTxt = additionalWebcams.getText();
+		OtherWebcamListDecoder additionalWebcamsDec = new OtherWebcamListDecoder();
+		webcamData = additionalWebcamsDec.decode(additionalWebcamsTxt, false);
+		return webcamData;
 	}
 	
 	

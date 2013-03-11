@@ -1,7 +1,6 @@
 package it.giacomos.android.osmer;
 import com.google.android.maps.MapActivity;
 
-import it.giacomos.android.osmer.R.id;
 import it.giacomos.android.osmer.downloadManager.DownloadManager;
 import it.giacomos.android.osmer.downloadManager.DownloadReason;
 import it.giacomos.android.osmer.downloadManager.DownloadStatus;
