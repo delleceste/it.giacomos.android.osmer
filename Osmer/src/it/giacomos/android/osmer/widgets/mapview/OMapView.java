@@ -65,6 +65,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		 */
 		if(settings.mapNeverCentered())
 		{
+			Log.i("OMapView.OMapView", "map was not centered.. centering");
 			centerMap();
 			settings.setMapWasCentered(true);
 			settings = null;
