@@ -179,50 +179,49 @@
 			
 			<!--release  0AspVUt7XvDhAh_n6QG0MOW4uljL5qW6Iay0abw -->
 
-			<ToggleButton android:layout_width="32dp"
+					
+        	<ToggleButton android:layout_width="30dp"
 				android:textOff=""
 				android:textOn=""
-        		android:layout_height="32dp" 
-        		android:background="@drawable/earth"
+        		android:layout_height="30dp" 
+        		android:background="@drawable/center_map"
         		android:layout_marginLeft="5dp"
         		android:layout_marginTop="5dp"
         		android:layout_alignParentLeft="true"
-        		android:layout_alignParentTop="true" 
-        		android:id="@+id/satelliteViewButton" />
-        		
-        	<ToggleButton android:layout_width="32dp"
+        		android:layout_alignParentTop="true"
+        		android:id="@+id/centerMapButton" />		
+			
+			<ToggleButton android:layout_width="30dp"
+        		android:layout_height="30dp" 
 				android:textOff=""
 				android:textOn=""
-        		android:layout_height="32dp" 
+        		android:layout_marginLeft="5dp"
+        		android:layout_marginTop="5dp"
+        		android:background="@drawable/earth"
+        		android:layout_below="@id/centerMapButton" 
+        		android:id="@+id/satelliteViewButton" />
+        		
+        	<ToggleButton android:layout_width="30dp"
+				android:textOff=""
+				android:textOn=""
+        		android:layout_height="30dp" 
         		android:background="@drawable/measure"
         		android:layout_marginLeft="5dp"
         		android:layout_marginTop="5dp"
         		android:layout_alignParentLeft="true"
         		android:layout_below="@id/satelliteViewButton" 
-        		android:id="@+id/measureToggleButton" />	
-        		
-        		
-        	<ToggleButton android:layout_width="32dp"
+        		android:id="@+id/measureToggleButton" />
+        	
+         	 <ToggleButton android:layout_width="30dp"
 				android:textOff=""
 				android:textOn=""
-        		android:layout_height="32dp" 
+        		android:layout_height="30dp" 
         		android:background="@drawable/radar_info"
         		android:layout_marginLeft="5dp"
         		android:layout_marginTop="5dp"
         		android:layout_alignParentLeft="true"
         		android:layout_below="@id/measureToggleButton" 
         		android:id="@+id/radarInfoButton" />	
-        		
-        	<ToggleButton android:layout_width="32dp"
-				android:textOff=""
-				android:textOn=""
-        		android:layout_height="32dp" 
-        		android:background="@drawable/center_map"
-        		android:layout_marginRight="5dp"
-        		android:layout_marginTop="5dp"
-        		android:layout_alignParentRight="true"
-        		android:layout_alignParentTop="true" 
-        		android:id="@+id/centerMapButton" />
         	
         	<TextView
         	    android:id="@+id/radarInfoTextView"
