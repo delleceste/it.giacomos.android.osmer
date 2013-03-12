@@ -170,7 +170,7 @@
 			<it.giacomos.android.osmer.widgets.mapview.OMapView
 				android:id="@+id/mapview" android:layout_width="fill_parent"
 				android:layout_height="fill_parent" android:clickable="true"
-				android:apiKey="0AspVUt7XvDg8GeJotja4Y01qyL579hov2J2JPw">
+				android:apiKey="0AspVUt7XvDhAh_n6QG0MOW4uljL5qW6Iay0abw">
 			</it.giacomos.android.osmer.widgets.mapview.OMapView>
 			
 
@@ -213,6 +213,17 @@
         		android:layout_below="@id/measureToggleButton" 
         		android:id="@+id/radarInfoButton" />	
         		
+        	<ToggleButton android:layout_width="32dp"
+				android:textOff=""
+				android:textOn=""
+        		android:layout_height="32dp" 
+        		android:background="@drawable/center_map"
+        		android:layout_marginRight="5dp"
+        		android:layout_marginTop="5dp"
+        		android:layout_alignParentRight="true"
+        		android:layout_alignParentTop="true" 
+        		android:id="@+id/centerMapButton" />
+        	
         	<TextView
         	    android:id="@+id/radarInfoTextView"
         	    android:layout_width="250dp"

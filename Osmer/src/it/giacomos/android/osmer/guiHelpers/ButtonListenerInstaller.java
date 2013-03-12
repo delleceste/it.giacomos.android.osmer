@@ -141,6 +141,9 @@ public class ButtonListenerInstaller
 		buttonWebcam.setOnClickListener(a);
 		mToggleButtonGroupHelper.addButton(R.id.buttonWebcam);
 		
+		/* center map button (v. 1.1.5) */
+		a.findViewById(R.id.centerMapButton).setOnClickListener(a);
+		
 	}
 }
 

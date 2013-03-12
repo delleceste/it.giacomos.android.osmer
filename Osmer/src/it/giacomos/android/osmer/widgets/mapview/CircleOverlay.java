@@ -241,7 +241,7 @@ public class CircleOverlay extends Overlay {
 				}
 				else
 				{
-					//Log.e("center current ", "center " + centerPoint + " current " + currentPoint);
+					//Log.i("center current ", "center " + centerPoint + " current " + currentPoint);
 					/* calculate the square of the radiuses interval, augmented and diminished */
 					float squareRadius = (float) (Math.pow(centerPoint.x - currentPoint.x, 2) + Math.pow(centerPoint.y - currentPoint.y, 2));
 					float squareRadiusPlus = squareRadius + 0.6f * squareRadius;

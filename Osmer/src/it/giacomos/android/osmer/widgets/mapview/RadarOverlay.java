@@ -47,7 +47,7 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 			Rect src = new Rect( 0, 0, mBitmap.getWidth(), mBitmap.getHeight() );
 	        Rect dst = new Rect( topLeft.x, topLeft.y ,bottomRight.x, bottomRight.y );
 	
-//	        Log.e("draw RadarOverlay", "drawing bitmap (is null?) " + mBitmap + " - src " + src.toShortString() +
+//	        Log.i("draw RadarOverlay", "drawing bitmap (is null?) " + mBitmap + " - src " + src.toShortString() +
 //	        		" dst " + dst.toShortString() + "Density " + mBitmap.getDensity() +
 //	        		"draw rect " + canvas.getClipBounds().toShortString());
 	        mPaint.setStyle(Paint.Style.STROKE);

@@ -13,6 +13,7 @@ import it.giacomos.android.osmer.observations.ObservationDrawableIdPicker;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCacheUpdateListener;
+import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.webcams.AdditionalWebcams;
 import it.giacomos.android.osmer.webcams.OtherWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;
@@ -47,21 +48,33 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 	public final int minLongitude = GeoCoordinates.topLeft.getLongitudeE6();
 	public final int maxLongitude = GeoCoordinates.bottomRight.getLongitudeE6();
 
-	public OMapView(Context context, AttributeSet attrs) {
+	public OMapView(Context context, AttributeSet attrs) 
+	{
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
-
+		Settings settings = new Settings(context);
 		setBuiltInZoomControls(true);
 		/* add my location overlay */
 		mMyLocationOverlay = new MyLocationOverlay(context, this);
 		getOverlays().add(mMyLocationOverlay);
 		
-		//centerMap();
+		/* The first time the application is started, center the map.
+		 * Afterwards, MapView restores its previous state (center, zoom...)
+		 * If we call centerMap in the constructor, then onRestoreInstanceState
+		 * does not restore zoom and center.
+		 * Use shared preferences to get the needed bit.
+		 */
+		if(settings.mapNeverCentered())
+		{
+			centerMap();
+			settings.setMapWasCentered(true);
+			settings = null;
+		}
+		
 		mMode = null;
 		setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 		mOldZoomLevel = this.getZoomLevel();
 	}
-
+	
 	/** Bug on MyLocationOverlay on android 4??
 	 * If MyLocationOverlay enableMyLocation is called when GPS is disabled,
 	 * it does not request gps updates. So activating gps later on does not
@@ -97,10 +110,8 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 
 	public void centerMap()
 	{		
-		Log.e("OMapView: ", " centerMap called!!!!");
 		MapController mapController = getController();
 		mapController.animateTo(GeoCoordinates.center);
-		mapController.setCenter(GeoCoordinates.center);
 		setSpan();
 	}
 
@@ -152,7 +163,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 	{
 		return mMyLocationOverlay;
 	}
-
+	
 	public Parcelable onSaveInstanceState()
 	{
 		Parcelable p = super.onSaveInstanceState();
@@ -162,12 +173,6 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		bundle.putBoolean("measureEnabled", mCircleOverlay != null);
 		if(mCircleOverlay != null)
 			mCircleOverlay.saveState(bundle);
-		
-		/* save center and zoom (1.1.5) */
-		GeoPoint mapCenter = getMapCenter();
-		bundle.putInt("centerLatitude", mapCenter.getLatitudeE6());
-		bundle.putInt("centerLongitude", mapCenter.getLongitudeE6());
-		bundle.putInt("zoomLevel", getZoomLevel());
 		return bundle;
 	}
 
@@ -175,7 +180,6 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 	{
 		Bundle b = (Bundle) state;
 		super.onRestoreInstanceState(b.getParcelable("OMapViewState"));
-		
 		if(b.containsKey("RadarBitmap"))
 		{
 			Bitmap bmp = b.getParcelable("RadarBitmap");
@@ -188,16 +192,6 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 			if(mCircleOverlay != null)
 				mCircleOverlay.restoreState(state);
 		}
-		/* restore center and zoom (1.1.5) */
-		if(b.containsKey("zoomLevel")) /* then also contains centerLatitude/Longitude */
-		{
-			Log.i("onRestore MapView", "restoring center and xoom level to " + b.getInt("zoomLevel"));
-			MapController controller = getController();
-			controller.setCenter(new GeoPoint(b.getInt("centerLatitude"), b.getInt("centerLongitude")));
-			controller.setZoom(b.getInt("zoomLevel"));
-		}
-		else
-			centerMap();
 	}
 
 	public void setMode(MapViewMode m)
@@ -221,8 +215,6 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		case RADAR:
 			if(mRadarOverlay == null)
 				mRadarOverlay = new RadarOverlay();
-			else
-				Log.i("OMapView: setMode", "Not recreating overlay for radar");
 			overlays.add(mRadarOverlay);
 			setOnZoomChangeListener(null);
 			break;
@@ -234,7 +226,6 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 			if(mWebcamItemizedOverlay == null) 
 			{
 				/* first time we enter webcam mode */
-				Log.i("OMapView: setMode", "getting additional webcams data");
 				webcamData = mGetAdditionalWebcamsData();
 				mWebcamItemizedOverlay = new WebcamItemizedOverlay<OverlayItem>(webcamIcon, this);
 				setOnZoomChangeListener(mWebcamItemizedOverlay);
@@ -384,4 +375,5 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 
 	private ZoomChangeListener mZoomChangeListener;
 	private OMapViewEventListener mMapViewEventListener;
+	private boolean mOnRestoreInstanceStateCalled;
 }

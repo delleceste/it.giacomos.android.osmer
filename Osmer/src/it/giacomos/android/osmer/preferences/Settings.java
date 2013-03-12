@@ -36,6 +36,19 @@ public class Settings
 		e.commit();
 	}
 	
+	public boolean mapNeverCentered()
+	{
+		boolean res = mSharedPreferences.getBoolean("MAP_NEVER_CENTERED", true);
+		return res;
+	}
+	
+	public void setMapWasCentered(boolean was)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putBoolean("MAP_NEVER_CENTERED", !was);
+		e.commit();
+	}
+	
 	public boolean isMapMeasureHintEnabled()
 	{
 		boolean res = mSharedPreferences.getBoolean("HINT_MAP_MEASURE", true);
