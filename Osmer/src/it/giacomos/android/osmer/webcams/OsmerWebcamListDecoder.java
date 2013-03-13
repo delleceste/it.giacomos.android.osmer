@@ -57,7 +57,11 @@ public class OsmerWebcamListDecoder implements WebcamListDecoder
 			
 			fileName = wd.location;
 			if(!fileName.isEmpty())
-				wd.url = Urls.webcamImagesPath() + fileName + ".jpg";
+			{
+				Urls urls = new Urls();
+				wd.url = urls.webcamImagesPath() + fileName + ".jpg";
+				urls = null;
+			}
 			
 			/* next line contains file name */
 			line = lines[i + 1];

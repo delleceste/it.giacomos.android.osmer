@@ -31,6 +31,8 @@ public class ODoubleLayerImageView extends ImageView
 		super(context, attrs);
 		mRestoreSuccessful = false;
 		mLocation = null;
+		mLayers = null;
+		mLayerDrawable = null;
 		mLocationPoint = null;
 		mPaint = new Paint();
 		mPaint.setAntiAlias(true);
@@ -60,10 +62,11 @@ public class ODoubleLayerImageView extends ImageView
 
 	public boolean restoreFromInternalStorage()
 	{
+		mBitmap = null;
 		/* Decode a file path into a bitmap. If the specified file name is null, 
 		 * or cannot be decoded into a bitmap, the function returns null. 
 		 */
-		mBitmap = BitmapFactory.decodeFile(getContext().getFilesDir().getAbsolutePath() + "/" + makeFileName());
+		mBitmap = BitmapFactory.decodeFile(this.getContext().getFilesDir().getAbsolutePath() + "/" + makeFileName());
 		if(mBitmap != null)
 			setBitmap(mBitmap);
 		
@@ -83,6 +86,7 @@ public class ODoubleLayerImageView extends ImageView
 	public void onRestoreInstanceState (Parcelable state)
 	{
 		Bundle b = (Bundle) state;
+		mBitmap = null;
 		mBitmap = (Bitmap) b.getParcelable("bitmap");
 		if(mBitmap != null)
 		{
@@ -97,14 +101,24 @@ public class ODoubleLayerImageView extends ImageView
 	}
 
 	public void setBitmap(Bitmap bitmap) {
+		this.mBitmap = null;
+		this.mLayers = null;
+		mLayerDrawable= null;
 		this.mBitmap = bitmap;
-		Drawable [] layers = new Drawable[2];
-		Bitmap fvgBackgroundBmp = BitmapFactory.decodeResource(getResources(), R.drawable.fvg_background2);
-		//Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, fvgBackgroundBmp.getWidth(), fvgBackgroundBmp.getHeight(), false);
-		layers[0] =  new BitmapDrawable(getContext().getResources(), fvgBackgroundBmp);
-		layers[1] = new BitmapDrawable(getContext().getResources(), bitmap);
-		LayerDrawable layerDrawable = new LayerDrawable(layers);
-		setImageDrawable(layerDrawable);
+		try{
+			mLayers = new Drawable[2];
+			Bitmap fvgBackgroundBmp = BitmapFactory.decodeResource(getResources(), R.drawable.fvg_background2);
+			//Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, fvgBackgroundBmp.getWidth(), fvgBackgroundBmp.getHeight(), false);
+			mLayers[0] =  new BitmapDrawable(getResources(), fvgBackgroundBmp);
+			mLayers[1] = new BitmapDrawable(getResources(), bitmap);
+			mLayerDrawable = new LayerDrawable(mLayers);
+			setImageDrawable(mLayerDrawable);
+			mLayers = null;
+		}
+		catch(Exception outOfMemory)
+		{
+			Log.e("setBitmap got exception", outOfMemory.getLocalizedMessage());
+		}
 //		Log.e("SetBitmap ODoubleLayerImageView", "Bitmap size " + fvgBackgroundBmp.getWidth() +
 //				"x" + fvgBackgroundBmp.getHeight() + " view size " + this.getWidth() + "x" +
 //				this.getHeight() + bitmap.getHeight() + bitmap.getWidth());
@@ -238,4 +252,8 @@ public class ODoubleLayerImageView extends ImageView
 	private boolean mDrawLocationEnabled = true;
 	
 	protected Paint mPaint;
+	
+	private Drawable [] mLayers;
+	
+	private LayerDrawable mLayerDrawable;
 }

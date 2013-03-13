@@ -86,8 +86,10 @@ public class MenuActionsManager implements GeocodeAddressUpdateListener
 		case R.id.menu_config_info:
 			data = new Bundle();
 			data.putString("title", res.getString(R.string.menu_config_info));
-			data.putString("text", ConfigInfo.gatherInfo(mActivity));
+			ConfigInfo configInfo = new ConfigInfo();
+			data.putString("text", configInfo.gatherInfo(mActivity));
 			mActivity.showDialog(TEXT_DIALOG, data);
+			configInfo = null;
 			break;
 		}
 		return true;

@@ -93,7 +93,11 @@ implements LatestObservationCacheChangeListener
 					Bitmap iconBitmap = null;
 					String sky = od.get(ObservationType.SKY);
 					if(sky != null && !sky.contains("---"))
-						drawableId = SkyDrawableIdPicker.get(sky);
+					{
+						SkyDrawableIdPicker skyDrawableIdPicker = new SkyDrawableIdPicker();
+						drawableId = skyDrawableIdPicker.get(sky);
+						skyDrawableIdPicker = null;
+					}
 					if(drawableId > -1)
 						iconBitmap = BitmapFactory.decodeResource(res, drawableId);
 					

@@ -18,7 +18,7 @@ public class ObservationDrawableIdPicker {
 	 * 
 	 * @return the drawable id to be used to obtain the Drawable resource
 	 */
-	public static int pick(ObservationType oType)
+	public int pick(ObservationType oType)
 	{
 		int id = -1;
 		switch(oType)

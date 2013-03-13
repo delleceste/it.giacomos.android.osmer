@@ -18,7 +18,10 @@ HashMap<String, ObservationData> > {
 	@Override
 	protected HashMap<String, ObservationData> doInBackground(String... table) 
 	{
-		return TableToMap.convert(table[0], mStringType);
+		TableToMap tableToMap = new TableToMap();
+		HashMap<String, ObservationData> hMap = tableToMap.convert(table[0], mStringType);
+		tableToMap = null;
+		return hMap;
 	}
 
 	public void onPostExecute(HashMap<String, ObservationData>  map)

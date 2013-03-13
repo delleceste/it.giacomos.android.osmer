@@ -4,7 +4,7 @@ import android.location.Location;
 
 public class LocationUtils {
 	
-	public static boolean locationInsideRegion(Location location)
+	public boolean locationInsideRegion(Location location)
 	{
 		double lat = location.getLatitude() * 1000000;
 		double lon = location.getLongitude() * 1000000;

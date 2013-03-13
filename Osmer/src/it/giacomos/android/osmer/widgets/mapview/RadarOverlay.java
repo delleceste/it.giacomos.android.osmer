@@ -70,6 +70,7 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 	
 	public void updateBitmap(Bitmap bmp)
 	{
+		mBitmap = null;
 		mBitmap = bmp;
 	}
 	

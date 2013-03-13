@@ -10,7 +10,7 @@ import it.giacomos.android.osmer.Regexps;
 import it.giacomos.android.osmer.StringType;
 
 public class TableToMap {
-	public static HashMap <String, ObservationData> convert(String table, final StringType t)
+	public HashMap <String, ObservationData> convert(String table, final StringType t)
 	{
 		Pattern pattern;
 		HashMap <String, ObservationData> map = new HashMap<String, ObservationData>();

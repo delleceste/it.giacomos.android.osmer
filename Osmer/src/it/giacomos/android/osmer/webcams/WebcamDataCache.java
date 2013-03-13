@@ -55,7 +55,7 @@ public class WebcamDataCache
 			return ret;
 		
 		try {
-			FileOutputStream fos = new FileOutputStream(new File(mContext.getCacheDir(), filename));
+			FileOutputStream fos = new FileOutputStream(new File(mCacheDir, filename));
 			try {
 				fos.write(s.getBytes());
 				fos.close();
@@ -70,7 +70,7 @@ public class WebcamDataCache
 		if(ret == true)
 		{
 			try {
-				FileOutputStream fos = new FileOutputStream(new File(mContext.getCacheDir(), "lastWebcamDataUpdate.dat"));
+				FileOutputStream fos = new FileOutputStream(new File(mCacheDir, "lastWebcamDataUpdate.dat"));
 				try {
 					String date = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
 					fos.write(date.getBytes());
@@ -97,7 +97,7 @@ public class WebcamDataCache
 			return text;
 		
 		try {
-			FileInputStream fis = new FileInputStream(new File(mContext.getCacheDir(), filename));
+			FileInputStream fis = new FileInputStream(new File(mCacheDir, filename));
 			BufferedReader in = new BufferedReader(new InputStreamReader(fis));
 			String inputLine;
 
@@ -147,7 +147,7 @@ public class WebcamDataCache
 	{
 		long secs = UPDATE_TOOOLD_INTERVAL + 1;
 		try {
-			FileInputStream fis = new FileInputStream(new File(mContext.getCacheDir(), "lastWebcamDataUpdate.dat"));
+			FileInputStream fis = new FileInputStream(new File(mCacheDir, "lastWebcamDataUpdate.dat"));
 			BufferedReader in = new BufferedReader(new InputStreamReader(fis));
 			try {
 				String inputLine = in.readLine();
@@ -176,13 +176,13 @@ public class WebcamDataCache
 		return secs;
 	}
 	
-	public static WebcamDataCache getInstance(Context ctx)
+	public static WebcamDataCache getInstance(File cacheDir)
 	{
 		if(mInstance == null)
 			mInstance = new WebcamDataCache();
 		
-		if(ctx != null)
-			mInstance.setContext(ctx);
+		if(cacheDir != null)
+			mInstance.setCacheDir(cacheDir);
 		
 		return mInstance;
 	}
@@ -192,11 +192,11 @@ public class WebcamDataCache
 		return mInstance;
 	}
 	
-	public void setContext(Context ctx)
+	public void setCacheDir(File cacheDir)
 	{
-		mContext = ctx;
+		mCacheDir = cacheDir;
 	}
 	
 	static private WebcamDataCache mInstance = null;
-	static private Context mContext = null;
+	File mCacheDir;
 }

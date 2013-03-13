@@ -90,7 +90,7 @@ public class ObservationsItemizedOverlay<Item extends OverlayItem> extends Itemi
 				OverlayItem overlayitem = null;
 				if(mObservationType == ObservationType.SKY)
 				{
-				   overlayitem = SkyOverlayItemPicker.get(gp, 
+				    overlayitem = new SkyOverlayItemPicker().get(gp, 
 						   location, data, mMapView.getResources());
 				}
 				else if(!data.contains("---"))

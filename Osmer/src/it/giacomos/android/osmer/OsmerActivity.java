@@ -137,7 +137,7 @@ TextDecoderListener
 		}
 
 		/* create WebcamDataCache with the Context */
-		WebcamDataCache.getInstance(getApplicationContext());
+		WebcamDataCache.getInstance(this.getCacheDir());
 
 		/* hide Radar information text view on google map view */
 		ToggleButton radarInfoButton = (ToggleButton) findViewById(R.id.radarInfoButton);

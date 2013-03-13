@@ -19,7 +19,7 @@ public class SkyDrawableIdPicker {
 	/**
 	 * 
 	 */
-	public static int get(String sky) 
+	public int get(String sky) 
 	{
 		int id = -1;
 		/* what time is it? decide icons */

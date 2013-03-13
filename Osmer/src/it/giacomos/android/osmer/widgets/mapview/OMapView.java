@@ -236,7 +236,9 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 			break;
 			
 		default:
-			int resId = ObservationDrawableIdPicker.pick(m.currentType);
+			ObservationDrawableIdPicker observationDrawableIdPicker = new ObservationDrawableIdPicker();
+			int resId = observationDrawableIdPicker.pick(m.currentType);
+			observationDrawableIdPicker = null; 
 			if(resId > -1)
 			{
 				Drawable drawable = null;

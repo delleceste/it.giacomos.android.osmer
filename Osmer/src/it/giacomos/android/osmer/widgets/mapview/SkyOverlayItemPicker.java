@@ -9,11 +9,12 @@ import com.google.android.maps.OverlayItem;
 
 public class SkyOverlayItemPicker {
 
-	public static OverlayItem get(GeoPoint gp, String location, String data, Resources resources) 
+	public OverlayItem get(GeoPoint gp, String location, String data, Resources resources) 
 	{
 		
 		OverlayItem o = new OverlayItem(gp, location, "");
-		int drawableId = SkyDrawableIdPicker.get(data);
+		SkyDrawableIdPicker skyDrawableIdPicker = new SkyDrawableIdPicker();
+		int drawableId = skyDrawableIdPicker.get(data);
 		if(drawableId > -1 )
 		{
 			Drawable dra = resources.getDrawable(drawableId);
@@ -23,6 +24,7 @@ public class SkyOverlayItemPicker {
 				o.setMarker(dra);
 			}
 		}
+		skyDrawableIdPicker = null;
 		return o;
 	}
 	

@@ -9,8 +9,9 @@ import it.giacomos.android.osmer.widgets.OViewFlipper;
 
 import java.lang.String;
 
-public class TitleBuilder {
-	public static String makeTitle(OsmerActivity a)
+public class TitleBuilder 
+{
+	public String makeTitle(OsmerActivity a)
 	{
 		OViewFlipper flipper = (OViewFlipper) a.findViewById(R.id.viewFlipper1);
 		DownloadStatus ds = DownloadStatus.Instance();

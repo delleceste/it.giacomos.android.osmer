@@ -85,9 +85,10 @@ public class BaloonOnMap {
 	{   
         String title = observationData.location;
         String text = makeText(observationData, (OMapView)mapView);
-        int icon = SkyDrawableIdPicker.get(observationData.sky);
-        
+        SkyDrawableIdPicker skyDrawableIdPicker = new SkyDrawableIdPicker();
+        int icon = skyDrawableIdPicker.get(observationData.sky);
         buildBaloon(mapView, title, text, icon, point, webcamBaloon);
+        skyDrawableIdPicker = null;
 	}
 	
 	private String makeText(ObservationData od, OMapView mapView)

@@ -12,7 +12,9 @@ public class MapViewObservationsUpdater
 	public MapViewObservationsUpdater(OsmerActivity a, String text, StringType t)
 	{
 		OMapView mapView = (OMapView) a.findViewById(R.id.mapview);
-		mapView.updateObservations(TableToMap.convert(text, t));
+		TableToMap tableToMap = new TableToMap();
+		mapView.updateObservations(tableToMap.convert(text, t));
+		tableToMap = null;
 	}
 
 }

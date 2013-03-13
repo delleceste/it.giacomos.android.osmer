@@ -28,7 +28,11 @@ public class LocationToImgPixelMapper
 	 */
 	public PointF mapToPoint(ImageView v, Location l)
 	{
-		if(!LocationUtils.locationInsideRegion(l))
+		LocationUtils locationUtils = new LocationUtils();
+		boolean insideRegion = locationUtils.locationInsideRegion(l);
+		locationUtils = null;
+		
+		if(!insideRegion)
 			return null;
 		
 		float vW = v.getWidth(); /* view width */

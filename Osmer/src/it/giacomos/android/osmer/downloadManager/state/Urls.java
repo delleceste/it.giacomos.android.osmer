@@ -101,7 +101,7 @@ public class Urls {
 		return "";
 	}
 	
-	public static String webcamImagesPath()
+	public String webcamImagesPath()
 	{
 		return "http://www.osmer.fvg.it/COMMON/WEBCAM/Webcam";
 	}

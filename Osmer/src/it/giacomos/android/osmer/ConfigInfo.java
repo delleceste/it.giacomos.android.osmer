@@ -13,7 +13,7 @@ import android.location.LocationManager;
 import java.text.DateFormat;
 public class ConfigInfo {
 
-	public static String gatherInfo(Activity mActivity) 
+	public String gatherInfo(Activity mActivity) 
 	{
 		String info = "";
 		LocationManager lm = (LocationManager) mActivity.getSystemService(Activity.LOCATION_SERVICE);
