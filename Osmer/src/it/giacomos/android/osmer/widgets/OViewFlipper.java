@@ -125,7 +125,9 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 					mDisableMove = true;
 				}
 				
-				new TitlebarUpdater((OsmerActivity) getContext());
+				TitlebarUpdater tbu = new TitlebarUpdater();
+				tbu.update((OsmerActivity) this.getContext());
+				tbu = null;
 				
 				/* disable swipe hint (Toast displayed on Activity) */
 				if(mSwipeHintEnabled)

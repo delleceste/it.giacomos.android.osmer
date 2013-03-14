@@ -30,47 +30,57 @@ public class ODoubleLayerImageView extends ImageView
 	public ODoubleLayerImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		mRestoreSuccessful = false;
+		mRestoredFromInternalStorage = false;
 		mLocation = null;
-		mLayers = null;
-		mLayerDrawable = null;
 		mLocationPoint = null;
 		mPaint = new Paint();
 		mPaint.setAntiAlias(true);
+		mLayerDrawableAvailable = false;
 	}
 
 	@Override
 	public boolean saveOnInternalStorage() 
 	{	
-		if(mBitmap != null)
+		if(mLayerDrawableAvailable)
 		{
-			FileOutputStream fos;
-			try {
-				fos = getContext().openFileOutput(makeFileName(), Context.MODE_PRIVATE);
-				mBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);	
-				fos.close();
-				return true; /* success */
-			} 
-			catch (FileNotFoundException e) {
-				/* nada que hacer */
-			}
-			catch (IOException e) {
-				
+			LayerDrawable lDrawable = (LayerDrawable) getDrawable();
+			if(lDrawable != null)
+			{
+				FileOutputStream fos;
+				try {
+					fos = getContext().openFileOutput(makeFileName(), Context.MODE_PRIVATE);
+					/* bitmap is stored in layer 1 (see setBitmap) */
+					BitmapDrawable bd = (BitmapDrawable) lDrawable.getDrawable(1);
+					bd.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, fos);	
+					fos.close();
+					return true; /* success */
+				} 
+				catch (FileNotFoundException e) {
+					/* nada que hacer */
+				}
+				catch (IOException e) {
+
+				}
 			}
 		}
+
 		return false; /* bitmap null or impossible to save on file */
 	}
 
 	public boolean restoreFromInternalStorage()
 	{
-		mBitmap = null;
 		/* Decode a file path into a bitmap. If the specified file name is null, 
 		 * or cannot be decoded into a bitmap, the function returns null. 
 		 */
-		mBitmap = BitmapFactory.decodeFile(this.getContext().getFilesDir().getAbsolutePath() + "/" + makeFileName());
-		if(mBitmap != null)
-			setBitmap(mBitmap);
-		
-		return mBitmap != null;
+		Log.i("ODoubleLayer...", "* restoreFromInternalStorage: setting bitmap" + this.toString() + " : " + Integer.toHexString(getId()));
+		Bitmap bmp = BitmapFactory.decodeFile(this.getContext().getFilesDir().getAbsolutePath() + "/" + makeFileName());
+		if(bmp != null)
+		{
+			this.setBitmap(bmp);
+			mRestoredFromInternalStorage = true;
+			mRestoreSuccessful = true;
+		}
+		return bmp != null;
 	}
 	
 	public Parcelable onSaveInstanceState()
@@ -78,50 +88,52 @@ public class ODoubleLayerImageView extends ImageView
 		Parcelable p = super.onSaveInstanceState();
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("OImageViewState", p);
-		if(mBitmap != null)
-			bundle.putParcelable("bitmap", mBitmap);
+		if(mLayerDrawableAvailable)
+		{
+			LayerDrawable lDrawable = (LayerDrawable) getDrawable();
+			if(lDrawable != null)
+			{	
+				BitmapDrawable bd = (BitmapDrawable) lDrawable.getDrawable(1);
+				bundle.putParcelable("bitmap", bd.getBitmap());
+			}
+		}
 		return bundle;
 	}
 	
 	public void onRestoreInstanceState (Parcelable state)
 	{
 		Bundle b = (Bundle) state;
-		mBitmap = null;
-		mBitmap = (Bitmap) b.getParcelable("bitmap");
-		if(mBitmap != null)
+		/* do not restore twice if restoreFromInternalStorage completed successfully
+		 * 
+		 */
+		if(!mRestoredFromInternalStorage)
 		{
-			setBitmap(mBitmap);
-			mRestoreSuccessful = true;
+			BitmapDrawable bmpd = (BitmapDrawable) b.getParcelable("bitmap");
+			Log.i("ODoubleLayer...", "* onRestoreInstanceState: setting bitmap" + bmpd + this.toString()+ " : " + Integer.toHexString(getId()));
+			if(bmpd != null)
+			{
+				setBitmap(bmpd.getBitmap());
+				mRestoreSuccessful = true;
+			}
 		}
 		super.onRestoreInstanceState(b.getParcelable("OImageViewState"));
 	}
-	
-	public Bitmap getBitmap() {
-		return mBitmap;
-	}
 
-	public void setBitmap(Bitmap bitmap) {
-		this.mBitmap = null;
-		this.mLayers = null;
-		mLayerDrawable= null;
-		this.mBitmap = bitmap;
+	public void setBitmap(Bitmap bitmap) 
+	{
 		try{
-			mLayers = new Drawable[2];
+			Drawable layers[] = new Drawable[2];
 			Bitmap fvgBackgroundBmp = BitmapFactory.decodeResource(getResources(), R.drawable.fvg_background2);
-			//Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, fvgBackgroundBmp.getWidth(), fvgBackgroundBmp.getHeight(), false);
-			mLayers[0] =  new BitmapDrawable(getResources(), fvgBackgroundBmp);
-			mLayers[1] = new BitmapDrawable(getResources(), bitmap);
-			mLayerDrawable = new LayerDrawable(mLayers);
-			setImageDrawable(mLayerDrawable);
-			mLayers = null;
+			layers[0] = new BitmapDrawable(getResources(), fvgBackgroundBmp);
+			layers[1] = new BitmapDrawable(getResources(), bitmap);
+			LayerDrawable layerDrawable = new LayerDrawable(layers);
+			setImageDrawable(layerDrawable);
+			mLayerDrawableAvailable = true;
 		}
 		catch(Exception outOfMemory)
 		{
 			Log.e("setBitmap got exception", outOfMemory.getLocalizedMessage());
 		}
-//		Log.e("SetBitmap ODoubleLayerImageView", "Bitmap size " + fvgBackgroundBmp.getWidth() +
-//				"x" + fvgBackgroundBmp.getHeight() + " view size " + this.getWidth() + "x" +
-//				this.getHeight() + bitmap.getHeight() + bitmap.getWidth());
 	}
 
 	public boolean isRestoreSuccessful() {
@@ -237,6 +249,8 @@ public class ODoubleLayerImageView extends ImageView
 		return mLocation;
 	}
 	
+	protected boolean mRestoredFromInternalStorage;
+	
 	private String mLocality = "...", mSubLocality = "", mAddress = "";
 	
 	private Location mLocation;
@@ -244,16 +258,13 @@ public class ODoubleLayerImageView extends ImageView
 	private final int mLocationPointRadius1 = 8, mLocationPointRadius2 = 14, mLocationCircleRadius = 6;
 	
 	private PointF mLocationPoint;
-	
-	private Bitmap mBitmap;
-	
+			
 	private boolean mRestoreSuccessful = false;
 	
 	private boolean mDrawLocationEnabled = true;
 	
 	protected Paint mPaint;
 	
-	private Drawable [] mLayers;
-	
-	private LayerDrawable mLayerDrawable;
+	private boolean mLayerDrawableAvailable;
+		
 }

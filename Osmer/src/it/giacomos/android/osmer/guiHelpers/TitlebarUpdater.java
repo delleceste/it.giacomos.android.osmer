@@ -7,7 +7,7 @@ import it.giacomos.android.osmer.widgets.OViewFlipper;
 import android.view.Window;
 
 public class TitlebarUpdater {
-	public TitlebarUpdater(OsmerActivity a)
+	public void update(OsmerActivity a)
 	{
 		DownloadStatus ds = DownloadStatus.Instance();
 		TitleBuilder titleBuilder = new TitleBuilder();

@@ -7,7 +7,7 @@ import it.giacomos.android.osmer.StringType;
 import it.giacomos.android.osmer.widgets.OTextView;
 
 public class TextViewUpdater {
-	public TextViewUpdater(OsmerActivity a, String text, StringType t)
+	public void update(OsmerActivity a, String text, StringType t)
 	{
 		OTextView tv = null;
 		if(t == StringType.HOME)

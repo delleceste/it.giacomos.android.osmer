@@ -10,7 +10,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 public class NetworkGuiErrorManager {
-	public NetworkGuiErrorManager(OsmerActivity a, String message)
+	public void onError(OsmerActivity a, String message)
 	{
 		Toast.makeText(a, R.string.netTextErrorToast + message, Toast.LENGTH_LONG).show();
 		a.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.task_attention);

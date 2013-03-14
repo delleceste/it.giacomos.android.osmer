@@ -16,11 +16,14 @@ public class SnapshotManager {
 		InstanceRestorer instanceRestorer = new InstanceRestorer(b);
 		instanceRestorer.restore(a);
 		instanceRestorer.updateDownloadStatus(a);
+		instanceRestorer = null;
 	}
 	
 	public void save(Bundle b, OsmerActivity a)
 	{
-		new InstanceSaver(b, a);
+		InstanceSaver is = new InstanceSaver();
+		is.save(b, a);
+		is = null;
 	}
 	
 	

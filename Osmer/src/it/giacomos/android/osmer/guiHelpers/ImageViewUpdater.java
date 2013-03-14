@@ -12,7 +12,7 @@ import it.giacomos.android.osmer.widgets.mapview.OMapView;
 
 public class ImageViewUpdater {
 
-	public ImageViewUpdater(OsmerActivity a, Bitmap bmp, BitmapType t)
+	public void update(OsmerActivity a, Bitmap bmp, BitmapType t)
 	{
 		ODoubleLayerImageView ov = null;
 		if(t == BitmapType.TODAY)

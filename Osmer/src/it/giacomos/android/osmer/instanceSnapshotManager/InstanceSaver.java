@@ -6,7 +6,7 @@ import it.giacomos.android.osmer.downloadManager.DownloadStatus;
 import android.os.Bundle;
 
 public class InstanceSaver {
-	protected InstanceSaver(Bundle b, OsmerActivity a)
+	protected void save(Bundle b, OsmerActivity a)
 	{		
 		DownloadStatus ds = DownloadStatus.Instance();
 		/* a couple of timestamps to mark bundle save time and

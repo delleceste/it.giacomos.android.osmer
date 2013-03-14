@@ -11,7 +11,7 @@ import it.giacomos.android.osmer.widgets.OTextView;
  * access them (nor can the user). When the user uninstalls your application, these files are removed.
  */
 public class InternalStorageSaver {
-	InternalStorageSaver(OsmerActivity a)
+	public void save(OsmerActivity a)
 	{
 		/* save text views */
 		OTextView ov = (OTextView) a.findViewById(R.id.homeTextView);

@@ -349,6 +349,8 @@ implements LatestObservationCacheChangeListener
 
 	public boolean restoreFromInternalStorage()
 	{
+		/* no bitmap to restore in this case */
+		this.mRestoredFromInternalStorage = true;
 		return true;
 	}
 

@@ -20,7 +20,7 @@ SAT,
 RADAR;
  */
 public class ObservationTypeGetter {
-	public ObservationTypeGetter(OsmerActivity a, ObservationTime oTime, int currentSelection)
+	public void get(OsmerActivity a, ObservationTime oTime, int currentSelection)
 	{
 		mObservationTime = oTime;
 		mActivity = a;

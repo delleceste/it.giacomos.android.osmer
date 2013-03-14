@@ -6,7 +6,6 @@ import it.giacomos.android.osmer.downloadManager.DownloadReason;
 import it.giacomos.android.osmer.downloadManager.DownloadStatus;
 import it.giacomos.android.osmer.downloadManager.state.StateName;
 import it.giacomos.android.osmer.downloadManager.state.Urls;
-import it.giacomos.android.osmer.guiHelpers.ButtonListenerInstaller;
 import it.giacomos.android.osmer.guiHelpers.ImageViewUpdater;
 import it.giacomos.android.osmer.guiHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.guiHelpers.NetworkGuiErrorManager;
@@ -164,7 +163,9 @@ TextDecoderListener
 		 * calling saveOnInternalStorage on OTextViews and ODoubleLayerImageViews,
 		 * that implement the StateSaver interface.
 		 */
-		new InternalStorageSaver(this);
+		InternalStorageSaver iss = new InternalStorageSaver();
+		iss.save(this);
+		iss = null;
 	}
 
 	public void onStop()
@@ -263,9 +264,10 @@ TextDecoderListener
 
 	public void init()
 	{
-		((OTextView) findViewById(R.id.todayTextView)).setTextChangeListener(new TextDecoder(this));
-		((OTextView) findViewById(R.id.tomorrowTextView)).setTextChangeListener(new TextDecoder(this));
-		((OTextView) findViewById(R.id.twoDaysTextView)).setTextChangeListener(new TextDecoder(this));
+		TextDecoder textDecoder = new TextDecoder(this);
+		((OTextView) findViewById(R.id.todayTextView)).setTextChangeListener(textDecoder);
+		((OTextView) findViewById(R.id.tomorrowTextView)).setTextChangeListener(textDecoder);
+		((OTextView) findViewById(R.id.twoDaysTextView)).setTextChangeListener(textDecoder);
 		((OTextView) findViewById(R.id.todayTextView)).setStringType(StringType.TODAY);
 		((OTextView) findViewById(R.id.tomorrowTextView)).setStringType(StringType.TOMORROW);
 		((OTextView) findViewById(R.id.twoDaysTextView)).setStringType(StringType.TWODAYS);
@@ -297,7 +299,8 @@ TextDecoderListener
 		m_observationsCache.setLatestObservationCacheChangeListener(situationImage);
 		/* Before calling onResume on download manager */
 		m_observationsCache.restoreFromStorage(this);
-		new FromInternalStorageRestorer(this);
+		
+		mRestoreFromInternalStorage();
 		mSettings = new Settings(this);
 		mMenuActionsManager = null;
 		mSwipeHintCount = mTapOnMarkerHintCount = 0;
@@ -308,26 +311,36 @@ TextDecoderListener
 		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
 	}	
 
-
 	@Override
 	public void networkStatusChanged(boolean online) {
 		// TODO Auto-generated method stub
-		new TitlebarUpdater(this);
+		TitlebarUpdater titlebarUpdater = new TitlebarUpdater();
+		titlebarUpdater.update(this);
+		titlebarUpdater = null;
+		
 		if(!online)
 			Toast.makeText(this, R.string.netUnavailableToast, Toast.LENGTH_LONG).show();
 		else
 		{
-			new CurrentViewUpdater(this);
+			CurrentViewUpdater currenvViewUpdater = new CurrentViewUpdater();
+			currenvViewUpdater.update(this);
+			currenvViewUpdater = null;
+			
 			/* update locality if Location is available */
 			if(mCurrentLocation != null)
-				new GeocodeAddressTask(this.getApplicationContext(), this).parallelExecute(mCurrentLocation);
+			{
+				GeocodeAddressTask geocodeAddressTask = new GeocodeAddressTask(this.getApplicationContext(), this);
+				geocodeAddressTask.parallelExecute(mCurrentLocation);
+			}
 		}
 	}
 
 	protected void onSaveInstanceState(Bundle outState)
 	{
 		super.onSaveInstanceState(outState);
-		new SnapshotManager().save(outState, this);
+		SnapshotManager snapManager = new SnapshotManager();
+		snapManager.save(outState, this);
+		snapManager = null;
 		mToggleButtonGroupHelper.saveButtonsState(outState);
 	}
 
@@ -337,7 +350,9 @@ TextDecoderListener
 		/* restores from the bundle if the bundle creation timestamp is reasonably
 		 * close to current timestamp
 		 */
-		new SnapshotManager().restore(inState, this);
+		SnapshotManager snapManager = new SnapshotManager();
+		snapManager.restore(inState, this);
+		snapManager = null;
 		mToggleButtonGroupHelper.restoreButtonsState(inState);
 	}
 
@@ -384,8 +399,10 @@ TextDecoderListener
 		if(!webcamData.dataIsTooOld())
 		{
 			/* false: do not save on cache because we are already reusing cached data */
-			new WebcamMapUpdater(this, webcamData.getFromCache(StringType.WEBCAMLIST_OSMER), StringType.WEBCAMLIST_OSMER, false);
-			new WebcamMapUpdater(this, webcamData.getFromCache(StringType.WEBCAMLIST_OTHER), StringType.WEBCAMLIST_OTHER, false);
+			WebcamMapUpdater webcamUpdater = new WebcamMapUpdater();
+			webcamUpdater.update(this, webcamData.getFromCache(StringType.WEBCAMLIST_OSMER), StringType.WEBCAMLIST_OSMER, false);
+			webcamUpdater.update(this, webcamData.getFromCache(StringType.WEBCAMLIST_OTHER), StringType.WEBCAMLIST_OTHER, false);
+			webcamUpdater = null;
 		}
 		m_downloadManager.getWebcamList();
 	}
@@ -393,7 +410,9 @@ TextDecoderListener
 	@Override
 	public void onDownloadProgressUpdate(int step, int total)
 	{
-		new TitlebarUpdater(this);
+		TitlebarUpdater tbu = new TitlebarUpdater();
+		tbu.update(this);
+		tbu = null;
 		setProgress((int) (ProgressBarParams.MAX_PB_VALUE * step /  total));
 	}
 
@@ -403,14 +422,18 @@ TextDecoderListener
 		switch(t)
 		{
 		case HOME: case TODAY: case TOMORROW: case TWODAYS:
-			new TextViewUpdater(this, txt, t);
+			TextViewUpdater textViewUpdater = new TextViewUpdater();
+			textViewUpdater.update(this, txt, t);
+			textViewUpdater = null;
 			break;
 		case WEBCAMLIST_OSMER:
 		case WEBCAMLIST_OTHER:
 			/* true: save data on cache: onTextUpdate is called after a Download Task, so the data
 			 * passed to WebcamMapUpdater is fresh: store it into cache.
 			 */
-			new WebcamMapUpdater(this, txt, t, true);
+			WebcamMapUpdater webcamUpdater = new WebcamMapUpdater();
+			webcamUpdater.update(this, txt, t, true);
+			webcamUpdater = null;
 			break;
 		default:
 			/* situation image will be updated directly by the cache, since SituationImage is 
@@ -440,21 +463,31 @@ TextDecoderListener
 	@Override
 	public void onTextUpdateError(StringType t, String errorMessage)
 	{
-		String text = new InfoHtmlBuilder().wrapErrorIntoHtml(errorMessage, getResources());
-		new TextViewUpdater(this, text, t);
-		new NetworkGuiErrorManager(this, errorMessage);
+		InfoHtmlBuilder infoHtmlBuilder = new InfoHtmlBuilder();
+		String text = infoHtmlBuilder.wrapErrorIntoHtml(errorMessage, getResources());
+		TextViewUpdater tvu = new TextViewUpdater();
+		tvu.update(this, text, t);
+		infoHtmlBuilder = null;
+		tvu = null;
+		NetworkGuiErrorManager ngem = new NetworkGuiErrorManager();
+		ngem.onError(this, errorMessage);
+		ngem = null;
 	}
 
 	@Override
 	public void onBitmapUpdate(Bitmap bmp, BitmapType bType)
 	{
-		new ImageViewUpdater(this, bmp, bType);
+		ImageViewUpdater imageViewUpdater = new ImageViewUpdater();
+		imageViewUpdater.update(this, bmp, bType);
+		imageViewUpdater = null;
 	}
 
 	@Override
 	public void onBitmapUpdateError(BitmapType bType, String errorMessage)
 	{
-		new NetworkGuiErrorManager(this, errorMessage);
+		NetworkGuiErrorManager ngem = new NetworkGuiErrorManager();
+		ngem.onError(this, errorMessage);
+		ngem = null;
 	}
 
 	@Override
@@ -488,8 +521,12 @@ TextDecoderListener
 			((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).onLocationChanged(location);
 			mCurrentLocation = location;
 			if(this.m_downloadManager.state().name() == StateName.Online)
-				new GeocodeAddressTask(this.getApplicationContext(), this).parallelExecute(mCurrentLocation);
+			{
+				GeocodeAddressTask geocodeAddressTask = new GeocodeAddressTask(this.getApplicationContext(), this);
+				geocodeAddressTask.parallelExecute(mCurrentLocation);
+			}
 		}
+		locationComparer = null;
 	}
 
 	@Override
@@ -553,17 +590,44 @@ TextDecoderListener
 	protected void installButtonListener()
 	{
 		mToggleButtonGroupHelper = new ToggleButtonGroupHelper(this);
-		new ButtonListenerInstaller(this, mToggleButtonGroupHelper);
+		mInstallButtonListener();
 	}
 
 	protected void installOnTouchListener()
 	{
-		new OnTouchListenerInstaller(this);
+		OnTouchListenerInstaller otli = new OnTouchListenerInstaller();
+		otli.install(this);
+		otli = null;
 	}
 
+	private void mRestoreFromInternalStorage() 
+	{
+		/* save text views */
+		OTextView ov = (OTextView) findViewById(R.id.homeTextView);
+		ov.restoreFromInternalStorage();
+		ov = (OTextView) findViewById(R.id.todayTextView);
+		ov.restoreFromInternalStorage();
+		ov = (OTextView) findViewById(R.id.tomorrowTextView);
+		ov.restoreFromInternalStorage();
+		ov = (OTextView) findViewById(R.id.twoDaysTextView);
+		ov.restoreFromInternalStorage();
+		
+		/* save images */
+		ODoubleLayerImageView dliv = (ODoubleLayerImageView) findViewById(R.id.homeImageView);
+		dliv.restoreFromInternalStorage();
+		dliv = (ODoubleLayerImageView) findViewById(R.id.todayImageView);
+		dliv.restoreFromInternalStorage();
+		dliv = (ODoubleLayerImageView) findViewById(R.id.tomorrowImageView);
+		dliv.restoreFromInternalStorage();
+		dliv = (ODoubleLayerImageView) findViewById(R.id.twoDaysImageView);
+		dliv.restoreFromInternalStorage();
+	}
+	
 	void executeObservationTypeSelectionDialog(ObservationTime oTime)
 	{
-		new ObservationTypeGetter(this, oTime, -1);
+		ObservationTypeGetter oTypeGetter = new ObservationTypeGetter();
+		oTypeGetter.get(this, oTime, -1);
+		oTypeGetter = null;
 	}
 
 
@@ -876,7 +940,9 @@ TextDecoderListener
 			findViewById(R.id.radarInfoTextView).setVisibility(View.GONE);
 		}
 
-		new TitlebarUpdater(this);
+		TitlebarUpdater titleUpdater = new TitlebarUpdater();
+		titleUpdater.update(this);
+		titleUpdater = null;
 	}
 
 	public DownloadManager stateMachine() { return m_downloadManager; }
@@ -888,8 +954,11 @@ TextDecoderListener
 
 	@Override
 	public void onFlipperChildChangeEvent(int child) {
-		// TODO Auto-generated method stub
-		new TitlebarUpdater(this);
+
+		TitlebarUpdater titleUpdater = new TitlebarUpdater();
+		titleUpdater.update(this);
+		titleUpdater = null;
+		
 		switch(child)
 		{
 		case FlipperChildren.HOME:
@@ -925,6 +994,146 @@ TextDecoderListener
 		return false;
 	}
 
+
+
+	private void mInstallButtonListener() 
+	{
+		ToggleButton buttonHome = (ToggleButton)findViewById(R.id.buttonHome);
+		mToggleButtonGroupHelper.addButton(R.id.buttonHome);
+		buttonHome.setOnClickListener(this);
+
+		ToggleButton buttonToday = (ToggleButton)findViewById(R.id.buttonToday);
+		mToggleButtonGroupHelper.addButton(R.id.buttonToday);
+		buttonToday.setOnClickListener(this);
+
+		ToggleButton buttonTomorrow = (ToggleButton)findViewById(R.id.buttonTomorrow);
+		mToggleButtonGroupHelper.addButton(R.id.buttonTomorrow);
+		buttonTomorrow.setOnClickListener(this);
+
+		ToggleButton buttonTwoDays = (ToggleButton)findViewById(R.id.buttonTwoDays);
+		mToggleButtonGroupHelper.addButton(R.id.buttonTwoDays);
+		buttonTwoDays.setOnClickListener(this);
+
+		ToggleButton buttonMap = (ToggleButton)findViewById(R.id.buttonMap);
+		buttonMap.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonMap);
+		
+		/* switches between map and satellite view on MapView.
+		 * measure mode
+		 * radar info button
+		 * do not add to ToggleButtonGroupHelper
+		 */
+		ToggleButton satelliteViewButtonOnMap = (ToggleButton) findViewById(R.id.satelliteViewButton);
+		satelliteViewButtonOnMap.setOnClickListener(this);
+
+		ToggleButton measureMode = (ToggleButton) findViewById(R.id.measureToggleButton);
+		measureMode.setOnClickListener(this);
+		
+		ToggleButton buttonInfoRadar = (ToggleButton) findViewById(R.id.radarInfoButton);
+		buttonInfoRadar.setOnClickListener(this);		
+		
+		ToggleButton radarButton = (ToggleButton) findViewById(R.id.buttonRadar);
+		radarButton.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonRadar);
+		
+		ToggleButton dailyObsButton = (ToggleButton) findViewById(R.id.buttonDailyObs);
+		dailyObsButton.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonDailyObs);
+		ToggleButton lastObsButton = (ToggleButton) findViewById(R.id.buttonLastObs);
+		lastObsButton.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonLastObs);
+
+		/* daily and latest observations button */
+		ToggleButton dailySkyButton = (ToggleButton) findViewById(R.id.buttonDailySky);
+		dailySkyButton.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonDailySky);
+
+		ToggleButton buttonHumidity = (ToggleButton) findViewById(R.id.buttonHumidity);
+		buttonHumidity.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonHumidity);
+
+		ToggleButton buttonHumidityMean = (ToggleButton) findViewById(R.id.buttonHumMean);
+		buttonHumidityMean.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonHumMean);
+
+		ToggleButton buttonLatestSky = (ToggleButton) findViewById(R.id.buttonLatestSky);
+		buttonLatestSky.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonLatestSky);
+
+		ToggleButton buttonPressure = (ToggleButton) findViewById(R.id.buttonPressure);
+		buttonPressure.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonPressure);
+
+		ToggleButton buttonDailyRain = (ToggleButton) findViewById(R.id.buttonDailyRain);
+		buttonDailyRain.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonDailyRain);
+
+		ToggleButton buttonSea = (ToggleButton) findViewById(R.id.buttonSea);
+		buttonSea.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonSea);
+
+		ToggleButton buttonSnow = (ToggleButton) findViewById(R.id.buttonSnow);
+		buttonSnow.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonSnow);
+
+
+		ToggleButton buttonTemp = (ToggleButton) findViewById(R.id.buttonTemp);
+		buttonTemp.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonTemp);
+
+
+		ToggleButton buttonTMax = (ToggleButton) findViewById(R.id.buttonTMax);
+		buttonTMax.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonTMax);
+
+
+		ToggleButton buttonTMean = (ToggleButton) findViewById(R.id.buttonTMean);
+		buttonTMean.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonTMean);
+
+
+		ToggleButton buttonTMin = (ToggleButton) findViewById(R.id.buttonTMin);
+		buttonTMin.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonTMin);
+
+
+		ToggleButton buttonWind = (ToggleButton) findViewById(R.id.buttonWind);
+		buttonWind.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonWind);
+
+
+		ToggleButton buttonWMax = (ToggleButton) findViewById(R.id.buttonWMax);
+		buttonWMax.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonWMax);
+
+
+		ToggleButton buttonWMean = (ToggleButton) findViewById(R.id.buttonWMean);
+		buttonWMean.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonWMean);
+
+
+		ToggleButton buttonLatestRain = (ToggleButton) findViewById(R.id.buttonLatestRain);
+		buttonLatestRain.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonLatestRain);
+
+
+		ToggleButton buttonMapInsideDaily = (ToggleButton) findViewById(R.id.buttonMapInsideDaily);
+		buttonMapInsideDaily.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonMapInsideDaily);
+
+
+		ToggleButton buttonMapInsideLatest = (ToggleButton) findViewById(R.id.buttonMapInsideLatest);
+		buttonMapInsideLatest.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonMapInsideLatest);
+		
+		ToggleButton buttonWebcam = (ToggleButton) findViewById(R.id.buttonWebcam);
+		buttonWebcam.setOnClickListener(this);
+		mToggleButtonGroupHelper.addButton(R.id.buttonWebcam);
+		
+		/* center map button (v. 1.1.5) */
+		findViewById(R.id.centerMapButton).setOnClickListener(this);	
+	}
+	
 	/* private members */
 	private DownloadManager m_downloadManager;
 	private LocationManager m_locationManager; 

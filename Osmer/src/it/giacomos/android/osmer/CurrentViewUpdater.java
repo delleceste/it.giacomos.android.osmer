@@ -7,7 +7,7 @@ import it.giacomos.android.osmer.widgets.mapview.MapViewMode;
 import it.giacomos.android.osmer.widgets.mapview.OMapView;
 
 public class CurrentViewUpdater {
-	public CurrentViewUpdater(OsmerActivity a)
+	public void update(OsmerActivity a)
 	{
 		int displayedChild = ((OViewFlipper) a.findViewById(R.id.viewFlipper1)).getDisplayedChild();
 		if(displayedChild == FlipperChildren.MAP)

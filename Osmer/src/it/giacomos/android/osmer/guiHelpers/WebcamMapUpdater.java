@@ -10,7 +10,7 @@ import it.giacomos.android.osmer.widgets.mapview.*;
 
 public class WebcamMapUpdater 
 {
-	public WebcamMapUpdater(OsmerActivity a, String text, StringType t, boolean saveOnCache)
+	public void update(OsmerActivity a, String text, StringType t, boolean saveOnCache)
 	{
 		if(!text.isEmpty())
 		{

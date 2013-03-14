@@ -5,7 +5,8 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.widgets.OViewFlipper;
 
 public class OnTouchListenerInstaller {
-	public OnTouchListenerInstaller(OsmerActivity a)
+	
+	public void install(OsmerActivity a)
 	{
 		OViewFlipper flipper = (OViewFlipper) a.findViewById(R.id.viewFlipper1);
 		a.findViewById(R.id.homeImageView).setOnTouchListener(flipper);
