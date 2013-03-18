@@ -1,10 +1,12 @@
 package it.giacomos.android.osmer.widgets;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import it.giacomos.android.osmer.R;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -73,7 +75,8 @@ public class ODoubleLayerImageView extends ImageView
 		 * or cannot be decoded into a bitmap, the function returns null. 
 		 */
 		Log.i("ODoubleLayer...", "* restoreFromInternalStorage: setting bitmap" + this.toString() + " : " + Integer.toHexString(getId()));
-		Bitmap bmp = BitmapFactory.decodeFile(this.getContext().getFilesDir().getAbsolutePath() + "/" + makeFileName());
+		File filesDir = this.getContext().getApplicationContext().getFilesDir();
+		Bitmap bmp = BitmapFactory.decodeFile(filesDir.getAbsolutePath() + "/" + makeFileName());
 		if(bmp != null)
 		{
 			this.setBitmap(bmp);
@@ -108,11 +111,11 @@ public class ODoubleLayerImageView extends ImageView
 		 */
 		if(!mRestoredFromInternalStorage)
 		{
-			BitmapDrawable bmpd = (BitmapDrawable) b.getParcelable("bitmap");
-			Log.i("ODoubleLayer...", "* onRestoreInstanceState: setting bitmap" + bmpd + this.toString()+ " : " + Integer.toHexString(getId()));
-			if(bmpd != null)
+			Bitmap bmp = (Bitmap) b.getParcelable("bitmap");
+			Log.i("ODoubleLayer...", "* onRestoreInstanceState: setting bitmap" + bmp + this.toString()+ " : " + Integer.toHexString(getId()));
+			if(bmp != null)
 			{
-				setBitmap(bmpd.getBitmap());
+				setBitmap(bmp);
 				mRestoreSuccessful = true;
 			}
 		}
@@ -121,19 +124,15 @@ public class ODoubleLayerImageView extends ImageView
 
 	public void setBitmap(Bitmap bitmap) 
 	{
-		try{
-			Drawable layers[] = new Drawable[2];
-			Bitmap fvgBackgroundBmp = BitmapFactory.decodeResource(getResources(), R.drawable.fvg_background2);
-			layers[0] = new BitmapDrawable(getResources(), fvgBackgroundBmp);
-			layers[1] = new BitmapDrawable(getResources(), bitmap);
-			LayerDrawable layerDrawable = new LayerDrawable(layers);
-			setImageDrawable(layerDrawable);
-			mLayerDrawableAvailable = true;
-		}
-		catch(Exception outOfMemory)
-		{
-			Log.e("setBitmap got exception", outOfMemory.getLocalizedMessage());
-		}
+		Drawable layers[] = new Drawable[2];
+		Context appContext = this.getContext().getApplicationContext();
+		Resources res = appContext.getResources();
+		Bitmap fvgBackgroundBmp = BitmapFactory.decodeResource(res, R.drawable.fvg_background2);
+		layers[0] = new BitmapDrawable(res, fvgBackgroundBmp);
+		layers[1] = new BitmapDrawable(res, bitmap);
+		LayerDrawable layerDrawable = new LayerDrawable(layers);
+		setImageDrawable(layerDrawable);
+		mLayerDrawableAvailable = true;
 	}
 
 	public boolean isRestoreSuccessful() {
@@ -145,6 +144,20 @@ public class ODoubleLayerImageView extends ImageView
 		return "image_" + this.getId() + ".bmp";
 	}
 
+	public void unbindDrawables()
+	{
+		if(mLayerDrawableAvailable)
+		{
+			LayerDrawable lDrawable = (LayerDrawable) getDrawable();
+			if(lDrawable != null)
+			{	
+				lDrawable.getDrawable(1).setCallback(null);
+				lDrawable.getDrawable(0).setCallback(null);
+				lDrawable.setCallback(null);
+			}
+		}
+	}
+	
 	public void onLocalityChanged(String locality, String subLocality, String address)
 	{
 		mLocality = locality;

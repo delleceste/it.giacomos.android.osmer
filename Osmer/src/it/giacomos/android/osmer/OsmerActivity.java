@@ -181,7 +181,12 @@ TextDecoderListener
 
 	protected void onDestroy()
 	{
+//		((ODoubleLayerImageView) findViewById(R.id.homeImageView)).unbindDrawables();
+//		((ODoubleLayerImageView) findViewById(R.id.todayImageView)).unbindDrawables();
+//		((ODoubleLayerImageView) findViewById(R.id.tomorrowImageView)).unbindDrawables();
+//		((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).unbindDrawables();
 		super.onDestroy();
+		
 	}
 
 	public void onRestart()
@@ -319,7 +324,7 @@ TextDecoderListener
 		titlebarUpdater = null;
 		
 		if(!online)
-			Toast.makeText(this, R.string.netUnavailableToast, Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), R.string.netUnavailableToast, Toast.LENGTH_LONG).show();
 		else
 		{
 			CurrentViewUpdater currenvViewUpdater = new CurrentViewUpdater();
@@ -449,11 +454,11 @@ TextDecoderListener
 	public void onDownloadStart(DownloadReason reason)
 	{
 		if(reason == DownloadReason.Init)
-			Toast.makeText(this, R.string.downloadingToast, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.downloadingToast, Toast.LENGTH_SHORT).show();
 		else if(reason == DownloadReason.Incomplete)
-			Toast.makeText(this, R.string.completingDownloadToast, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.completingDownloadToast, Toast.LENGTH_SHORT).show();
 		else if(reason == DownloadReason.DataExpired)
-			Toast.makeText(this, R.string.dataExpiredToast, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.dataExpiredToast, Toast.LENGTH_SHORT).show();
 
 		setProgressBarVisibility(true);
 		ProgressBarParams.currentValue = 0;
@@ -746,7 +751,7 @@ TextDecoderListener
 			case R.id.buttonTwoDays:
 				if(mSettings.isSwipeHintEnabled() && mSwipeHintCount == 0)
 				{
-					Toast.makeText(this, R.string.hint_swipe, Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), R.string.hint_swipe, Toast.LENGTH_LONG).show();
 					mSwipeHintCount++; /* don't be silly, just once per start */
 				}
 				break;
@@ -768,7 +773,7 @@ TextDecoderListener
 				if(mSettings.isObsScrollIconsHintEnabled())
 				{
 					/* this is shown just once */
-					Toast.makeText(this, R.string.hint_scroll_buttons, Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), R.string.hint_scroll_buttons, Toast.LENGTH_LONG).show();
 					mSettings.setObsScrollIconsHintEnabled(false);
 				}
 
@@ -850,12 +855,12 @@ TextDecoderListener
 
 			if(buttonChecked && mSettings.isMapMoveToMeasureHintEnabled())
 			{
-				Toast.makeText(this, R.string.hint_move_to_measure_on_map, Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), R.string.hint_move_to_measure_on_map, Toast.LENGTH_LONG).show();
 			}
 			else if(buttonChecked && !mSettings.isMapMoveToMeasureHintEnabled() 
 					&& mSettings.isMapMoveLocationToMeasureHintEnabled())
 			{
-				Toast.makeText(this, R.string.hint_move_location_to_measure_on_map, Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), R.string.hint_move_location_to_measure_on_map, Toast.LENGTH_LONG).show();
 			}
 			omv1.setMeasureEnabled(buttonChecked);
 			break;	
@@ -873,7 +878,7 @@ TextDecoderListener
 			mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonDailySky));
 			if(mSettings.isMapMarkerHintEnabled() && mTapOnMarkerHintCount == 0)
 			{
-				Toast.makeText(this, R.string.hint_tap_on_map_markers, Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), R.string.hint_tap_on_map_markers, Toast.LENGTH_LONG).show();
 				mTapOnMarkerHintCount++; /* do not be too annoying */
 			}
 		}

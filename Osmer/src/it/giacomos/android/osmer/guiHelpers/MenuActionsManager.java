@@ -33,7 +33,7 @@ public class MenuActionsManager implements GeocodeAddressUpdateListener
 	
 	public  boolean itemSelected(MenuItem item)
 	{
-		Resources res = mActivity.getResources();
+		Resources res = mActivity.getApplicationContext().getResources();
 		Bundle data = null;
 		switch(item.getItemId())
 		{

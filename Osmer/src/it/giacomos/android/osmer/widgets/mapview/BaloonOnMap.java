@@ -30,7 +30,8 @@ public class BaloonOnMap {
 			oldBaloon.setVisibility(View.GONE);
 			oldBaloon = null;
 		}
-		LayoutInflater  layoutInflater = (LayoutInflater) mapView.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater  layoutInflater = (LayoutInflater) 
+				mapView.getContext().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         MapBaloon mapBaloon = null;
         
         Resources r = mapView.getResources();

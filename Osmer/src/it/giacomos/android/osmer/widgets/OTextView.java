@@ -48,7 +48,7 @@ public class OTextView extends TextView implements StateSaver
 		
 		FileOutputStream fos;
 		try {
-			fos = getContext().openFileOutput(makeFileName(), Context.MODE_PRIVATE);
+			fos = getContext().getApplicationContext().openFileOutput(makeFileName(), Context.MODE_PRIVATE);
 			try {
 				fos.write(mHtml.getBytes());
 				fos.close();
@@ -70,7 +70,7 @@ public class OTextView extends TextView implements StateSaver
 		/* Open a private file associated with this Context's application package for reading. */
 		try {
 			String line;
-			BufferedReader in = new BufferedReader(new FileReader(getContext().getFilesDir().getAbsolutePath() + "/" + makeFileName()));
+			BufferedReader in = new BufferedReader(new FileReader(getContext().getApplicationContext().getFilesDir().getAbsolutePath() + "/" + makeFileName()));
 			
 			try {
 				line = in.readLine();

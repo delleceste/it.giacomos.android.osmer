@@ -3,12 +3,11 @@ package it.giacomos.android.osmer.webcams;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 public class ExternalImageViewerLauncher 
 {
 	
-	public ExternalImageViewerLauncher(Context ctx)
+	public void startExternalViewer(Context ctx)
 	{
 	 	/* Context.getFilesDir()
 	 	 * Returns the absolute path to the directory on the filesystem where files created with openFileOutput(String, int) are stored.

@@ -102,8 +102,8 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 				if (mDownXValue - currentX < -30)
 				{                 
 					// Set the animation
-					vf.setOutAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_right));
-					vf.setInAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_right));
+					vf.setOutAnimation(AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_right));
+					vf.setInAnimation(AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_right));
 
 					// Flip!
 					vf.showPrevious();
@@ -116,8 +116,8 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 				else if (mDownXValue - currentX > 30)
 				{
 					// Set the animation
-					vf.setOutAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_left));
-					vf.setInAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_left));
+					vf.setOutAnimation(AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_left));
+					vf.setInAnimation(AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_left));
 					// Flip!
 					vf.showNext();
 					mFlipperChildChangeListener.onFlipperChildChangeEvent(this.getDisplayedChild());

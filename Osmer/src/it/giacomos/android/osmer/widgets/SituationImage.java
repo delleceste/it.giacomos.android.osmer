@@ -116,7 +116,7 @@ implements LatestObservationCacheChangeListener
 			if(this.isShown() && mShowIconsHint && mShowIconsHintToastCount == 0) 
 			{
 				mShowIconsHintToastCount++;
-				Toast toast = Toast.makeText(getContext(), R.string.hint_home_icons, Toast.LENGTH_LONG);
+				Toast toast = Toast.makeText(getContext().getApplicationContext(), R.string.hint_home_icons, Toast.LENGTH_LONG);
 				toast.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, 0, 0);
 				toast.show();
 			}

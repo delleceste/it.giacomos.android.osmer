@@ -18,12 +18,12 @@ public class CurrentViewUpdater {
 			if(mapMode.currentType == ObservationType.RADAR)
 			{
 				a.radar();
-				Toast.makeText(a, a.getString(R.string.radarUpdateToast), Toast.LENGTH_SHORT).show();
+				Toast.makeText(a.getApplicationContext(), a.getString(R.string.radarUpdateToast), Toast.LENGTH_SHORT).show();
 			}
 			if(mapMode.currentType == ObservationType.WEBCAM)
 			{
 				a.webcams();
-				//Toast.makeText(a, a.getString(R.string.webcamUpdateToast), Toast.LENGTH_SHORT).show();
+				//Toast.makeText(a.getApplicationContext(), a.getString(R.string.webcamUpdateToast), Toast.LENGTH_SHORT).show();
 			}
 		}
 	}

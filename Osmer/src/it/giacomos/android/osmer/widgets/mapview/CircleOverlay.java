@@ -175,7 +175,7 @@ public class CircleOverlay extends Overlay {
 		/* touching myLocation? */
 		if(e.getAction() == MotionEvent.ACTION_DOWN && !mJustMoved)
 		{
-			Settings settings = new Settings(mapView.getContext());
+			Settings settings = new Settings(mapView.getContext().getApplicationContext());
 			Point centerPoint = null;
 			mLastX = e.getX();
 			mLastY = e.getY();

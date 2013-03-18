@@ -359,7 +359,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		ArrayList<WebcamData> webcamData = null;
 		String additionalWebcamsTxt = "";
 		/* get fixed additional webcams list from assets */
-		AdditionalWebcams additionalWebcams = new AdditionalWebcams((Activity)this.getContext());
+		AdditionalWebcams additionalWebcams = new AdditionalWebcams(getContext().getApplicationContext());
 		additionalWebcamsTxt = additionalWebcams.getText();
 		OtherWebcamListDecoder additionalWebcamsDec = new OtherWebcamListDecoder();
 		webcamData = additionalWebcamsDec.decode(additionalWebcamsTxt, false);

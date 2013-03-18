@@ -58,7 +58,7 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 		mWebcams = new ArrayList<WebcamData>();
 		mPaint = new Paint();
 		mDensityDpi = map.getResources().getDisplayMetrics().densityDpi;
-		Settings s = new Settings(mMap.getContext());
+		Settings s = new Settings(mMap.getContext().getApplicationContext());
 		mMapClickOnBaloonImageHintEnabled = s.isMapClickOnBaloonImageHintEnabled();
 		mZoomLevel = map.getZoomLevel();
 		mCurrentBitmapTask = null;
@@ -115,7 +115,7 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 			{
 				// TODO Auto-generated catch block
 				message = res.getString(R.string.error_message) + ": " + e.getLocalizedMessage();
-				Toast.makeText(mMap.getContext(), message, Toast.LENGTH_SHORT).show();
+				Toast.makeText(mMap.getContext().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 			}
 
 			/* creates a webcam baloon and adds it to the map */
@@ -148,29 +148,29 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 	@Override
 	public void onBitmapUpdate(Bitmap bmp, BitmapType bt, String errorMessage) 
 	{
+		Context ctx = mMap.getContext().getApplicationContext();
 		MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);
 		if(baloon != null && bmp == null && !errorMessage.isEmpty())
 		{
-			Toast.makeText(mMap.getContext(), mMap.getResources().getString(R.string.error_message)
+			Toast.makeText(ctx, ctx.getResources().getString(R.string.error_message)
 					+ "\n" + errorMessage, Toast.LENGTH_LONG).show();
 
 		}
 		else if(baloon != null && bt == BitmapType.WEBCAM && bmp != null)
 		{
 			if(!errorMessage.isEmpty())
-				Toast.makeText(mMap.getContext(), mMap.getResources().getString(R.string.error_message) + "\n" + errorMessage, Toast.LENGTH_LONG).show();
+				Toast.makeText(ctx.getApplicationContext(), ctx.getResources().getString(R.string.error_message) + "\n" + errorMessage, Toast.LENGTH_LONG).show();
 			else
 			{
 				baloon.setIcon(new BitmapDrawable(bmp));
-
 				/* save image on cache in order to display it in external viewer */
 				LastImageCache saver = new LastImageCache();
-				boolean success = saver.save(bmp, mMap.getContext());
+				boolean success = saver.save(bmp, ctx);
 				if(success)
 				{
 					baloon.findViewById(R.id.baloon_icon).setOnClickListener(this);
 					if(mMapClickOnBaloonImageHintEnabled)
-						Toast.makeText(mMap.getContext(), R.string.hint_click_on_map_baloon_webcam_image, Toast.LENGTH_LONG).show();
+						Toast.makeText(ctx, R.string.hint_click_on_map_baloon_webcam_image, Toast.LENGTH_LONG).show();
 				}
 				else
 					baloon.setOnClickListener(null); /* no clicks */
@@ -196,8 +196,9 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 		}
 		else if(view.getId() == R.id.baloon_icon)
 		{
-			new ExternalImageViewerLauncher(mMap.getContext());
-			Settings s = new Settings(mMap.getContext());
+			ExternalImageViewerLauncher eivl = new ExternalImageViewerLauncher();
+			eivl.startExternalViewer(mMap.getContext());
+			Settings s = new Settings(mMap.getContext().getApplicationContext());
 			s.setMapClickOnBaloonImageHintEnabled(false);
 			mMapClickOnBaloonImageHintEnabled = false;
 		}

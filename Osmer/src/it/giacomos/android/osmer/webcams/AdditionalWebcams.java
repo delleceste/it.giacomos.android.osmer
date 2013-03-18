@@ -1,5 +1,5 @@
 package it.giacomos.android.osmer.webcams;
-import android.app.Activity;
+import android.content.Context;
 import android.content.res.AssetManager;
 
 import java.io.IOException;
@@ -8,10 +8,10 @@ import java.io.InputStream;
 
 public class AdditionalWebcams 
 {
-	public AdditionalWebcams(Activity activity)
+	public AdditionalWebcams(Context ctx)
 	{
 		mText = "";
-		AssetManager assetManager = activity.getAssets();
+		AssetManager assetManager = ctx.getAssets();
         InputStream input;
         try {
             input = assetManager.open("additionalWebcams.xml");

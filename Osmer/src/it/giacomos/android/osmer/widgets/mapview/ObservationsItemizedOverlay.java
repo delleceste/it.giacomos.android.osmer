@@ -161,7 +161,7 @@ public class ObservationsItemizedOverlay<Item extends OverlayItem> extends Itemi
 		  /* animate the map to center on the item */
 		  mMapView.getController().animateTo(item.getPoint());
 		  /* disable marker hints from now on */
-		  Settings s = new Settings(mMapView.getContext());
+		  Settings s = new Settings(mMapView.getContext().getApplicationContext());
 		  s.setMapMarkerHintEnabled(false);
 	  }
 	  return true;
