@@ -181,10 +181,14 @@ TextDecoderListener
 
 	protected void onDestroy()
 	{
-//		((ODoubleLayerImageView) findViewById(R.id.homeImageView)).unbindDrawables();
-//		((ODoubleLayerImageView) findViewById(R.id.todayImageView)).unbindDrawables();
-//		((ODoubleLayerImageView) findViewById(R.id.tomorrowImageView)).unbindDrawables();
-//		((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).unbindDrawables();
+		((SituationImage) findViewById(R.id.homeImageView)).unbindDrawables();
+		/* clear HashMaps and bitmaps in hash values */
+		((SituationImage) findViewById(R.id.homeImageView)).cleanup();
+		/* ODoubleLayerImageView */
+		((ODoubleLayerImageView) findViewById(R.id.todayImageView)).unbindDrawables();
+		((ODoubleLayerImageView) findViewById(R.id.tomorrowImageView)).unbindDrawables();
+		((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).unbindDrawables();
+		
 		super.onDestroy();
 		
 	}

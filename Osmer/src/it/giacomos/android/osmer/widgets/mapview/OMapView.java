@@ -112,7 +112,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 	public void centerMap()
 	{		
 		MapController mapController = getController();
-		mapController.animateTo(GeoCoordinates.center);
+		mapController.setCenter(GeoCoordinates.center);
 		setSpan();
 	}
 

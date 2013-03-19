@@ -55,7 +55,9 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 	        canvas.drawCircle(dst.centerX(), dst.centerY(), dst.width()/2, mPaint);
 	        canvas.drawBitmap(mBitmap, src, dst, mPaint);
 	        mPaint.setAlpha(160);
-	        Bitmap dbzScale = BitmapFactory.decodeResource(mapView.getResources(), R.drawable.scala_vmi_4);
+	        Bitmap dbzScale = 
+	        		BitmapFactory.decodeResource(mapView.getContext().
+	        				getApplicationContext().getResources(), R.drawable.scala_vmi_4);
 	        canvas.drawBitmap(dbzScale, 
 	        		dst.centerX() + dst.width() / 2 + 15,
 	        		dst.centerY() - dbzScale.getHeight() / 2 , mPaint);

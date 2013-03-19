@@ -341,6 +341,31 @@ implements LatestObservationCacheChangeListener
 		return null;
 	}
 
+	public void cleanup()
+	{
+		for(SituationImageObservationData siod : mMap.values())
+		{
+			Bitmap bmp = siod.getIcon();
+			if(bmp != null)
+			{
+				bmp.recycle();
+				bmp = null;
+			}
+		}
+		mMap.clear();
+		
+		for(SituationImageObservationData siod : mObsRects.values())
+		{
+			Bitmap bmp = siod.getIcon();
+			if(bmp != null)
+			{
+				bmp.recycle();
+				bmp = null;
+			}
+		}
+		mObsRects.clear();
+	}
+	
 	@Override
 	public boolean saveOnInternalStorage() 
 	{	
@@ -376,9 +401,11 @@ implements LatestObservationCacheChangeListener
 	private Rect mTxtRect;
 	private RectF mSensibleArea;
 	LocationToImgPixelMapper mLocationToImgPixelMapper;
+	
 	private HashMap<Location, SituationImageObservationData> mMap;
-	private PointF mCurrentTouchedPoint;
 	private HashMap<RectF, SituationImageObservationData> mObsRects;
+	
+	private PointF mCurrentTouchedPoint;
 	private final String mSnowStr = getResources().getString(R.string.snow);
 	private final String mSeaStr = getResources().getString(R.string.sea);
 	private final String mRainStr = getResources().getString(R.string.rain);
