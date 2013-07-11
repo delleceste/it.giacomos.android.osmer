@@ -239,7 +239,7 @@
 		</RelativeLayout>
 	</it.giacomos.android.osmer.widgets.OViewFlipper>
 
-	<ViewFlipper android:id="@+id/buttonsFlipper"
+	<it.giacomos.android.osmer.widgets.MyViewFlipper android:id="@+id/buttonsFlipper"
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentRight="true" android:layout_gravity="right"
 		android:layout_height="wrap_content" android:layout_toRightOf="@+id/buttonHome"
@@ -461,11 +461,7 @@
 			</LinearLayout>
 		</HorizontalScrollView>
 
-		
-
-
-
-	</ViewFlipper>
+	</it.giacomos.android.osmer.widgets.MyViewFlipper>
 	<ToggleButton android:checked="true" android:textOff=""
 		android:textOn="" android:background="@drawable/home_button"
 		android:id="@+id/buttonHome" android:layout_alignParentBottom="true"

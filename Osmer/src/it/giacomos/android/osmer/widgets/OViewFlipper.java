@@ -6,17 +6,16 @@ import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.guiHelpers.TitlebarUpdater;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ViewFlipper;
 import it.giacomos.android.osmer.preferences.*;
+
 public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchListener
 {
 	public OViewFlipper(Context context, AttributeSet attrs) {

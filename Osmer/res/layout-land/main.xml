@@ -204,7 +204,7 @@
 
 </ToggleButton>
 
-		<ViewFlipper
+		<it.giacomos.android.osmer.widgets.MyViewFlipper
 		    android:id="@+id/buttonsFlipper"
 		    android:layout_width="wrap_content"
 		    android:layout_height="match_parent"
@@ -449,5 +449,5 @@
 
 		
 			
-		</ViewFlipper>
+		</it.giacomos.android.osmer.widgets.MyViewFlipper>
 </RelativeLayout>
