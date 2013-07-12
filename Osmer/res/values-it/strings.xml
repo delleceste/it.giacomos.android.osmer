@@ -20,13 +20,13 @@
     <string name="tomorrow_text">Testo domani</string>
     <string name="Home">home_button</string>
     <string name="home_button">Home</string>
-    <string name="home_title">Meteo.FVG - Home</string>
-    <string name="today_title">Meteo.FVG - Oggi</string>
-    <string name="tomorrow_title">Meteo.FVG - Domani</string>
-    <string name="two_days_title">Meteo.FVG - Dopodomani</string>
-    <string name="radar_title">Meteo.FVG - Radar</string>
-    <string name="sat_title">Meteo.FVG - Satellite View</string>    
-    <string name="observations_title_daily">Meteo.FVG - Osservazioni Giornaliere</string>
+    <string name="home_title">Home</string>
+    <string name="today_title">Oggi</string>
+    <string name="tomorrow_title">Domani</string>
+    <string name="two_days_title">Dopodomani</string>
+    <string name="radar_title">Radar</string>
+    <string name="sat_title">Satellite View</string>    
+    <string name="observations_title_daily">Osservazioni Giornaliere</string>
     <string name="observations_title_daily_sky">Osservazioni Giornaliere - Cielo</string>
     <string name="observations_title_daily_tmin">Osservazioni Giornaliere - Temp. Min</string>
     <string name="observations_title_daily_tmean">Osservazioni Giornaliere - Temp. Media</string>
@@ -35,7 +35,7 @@
     <string name="observations_title_daily_wmean">Osservazioni Giornaliere - Vento Medio</string>
     <string name="observations_title_daily_wmax">Osservazioni Giornaliere - Vento Massimo</string>
     <string name="observations_title_daily_rain">Osservazioni Giornaliere - Pioggia</string>
-    <string name="observations_title_latest">Meteo.FVG - Osservazioni Ultim\'ora</string>
+    <string name="observations_title_latest">Osservazioni Ultim\'ora</string>
     <string name="observations_title_latest_sky">Osservazioni Ultim\'ora - Cielo</string>
     <string name="observations_title_latest_temp">Osservazioni Ultim\'ora - Temperatura</string>
     <string name="observations_title_latest_humidity">Osservazioni Ultim\'ora - Umidita`</string>
@@ -108,6 +108,10 @@
     </string-array>
 
         <!--  MENU -->
+    <string name="menu_radar">Radar</string>
+    <string name="menu_observations">Osservazioni</string>
+    <string name="menu_webcam">Webcam</string>
+    
     <string name="menu_info">Informazioni sulla app&#8230;</string>
     <string name="menu_position">La mia posizione&#8230;</string>
 	<string name="menu_refresh">Info su aggiornamento dati</string>
@@ -123,6 +127,38 @@
 	<string name="meters">m</string>
 	<string name="error_message">Messaggio d\'errore</string>
 	
+	 
+	<!--  Drawer -->
+    <string-array name="drawer_text_items">
+        <item>Previsioni</item>
+        <item>Radar</item>
+        <item>Osservazioni giornaliere</item>
+        <item>Osservazioni ultim\'ora</item>
+        <item>Webcam</item>
+    </string-array>
+    
+    	
+	<string-array name="forecast_text_items">
+        <item>Situazione</item>
+        <item>Oggi</item>
+        <item>Domani</item>
+        <item>Dopodomani</item>
+    </string-array>
+    
+     
+	<string-array name="dailyobs_text_items">
+        <item>Cielo</item>
+        <item>Temperatura minima</item>
+        <item>Temperatura media</item>
+        <item>Temperatura massima</item>
+        <item>Umidità</item>
+        <item>Velocità media vento</item>
+        <item>Velocità massima vento</item>
+        <item>Pioggia</item>
+    </string-array>
+        
+	<string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 	
 	<!--  WEBCAM -->
 	<string name="webcam_getting_image">Scarico l\'immagine webcam&#8230;</string>

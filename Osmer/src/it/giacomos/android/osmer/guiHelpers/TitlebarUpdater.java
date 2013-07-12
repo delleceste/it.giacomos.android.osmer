@@ -12,15 +12,6 @@ public class TitlebarUpdater {
 		DownloadStatus ds = DownloadStatus.Instance();
 		TitleBuilder titleBuilder = new TitleBuilder();
 		a.setTitle(titleBuilder.makeTitle(a));
-		
-		/* title icon */
-		if(ds.downloadErrorCondition())
-			a.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.task_attention);
-		else if(ds.isOnline)
-			a.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.online);
-		else if(!ds.isOnline)
-			a.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.offline);
-		
 		titleBuilder = null;
 	}
 }

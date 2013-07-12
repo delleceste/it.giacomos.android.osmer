@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.guiHelpers;
 
 import it.giacomos.android.osmer.ConfigInfo;
+import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressUpdateListener;
@@ -26,7 +27,7 @@ public class MenuActionsManager implements GeocodeAddressUpdateListener
 	private static final String AUTHOR_URL = "http://www.giacomos.it/curriculum/index.html";
 	private static final String DOC_URL = "http://www.giacomos.it/android/meteofvg/index.html";
 	
-	public MenuActionsManager(Activity activity)
+	public MenuActionsManager(OsmerActivity activity)
 	{
 		mActivity = activity;
 	}
@@ -37,16 +38,28 @@ public class MenuActionsManager implements GeocodeAddressUpdateListener
 		Bundle data = null;
 		switch(item.getItemId())
 		{
-		case R.id.menu_position:
-			SituationImage iv = (SituationImage) mActivity.findViewById(R.id.homeImageView);
-			Location location = iv.getLocation();
-			if(location != null)
-			{
-				GeocodeAddressTask gat = new GeocodeAddressTask(mActivity.getApplicationContext(), this);
-				gat.parallelExecute(location);
-				Toast.makeText(mActivity.getApplicationContext(), res.getString(R.string.getting_locality_wait), Toast.LENGTH_SHORT).show();
-			}	
-			break;
+//		case R.id.menu_radar:
+//			mActivity.switchView(R.id.menu_radar);
+//			break;
+//		case android.R.id.home:
+//			mActivity.switchView(android.R.id.home);
+//			break;
+//		case R.id.menu_observations:
+//			mActivity.switchView(R.id.menu_observations);
+//			break;
+//		case R.id.menu_webcam:
+//			mActivity.switchView(R.id.menu_webcam);
+//			break;
+//		case R.id.menu_position:
+//			SituationImage iv = (SituationImage) mActivity.findViewById(R.id.homeImageView);
+//			Location location = iv.getLocation();
+//			if(location != null)
+//			{
+//				GeocodeAddressTask gat = new GeocodeAddressTask(mActivity.getApplicationContext(), this);
+//				gat.parallelExecute(location);
+//				Toast.makeText(mActivity.getApplicationContext(), res.getString(R.string.getting_locality_wait), Toast.LENGTH_SHORT).show();
+//			}	
+//			break;
 		case R.id.menu_info:
 			data = new Bundle();
 			String text = "<h6>" + res.getString(R.string.app_name);
@@ -123,5 +136,5 @@ public class MenuActionsManager implements GeocodeAddressUpdateListener
 		mActivity.showDialog(TEXT_DIALOG, data);
 	}
 
-	private Activity mActivity;
+	private OsmerActivity mActivity;
 }

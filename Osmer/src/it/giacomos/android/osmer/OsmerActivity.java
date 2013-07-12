@@ -6,6 +6,7 @@ import it.giacomos.android.osmer.downloadManager.DownloadReason;
 import it.giacomos.android.osmer.downloadManager.DownloadStatus;
 import it.giacomos.android.osmer.downloadManager.state.StateName;
 import it.giacomos.android.osmer.downloadManager.state.Urls;
+import it.giacomos.android.osmer.guiHelpers.ActionBarPersonalizer;
 import it.giacomos.android.osmer.guiHelpers.ImageViewUpdater;
 import it.giacomos.android.osmer.guiHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.guiHelpers.NetworkGuiErrorManager;
@@ -35,14 +36,18 @@ import it.giacomos.android.osmer.widgets.mapview.OMapView;
 import it.giacomos.android.osmer.widgets.mapview.MapViewMode;
 import it.giacomos.android.osmer.widgets.SituationImage;
 import it.giacomos.android.osmer.preferences.*;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -52,7 +57,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -74,16 +85,14 @@ SnapshotManagerListener,
 OMapViewEventListener,
 LocationListener,
 GeocodeAddressUpdateListener,
-TextDecoderListener
+TextDecoderListener,
+OnItemSelectedListener
 {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		//		Log.i("onCreate", "application created");
 		super.onCreate(savedInstanceState);
-		getWindow().requestFeature(Window.FEATURE_PROGRESS);
-		/* left icon for logo, right for connection status */
-		requestWindowFeature(Window.FEATURE_LEFT_ICON);
 		setContentView(R.layout.main);
 		init();
 	}
@@ -168,6 +177,25 @@ TextDecoderListener
 		iss = null;
 	}
 
+
+    /**
+     * When using the ActionBarDrawerToggle, you must call it during
+     * onPostCreate() and onConfigurationChanged()...
+     */
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggls
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
 	public void onStop()
 	{
 		//		Log.i("onStop", "application stopped");
@@ -212,6 +240,11 @@ TextDecoderListener
 
 	public boolean onOptionsItemSelected(MenuItem item) 
 	{
+		 // The action bar home/up action should open or close the drawer.
+        // ActionBarDrawerToggle will take care of this.
+       if (mDrawerToggle.onOptionsItemSelected(item)) {
+           return true;
+       }
 		this.closeOptionsMenu();
 		if(mMenuActionsManager == null)
 			mMenuActionsManager = new MenuActionsManager(this);
@@ -318,8 +351,92 @@ TextDecoderListener
 		/* set html text on Radar info text view */
 		TextView radarInfoTextView = (TextView)findViewById(R.id.radarInfoTextView);
 		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
-	}	
+		
+		mDrawerItems = getResources().getStringArray(R.array.drawer_text_items);
+		mDrawerList = (ListView) findViewById(R.id.left_drawer);
+		// Set the adapter for the list view
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, mDrawerItems));
+        // Set the list's click listener
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        mTitle = mDrawerTitle = getTitle();
+        
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+        		R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) 
+        {
 
+        	/** Called when a drawer has settled in a completely closed state. */
+        	public void onDrawerClosed(View view) {
+                getActionBar().setTitle(mTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+        	}
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle(mDrawerTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        drawerLayout.setDrawerListener(mDrawerToggle);
+        
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+        
+        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        
+
+        mActionBarPersonalizer = new ActionBarPersonalizer(this);
+        mActionBarPersonalizer.drawerItemChanged(0);
+
+
+	}	
+	
+	/* Called whenever we call invalidateOptionsMenu() */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) 
+    {
+    	DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        // If the nav drawer is open, hide action items related to the content view
+        boolean drawerOpen = drawerLayout.isDrawerOpen(mDrawerList);
+   //     menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    
+	private class DrawerItemClickListener implements OnItemClickListener {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
+		{
+			selectItem(position);
+
+		}
+
+		private void selectItem(int position) 
+		{
+			mDrawerList.setItemChecked(position, true);
+			setTitle(mDrawerItems[position]);
+			DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+			drawerLayout.closeDrawer(mDrawerList);
+			switchView(position);
+			mActionBarPersonalizer.drawerItemChanged(position);
+			
+		}
+
+	}
+	
+
+	@Override
+	public void setTitle(CharSequence title) {
+	    mTitle = title;
+	    getActionBar().setTitle(mTitle);
+	}
+
+	
 	@Override
 	public void networkStatusChanged(boolean online) {
 		// TODO Auto-generated method stub
@@ -660,13 +777,83 @@ TextDecoderListener
 			map.updateObservations(m_observationsCache.getObservationData(oTime));
 	}
 
+	@Override
+	public void onClick(View v)
+	{
+		switch(v.getId())
+		{
+		case R.id.radarInfoButton:
+			ToggleButton radarInfoB = (ToggleButton) v;
+			View radarInfoTextView = findViewById(R.id.radarInfoTextView);
+			if(radarInfoB.isChecked())
+				radarInfoTextView.setVisibility(View.VISIBLE);
+			else
+				radarInfoTextView.setVisibility(View.GONE);
+			break;
+		case R.id.buttonHome:
+		case R.id.buttonToday:
+		case R.id.buttonTomorrow:	
+		case R.id.buttonTwoDays:
+			if(mSettings.isSwipeHintEnabled() && mSwipeHintCount == 0)
+			{
+				Toast.makeText(getApplicationContext(), R.string.hint_swipe, Toast.LENGTH_LONG).show();
+				mSwipeHintCount++; /* don't be silly, just once per start */
+			}
+			break;
+
+		case R.id.buttonDailySky:
+		case R.id.buttonHumMean:
+		case R.id.buttonWMax:
+		case R.id.buttonWMean:
+		case R.id.buttonDailyRain:	
+		case R.id.buttonTMin:	
+		case R.id.buttonTMax:
+		case R.id.buttonLatestSky:
+		case R.id.buttonHumidity:
+		case R.id.buttonWind:
+		case R.id.buttonPressure:
+		case R.id.buttonLatestRain:	
+		case R.id.buttonSnow:	
+		case R.id.buttonTemp:
+			if(mSettings.isObsScrollIconsHintEnabled())
+			{
+				/* this is shown just once */
+				Toast.makeText(getApplicationContext(), R.string.hint_scroll_buttons, Toast.LENGTH_LONG).show();
+				mSettings.setObsScrollIconsHintEnabled(false);
+			}
+			break;	
+			/* satellite or map on MapView */
+		case R.id.satelliteViewButton:
+			OMapView omv = (OMapView) findViewById(R.id.mapview);
+			omv.setSatellite(((ToggleButton)v).isChecked());
+			break;
+
+		case R.id.measureToggleButton:
+			OMapView omv1 = (OMapView) findViewById(R.id.mapview);
+			boolean buttonChecked = ((ToggleButton)v).isChecked();
+
+			if(buttonChecked && mSettings.isMapMoveToMeasureHintEnabled())
+			{
+				Toast.makeText(getApplicationContext(), R.string.hint_move_to_measure_on_map, Toast.LENGTH_LONG).show();
+			}
+			else if(buttonChecked && !mSettings.isMapMoveToMeasureHintEnabled() 
+					&& mSettings.isMapMoveLocationToMeasureHintEnabled())
+			{
+				Toast.makeText(getApplicationContext(), R.string.hint_move_location_to_measure_on_map, Toast.LENGTH_LONG).show();
+			}
+			omv1.setMeasureEnabled(buttonChecked);
+			break;
+			
+		default:
+			break;		
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see android.view.View.OnClickListener#onClick(android.view.View)
 	 */
-	@Override
-	public void onClick(View v) {
+	public void switchView(int id) {
 		// TODO Auto-generated method stub
-		Button b = (Button) v;
 		OViewFlipper viewFlipper = (OViewFlipper) this.findViewById(R.id.viewFlipper1);
 		viewFlipper.setOutAnimation(null);
 		viewFlipper.setInAnimation(null);
@@ -677,28 +864,28 @@ TextDecoderListener
 		{
 			/* if not already checked, changed flipper page */
 			/* change flipper child. Title is updated by the FlipperChildChangeListener */
-			switch(b.getId())
+			switch(id)
 			{
-			case R.id.buttonHome:
+			case android.R.id.home:		
+			case 0:
 				viewFlipper.setDisplayedChild(FlipperChildren.HOME);
 				buttonsFlipper.setDisplayedChild(0);
 				/* set checked  the clicked button */
-				mToggleButtonGroupHelper.setClicked(b);
 				break;
 			case R.id.buttonToday:
+			case 10:
 				viewFlipper.setDisplayedChild(FlipperChildren.TODAY);
-				mToggleButtonGroupHelper.setClicked(b);
 				break;
 			case R.id.buttonTomorrow:
+			case 11:
 				viewFlipper.setDisplayedChild(FlipperChildren.TOMORROW);
-				mToggleButtonGroupHelper.setClicked(b);
 				break;
+			case 12:
 			case R.id.buttonTwoDays:
 				viewFlipper.setDisplayedChild(FlipperChildren.TWODAYS);
-				mToggleButtonGroupHelper.setClicked(b);
 				break;
-			case R.id.buttonMap:
-			case R.id.buttonMapInsideDaily:
+			case 1:
+			case R.id.buttonMapInsideDaily:		
 				((ToggleButton)findViewById(R.id.measureToggleButton)).setChecked(false);
 				/* remove itemized overlays (observations), if present, and restore radar view */
 				((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
@@ -729,69 +916,25 @@ TextDecoderListener
 			case R.id.satelliteViewButton:
 				/* no call to mToggleButtonGroupHelper.setClicked(b); */
 				break;
-			case R.id.radarInfoButton:
-				ToggleButton radarInfoB = (ToggleButton) v;
-				View radarInfoTextView = findViewById(R.id.radarInfoTextView);
-				if(radarInfoB.isChecked())
-					radarInfoTextView.setVisibility(View.VISIBLE);
-				else
-					radarInfoTextView.setVisibility(View.GONE);
-				break;
+			
 
 			case R.id.centerMapButton:
 				((OMapView) findViewById(R.id.mapview)).centerMap();
 				break;
+				
 			default:
-				mToggleButtonGroupHelper.setClicked(b);
 				break;
 			}
 
-			/* hints on buttons */
-			switch(b.getId())
-			{
-			case R.id.buttonHome:
-			case R.id.buttonToday:
-			case R.id.buttonTomorrow:	
-			case R.id.buttonTwoDays:
-				if(mSettings.isSwipeHintEnabled() && mSwipeHintCount == 0)
-				{
-					Toast.makeText(getApplicationContext(), R.string.hint_swipe, Toast.LENGTH_LONG).show();
-					mSwipeHintCount++; /* don't be silly, just once per start */
-				}
-				break;
-
-			case R.id.buttonDailySky:
-			case R.id.buttonHumMean:
-			case R.id.buttonWMax:
-			case R.id.buttonWMean:
-			case R.id.buttonDailyRain:	
-			case R.id.buttonTMin:	
-			case R.id.buttonTMax:
-			case R.id.buttonLatestSky:
-			case R.id.buttonHumidity:
-			case R.id.buttonWind:
-			case R.id.buttonPressure:
-			case R.id.buttonLatestRain:	
-			case R.id.buttonSnow:	
-			case R.id.buttonTemp:
-				if(mSettings.isObsScrollIconsHintEnabled())
-				{
-					/* this is shown just once */
-					Toast.makeText(getApplicationContext(), R.string.hint_scroll_buttons, Toast.LENGTH_LONG).show();
-					mSettings.setObsScrollIconsHintEnabled(false);
-				}
-
-				break;
-			default:
-				break;	
-			}
+			
 		}
 
 
 		/* buttons that can have effect even offline */
-		switch(b.getId())
+		switch(id)
 		{
 		case R.id.buttonDailySky:
+		case 30:
 			onSelectionDone(ObservationType.SKY, ObservationTime.DAILY);
 			break;
 		case R.id.buttonHumMean:
@@ -807,11 +950,14 @@ TextDecoderListener
 			onSelectionDone(ObservationType.RAIN, ObservationTime.DAILY);
 			break;
 		case R.id.buttonTMin:
+		case 31:
 			onSelectionDone(ObservationType.MIN_TEMP, ObservationTime.DAILY);
 			break;
 		case R.id.buttonTMean:
+		case 32:
 			onSelectionDone(ObservationType.MEAN_TEMP, ObservationTime.DAILY);
 			break;
+		case 33:
 		case R.id.buttonTMax:
 			onSelectionDone(ObservationType.MAX_TEMP, ObservationTime.DAILY);
 			break;
@@ -843,31 +989,11 @@ TextDecoderListener
 			break;
 
 			/* webcam */
-		case R.id.buttonWebcam:
+		case 4:
 			onSelectionDone(ObservationType.WEBCAM, ObservationTime.WEBCAM);
 			break;
 
-			/* satellite or map on MapView */
-		case R.id.satelliteViewButton:
-			OMapView omv = (OMapView) findViewById(R.id.mapview);
-			omv.setSatellite(((ToggleButton)b).isChecked());
-			break;
-
-		case R.id.measureToggleButton:
-			OMapView omv1 = (OMapView) findViewById(R.id.mapview);
-			boolean buttonChecked = ((ToggleButton)b).isChecked();
-
-			if(buttonChecked && mSettings.isMapMoveToMeasureHintEnabled())
-			{
-				Toast.makeText(getApplicationContext(), R.string.hint_move_to_measure_on_map, Toast.LENGTH_LONG).show();
-			}
-			else if(buttonChecked && !mSettings.isMapMoveToMeasureHintEnabled() 
-					&& mSettings.isMapMoveLocationToMeasureHintEnabled())
-			{
-				Toast.makeText(getApplicationContext(), R.string.hint_move_location_to_measure_on_map, Toast.LENGTH_LONG).show();
-			}
-			omv1.setMeasureEnabled(buttonChecked);
-			break;	
+		
 		}
 
 		/* 
@@ -875,8 +1001,9 @@ TextDecoderListener
 		 * daily and latest observations are cached in the ObservationCache, so it is 
 		 * not compulsory to be online to show them.
 		 */
-		if(b.getId() == R.id.buttonDailyObs)
-		{
+		if(id == 2)
+		{		
+			viewFlipper.setDisplayedChild(FlipperChildren.MAP);
 			buttonsFlipper.setDisplayedChild(2);
 			onSelectionDone(ObservationType.SKY, ObservationTime.DAILY);
 			mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonDailySky));
@@ -886,7 +1013,7 @@ TextDecoderListener
 				mTapOnMarkerHintCount++; /* do not be too annoying */
 			}
 		}
-		else if(b.getId() == R.id.buttonLastObs)
+		else if(id == R.id.buttonLastObs || id == 3)
 		{
 			buttonsFlipper.setDisplayedChild(3);
 			onSelectionDone(ObservationType.SKY, ObservationTime.LATEST);
@@ -895,36 +1022,34 @@ TextDecoderListener
 		/* try to download only if online */
 		else if(m_downloadManager.state().name() == StateName.Online)
 		{
-			if(b.getId() ==  R.id.buttonMap || b.getId() == R.id.buttonMapInsideDaily
-					|| b.getId() == R.id.buttonMapInsideLatest)
-			{
-				//		int id = mToggleButtonGroupHelper.buttonOn();
-				//	if(id == R.id.buttonRadar)
-				radar();
-			}
-			else if(b.getId() == R.id.buttonRadar)
+			if(id == 1)
 			{
 				/* remove itemized overlays (observations), if present, and restore radar view */
 				((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 				radar();
 			}
-			else if(b.getId() == R.id.buttonToday)
+			else if(id == R.id.buttonRadar)
+			{
+				
+				radar();
+			}
+			else if(id == R.id.buttonToday)
 			{
 				getTodayForecast();
 			}
-			else if(b.getId() == R.id.buttonTomorrow)
+			else if(id == R.id.buttonTomorrow)
 			{
 				getTomorrowForecast();
 			}
-			else if(b.getId() == R.id.buttonTwoDays)
+			else if(id == R.id.buttonTwoDays)
 			{
 				getTwoDaysForecast();
 			}
-			else if(b.getId() == R.id.buttonHome)
+			else if(id == R.id.buttonHome)
 			{
 
 			}
-			else if(b.getId() == R.id.buttonWebcam)
+			else if(id == 1)
 			{
 				webcams();
 			}
@@ -1152,11 +1277,31 @@ TextDecoderListener
 	ToggleButtonGroupHelper mToggleButtonGroupHelper;
 	private Settings mSettings;
 	private int mSwipeHintCount, mTapOnMarkerHintCount;
+	
+	private ListView mDrawerList;
+	private  String[] mDrawerItems;
+	private ActionBarDrawerToggle mDrawerToggle;
+	private CharSequence mTitle, mDrawerTitle;
 
-
+	private ActionBarPersonalizer mActionBarPersonalizer;
 	Urls m_urls;
 
 	/// temp
 	int availCnt = 0;
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int pos,
+			long id) 
+	{
+		// TODO Auto-generated method stub
+		Log.i("onItemSelected", "args" + view.getId() + " " + pos + " " + id);
+		
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
