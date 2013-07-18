@@ -92,6 +92,12 @@
     <string name="from">from</string>
     <string name="mainpage_icon_hint">Touch an element for details&#8230;</string>
     <string name="close_button">Close</string>
+    <string name="center_map">Center map</string>
+    <string name="sat_view">Satellite view</string>
+    <string name="measure_mode">Measure mode</string>
+    <string name="radar_help">Radar info</string>
+    
+    
     
     <!--  hint toasts -->
     <string name="hint_home_icons">Touch an icon to read further details</string>
