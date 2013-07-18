@@ -6,7 +6,7 @@ import java.util.List;
 
 import it.giacomos.android.osmer.OMapViewEventListener;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.observations.ObservationData;
 import it.giacomos.android.osmer.observations.ObservationDrawableIdPicker;
@@ -140,10 +140,10 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 	}
 	
 	@Override
-	public void onObservationsCacheUpdate(HashMap<String, ObservationData> map, StringType t) 
+	public void onObservationsCacheUpdate(HashMap<String, ObservationData> map, ViewType t) 
 	{
-		if((t == StringType.DAILY_TABLE && mMode.currentMode == ObservationTime.DAILY ) ||
-				(t == StringType.LATEST_TABLE && mMode.currentMode == ObservationTime.LATEST))
+		if((t == ViewType.DAILY_TABLE && mMode.currentMode == ObservationTime.DAILY ) ||
+				(t == ViewType.LATEST_TABLE && mMode.currentMode == ObservationTime.LATEST))
 		{
 			this.updateObservations(map);
 			/* forces android.View to call onDraw(canvas) at some time in the future */

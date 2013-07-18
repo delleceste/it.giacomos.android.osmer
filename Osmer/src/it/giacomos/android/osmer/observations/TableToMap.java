@@ -7,10 +7,10 @@ import java.util.regex.Pattern;
 import android.util.Log;
 
 import it.giacomos.android.osmer.Regexps;
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 
 public class TableToMap {
-	public HashMap <String, ObservationData> convert(String table, final StringType t)
+	public HashMap <String, ObservationData> convert(String table, final ViewType t)
 	{
 		Pattern pattern;
 		HashMap <String, ObservationData> map = new HashMap<String, ObservationData>();
@@ -34,7 +34,7 @@ public class TableToMap {
 		{
 			//Log.e("TableToMap", "Processing line " + lines[i]);
 			ObservationData o = new ObservationData();
-			if(t == StringType.DAILY_TABLE)
+			if(t == ViewType.DAILY_TABLE)
 			{
 				pattern = Pattern.compile(Regexps.DAILY_TABLE);
 				Matcher m = pattern.matcher(lines[i]);

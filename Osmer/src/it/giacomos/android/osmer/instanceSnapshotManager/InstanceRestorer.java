@@ -5,7 +5,7 @@ import android.os.Bundle;
 import it.giacomos.android.osmer.BitmapType;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.downloadManager.DownloadStatus;
 import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
 import it.giacomos.android.osmer.widgets.OTextView;
@@ -46,16 +46,16 @@ public class InstanceRestorer {
 		
 		/* OTextViews */
 		OTextView otw = (OTextView) a.findViewById(R.id.homeTextView);
-		ds.updateState(StringType.HOME, otw.isRestoreSuccessful());
+		ds.updateState(ViewType.HOME, otw.isRestoreSuccessful());
 		
 		otw = (OTextView) a.findViewById(R.id.todayTextView);
-		ds.updateState(StringType.TODAY, otw.isRestoreSuccessful());
+		ds.updateState(ViewType.TODAY, otw.isRestoreSuccessful());
 		
 		otw = (OTextView) a.findViewById(R.id.tomorrowTextView);
-		ds.updateState(StringType.TOMORROW, otw.isRestoreSuccessful());
+		ds.updateState(ViewType.TOMORROW, otw.isRestoreSuccessful());
 		
 		otw = (OTextView) a.findViewById(R.id.twoDaysTextView);
-		ds.updateState(StringType.TWODAYS, otw.isRestoreSuccessful());
+		ds.updateState(ViewType.TWODAYS, otw.isRestoreSuccessful());
 		
 		/* ODoubleLayerImageViews */
 		ODoubleLayerImageView iv = (ODoubleLayerImageView) a.findViewById(R.id.todayImageView);

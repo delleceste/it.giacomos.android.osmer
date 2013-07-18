@@ -3,10 +3,11 @@ package it.giacomos.android.osmer.downloadManager;
 import it.giacomos.android.osmer.BitmapType;
 import it.giacomos.android.osmer.DownloadUpdateListener;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.downloadManager.state.Offline;
 import it.giacomos.android.osmer.downloadManager.state.Online;
 import it.giacomos.android.osmer.downloadManager.state.State;
+import it.giacomos.android.osmer.downloadManager.state.StateName;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
 import android.content.IntentFilter;
@@ -41,6 +42,15 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 	{
 		m_networkStatusMonitor = new NetworkStatusMonitor(this);
 		activity.registerReceiver(m_networkStatusMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+	}
+	
+	public void stopPendingTasks()
+	{
+		if(m_state.name() == StateName.Online)
+		{
+			Online onlineState = (Online) m_state;
+			onlineState.cancelRunningTasks();
+		}
 	}
 
 	@Override
@@ -109,7 +119,7 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 	}
 
 	@Override
-	public void onTextUpdate(String txt, StringType t, String errorMessage) {
+	public void onTextUpdate(String txt, ViewType t, String errorMessage) {
 		if(txt != null)
 			m_downloadUpdateListener.onTextUpdate(txt, t);
 		else

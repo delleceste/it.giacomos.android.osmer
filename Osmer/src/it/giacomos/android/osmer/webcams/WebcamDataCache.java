@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.webcams;
 
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,13 +43,13 @@ public class WebcamDataCache
 	 * @param t
 	 * @return true if save was successful, false otherwise
 	 */
-	public boolean saveToCache(String s, StringType t)
+	public boolean saveToCache(String s, ViewType t)
 	{
 		String filename;
 		boolean ret = false;
-		if(t == StringType.WEBCAMLIST_OSMER)
+		if(t == ViewType.WEBCAMLIST_OSMER)
 			filename = "webcams_osmer.txt";
-		else if(t == StringType.WEBCAMLIST_OTHER)
+		else if(t == ViewType.WEBCAMLIST_OTHER)
 			filename = "webcams_other.txt";
 		else
 			return ret;
@@ -85,13 +85,13 @@ public class WebcamDataCache
 		return ret;
 	}
 	
-	public String getFromCache(StringType t)
+	public String getFromCache(ViewType t)
 	{
 		String text = "";
 		String filename;
-		if(t == StringType.WEBCAMLIST_OSMER)
+		if(t == ViewType.WEBCAMLIST_OSMER)
 			filename = "webcams_osmer.txt";
-		else if(t == StringType.WEBCAMLIST_OTHER)
+		else if(t == ViewType.WEBCAMLIST_OTHER)
 			filename = "webcams_other.txt";
 		else
 			return text;

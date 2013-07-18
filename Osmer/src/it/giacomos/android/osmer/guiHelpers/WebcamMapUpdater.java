@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.webcams.*;
 import it.giacomos.android.osmer.widgets.mapview.*;
 
 public class WebcamMapUpdater 
 {
-	public void update(OsmerActivity a, String text, StringType t, boolean saveOnCache)
+	public void update(OsmerActivity a, String text, ViewType t, boolean saveOnCache)
 	{
 		if(!text.isEmpty())
 		{

@@ -6,7 +6,7 @@ import com.google.android.maps.GeoPoint;
 
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
 import it.giacomos.android.osmer.observations.ObservationData;
 import it.giacomos.android.osmer.observations.ObservationType;
@@ -86,7 +86,7 @@ implements LatestObservationCacheChangeListener
 				loc.setLatitude(gp.getLatitudeE6()/1E6);
 				loc.setLongitude(gp.getLongitudeE6()/1E6);
 				ObservationData od = 
-						oCache.getObservationData(locations[i], StringType.LATEST_TABLE);
+						oCache.getObservationData(locations[i], ViewType.LATEST_TABLE);
 
 				if(od != null)
 				{

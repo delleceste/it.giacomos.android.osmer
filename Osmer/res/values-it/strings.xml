@@ -20,13 +20,14 @@
     <string name="tomorrow_text">Testo domani</string>
     <string name="Home">home_button</string>
     <string name="home_button">Home</string>
-    <string name="home_title">Home</string>
+    <string name="home_title">Situazione</string>
     <string name="today_title">Oggi</string>
     <string name="tomorrow_title">Domani</string>
     <string name="two_days_title">Dopodomani</string>
     <string name="radar_title">Radar</string>
-    <string name="sat_title">Satellite View</string>    
-    <string name="observations_title_daily">Osservazioni Giornaliere</string>
+    <string name="sat_title">Satellite View</string> 
+    <string name="forecast_title">Previsioni</string> 
+    <string name="observations_title_daily">Giornaliere</string>
     <string name="observations_title_daily_sky">Osservazioni Giornaliere - Cielo</string>
     <string name="observations_title_daily_tmin">Osservazioni Giornaliere - Temp. Min</string>
     <string name="observations_title_daily_tmean">Osservazioni Giornaliere - Temp. Media</string>
@@ -35,7 +36,7 @@
     <string name="observations_title_daily_wmean">Osservazioni Giornaliere - Vento Medio</string>
     <string name="observations_title_daily_wmax">Osservazioni Giornaliere - Vento Massimo</string>
     <string name="observations_title_daily_rain">Osservazioni Giornaliere - Pioggia</string>
-    <string name="observations_title_latest">Osservazioni Ultim\'ora</string>
+    <string name="observations_title_latest">Ultim\'ora</string>
     <string name="observations_title_latest_sky">Osservazioni Ultim\'ora - Cielo</string>
     <string name="observations_title_latest_temp">Osservazioni Ultim\'ora - Temperatura</string>
     <string name="observations_title_latest_humidity">Osservazioni Ultim\'ora - Umidita`</string>
@@ -44,7 +45,8 @@
     <string name="observations_title_latest_rain">Osservazioni Ultim\'ora - Pioggia</string>
     <string name="observations_title_latest_sea">Osservazioni Ultim\'ora - Mare</string>
     <string name="observations_title_latest_snow">Osservazioni Ultim\'ora - Neve</string>
-    <string name="title_webcam">Mappa webcam</string>
+    <string name="title_webcam">Webcam</string>
+    <string name="title_map">Mappa</string>
     
     <string name="reliability">Affidabilità</string>
     <string name="emission_date">Emessa il: </string>
@@ -56,7 +58,7 @@
     <string name="completingDownloadToast">Completo il download dei dati&#8230;</string>
     <string name="netBmpErrorToast">Errore nello scaricamento di un\'immagine.</string>
     <string name="netTextErrorToast">Errore nello scaricamento del testo.</string>
-    <string name="situation">Situazione generale</string>
+    <string name="situation">Situazione</string>
     <string name="network_error">Errore di rete</string>
     <string name="dataExpiredToast">aggiornamento dei dati&#8230;</string>
     <string name="radarUpdateToast">aggiorno l\'immagine del radar&#8230;</string>
@@ -156,8 +158,19 @@
         <item>Velocità massima vento</item>
         <item>Pioggia</item>
     </string-array>
+    
+		<string-array name="latestobs_text_items">
+        <item>Cielo</item>
+        <item>Temperatura</item>
+        <item>Pressione</item>
+        <item>Velocità vento</item>
+        <item>Pioggia</item>
+        <item>Neve</item>
+        <item>Umidità</item>
+    </string-array>
         
-	<string name="drawer_open">Open navigation drawer</string>
+		
+	<string name="drawer_open">Seleziona una vista</string>
     <string name="drawer_close">Close navigation drawer</string>
 	
 	<!--  WEBCAM -->

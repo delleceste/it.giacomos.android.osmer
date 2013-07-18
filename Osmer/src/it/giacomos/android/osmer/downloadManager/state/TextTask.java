@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.downloadManager.state;
 
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.downloadManager.DownloadManagerUpdateListener;
 
 import java.io.BufferedInputStream;
@@ -22,7 +22,7 @@ import android.util.Log;
 public class TextTask extends AsyncTask<URL, Integer, String> {
 
 	/** the constructor */
-	public TextTask(TextListener textListener, StringType t)
+	public TextTask(TextListener textListener, ViewType t)
 	{
 		m_textUpdateListener = textListener;
 		m_errorMessage = "";
@@ -51,7 +51,7 @@ public class TextTask extends AsyncTask<URL, Integer, String> {
 	
 	public void onPostExecute(String doc)
 	{
-		m_textUpdateListener.onTextUpdate(doc, m_type, m_errorMessage);
+		m_textUpdateListener.onTextUpdate(doc, m_type, m_errorMessage, this);
 	}
 
 	String errorMessage() { return m_errorMessage; }
@@ -91,7 +91,7 @@ public class TextTask extends AsyncTask<URL, Integer, String> {
 		return doc;
 	}
 
-	private StringType m_type;
+	private ViewType m_type;
 	private TextListener m_textUpdateListener;
 	private String m_errorMessage;
 	private String mReferer;

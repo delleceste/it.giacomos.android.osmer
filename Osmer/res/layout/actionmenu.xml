@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <it.giacomos.android.osmer.widgets.AnimatedImageView 
+    
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/refresh_animation"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent" >
+    
+</it.giacomos.android.osmer.widgets.AnimatedImageView >
+
+   <ToggleButton 
+         	    android:layout_width="32dp"
+        		android:layout_height="32dp"
+				android:textOff=""
+				android:textOn=""
+        		android:background="@drawable/center_map"
+        		android:id="@+id/centerMapButton" />		
+			
+			<ToggleButton 
+         	    android:layout_width="32dp"
+        		android:layout_height="32dp" 
+				android:textOff=""
+				android:textOn=""
+        		android:background="@drawable/earth"
+        		android:id="@+id/satelliteViewButton" />
+        		
+        	<ToggleButton 
+         	    android:layout_width="32dp"
+        		android:layout_height="32dp"
+				android:textOff=""
+				android:textOn=""
+        		android:background="@drawable/measure"
+        		android:id="@+id/measureToggleButton" />
+        	
+         	 <ToggleButton 
+         	    android:layout_width="32dp"
+        		android:layout_height="32dp"
+				android:textOff=""
+				android:textOn="" 
+        		android:background="@drawable/radar_info"
+        		android:id="@+id/radarInfoButton" />	
+</LinearLayout>

@@ -24,7 +24,9 @@
     <string name="tomorrow_title">Tomorrow</string>
     <string name="two_days_title">Two Days Forecast</string>
     <string name="radar_title">Radar</string>
-    <string name="sat_title">Satellite View</string>
+    <string name="sat_title">Satellite View</string>    
+    <string name="forecast_title">Previsioni</string> 
+    
     
     <string name="observations_title_daily">Daily Observations</string>
     <string name="observations_title_daily_sky">Daily Observations - Sky</string>
@@ -45,7 +47,8 @@
     <string name="observations_title_latest_rain">Latest Observations - Rain</string>
     <string name="observations_title_latest_sea">Latest Observations - Sea -</string>
     <string name="observations_title_latest_snow">Latest Observations - Snow -</string>
-    <string name="title_webcam">Webcam map</string>
+    <string name="title_webcam">Webcams</string>
+    <string name="title_map">Map</string>
     
     <string name="reliability">Affidabilit&amp;agrave;</string>
     <string name="emission_date">Emessa il: </string>
@@ -56,7 +59,7 @@
     <string name="netUnavailableToast">Network is unavailable.\nData will be updated as\nsoon as network goes up</string>
     <string name="completingDownloadToast">Completing data download&#8230;</string><string name="netBmpErrorToast">There was an error downloading bitmap.</string>
     <string name="netTextErrorToast">There was an error downloading text.</string>
-    <string name="situation">General Situation</string>
+    <string name="situation">Situation</string>
     <string name="network_error">Network error</string>
     <string name="dataExpiredToast">data is old&#8230; updating contents</string>
     <string name="radarUpdateToast">updating radar&#8230;</string>
@@ -147,19 +150,30 @@
 	
     
 	<string-array name="dailyobs_text_items">
-        <item>Cielo</item>
-        <item>Temperatura minima</item>
-        <item>Temperatura media</item>
-        <item>Temperatura massima</item>
-        <item>Umidità</item>
-        <item>Velocità media vento</item>
-        <item>Velocità massima vento</item>
-        <item>Pioggia</item>
+        <item>Sky</item>
+        <item>Minimum temperature</item>
+        <item>Average temperature</item>
+        <item>Maximum temperature</item>
+        <item>Humidity</item>
+        <item>Average wind speed</item>
+        <item>Maximum wind speed</item>
+        <item>Rain</item>
         
     </string-array>
+    
+
+	<string-array name="latestobs_text_items">
+        <item>Sky</item>
+        <item>Temperature</item>
+        <item>Pressure</item>
+        <item>Wind speed</item>
+        <item>Rain</item>
+        <item>Snow</item>
+        <item>Humidity</item>
+    </string-array>
 	
-	<string name="drawer_open">Apri navigazione</string>
-    <string name="drawer_close">Chiudi navigazione</string>
+	<string name="drawer_open">Select a view</string>
+    <string name="drawer_close">Close drawer</string>
 	
 	<!--  WEBCAM -->
 	<string name="webcam_getting_image">Downloading webcam image&#8230;</string>

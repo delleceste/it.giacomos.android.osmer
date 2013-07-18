@@ -71,16 +71,23 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 
 	public boolean onTouch(View v, MotionEvent touchevent) {
 
-		if(getDisplayedChild() == FlipperChildren.MAP)
+		if(getDisplayedChild() == FlipperChildren.MAP || mDrawerVisible)
 			return false;
-		
+
 		switch (touchevent.getAction())
 		{
 		case MotionEvent.ACTION_DOWN:
 		{
-			// store the X value when the user's finger was pressed down
-			mDownXValue = touchevent.getX();
-			mDisableMove = false;
+			float xPos = touchevent.getX();
+			/* allow flipping without clashing with application drawer, which 
+			 * is shown when swiping from the left edge.
+			 */
+			if(xPos > getWidth() / 5)
+			{
+				// store the X value when the user's finger was pressed down
+				mDownXValue = touchevent.getX();
+				mDisableMove = false;
+			}
 			/* propagate touch event on child, otherwise it wouldn't be 
 			 * called
 			 */
@@ -96,16 +103,19 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 			{
 				// Get the X value when the user released his/her finger
 				float currentX = touchevent.getX();            
-				OViewFlipper vf = (OViewFlipper) findViewById(R.id.viewFlipper1);
 				// going backwards: pushing stuff to the right
 				if (mDownXValue - currentX < -30)
-				{                 
+				{    	
 					// Set the animation
-					vf.setOutAnimation(AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_right));
-					vf.setInAnimation(AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_right));
-
+					setOutAnimation(AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_right));
+					setInAnimation(AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_right));
+					
 					// Flip!
-					vf.showPrevious();
+					if(getDisplayedChild() > 0)
+						showPrevious();
+					else /* from situation to 2 days */
+						setDisplayedChild(getChildCount() - 2);
+					
 					mFlipperChildChangeListener.onFlipperChildChangeEvent(this.getDisplayedChild());
 					/* upon flipping, disable further unwanted flippings (until next ACTION_DOWN) */
 					mDisableMove = true;
@@ -115,10 +125,13 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 				else if (mDownXValue - currentX > 30)
 				{
 					// Set the animation
-					vf.setOutAnimation(AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_left));
-					vf.setInAnimation(AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_left));
+					setOutAnimation(AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_left));
+					setInAnimation(AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_left));
 					// Flip!
-					vf.showNext();
+					if(getDisplayedChild() < getChildCount() - 2)
+						showNext();
+					else /* from 2 days to situation */
+						setDisplayedChild(0);
 					mFlipperChildChangeListener.onFlipperChildChangeEvent(this.getDisplayedChild());
 					/* upon flipping, disable further unwanted flippings  (until next ACTION_DOWN) */
 					mDisableMove = true;
@@ -152,7 +165,17 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 	{
 		return "";
 	}
+	
+	public void setDrawerVisible(boolean v)
+	{
+		mDrawerVisible = v;
+	}
 
+	public boolean drawerVisible()
+	{
+		return mDrawerVisible;
+	}
+	
 	@Override
 	/** bug ??
 	 * http://daniel-codes.blogspot.com/2010/05/viewflipper-receiver-not-registered.html
@@ -183,4 +206,6 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 	private boolean mSwipeHintEnabled;
 	
 	private FlipperChildChangeListener mFlipperChildChangeListener;
+	
+	private boolean mDrawerVisible;
 }

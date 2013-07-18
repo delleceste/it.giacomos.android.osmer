@@ -1,8 +1,8 @@
 package it.giacomos.android.osmer.textToImage;
 
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 
 public interface TextChangeListener {
 
-	public void onTextChanged(String text, StringType stringType);
+	public void onTextChanged(String text, ViewType stringType);
 }

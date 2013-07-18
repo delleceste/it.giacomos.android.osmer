@@ -3,23 +3,17 @@
     xmlns:custom="http://schemas.android.com/apk/res/it.giacomos.android"
     >
     
-   <!--  item android:id="@+id/menu_radar"
-       android:showAsAction="ifRoom|withText"
-          android:title="@string/menu_radar" />
+   <!-- item android:id="@+id/icon_refresh"
+       android:showAsAction="always"
+       android:title=""
+       android:actionLayout="@layout/animated_image_view"
+       / -->
    
-   <item android:id="@+id/menu_observations"
-       android:showAsAction="ifRoom|collapseActionView"
-       android:actionProviderClass="it.giacomos.android.osmer.widgets.actionView.ObservationsActionView"
-       android:title="@string/menu_observations" />
-   
-   <item android:id="@+id/menu_webcam"
-       android:showAsAction="ifRoom|withText"
-          android:title="@string/menu_webcam" />
-    
-   <item android:id="@+id/menu_position"
-          android:icon="@drawable/position"
-          android:title="@string/menu_position" />
-         android:showAsAction="ifRoom"/ -->
+      <item android:id="@+id/actionbarmenu"
+       android:showAsAction="ifRoom"
+       android:title=""
+       android:actionLayout="@layout/actionmenu"
+       />
             
     <item android:id="@+id/menu_data_update_info"
           android:icon="@drawable/refresh"

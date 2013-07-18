@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.observations;
 
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 
 import java.util.HashMap;
 
@@ -9,7 +9,7 @@ import android.os.AsyncTask;
 public class TableToMapAsyncTask extends AsyncTask<String, Integer, 
 HashMap<String, ObservationData> > {
 
-	public TableToMapAsyncTask(StringType st, TableToMapUpdateListener l)
+	public TableToMapAsyncTask(ViewType st, TableToMapUpdateListener l)
 	{
 		setStringType(st);
 		mTableUpdateListener = l;
@@ -29,14 +29,14 @@ HashMap<String, ObservationData> > {
 		mTableUpdateListener.onTableUpdate(map, mStringType);
 	}
 	
-	public StringType getmtringType() {
+	public ViewType getmtringType() {
 		return mStringType;
 	}
 
-	public void setStringType(StringType mStringType) {
+	public void setStringType(ViewType mStringType) {
 		this.mStringType = mStringType;
 	}
 
-	private StringType mStringType;
+	private ViewType mStringType;
 	private  TableToMapUpdateListener mTableUpdateListener;
 }

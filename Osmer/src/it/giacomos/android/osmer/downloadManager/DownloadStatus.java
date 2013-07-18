@@ -2,16 +2,14 @@ package it.giacomos.android.osmer.downloadManager;
 
 import java.util.Calendar;
 import java.util.Date;
-
-import android.util.Log;
 import it.giacomos.android.osmer.BitmapType;
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.webcams.WebcamDataCache;
 import it.giacomos.android.osmer.widgets.CurrentScreen;
 
 public class DownloadStatus {
 
-	public static final int DOWNLOAD_OLD_TIMEOUT = 60000;
+	public static final int DOWNLOAD_OLD_TIMEOUT = 6000;
 	public static final int DOWNLOAD_OBSERVATIONS_OLD_TIMEOUT = 60;
 	
 	
@@ -111,45 +109,46 @@ public class DownloadStatus {
 			state = (state & ~DOWNLOAD_ERROR_CONDITION);
 	}
 	
-	public void updateState(StringType st, boolean downloaded)
+	public void updateState(ViewType st, boolean downloaded)
 	{
 		if(downloaded)
 		{
-			if(st == StringType.TODAY)
+			if(st == ViewType.TODAY)
 				state = (state | TODAY_DOWNLOADED);
-			else if(st == StringType.HOME)
+			else if(st == ViewType.HOME)
 				state = (state | HOME_DOWNLOADED);
-			else if(st == StringType.TOMORROW)
+			else if(st == ViewType.TOMORROW)
 				state = (state | TOMORROW_DOWNLOADED);
-			else if(st == StringType.TWODAYS)
+			else if(st == ViewType.TWODAYS)
 				state = (state | TWODAYS_DOWNLOADED);
-			else if(st == StringType.WEBCAMLIST_OSMER)
+			else if(st == ViewType.WEBCAMLIST_OSMER)
 				state = (state | WEBCAM_OSMER_DOWNLOADED);
-			else if(st == StringType.WEBCAMLIST_OTHER)
-				state = (state | WEBCAM_OTHER_DOWNLOADED);
-			
-			m_lastUpdateCompletedOn = System.currentTimeMillis();
+			else if(st == ViewType.WEBCAMLIST_OTHER)
+				state = (state | WEBCAM_OTHER_DOWNLOADED);			
 		}
 		else
 		{
-			if(st == StringType.TODAY)
+			if(st == ViewType.TODAY)
 				state = (state & ~TODAY_DOWNLOADED);
-			else if(st == StringType.HOME)
+			else if(st == ViewType.HOME)
 				state = (state & ~HOME_DOWNLOADED);
-			else if(st == StringType.TOMORROW)
+			else if(st == ViewType.TOMORROW)
 				state = (state & ~TOMORROW_DOWNLOADED);
-			else if(st == StringType.TWODAYS)
+			else if(st == ViewType.TWODAYS)
 				state = (state & ~TWODAYS_DOWNLOADED);
-			else if(st == StringType.WEBCAMLIST_OSMER)
+			else if(st == ViewType.WEBCAMLIST_OSMER)
 				state = (state & ~WEBCAM_OSMER_DOWNLOADED);
-			else if(st == StringType.WEBCAMLIST_OTHER)
+			else if(st == ViewType.WEBCAMLIST_OTHER)
 				state = (state & ~WEBCAM_OTHER_DOWNLOADED);
 		}
 		
 		if(!downloaded)
 			setDownloadErrorCondition(true);
 		else if(downloadComplete())
+		{
 			setDownloadErrorCondition(false);
+			m_lastUpdateCompletedOn = System.currentTimeMillis();
+		}
 	}
 	
 	public void updateState(BitmapType bt, boolean downloaded)
@@ -164,7 +163,6 @@ public class DownloadStatus {
 				state = (state | TWODAYS_IMAGE_DOWNLOADED);
 			else if(bt == BitmapType.RADAR)
 				state = (state | RADAR_IMAGE_DOWNLOADED);
-			m_lastUpdateCompletedOn = System.currentTimeMillis();
 		}
 		else
 		{
@@ -180,7 +178,10 @@ public class DownloadStatus {
 		if(!downloaded)
 			setDownloadErrorCondition(true);
 		else if(downloadComplete())
+		{
 			setDownloadErrorCondition(false);
+			m_lastUpdateCompletedOn = System.currentTimeMillis();
+		}
 	}
 
 	public long state;

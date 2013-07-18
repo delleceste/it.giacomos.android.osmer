@@ -1,7 +1,7 @@
 package it.giacomos.android.osmer.webcams;
 
 
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -98,7 +98,7 @@ public class OtherWebcamListDecoder implements WebcamListDecoder
 		}
 		
 		if(saveOnCache && wcData.size() > 0) /* cache cleaned file */
-			WebcamDataCache.getInstance().saveToCache(rawData, StringType.WEBCAMLIST_OTHER);
+			WebcamDataCache.getInstance().saveToCache(rawData, ViewType.WEBCAMLIST_OTHER);
 		
 		return wcData;
 	}

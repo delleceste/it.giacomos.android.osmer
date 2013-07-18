@@ -146,7 +146,7 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 	}
 
 	@Override
-	public void onBitmapUpdate(Bitmap bmp, BitmapType bt, String errorMessage) 
+	public void onBitmapUpdate(Bitmap bmp, BitmapType bt, String errorMessage, AsyncTask<URL, Integer, Bitmap> unusedTaskParameter) 
 	{
 		Context ctx = mMap.getContext().getApplicationContext();
 		MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);

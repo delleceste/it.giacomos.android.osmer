@@ -80,7 +80,7 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
 	public void onPostExecute(Bitmap bmp)
 	{
 		m_bitmap = bmp;
-		m_stateUpdateListener.onBitmapUpdate(bmp, m_bitmapType, m_errorMessage);
+		m_stateUpdateListener.onBitmapUpdate(bmp, m_bitmapType, m_errorMessage, this);
 	}
 
 	public Bitmap bitmap() 

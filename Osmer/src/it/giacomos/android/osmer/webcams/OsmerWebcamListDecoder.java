@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
 import java.util.regex.*;
 import it.giacomos.android.osmer.Regexps;
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.downloadManager.state.Urls;
 
 public class OsmerWebcamListDecoder implements WebcamListDecoder 
@@ -83,7 +83,7 @@ public class OsmerWebcamListDecoder implements WebcamListDecoder
 				wcData.add(wd);
 		}
 		if(saveOnCache && wcData.size() > 0) /* cache cleaned file */
-			WebcamDataCache.getInstance().saveToCache(filteredText, StringType.WEBCAMLIST_OSMER);
+			WebcamDataCache.getInstance().saveToCache(filteredText, ViewType.WEBCAMLIST_OSMER);
 		
 		return wcData;
 	}

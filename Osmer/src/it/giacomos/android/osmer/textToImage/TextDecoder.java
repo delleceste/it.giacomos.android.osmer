@@ -2,7 +2,7 @@ package it.giacomos.android.osmer.textToImage;
 
 import android.util.Log;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -35,7 +35,7 @@ public class TextDecoder implements TextChangeListener
 	}
 	
 	@Override
-	public void onTextChanged(String text, StringType t) 
+	public void onTextChanged(String text, ViewType t) 
 	{		
 		text = text.toLowerCase(Locale.ITALIAN);
 

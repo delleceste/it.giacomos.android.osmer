@@ -10,8 +10,8 @@ public interface DownloadUpdateListener {
 	public void onBitmapUpdate(Bitmap bmp, BitmapType t);
 	public void onBitmapUpdateError(BitmapType t, String error);
 
-	public void onTextUpdate(String text, StringType t);
-	public void onTextUpdateError(StringType t, String error);
+	public void onTextUpdate(String text, ViewType t);
+	public void onTextUpdateError(ViewType t, String error);
 	
 	public void onDownloadStart(DownloadReason reason);
 	

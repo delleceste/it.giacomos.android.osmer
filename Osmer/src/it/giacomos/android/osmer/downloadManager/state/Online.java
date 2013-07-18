@@ -2,13 +2,16 @@ package it.giacomos.android.osmer.downloadManager.state;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 import it.giacomos.android.osmer.BitmapType;
 import it.giacomos.android.osmer.ProgressBarParams;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.downloadManager.DownloadManager;
 import it.giacomos.android.osmer.downloadManager.DownloadReason;
 import it.giacomos.android.osmer.downloadManager.DownloadStatus;
@@ -19,12 +22,14 @@ import it.giacomos.android.osmer.observations.ObservationType;
 
 public class Online extends State implements BitmapListener, TextListener {
 
-	public Online(DownloadManagerUpdateListener stateUpdateListener) {
+	public Online(DownloadManagerUpdateListener stateUpdateListener) 
+	{
 		super(stateUpdateListener);
 		
 		m_urls = new Urls();
 		mTotSteps = 0;
 		mCurrentStep = 0;
+		mMyTasks = new ArrayList<AsyncTask>();
 		DownloadStatus downloadStatus = DownloadStatus.Instance();
 		downloadStatus.isOnline = true;
 
@@ -42,7 +47,7 @@ public class Online extends State implements BitmapListener, TextListener {
 			//
 			mTotSteps = 9; /* manually set 9 steps */
 			mStartBitmapTask(m_urls.todayImageUrl(), BitmapType.TODAY);
-			mStartTextTask(m_urls.situationUrl(), StringType.HOME);
+			mStartTextTask(m_urls.situationUrl(), ViewType.HOME);
 			mGetObservationsTable(ObservationTime.LATEST);
 		}
 	}
@@ -60,7 +65,7 @@ public class Online extends State implements BitmapListener, TextListener {
 		}
 		if(!DownloadStatus.Instance().homeDownloaded())
 		{
-			startTextTask(m_urls.situationUrl(), StringType.HOME);
+			startTextTask(m_urls.situationUrl(), ViewType.HOME);
 		}
 	}
 	
@@ -72,7 +77,7 @@ public class Online extends State implements BitmapListener, TextListener {
 		}
 		if(!DownloadStatus.Instance().todayDownloaded())
 		{
-			startTextTask(m_urls.todayUrl(), StringType.TODAY);
+			startTextTask(m_urls.todayUrl(), ViewType.TODAY);
 		}
 	}
 
@@ -84,7 +89,7 @@ public class Online extends State implements BitmapListener, TextListener {
 		}
 		if(!DownloadStatus.Instance().tomorrowDownloaded())
 		{
-			startTextTask(m_urls.tomorrowUrl(), StringType.TOMORROW);
+			startTextTask(m_urls.tomorrowUrl(), ViewType.TOMORROW);
 		}
 	}
 	
@@ -96,7 +101,7 @@ public class Online extends State implements BitmapListener, TextListener {
 		}
 		if(!DownloadStatus.Instance().twoDaysDownloaded())
 		{
-			startTextTask(m_urls.twoDaysUrl(), StringType.TWODAYS);
+			startTextTask(m_urls.twoDaysUrl(), ViewType.TWODAYS);
 		}
 	}
 	
@@ -104,7 +109,7 @@ public class Online extends State implements BitmapListener, TextListener {
 	{
 		if(!DownloadStatus.Instance().todayDownloaded())
 		{
-			startTextTask(m_urls.todayUrl(), StringType.TODAY);
+			startTextTask(m_urls.todayUrl(), ViewType.TODAY);
 		}
 	}
 
@@ -129,8 +134,8 @@ public class Online extends State implements BitmapListener, TextListener {
 		if(!DownloadStatus.Instance().webcamListDownloaded())
 		{
 			DownloadStatus.Instance().setWebcamListsDownloadRequested(true);
-			startTextTask(m_urls.webcamMapData(), StringType.WEBCAMLIST_OSMER);
-			startTextTask(m_urls.webcamsListXML(), StringType.WEBCAMLIST_OTHER);
+			startTextTask(m_urls.webcamMapData(), ViewType.WEBCAMLIST_OSMER);
+			startTextTask(m_urls.webcamsListXML(), ViewType.WEBCAMLIST_OTHER);
 		}
 	}
 	
@@ -142,34 +147,32 @@ public class Online extends State implements BitmapListener, TextListener {
 	}
 	
 	@Override
-	public void onTextUpdate(String s, StringType st, String errorMessage) 
+	public void onTextUpdate(String s, ViewType st, String errorMessage, AsyncTask<URL, Integer, String> task) 
 	{
 		DownloadStatus downloadStatus = DownloadStatus.Instance();
 		long oldState = downloadStatus.state;
-//		if(!errorMessage.isEmpty())
-//			Log.e("onTextUpdate(Online)", "error" + errorMessage);
 		DownloadStatus.Instance().updateState(st, errorMessage.isEmpty());
 		m_stateUpdateListener.onTextUpdate(s, st, errorMessage);
 		/* publish progress , after DownloadStatus state has been updated */
 		mCurrentStep++;
-//		Log.e("ontextUpdate" , "tot steps " + mTotSteps + " current step " + mCurrentStep);
 		m_stateUpdateListener.onProgressUpdate(mCurrentStep, mTotSteps);
 		m_stateUpdateListener.onStateChanged(oldState, downloadStatus.state);
 		mProgressNeedsReset();
+		mMyTasks.remove(task);
 	}
 
 	@Override
-	public void onBitmapUpdate(Bitmap bmp, BitmapType bt, String errorMessage) 
+	public void onBitmapUpdate(Bitmap bmp, BitmapType bt, String errorMessage, AsyncTask<URL, Integer, Bitmap> task) 
 	{	
 		// TODO Auto-generated method stub
 		if(bt == BitmapType.TODAY && !DownloadStatus.Instance().fullForecastDownloadRequested())
 		{
 			DownloadStatus.Instance().setFullForecastDownloadRequested(true);
-			mStartTextTask(m_urls.todayUrl(), StringType.TODAY);
+			mStartTextTask(m_urls.todayUrl(), ViewType.TODAY);
 			mStartBitmapTask(m_urls.tomorrowImageUrl(), BitmapType.TOMORROW);
-			mStartTextTask(m_urls.tomorrowUrl(), StringType.TOMORROW);
+			mStartTextTask(m_urls.tomorrowUrl(), ViewType.TOMORROW);
 			mStartBitmapTask(m_urls.twoDaysImageUrl(), BitmapType.TWODAYS);
-			mStartTextTask(m_urls.twoDaysUrl(), StringType.TWODAYS);
+			mStartTextTask(m_urls.twoDaysUrl(), ViewType.TWODAYS);
 			mGetObservationsTable(ObservationTime.DAILY);
 		}
 		DownloadStatus.Instance().updateState(bt, bmp != null);
@@ -177,9 +180,21 @@ public class Online extends State implements BitmapListener, TextListener {
 
 		/* publish progress, after DownloadStatus state has been updated */
 		mCurrentStep++;
-	//	Log.i("onBitmapUpdate" , "tot steps " + mTotSteps + " current step " + mCurrentStep);
 		m_stateUpdateListener.onProgressUpdate(mCurrentStep, mTotSteps);
 		mProgressNeedsReset();
+		mMyTasks.remove(task);
+	}
+	
+	public void cancelRunningTasks()
+	{
+		for(int i = 0; i < mMyTasks.size(); i++)
+		{
+			/* try to cancel the task. At least, onPostExecute is not called 
+			 * Calling this method guarantees that onPostExecute(Object) is never invoked.
+			 */
+			mMyTasks.get(i).cancel(false);
+		}
+		mMyTasks.clear();
 	}
 	
 	protected void startBitmapTask(String urlStr, BitmapType t)
@@ -189,7 +204,7 @@ public class Online extends State implements BitmapListener, TextListener {
 		mStartBitmapTask(urlStr, t);
 	}
 	
-	protected void startTextTask(String urlStr, StringType t)
+	protected void startTextTask(String urlStr, ViewType t)
 	{
 		mTotSteps++;
 		m_stateUpdateListener.onDownloadStart(DownloadReason.PartialDownload);
@@ -202,23 +217,25 @@ public class Online extends State implements BitmapListener, TextListener {
 		try{
 			URL url = new URL(urlStr);
 			bitmapTask.parallelExecute(url);
+			mMyTasks.add(bitmapTask);
 		}
 		catch(MalformedURLException e)
 		{
-			onBitmapUpdate(null, t, e.getMessage());
+			onBitmapUpdate(null, t, e.getMessage(), null);
 		}
 	}
 
-	protected void mStartTextTask(String urlStr, StringType t)
+	protected void mStartTextTask(String urlStr, ViewType t)
 	{
 		TextTask textTask = new TextTask(this, t);
 		try{
 			URL url = new URL(urlStr);
 			textTask.parallelExecute(url);
+			mMyTasks.add(textTask);
 		}
 		catch(MalformedURLException e)
 		{
-			onTextUpdate("Malformed url \"" + urlStr + "\"\n" , t, e.getMessage());
+			onTextUpdate("Malformed url \"" + urlStr + "\"\n" , t, e.getMessage(), null);
 		}
 	}
 	
@@ -227,19 +244,19 @@ public class Online extends State implements BitmapListener, TextListener {
 		/* start text task ... */
 		String surl = null;
 		String referer = null;
-		StringType stringType;
+		ViewType stringType;
 		
 		if(oTime == ObservationTime.DAILY)
 		{
 			surl = m_urls.dailyTableUrl();
 			referer = m_urls.dailyTableReferer();
-			stringType = StringType.DAILY_TABLE;
+			stringType = ViewType.DAILY_TABLE;
 		}
 		else
 		{
 			surl = m_urls.latestTableUrl();
 			referer = m_urls.latestTableReferer();
-			stringType = StringType.LATEST_TABLE;
+			stringType = ViewType.LATEST_TABLE;
 		}
 		
 		TextTask textTask = new TextTask(this, stringType);
@@ -247,10 +264,11 @@ public class Online extends State implements BitmapListener, TextListener {
 			URL url = new URL(surl);
 			textTask.setReferer(referer);
 			textTask.parallelExecute(url);
+			mMyTasks.add(textTask);
 		}
 		catch(MalformedURLException e)
 		{
-			onTextUpdate("Malformed url \"" + surl + "\"\n" , stringType, e.getMessage());
+			onTextUpdate("Malformed url \"" + surl + "\"\n" , stringType, e.getMessage(), null);
 		}
 	}
 	
@@ -261,7 +279,7 @@ public class Online extends State implements BitmapListener, TextListener {
 	}
 	
 
-	
+	ArrayList<AsyncTask> mMyTasks;
 	Urls m_urls;
 	int mTotSteps;
 	int mCurrentStep;

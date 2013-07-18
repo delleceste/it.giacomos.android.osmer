@@ -7,6 +7,7 @@ import it.giacomos.android.osmer.downloadManager.DownloadStatus;
 import it.giacomos.android.osmer.downloadManager.state.StateName;
 import it.giacomos.android.osmer.downloadManager.state.Urls;
 import it.giacomos.android.osmer.guiHelpers.ActionBarPersonalizer;
+import it.giacomos.android.osmer.guiHelpers.ActionBarStateManager;
 import it.giacomos.android.osmer.guiHelpers.ImageViewUpdater;
 import it.giacomos.android.osmer.guiHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.guiHelpers.NetworkGuiErrorManager;
@@ -14,8 +15,8 @@ import it.giacomos.android.osmer.guiHelpers.ObservationTypeGetter;
 import it.giacomos.android.osmer.guiHelpers.OnTouchListenerInstaller;
 import it.giacomos.android.osmer.guiHelpers.TextViewUpdater;
 import it.giacomos.android.osmer.guiHelpers.TitlebarUpdater;
-import it.giacomos.android.osmer.guiHelpers.ToggleButtonGroupHelper;
 import it.giacomos.android.osmer.guiHelpers.WebcamMapUpdater;
+import it.giacomos.android.osmer.guiHelpers.DrawerItemClickListener;
 import it.giacomos.android.osmer.instanceSnapshotManager.SnapshotManager;
 import it.giacomos.android.osmer.locationUtils.Constants;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressTask;
@@ -25,10 +26,11 @@ import it.giacomos.android.osmer.locationUtils.LocationInfo;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCache;
-import it.giacomos.android.osmer.textToImage.TextDecoder;
 import it.giacomos.android.osmer.textToImage.TextDecoderListener;
 import it.giacomos.android.osmer.webcams.WebcamDataCache;
+import it.giacomos.android.osmer.widgets.AnimatedImageView;
 import it.giacomos.android.osmer.widgets.InfoHtmlBuilder;
+import it.giacomos.android.osmer.widgets.ActionBarButtons;
 import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
 import it.giacomos.android.osmer.widgets.OTextView;
 import it.giacomos.android.osmer.widgets.OViewFlipper;
@@ -36,7 +38,6 @@ import it.giacomos.android.osmer.widgets.mapview.OMapView;
 import it.giacomos.android.osmer.widgets.mapview.MapViewMode;
 import it.giacomos.android.osmer.widgets.SituationImage;
 import it.giacomos.android.osmer.preferences.*;
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -57,13 +58,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -85,14 +81,17 @@ SnapshotManagerListener,
 OMapViewEventListener,
 LocationListener,
 GeocodeAddressUpdateListener,
-TextDecoderListener,
-OnItemSelectedListener
+TextDecoderListener
 {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		//		Log.i("onCreate", "application created");
 		super.onCreate(savedInstanceState);
+
+		requestWindowFeature(Window.FEATURE_PROGRESS);
+		this.setProgressBarVisibility(true);
+
 		setContentView(R.layout.main);
 		init();
 	}
@@ -115,28 +114,17 @@ OnItemSelectedListener
 		{
 			try
 			{
-			/*  (String provider, long minTime, float minDistance, LocationListener listener)
-			 * 5000 the LocationManager could potentially rest for minTime milliseconds between location updates to conserve power.
-			 * If minDistance is greater than 0, a location will only be broadcasted if the device moves by minDistance meters.
-			 */
-			m_locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 
-					Constants.LOCATION_UPDATES_NETWORK_MIN_TIME, 
-					Constants.LOCATION_UPDATES_NETWORK_MIN_DIST, this);
+				/*  (String provider, long minTime, float minDistance, LocationListener listener)
+				 * 5000 the LocationManager could potentially rest for minTime milliseconds between location updates to conserve power.
+				 * If minDistance is greater than 0, a location will only be broadcasted if the device moves by minDistance meters.
+				 */
+				m_locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 
+						Constants.LOCATION_UPDATES_NETWORK_MIN_TIME, 
+						Constants.LOCATION_UPDATES_NETWORK_MIN_DIST, this);
 
-			m_locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 
-					Constants.LOCATION_UPDATES_GPS_MIN_TIME, 
-					Constants.LOCATION_UPDATES_GPS_MIN_DIST, this);
-
-			//		/* PASSIVE_PROVIDER: a special location provider for receiving locations without actually initiating a location fix.
-			//		 * This provider can be used to passively receive location updates when other applications or 
-			//		 * services request them without actually requesting the locations yourself. This provider will 
-			//		 * return locations generated by other providers. You can query the getProvider() method to 
-			//		 * determine the origin of the location update. Requires the permission ACCESS_FINE_LOCATION, 
-			//		 * although if the GPS is not enabled this provider might only return coarse fixes. 
-			//		 */
-			//		m_locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 
-			//				Constants.LOCATION_UPDATES_PASSIVE_MIN_TIME, 
-			//				Constants.LOCATION_UPDATES_PASSIVE_MIN_DIST, this);
+				m_locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 
+						Constants.LOCATION_UPDATES_GPS_MIN_TIME, 
+						Constants.LOCATION_UPDATES_GPS_MIN_DIST, this);
 			}
 			catch(IllegalArgumentException iae)
 			{
@@ -146,19 +134,10 @@ OnItemSelectedListener
 
 		/* create WebcamDataCache with the Context */
 		WebcamDataCache.getInstance(this.getCacheDir());
-
-		/* hide Radar information text view on google map view */
-		ToggleButton radarInfoButton = (ToggleButton) findViewById(R.id.radarInfoButton);
-		View radarInfoTextView = findViewById(R.id.radarInfoTextView);
-		if(radarInfoButton.isChecked())
-			radarInfoTextView.setVisibility(View.VISIBLE);
-		else
-			radarInfoTextView.setVisibility(View.GONE);
 	}
 
 	public void onPause()
 	{
-		//		Log.i("onPause", "application paused");
 		super.onPause();
 		/* unregisters network status monitor broadcast receiver (for this it needs `this')
 		 */
@@ -177,28 +156,26 @@ OnItemSelectedListener
 		iss = null;
 	}
 
+	/**
+	 * When using the ActionBarDrawerToggle, you must call it during
+	 * onPostCreate() and onConfigurationChanged()...
+	 */
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		// Sync the toggle state after onRestoreInstanceState has occurred.
+		mDrawerToggle.syncState();
+	}
 
-    /**
-     * When using the ActionBarDrawerToggle, you must call it during
-     * onPostCreate() and onConfigurationChanged()...
-     */
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		// Pass any configuration change to the drawer toggls
+		mDrawerToggle.onConfigurationChanged(newConfig);
+	}
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
 	public void onStop()
 	{
-		//		Log.i("onStop", "application stopped");
 		/* From Android documentation:
 		 * Note that this method may never be called, in low memory situations where 
 		 * the system does not have enough memory to keep your activity's process running 
@@ -216,9 +193,10 @@ OnItemSelectedListener
 		((ODoubleLayerImageView) findViewById(R.id.todayImageView)).unbindDrawables();
 		((ODoubleLayerImageView) findViewById(R.id.tomorrowImageView)).unbindDrawables();
 		((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).unbindDrawables();
-		
+		mRefreshAnimatedImageView.hide();
+		/* cancel async tasks that may be running when the application is destroyed */
+		m_downloadManager.stopPendingTasks();
 		super.onDestroy();
-		
 	}
 
 	public void onRestart()
@@ -231,8 +209,37 @@ OnItemSelectedListener
 		super.onStart();
 	}
 
+	/* Called whenever we call invalidateOptionsMenu() */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) 
+	{
+		/* save refresh state of the refresh animated circular scrollbar in order to 
+		 * restore its state and visibility right after the menu is recreated.
+		 */
+		boolean refreshWasVisible = (mRefreshAnimatedImageView != null && 
+				mRefreshAnimatedImageView.getVisibility() == View.VISIBLE);
+		Log.e("onPrepareOtpionsMenu", "getsCalled");
+		mRefreshAnimatedImageView = null;
+		View buttonsActionView = menu.findItem(R.id.actionbarmenu).getActionView();
+		mRefreshAnimatedImageView = (AnimatedImageView) buttonsActionView.findViewById(R.id.refresh_animation);
+		if(refreshWasVisible)
+			mRefreshAnimatedImageView.start();
+		Log.e("onCreateOptionsMenu", "created new image view for refresh" + mRefreshAnimatedImageView.toString());
+		/* get map related toggle buttons */
+		mActionBarButtons.setButtons(this, (ToggleButton) buttonsActionView.findViewById(R.id.centerMapButton), 
+				(ToggleButton) buttonsActionView.findViewById(R.id.satelliteViewButton), 
+				(ToggleButton) buttonsActionView.findViewById(R.id.measureToggleButton), 
+				(ToggleButton) buttonsActionView.findViewById(R.id.radarInfoButton)); 
+		/* set visibility and state on map buttons */
+		updateMapButtonsState();
+		return super.onPrepareOptionsMenu(menu);
+	}
+	
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
+//		if(mRefreshAnimatedImageView != null)
+//			mRefreshAnimatedImageView.hide();
+		mActionBarButtons.hideAllButtons();
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.menu, menu);
 		return true;
@@ -240,11 +247,11 @@ OnItemSelectedListener
 
 	public boolean onOptionsItemSelected(MenuItem item) 
 	{
-		 // The action bar home/up action should open or close the drawer.
-        // ActionBarDrawerToggle will take care of this.
-       if (mDrawerToggle.onOptionsItemSelected(item)) {
-           return true;
-       }
+		// The action bar home/up action should open or close the drawer.
+		// ActionBarDrawerToggle will take care of this.
+		if (mDrawerToggle.onOptionsItemSelected(item)) {
+			return true;
+		}
 		this.closeOptionsMenu();
 		if(mMenuActionsManager == null)
 			mMenuActionsManager = new MenuActionsManager(this);
@@ -257,26 +264,18 @@ OnItemSelectedListener
 	public void onBackPressed()
 	{
 		/* first of all, if there's a baloon on the map, close it */
-		ViewFlipper mainFlipper = (ViewFlipper) findViewById(R.id.viewFlipper1);
+		int displayedChild = ((ViewFlipper) findViewById(R.id.viewFlipper1)).getDisplayedChild();
 		OMapView map = (OMapView) findViewById(R.id.mapview);
-		if(mainFlipper.getDisplayedChild() == 4 && map.baloonVisible()) /* map view visible */
+		if(displayedChild == 4 && map.baloonVisible()) /* map view visible */
 		{
 			map.removeBaloon();
 		}
 		else
 		{
-			ViewFlipper buttonFlipper = (ViewFlipper) findViewById(R.id.buttonsFlipper);
-			int displayedChild = buttonFlipper.getDisplayedChild();
 			switch(displayedChild)
 			{
-			case 1: /* sat, daily, last obs: just as clicking home */
-				this.onClick(findViewById(R.id.buttonHome));
-				break;
-			case 2: /* daily observations, like pressing fvg button to go back to the satellite */
-				this.onClick(findViewById(R.id.buttonMapInsideDaily));
-				break;
-			case 3:
-				this.onClick(findViewById(R.id.buttonMapInsideLatest));
+			case 4:
+				mActionBarStateManager.backToForecast(mActionBarPersonalizer);
 				break;
 			default:
 				super.onBackPressed();
@@ -303,30 +302,15 @@ OnItemSelectedListener
 		return super.onCreateDialog(id, args);
 	}
 
-
 	public void init()
 	{
-		TextDecoder textDecoder = new TextDecoder(this);
-		((OTextView) findViewById(R.id.todayTextView)).setTextChangeListener(textDecoder);
-		((OTextView) findViewById(R.id.tomorrowTextView)).setTextChangeListener(textDecoder);
-		((OTextView) findViewById(R.id.twoDaysTextView)).setTextChangeListener(textDecoder);
-		((OTextView) findViewById(R.id.todayTextView)).setStringType(StringType.TODAY);
-		((OTextView) findViewById(R.id.tomorrowTextView)).setStringType(StringType.TOMORROW);
-		((OTextView) findViewById(R.id.twoDaysTextView)).setStringType(StringType.TWODAYS);
+		mTapOnMarkerHintCount = 0;
+		mRefreshAnimatedImageView = null;
+		mActionBarButtons = new ActionBarButtons();
 
 		OMapView map = (OMapView) findViewById(R.id.mapview);
 		map.setMapViewEventListener(this);
-		/* fixed in 1.1.5: satellite view button checked if map is  satellite.
-		 * MapView saves somewhere its previous state and restores it.
-		 * It was difficult to find where. Here it seems to be the right place to check or
-		 * uncheck the satellite view button.
-		 */
-		((ToggleButton) findViewById(R.id.satelliteViewButton)).setChecked(map.isSatellite());
-
-		/* install listeners on buttons */
-		installButtonListener();
-		installOnTouchListener();
-		((OViewFlipper) findViewById(R.id.viewFlipper1)).setOnChildPageChangedListener(this);
+		
 		m_downloadManager = new DownloadManager(this);
 		m_observationsCache = new ObservationsCache();
 		/* map updates the observation data in ItemizedOverlay when new observations are available
@@ -339,119 +323,102 @@ OnItemSelectedListener
 		 * in this class or when cache is restored from the internal storage.
 		 */
 		m_observationsCache.setLatestObservationCacheChangeListener(situationImage);
+
+		/* install onTouchListener */
+		installOnTouchListener();
+		((OViewFlipper) findViewById(R.id.viewFlipper1)).setOnChildPageChangedListener(this);
+
+		mDrawerItems = getResources().getStringArray(R.array.drawer_text_items);
+		mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+		/* Action bar stuff.  */
+		mActionBarPersonalizer = new ActionBarPersonalizer(this);
+		mActionBarStateManager = new ActionBarStateManager();
+		/* set the state manager on the personalizer. */
+		mActionBarPersonalizer.setActionBarStateManager(mActionBarStateManager);
+		mActionBarPersonalizer.drawerItemChanged(0);
+		// Set the adapter for the list view
+		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+				R.layout.drawer_list_item, mDrawerItems));
+
+		// Set the list's click listener
+		mDrawerList.setOnItemClickListener(new DrawerItemClickListener(this));
+		mTitle = getTitle();
+		mDrawerTitle = getResources().getString(R.string.drawer_open);
+
+		DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+		mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+				R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) 
+		{
+
+			/** Called when a drawer has settled in a completely closed state. */
+			public void onDrawerClosed(View view) 
+			{
+				((OViewFlipper) findViewById(R.id.viewFlipper1)).setDrawerVisible(false);
+				getActionBar().setTitle(mTitle);
+				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+			}
+
+			/** Called when a drawer has settled in a completely open state. */
+			public void onDrawerOpened(View drawerView) 
+			{
+				/* block view touch event */
+				((OViewFlipper) findViewById(R.id.viewFlipper1)).setDrawerVisible(true);
+				getActionBar().setTitle(mDrawerTitle);
+				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+			}
+		};
+
+		// Set the drawer toggle as the DrawerListener
+		drawerLayout.setDrawerListener(mDrawerToggle);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setHomeButtonEnabled(true);
+
+		//		TextDecoder textDecoder = new TextDecoder(this);
+		//		((OTextView) findViewById(R.id.todayTextView)).setTextChangeListener(textDecoder);
+		//		((OTextView) findViewById(R.id.tomorrowTextView)).setTextChangeListener(textDecoder);
+		//		((OTextView) findViewById(R.id.twoDaysTextView)).setTextChangeListener(textDecoder);
+		//		((OTextView) findViewById(R.id.todayTextView)).setStringType(ViewType.TODAY);
+		//		((OTextView) findViewById(R.id.tomorrowTextView)).setStringType(ViewType.TOMORROW);
+		//		((OTextView) findViewById(R.id.twoDaysTextView)).setStringType(ViewType.TWODAYS);
+
 		/* Before calling onResume on download manager */
 		m_observationsCache.restoreFromStorage(this);
-		
+
 		mRestoreFromInternalStorage();
 		mSettings = new Settings(this);
 		mMenuActionsManager = null;
-		mSwipeHintCount = mTapOnMarkerHintCount = 0;
 		mCurrentLocation = null;
 
 		/* set html text on Radar info text view */
 		TextView radarInfoTextView = (TextView)findViewById(R.id.radarInfoTextView);
 		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
-		
-		mDrawerItems = getResources().getStringArray(R.array.drawer_text_items);
-		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-		// Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mDrawerItems));
-        // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        mTitle = mDrawerTitle = getTitle();
-        
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-        		R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) 
-        {
-
-        	/** Called when a drawer has settled in a completely closed state. */
-        	public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-        	}
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-
-        // Set the drawer toggle as the DrawerListener
-        drawerLayout.setDrawerListener(mDrawerToggle);
-        
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-        
-        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        
-
-        mActionBarPersonalizer = new ActionBarPersonalizer(this);
-        mActionBarPersonalizer.drawerItemChanged(0);
-
-
 	}	
-	
-	/* Called whenever we call invalidateOptionsMenu() */
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) 
-    {
-    	DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = drawerLayout.isDrawerOpen(mDrawerList);
-   //     menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    
-	private class DrawerItemClickListener implements OnItemClickListener {
-
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
-		{
-			selectItem(position);
-
-		}
-
-		private void selectItem(int position) 
-		{
-			mDrawerList.setItemChecked(position, true);
-			setTitle(mDrawerItems[position]);
-			DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-			drawerLayout.closeDrawer(mDrawerList);
-			switchView(position);
-			mActionBarPersonalizer.drawerItemChanged(position);
-			
-		}
-
-	}
-	
 
 	@Override
 	public void setTitle(CharSequence title) {
-	    mTitle = title;
-	    getActionBar().setTitle(mTitle);
+		mTitle = title;
+		getActionBar().setTitle(mTitle);
 	}
 
-	
 	@Override
 	public void networkStatusChanged(boolean online) {
 		// TODO Auto-generated method stub
 		TitlebarUpdater titlebarUpdater = new TitlebarUpdater();
 		titlebarUpdater.update(this);
 		titlebarUpdater = null;
-		
+
 		if(!online)
-			Toast.makeText(getApplicationContext(), R.string.netUnavailableToast, Toast.LENGTH_LONG).show();
+		{
+			Toast.makeText(getApplicationContext(), R.string.netUnavailableToast, Toast.LENGTH_LONG).show();	
+		}
 		else
 		{
 			CurrentViewUpdater currenvViewUpdater = new CurrentViewUpdater();
 			currenvViewUpdater.update(this);
 			currenvViewUpdater = null;
-			
+
 			/* update locality if Location is available */
 			if(mCurrentLocation != null)
 			{
@@ -467,7 +434,8 @@ OnItemSelectedListener
 		SnapshotManager snapManager = new SnapshotManager();
 		snapManager.save(outState, this);
 		snapManager = null;
-		mToggleButtonGroupHelper.saveButtonsState(outState);
+		/* to restore action bar and displayed mode */
+		mActionBarStateManager.saveState(outState);
 	}
 
 	protected void onRestoreInstanceState(Bundle inState)
@@ -479,7 +447,7 @@ OnItemSelectedListener
 		SnapshotManager snapManager = new SnapshotManager();
 		snapManager.restore(inState, this);
 		snapManager = null;
-		mToggleButtonGroupHelper.restoreButtonsState(inState);
+		mActionBarStateManager.restoreState(inState, mActionBarPersonalizer);
 	}
 
 	public void getSituation()
@@ -526,8 +494,8 @@ OnItemSelectedListener
 		{
 			/* false: do not save on cache because we are already reusing cached data */
 			WebcamMapUpdater webcamUpdater = new WebcamMapUpdater();
-			webcamUpdater.update(this, webcamData.getFromCache(StringType.WEBCAMLIST_OSMER), StringType.WEBCAMLIST_OSMER, false);
-			webcamUpdater.update(this, webcamData.getFromCache(StringType.WEBCAMLIST_OTHER), StringType.WEBCAMLIST_OTHER, false);
+			webcamUpdater.update(this, webcamData.getFromCache(ViewType.WEBCAMLIST_OSMER), ViewType.WEBCAMLIST_OSMER, false);
+			webcamUpdater.update(this, webcamData.getFromCache(ViewType.WEBCAMLIST_OTHER), ViewType.WEBCAMLIST_OTHER, false);
 			webcamUpdater = null;
 		}
 		m_downloadManager.getWebcamList();
@@ -539,11 +507,17 @@ OnItemSelectedListener
 		TitlebarUpdater tbu = new TitlebarUpdater();
 		tbu.update(this);
 		tbu = null;
-		setProgress((int) (ProgressBarParams.MAX_PB_VALUE * step /  total));
+		double progressValue = ProgressBarParams.MAX_PB_VALUE * step /  total;
+		setProgress((int) progressValue);
+		ProgressBarParams.currentValue = progressValue;
+		if(mRefreshAnimatedImageView != null && ProgressBarParams.currentValue == ProgressBarParams.MAX_PB_VALUE)
+			mRefreshAnimatedImageView.hide(); /* stops and hides */
+		else if(mRefreshAnimatedImageView != null)
+			mRefreshAnimatedImageView.start();
 	}
 
 	@Override
-	public void onTextUpdate(String txt, StringType t)
+	public void onTextUpdate(String txt, ViewType t)
 	{
 		switch(t)
 		{
@@ -584,10 +558,12 @@ OnItemSelectedListener
 		setProgressBarVisibility(true);
 		ProgressBarParams.currentValue = 0;
 		setProgress(0);
+		if(mRefreshAnimatedImageView != null)
+			mRefreshAnimatedImageView.resetErrorFlag();
 	}
 
 	@Override
-	public void onTextUpdateError(StringType t, String errorMessage)
+	public void onTextUpdateError(ViewType t, String errorMessage)
 	{
 		InfoHtmlBuilder infoHtmlBuilder = new InfoHtmlBuilder();
 		String text = infoHtmlBuilder.wrapErrorIntoHtml(errorMessage, getResources());
@@ -683,40 +659,30 @@ OnItemSelectedListener
 	@Override
 	/**
 	 * called by textToImage.TextChangeListener when a new text has been set on a text view.
-	 * This method, according to the string type (today, tomorrow or 2 days forecast
+	 * This method, according to the string type (today, tomorrow or 2 days forecast)
+	 * Changes the tab icon according to the forecast.
 	 */
-	public void onTextDecoded(StringType t, int resId) 
+	public void onTextDecoded(ViewType t, int resId) 
 	{
+		int index = 0;
 		if(resId != 0)
 		{
-			//			Log.i("OsmerActivity:onTextDecoded", "got " + resId);
-			ToggleButton b = null;
 			switch(t)
 			{
 			case TODAY:
-				b = (ToggleButton) findViewById(R.id.buttonToday);
+				index = 1;
 				break;
 			case TOMORROW:
-				b = (ToggleButton) findViewById(R.id.buttonTomorrow);
+				index = 2;
 				break;
 			case TWODAYS:
-				b = (ToggleButton) findViewById(R.id.buttonTwoDays);
+				index = 3;
 				break;
 			default:
 				break;
 			}
-
-			b.setBackgroundResource(resId);
+			mActionBarPersonalizer.setTabIcon(index, resId);
 		}
-	}
-
-	/** Installs listeners for the button click events 
-	 * 
-	 */
-	protected void installButtonListener()
-	{
-		mToggleButtonGroupHelper = new ToggleButtonGroupHelper(this);
-		mInstallButtonListener();
 	}
 
 	protected void installOnTouchListener()
@@ -737,7 +703,7 @@ OnItemSelectedListener
 		ov.restoreFromInternalStorage();
 		ov = (OTextView) findViewById(R.id.twoDaysTextView);
 		ov.restoreFromInternalStorage();
-		
+
 		/* save images */
 		ODoubleLayerImageView dliv = (ODoubleLayerImageView) findViewById(R.id.homeImageView);
 		dliv.restoreFromInternalStorage();
@@ -748,7 +714,7 @@ OnItemSelectedListener
 		dliv = (ODoubleLayerImageView) findViewById(R.id.twoDaysImageView);
 		dliv.restoreFromInternalStorage();
 	}
-	
+
 	void executeObservationTypeSelectionDialog(ObservationTime oTime)
 	{
 		ObservationTypeGetter oTypeGetter = new ObservationTypeGetter();
@@ -763,9 +729,9 @@ OnItemSelectedListener
 	}
 
 	@Override
-	public void onMeasureEnabled(boolean en) {
-		ToggleButton b = (ToggleButton) findViewById(R.id.measureToggleButton);
-		b.setChecked(en);
+	public void onMeasureEnabled(boolean en) 
+	{
+		mActionBarButtons.setMeasureEnabled(en);
 	}
 
 	public void onSelectionDone(ObservationType type, ObservationTime oTime) 
@@ -775,11 +741,13 @@ OnItemSelectedListener
 		map.setMode(new MapViewMode(type, oTime));
 		if(type != ObservationType.WEBCAM)
 			map.updateObservations(m_observationsCache.getObservationData(oTime));
+		((OViewFlipper)findViewById(R.id.viewFlipper1)).setDisplayedChild(FlipperChildren.MAP);
 	}
 
 	@Override
 	public void onClick(View v)
 	{
+		OMapView omv = (OMapView) findViewById(R.id.mapview);
 		switch(v.getId())
 		{
 		case R.id.radarInfoButton:
@@ -790,46 +758,12 @@ OnItemSelectedListener
 			else
 				radarInfoTextView.setVisibility(View.GONE);
 			break;
-		case R.id.buttonHome:
-		case R.id.buttonToday:
-		case R.id.buttonTomorrow:	
-		case R.id.buttonTwoDays:
-			if(mSettings.isSwipeHintEnabled() && mSwipeHintCount == 0)
-			{
-				Toast.makeText(getApplicationContext(), R.string.hint_swipe, Toast.LENGTH_LONG).show();
-				mSwipeHintCount++; /* don't be silly, just once per start */
-			}
-			break;
-
-		case R.id.buttonDailySky:
-		case R.id.buttonHumMean:
-		case R.id.buttonWMax:
-		case R.id.buttonWMean:
-		case R.id.buttonDailyRain:	
-		case R.id.buttonTMin:	
-		case R.id.buttonTMax:
-		case R.id.buttonLatestSky:
-		case R.id.buttonHumidity:
-		case R.id.buttonWind:
-		case R.id.buttonPressure:
-		case R.id.buttonLatestRain:	
-		case R.id.buttonSnow:	
-		case R.id.buttonTemp:
-			if(mSettings.isObsScrollIconsHintEnabled())
-			{
-				/* this is shown just once */
-				Toast.makeText(getApplicationContext(), R.string.hint_scroll_buttons, Toast.LENGTH_LONG).show();
-				mSettings.setObsScrollIconsHintEnabled(false);
-			}
-			break;	
 			/* satellite or map on MapView */
 		case R.id.satelliteViewButton:
-			OMapView omv = (OMapView) findViewById(R.id.mapview);
 			omv.setSatellite(((ToggleButton)v).isChecked());
 			break;
 
 		case R.id.measureToggleButton:
-			OMapView omv1 = (OMapView) findViewById(R.id.mapview);
 			boolean buttonChecked = ((ToggleButton)v).isChecked();
 
 			if(buttonChecked && mSettings.isMapMoveToMeasureHintEnabled())
@@ -841,280 +775,245 @@ OnItemSelectedListener
 			{
 				Toast.makeText(getApplicationContext(), R.string.hint_move_location_to_measure_on_map, Toast.LENGTH_LONG).show();
 			}
-			omv1.setMeasureEnabled(buttonChecked);
+			omv.setMeasureEnabled(buttonChecked);
 			break;
-			
+
 		default:
 			break;		
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see android.view.View.OnClickListener#onClick(android.view.View)
-	 */
-	public void switchView(int id) {
+
+	public void switchView(ViewType id) 
+	{
 		// TODO Auto-generated method stub
 		OViewFlipper viewFlipper = (OViewFlipper) this.findViewById(R.id.viewFlipper1);
 		viewFlipper.setOutAnimation(null);
 		viewFlipper.setInAnimation(null);
+		
+		mCurrentViewType = id;
 
-		ViewFlipper buttonsFlipper = (ViewFlipper) findViewById(R.id.buttonsFlipper);
-
-		//if(!mToggleButtonGroupHelper.isOn(v.getId()))
-		{
-			/* if not already checked, changed flipper page */
-			/* change flipper child. Title is updated by the FlipperChildChangeListener */
-			switch(id)
-			{
-			case android.R.id.home:		
-			case 0:
-				viewFlipper.setDisplayedChild(FlipperChildren.HOME);
-				buttonsFlipper.setDisplayedChild(0);
-				/* set checked  the clicked button */
-				break;
-			case R.id.buttonToday:
-			case 10:
-				viewFlipper.setDisplayedChild(FlipperChildren.TODAY);
-				break;
-			case R.id.buttonTomorrow:
-			case 11:
-				viewFlipper.setDisplayedChild(FlipperChildren.TOMORROW);
-				break;
-			case 12:
-			case R.id.buttonTwoDays:
-				viewFlipper.setDisplayedChild(FlipperChildren.TWODAYS);
-				break;
-			case 1:
-			case R.id.buttonMapInsideDaily:		
-				((ToggleButton)findViewById(R.id.measureToggleButton)).setChecked(false);
-				/* remove itemized overlays (observations), if present, and restore radar view */
-				((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
-				viewFlipper.setDisplayedChild(FlipperChildren.MAP);
-				buttonsFlipper.setDisplayedChild(1);
-				//				/* do not set the map button clicked, but the radar one 
-				//				 * because the buttonsFlipper child has changed.
-				//				 */
-				//				mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonRadar));
-				break;
-			case R.id.buttonRadar:
-				mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonRadar));
-				break;
-			case R.id.buttonMapInsideLatest:
-				((ToggleButton)findViewById(R.id.measureToggleButton)).setChecked(false);
-
-				/* remove itemized overlays (observations), if present, and restore radar view */
-				((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.LATEST));
-
-				viewFlipper.setDisplayedChild(FlipperChildren.MAP);
-				buttonsFlipper.setDisplayedChild(1);
-				//				/* do not set the map button clicked, but the radar one 
-				//				 * because the buttonsFlipper child has changed.
-				//				 */
-				//				mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonRadar));
-				break;
-			case R.id.measureToggleButton:
-			case R.id.satelliteViewButton:
-				/* no call to mToggleButtonGroupHelper.setClicked(b); */
-				break;
-			
-
-			case R.id.centerMapButton:
-				((OMapView) findViewById(R.id.mapview)).centerMap();
-				break;
-				
-			default:
-				break;
-			}
-
-			
-		}
-
-
-		/* buttons that can have effect even offline */
+		/* if not already checked, changed flipper page */
+		/* change flipper child. Title is updated by the FlipperChildChangeListener */
 		switch(id)
 		{
-		case R.id.buttonDailySky:
-		case 30:
-			onSelectionDone(ObservationType.SKY, ObservationTime.DAILY);
+		case HOME:
+			viewFlipper.setDisplayedChild(FlipperChildren.HOME);
+			/* set checked  the clicked button */
 			break;
-		case R.id.buttonHumMean:
-			onSelectionDone(ObservationType.MEAN_HUMIDITY, ObservationTime.DAILY);
+		case TODAY:
+			viewFlipper.setDisplayedChild(FlipperChildren.TODAY);
 			break;
-		case R.id.buttonWMax:
-			onSelectionDone(ObservationType.MAX_WIND, ObservationTime.DAILY);
+		case TOMORROW:
+			viewFlipper.setDisplayedChild(FlipperChildren.TOMORROW);
 			break;
-		case R.id.buttonWMean:
-			onSelectionDone(ObservationType.MEAN_WIND, ObservationTime.DAILY);
+		case TWODAYS:
+			viewFlipper.setDisplayedChild(FlipperChildren.TWODAYS);
 			break;
-		case R.id.buttonDailyRain:
-			onSelectionDone(ObservationType.RAIN, ObservationTime.DAILY);
-			break;
-		case R.id.buttonTMin:
-		case 31:
-			onSelectionDone(ObservationType.MIN_TEMP, ObservationTime.DAILY);
-			break;
-		case R.id.buttonTMean:
-		case 32:
-			onSelectionDone(ObservationType.MEAN_TEMP, ObservationTime.DAILY);
-			break;
-		case 33:
-		case R.id.buttonTMax:
-			onSelectionDone(ObservationType.MAX_TEMP, ObservationTime.DAILY);
+		case MAP:		
+		case RADAR:
+			mActionBarButtons.btMeasure.setChecked(false);
+			/* remove itemized overlays (observations), if present, and restore radar view */
+			((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
+			viewFlipper.setDisplayedChild(FlipperChildren.MAP);
 			break;
 
-			/* latest */
-		case R.id.buttonLatestSky:
-			onSelectionDone(ObservationType.SKY, ObservationTime.LATEST);
+		case ACTION_CENTER_MAP:
+			((OMapView) findViewById(R.id.mapview)).centerMap();
 			break;
-		case R.id.buttonHumidity:
-			onSelectionDone(ObservationType.HUMIDITY, ObservationTime.LATEST);
+		default:
 			break;
-		case R.id.buttonWind:
-			onSelectionDone(ObservationType.WIND, ObservationTime.LATEST);
-			break;
-		case R.id.buttonPressure:
-			onSelectionDone(ObservationType.PRESSURE, ObservationTime.LATEST);
-			break;
-		case R.id.buttonLatestRain:
-			onSelectionDone(ObservationType.RAIN, ObservationTime.LATEST);
-			break;
-		case R.id.buttonSea:
-			onSelectionDone(ObservationType.SEA, ObservationTime.LATEST);
-			break;
-		case R.id.buttonSnow:
-			onSelectionDone(ObservationType.SNOW, ObservationTime.LATEST);
-			break;
-		case R.id.buttonTemp:
-			onSelectionDone(ObservationType.TEMP, ObservationTime.LATEST);
-			break;
-
-			/* webcam */
-		case 4:
-			onSelectionDone(ObservationType.WEBCAM, ObservationTime.WEBCAM);
-			break;
-
-		
 		}
 
-		/* 
-		 * FIXME 
+		/* ViewTypes that can have effect even when offline
 		 * daily and latest observations are cached in the ObservationCache, so it is 
 		 * not compulsory to be online to show them.
-		 */
-		if(id == 2)
-		{		
-			viewFlipper.setDisplayedChild(FlipperChildren.MAP);
-			buttonsFlipper.setDisplayedChild(2);
+		 */	
+		switch(id)
+		{
+		case DAILY_SKY:
 			onSelectionDone(ObservationType.SKY, ObservationTime.DAILY);
-			mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonDailySky));
 			if(mSettings.isMapMarkerHintEnabled() && mTapOnMarkerHintCount == 0)
 			{
 				Toast.makeText(getApplicationContext(), R.string.hint_tap_on_map_markers, Toast.LENGTH_LONG).show();
 				mTapOnMarkerHintCount++; /* do not be too annoying */
 			}
-		}
-		else if(id == R.id.buttonLastObs || id == 3)
-		{
-			buttonsFlipper.setDisplayedChild(3);
+			break;
+		case DAILY_HUMIDITY:
+			onSelectionDone(ObservationType.MEAN_HUMIDITY, ObservationTime.DAILY);
+			break;
+		case DAILY_WIND_MAX:
+			onSelectionDone(ObservationType.MAX_WIND, ObservationTime.DAILY);
+			break;
+		case DAILY_WIND:
+			onSelectionDone(ObservationType.MEAN_WIND, ObservationTime.DAILY);
+			break;
+		case DAILY_RAIN:
+			onSelectionDone(ObservationType.RAIN, ObservationTime.DAILY);
+			break;
+		case DAILY_MIN_TEMP:
+			onSelectionDone(ObservationType.MIN_TEMP, ObservationTime.DAILY);
+			break;
+		case DAILY_MEAN_TEMP:
+			onSelectionDone(ObservationType.MEAN_TEMP, ObservationTime.DAILY);
+			break;
+		case DAILY_MAX_TEMP:
+			onSelectionDone(ObservationType.MAX_TEMP, ObservationTime.DAILY);
+			break;
+
+			/* latest */
+		case LATEST_SKY:
 			onSelectionDone(ObservationType.SKY, ObservationTime.LATEST);
-			mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonLatestSky));
-		}
+			break;
+		case LATEST_HUMIDITY:
+			onSelectionDone(ObservationType.HUMIDITY, ObservationTime.LATEST);
+			break;
+		case LATEST_WIND:
+			onSelectionDone(ObservationType.WIND, ObservationTime.LATEST);
+			break;
+		case LATEST_PRESSURE:
+			onSelectionDone(ObservationType.PRESSURE, ObservationTime.LATEST);
+			break;
+		case LATEST_RAIN:
+			onSelectionDone(ObservationType.RAIN, ObservationTime.LATEST);
+			break;
+		case LATEST_SEA:
+			onSelectionDone(ObservationType.SEA, ObservationTime.LATEST);
+			break;
+		case LATEST_SNOW:
+			onSelectionDone(ObservationType.SNOW, ObservationTime.LATEST);
+			break;
+		case LATEST_TEMP:
+			onSelectionDone(ObservationType.TEMP, ObservationTime.LATEST);
+			break;
+
+			/* webcam */
+		case WEBCAM:
+			onSelectionDone(ObservationType.WEBCAM, ObservationTime.WEBCAM);
+			break;
+		}	
 		/* try to download only if online */
-		else if(m_downloadManager.state().name() == StateName.Online)
+		if(m_downloadManager.state().name() == StateName.Online)
 		{
-			if(id == 1)
+			if(id == ViewType.RADAR || id == ViewType.MAP)
 			{
 				/* remove itemized overlays (observations), if present, and restore radar view */
 				((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 				radar();
 			}
-			else if(id == R.id.buttonRadar)
-			{
-				
-				radar();
-			}
-			else if(id == R.id.buttonToday)
+			else if(id == ViewType.TODAY)
 			{
 				getTodayForecast();
 			}
-			else if(id == R.id.buttonTomorrow)
+			else if(id == ViewType.TOMORROW)
 			{
 				getTomorrowForecast();
 			}
-			else if(id == R.id.buttonTwoDays)
+			else if(id == ViewType.TWODAYS)
 			{
 				getTwoDaysForecast();
 			}
-			else if(id == R.id.buttonHome)
+			else if(id == ViewType.HOME)
 			{
 
 			}
-			else if(id == 1)
+			else if(id == ViewType.WEBCAM)
 			{
 				webcams();
 			}
 		}
 
-		/* hide measure and radar button from the map view when not in
-		 * radar mode
-		 */
-		View measureButton =  findViewById(R.id.measureToggleButton);
-		ToggleButton radarInfoButton = (ToggleButton) findViewById(R.id.radarInfoButton);
-		if(mToggleButtonGroupHelper.isOn(R.id.buttonRadar))
-		{
-			measureButton.setVisibility(View.VISIBLE);
-			radarInfoButton.setVisibility(View.VISIBLE);
-		}
-		else
-		{
-			radarInfoButton.setChecked(false);
-			radarInfoButton.setVisibility(View.GONE);
-			measureButton.setVisibility(View.GONE);
-			/* always hide radar info text view from map when not in radar mode */
-			findViewById(R.id.radarInfoTextView).setVisibility(View.GONE);
-		}
-
+		updateMapButtonsState();
+		
 		TitlebarUpdater titleUpdater = new TitlebarUpdater();
 		titleUpdater.update(this);
 		titleUpdater = null;
 	}
 
-	public DownloadManager stateMachine() { return m_downloadManager; }
-
-	public ToggleButtonGroupHelper getToggleButtonGroupHelper() 
+	public void updateMapButtonsState()
 	{
-		return mToggleButtonGroupHelper;
+		switch(mCurrentViewType)
+		{
+		case HOME:
+		case TODAY:
+		case TOMORROW:
+		case TWODAYS:
+			mActionBarButtons.hideAllButtons();
+			break;
+		default:
+			mActionBarButtons.setSatViewVisible(true);
+			mActionBarButtons.setCenterMapVisible(true);
+			break;
+		}
+		/* hide measure and radar button from the map view when not in
+		 * radar mode
+		 */
+		mActionBarButtons.setRadarInfoVisible(mCurrentViewType == ViewType.RADAR);
+		mActionBarButtons.setMeasureVisible(mCurrentViewType == ViewType.RADAR);
+
+		/* hide Radar information text view on google map view */
+		View radarInfoTextView = findViewById(R.id.radarInfoTextView);
+		if(mActionBarButtons.radarInfoEnabled())
+			radarInfoTextView.setVisibility(View.VISIBLE);
+		else
+			radarInfoTextView.setVisibility(View.GONE);
 	}
+	
+	public DownloadManager stateMachine() { return m_downloadManager; }
 
 	@Override
 	public void onFlipperChildChangeEvent(int child) {
 
+		OMapView map = null;
+		MapViewMode mapMode = null;
 		TitlebarUpdater titleUpdater = new TitlebarUpdater();
 		titleUpdater.update(this);
 		titleUpdater = null;
-		
+		int index = -1;
+
 		switch(child)
 		{
 		case FlipperChildren.HOME:
-			mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonHome));
+			index = 0;
+			mDrawerList.setItemChecked(0, true);
 			break;
 		case FlipperChildren.TODAY:
-			mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonToday));
+			mDrawerList.setItemChecked(0, true);
+			index = 1;
 			break;
 		case FlipperChildren.TOMORROW:
-			mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonTomorrow));
+			mDrawerList.setItemChecked(0, true);
+			index = 2;
 			break;
 		case FlipperChildren.TWODAYS:
-			mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonTwoDays));
+			mDrawerList.setItemChecked(0, true);
+			index = 3;
 			break;
 		case FlipperChildren.MAP:
-			ViewFlipper buttonsFlipper = (ViewFlipper) findViewById(R.id.buttonsFlipper);
-			buttonsFlipper.setDisplayedChild(1);
-			mToggleButtonGroupHelper.setClicked(findViewById(R.id.buttonRadar));
+			/* map can be in different modes: radar, webcam or observations */
+			map = (OMapView) findViewById(R.id.mapview);
+			mapMode = map.getMode();
+			if(mapMode.currentType == ObservationType.RADAR)
+			{
+				mDrawerList.setItemChecked(1, true);
+			}
+			else if(mapMode.currentMode == ObservationTime.DAILY)
+			{
+				mDrawerList.setItemChecked(2, true);
+			}
+			else if(mapMode.currentMode == ObservationTime.LATEST)
+			{
+				mDrawerList.setItemChecked(3, true);
+			}
+			else if(mapMode.currentType == ObservationType.WEBCAM)
+			{
+				mDrawerList.setItemChecked(4, true);
+			}
 			break;
 		default:
 			break;
 		}
+		if(index > -1)
+			mActionBarPersonalizer.setTabSelected(index);
 	}
 
 	public Location getCurrentLocation()
@@ -1128,180 +1027,45 @@ OnItemSelectedListener
 		return false;
 	}
 
-
-
-	private void mInstallButtonListener() 
+	public  String[] getDrawerItems()
 	{
-		ToggleButton buttonHome = (ToggleButton)findViewById(R.id.buttonHome);
-		mToggleButtonGroupHelper.addButton(R.id.buttonHome);
-		buttonHome.setOnClickListener(this);
-
-		ToggleButton buttonToday = (ToggleButton)findViewById(R.id.buttonToday);
-		mToggleButtonGroupHelper.addButton(R.id.buttonToday);
-		buttonToday.setOnClickListener(this);
-
-		ToggleButton buttonTomorrow = (ToggleButton)findViewById(R.id.buttonTomorrow);
-		mToggleButtonGroupHelper.addButton(R.id.buttonTomorrow);
-		buttonTomorrow.setOnClickListener(this);
-
-		ToggleButton buttonTwoDays = (ToggleButton)findViewById(R.id.buttonTwoDays);
-		mToggleButtonGroupHelper.addButton(R.id.buttonTwoDays);
-		buttonTwoDays.setOnClickListener(this);
-
-		ToggleButton buttonMap = (ToggleButton)findViewById(R.id.buttonMap);
-		buttonMap.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonMap);
-		
-		/* switches between map and satellite view on MapView.
-		 * measure mode
-		 * radar info button
-		 * do not add to ToggleButtonGroupHelper
-		 */
-		ToggleButton satelliteViewButtonOnMap = (ToggleButton) findViewById(R.id.satelliteViewButton);
-		satelliteViewButtonOnMap.setOnClickListener(this);
-
-		ToggleButton measureMode = (ToggleButton) findViewById(R.id.measureToggleButton);
-		measureMode.setOnClickListener(this);
-		
-		ToggleButton buttonInfoRadar = (ToggleButton) findViewById(R.id.radarInfoButton);
-		buttonInfoRadar.setOnClickListener(this);		
-		
-		ToggleButton radarButton = (ToggleButton) findViewById(R.id.buttonRadar);
-		radarButton.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonRadar);
-		
-		ToggleButton dailyObsButton = (ToggleButton) findViewById(R.id.buttonDailyObs);
-		dailyObsButton.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonDailyObs);
-		ToggleButton lastObsButton = (ToggleButton) findViewById(R.id.buttonLastObs);
-		lastObsButton.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonLastObs);
-
-		/* daily and latest observations button */
-		ToggleButton dailySkyButton = (ToggleButton) findViewById(R.id.buttonDailySky);
-		dailySkyButton.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonDailySky);
-
-		ToggleButton buttonHumidity = (ToggleButton) findViewById(R.id.buttonHumidity);
-		buttonHumidity.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonHumidity);
-
-		ToggleButton buttonHumidityMean = (ToggleButton) findViewById(R.id.buttonHumMean);
-		buttonHumidityMean.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonHumMean);
-
-		ToggleButton buttonLatestSky = (ToggleButton) findViewById(R.id.buttonLatestSky);
-		buttonLatestSky.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonLatestSky);
-
-		ToggleButton buttonPressure = (ToggleButton) findViewById(R.id.buttonPressure);
-		buttonPressure.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonPressure);
-
-		ToggleButton buttonDailyRain = (ToggleButton) findViewById(R.id.buttonDailyRain);
-		buttonDailyRain.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonDailyRain);
-
-		ToggleButton buttonSea = (ToggleButton) findViewById(R.id.buttonSea);
-		buttonSea.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonSea);
-
-		ToggleButton buttonSnow = (ToggleButton) findViewById(R.id.buttonSnow);
-		buttonSnow.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonSnow);
-
-
-		ToggleButton buttonTemp = (ToggleButton) findViewById(R.id.buttonTemp);
-		buttonTemp.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonTemp);
-
-
-		ToggleButton buttonTMax = (ToggleButton) findViewById(R.id.buttonTMax);
-		buttonTMax.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonTMax);
-
-
-		ToggleButton buttonTMean = (ToggleButton) findViewById(R.id.buttonTMean);
-		buttonTMean.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonTMean);
-
-
-		ToggleButton buttonTMin = (ToggleButton) findViewById(R.id.buttonTMin);
-		buttonTMin.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonTMin);
-
-
-		ToggleButton buttonWind = (ToggleButton) findViewById(R.id.buttonWind);
-		buttonWind.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonWind);
-
-
-		ToggleButton buttonWMax = (ToggleButton) findViewById(R.id.buttonWMax);
-		buttonWMax.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonWMax);
-
-
-		ToggleButton buttonWMean = (ToggleButton) findViewById(R.id.buttonWMean);
-		buttonWMean.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonWMean);
-
-
-		ToggleButton buttonLatestRain = (ToggleButton) findViewById(R.id.buttonLatestRain);
-		buttonLatestRain.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonLatestRain);
-
-
-		ToggleButton buttonMapInsideDaily = (ToggleButton) findViewById(R.id.buttonMapInsideDaily);
-		buttonMapInsideDaily.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonMapInsideDaily);
-
-
-		ToggleButton buttonMapInsideLatest = (ToggleButton) findViewById(R.id.buttonMapInsideLatest);
-		buttonMapInsideLatest.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonMapInsideLatest);
-		
-		ToggleButton buttonWebcam = (ToggleButton) findViewById(R.id.buttonWebcam);
-		buttonWebcam.setOnClickListener(this);
-		mToggleButtonGroupHelper.addButton(R.id.buttonWebcam);
-		
-		/* center map button (v. 1.1.5) */
-		findViewById(R.id.centerMapButton).setOnClickListener(this);	
+		return mDrawerItems;
 	}
-	
+
+	public ListView getDrawerListView()
+	{
+		return mDrawerList;
+	}
+
+	public ActionBarPersonalizer getActionBarPersonalizer()
+	{
+		return mActionBarPersonalizer;
+	}
+
+	public AnimatedImageView getRefreshAnimatedImageView()
+	{
+		return mRefreshAnimatedImageView;
+	}
+
 	/* private members */
+	int mTapOnMarkerHintCount;
 	private DownloadManager m_downloadManager;
 	private LocationManager m_locationManager; 
 	private Location mCurrentLocation;
 	private ObservationsCache m_observationsCache;
 	private MenuActionsManager mMenuActionsManager;
-	ToggleButtonGroupHelper mToggleButtonGroupHelper;
 	private Settings mSettings;
-	private int mSwipeHintCount, mTapOnMarkerHintCount;
-	
+
 	private ListView mDrawerList;
-	private  String[] mDrawerItems;
+	private String[] mDrawerItems;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private CharSequence mTitle, mDrawerTitle;
-
+	private ActionBarStateManager mActionBarStateManager;
 	private ActionBarPersonalizer mActionBarPersonalizer;
+	private AnimatedImageView mRefreshAnimatedImageView;
+	private ActionBarButtons mActionBarButtons;
+	private ViewType mCurrentViewType;
 	Urls m_urls;
 
-	/// temp
 	int availCnt = 0;
-
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int pos,
-			long id) 
-	{
-		// TODO Auto-generated method stub
-		Log.i("onItemSelected", "args" + view.getId() + " " + pos + " " + id);
-		
-	}
-
-	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

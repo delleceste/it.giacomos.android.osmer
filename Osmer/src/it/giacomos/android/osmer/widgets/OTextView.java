@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.widgets;
 
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.textToImage.TextChangeListener;
 
 import java.io.BufferedReader;
@@ -35,7 +35,7 @@ public class OTextView extends TextView implements StateSaver
 		this.setTextColor(Color.BLACK);
 		this.setPadding(10, 10, 10, 10);
 		mTextChangeListener = null;
-		mStringType = StringType.HOME;
+		mStringType = ViewType.HOME;
 		mHtml  = null;
 		//setMovementMethod(LinkMovementMethod.getInstance());
 	}
@@ -141,12 +141,12 @@ public class OTextView extends TextView implements StateSaver
 		super.onRestoreInstanceState(b.getParcelable("OTextViewState"));
 	}
 	
-	public void setStringType(StringType t)
+	public void setStringType(ViewType t)
 	{
 		mStringType = t;
 	}
 	
-	public StringType getStringType()
+	public ViewType getStringType()
 	{
 		return mStringType;
 	}
@@ -178,5 +178,5 @@ public class OTextView extends TextView implements StateSaver
 	
 	private TextChangeListener mTextChangeListener;
 	
-	private StringType mStringType;
+	private ViewType mStringType;
 }

@@ -8,7 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import it.giacomos.android.osmer.StringType;
+import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.widgets.LatestObservationCacheChangeListener;
 import android.content.Context;
 import android.util.Log;
@@ -57,7 +57,7 @@ public class ObservationsCache implements TableToMapUpdateListener
 		return !mLatestMap.isEmpty();
 	}
 
-	public void onTableUpdate(HashMap <String, ObservationData> map, StringType t)
+	public void onTableUpdate(HashMap <String, ObservationData> map, ViewType t)
 	{
 		switch(t)
 		{
@@ -74,9 +74,9 @@ public class ObservationsCache implements TableToMapUpdateListener
 			mObservationsCacheUpdateListener.onObservationsCacheUpdate(map, t);
 	}
 	
-	public void store(String s, StringType t)
+	public void store(String s, ViewType t)
 	{
-		if(t == StringType.DAILY_TABLE && s != mDailyObservation)
+		if(t == ViewType.DAILY_TABLE && s != mDailyObservation)
 		{
 			/* call expensive TableToMap only if the string has changed */
 			TableToMapAsyncTask at = new TableToMapAsyncTask(t, this);
@@ -111,11 +111,11 @@ public class ObservationsCache implements TableToMapUpdateListener
 		return mLatestMap;
 	}
 
-	public ObservationData getObservationData(String location, StringType t)
+	public ObservationData getObservationData(String location, ViewType t)
 	{
-		if(t == StringType.DAILY_TABLE && mDailyMap.containsKey(location))
+		if(t == ViewType.DAILY_TABLE && mDailyMap.containsKey(location))
 			return mDailyMap.get(location);
-		else if(t == StringType.LATEST_TABLE && mLatestMap.containsKey(location))
+		else if(t == ViewType.LATEST_TABLE && mLatestMap.containsKey(location))
 			return mLatestMap.get(location);
 		return null;
 	}
@@ -144,11 +144,11 @@ public class ObservationsCache implements TableToMapUpdateListener
 			catch (FileNotFoundException e) {}
 
 			/* store the read file or the empty string */
-			StringType stringType;
+			ViewType stringType;
 			if(filename == "latest_observations.txt")
-				stringType = StringType.LATEST_TABLE;
+				stringType = ViewType.LATEST_TABLE;
 			else
-				stringType = StringType.DAILY_TABLE;
+				stringType = ViewType.DAILY_TABLE;
 
 			this.store(data, stringType);
 		}
