@@ -9,7 +9,7 @@ import it.giacomos.android.osmer.widgets.CurrentScreen;
 
 public class DownloadStatus {
 
-	public static final int DOWNLOAD_OLD_TIMEOUT = 6000;
+	public static final int DOWNLOAD_OLD_TIMEOUT = 60000;
 	public static final int DOWNLOAD_OBSERVATIONS_OLD_TIMEOUT = 60;
 	
 	
