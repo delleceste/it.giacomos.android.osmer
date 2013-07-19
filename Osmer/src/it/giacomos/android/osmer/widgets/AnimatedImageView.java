@@ -3,7 +3,6 @@ package it.giacomos.android.osmer.widgets;
 import it.giacomos.android.osmer.R;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -51,7 +50,7 @@ public class AnimatedImageView extends ImageView {
 	{
 		if(this.getAnimation() == null && !mErrorFlag)
 		{
-			Log.e("start() in AnimatedImageView", "starting animation............... " + toString());
+//			Log.e("start() in AnimatedImageView", "starting animation............... " + toString());
 			this.setVisibility(View.VISIBLE);
 			this.setImageResource(R.drawable.spinner_20_inner_holo);
 			Animation anim = AnimationUtils.loadAnimation(getContext(), R.drawable.animated_refresh_actionbar_image);

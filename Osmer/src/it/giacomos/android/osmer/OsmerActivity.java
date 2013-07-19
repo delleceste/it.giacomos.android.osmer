@@ -219,13 +219,11 @@ OnDismissListener
 		 */
 		boolean refreshWasVisible = (mRefreshAnimatedImageView != null && 
 				mRefreshAnimatedImageView.getVisibility() == View.VISIBLE);
-		Log.e("onPrepareOtpionsMenu", "getsCalled");
 		mRefreshAnimatedImageView = null;
 		mButtonsActionView = menu.findItem(R.id.actionbarmenu).getActionView();
 		mRefreshAnimatedImageView = (AnimatedImageView) mButtonsActionView.findViewById(R.id.refresh_animation);
 		if(refreshWasVisible)
 			mRefreshAnimatedImageView.start();
-		Log.e("onPrepareOptionsMenu", "created new image view for refresh" + mRefreshAnimatedImageView.toString());
 		mInitButtonMapsOverflowMenu();
 		
 		/* set visibility and state on map buttons */
@@ -704,7 +702,6 @@ OnDismissListener
 		 */
 		if(menuItem.isCheckable())
 			menuItem.setChecked(!menuItem.isChecked());
-		Log.e("onMenuItemClick", "clicked a menu item id " + menuItem.getItemId());
 		OMapView omv = (OMapView) findViewById(R.id.mapview);
 		switch(menuItem.getItemId())
 		{
@@ -722,7 +719,6 @@ OnDismissListener
 				radarInfoTextView.setVisibility(View.GONE);
 			break;
 		case R.id.measureToggleButton:
-			Log.e("onMenuItemClick", "clicked measureToggleButton " + menuItem.isChecked() );
 			if(menuItem.isChecked() && mSettings.isMapMoveToMeasureHintEnabled())
 			{
 				Toast.makeText(getApplicationContext(), R.string.hint_move_to_measure_on_map, Toast.LENGTH_LONG).show();

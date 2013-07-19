@@ -5,15 +5,12 @@ import android.app.ActionBar.OnNavigationListener;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.content.res.Resources;
-import android.util.Log;
-import android.util.SparseIntArray;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.guiHelpers.MyTabListener;
-import java.util.HashMap;
 
 public class ActionBarPersonalizer {
 	
@@ -65,7 +62,6 @@ public class ActionBarPersonalizer {
 		case 0:
 			mType = FORECAST;
 			Resources res = mActivity.getResources();
-			Log.e("drawerItemChanged", "setting navigation mode TABS");
 			/* TABS navigation mode may have been already set by the init() method in 
 			 * OsmerActivity.java
 			 */
@@ -98,23 +94,15 @@ public class ActionBarPersonalizer {
 						.setTag(R.string.two_days_title);
 				actionBar.addTab(twodaysTab);
 			}
-			else
-				Log.w("drawerItemChanged", "WARNIGN: already popylated with tabs!!!!!!!!!!!!");
-//			for(int i = 1; i < actionBar.getTabCount(); i++)
-//				if(mIconHash.containsKey(i))
-//					actionBar.getTabAt(i).setIcon(res.getDrawable(mIconHash.get(i)));
 
 			break;
 
 		case 1:
 			mType = RADAR;
 			actionBar.removeAllTabs();
-			Log.e("drawerItemChanged", "setting navigation mode STANDARD");
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			mActivity.switchView(ViewType.RADAR);
 			mActivity.setTitle(R.string.radar_title);
-			
-			
 			break;
 			
 		case 2:
@@ -122,7 +110,6 @@ public class ActionBarPersonalizer {
 			mActivity.setTitle(R.string.observations_title_daily);
 			actionBar.removeAllTabs();
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-			Log.e("drawerItemChanged", "setting navigation mode NAVIGATION_MODE_LIST");
 			mSpinnerAdapter = ArrayAdapter.createFromResource(mActivity, R.array.dailyobs_text_items,
 					android.R.layout.simple_spinner_dropdown_item);
 
@@ -169,7 +156,6 @@ public class ActionBarPersonalizer {
 			mActivity.setTitle(R.string.observations_title_latest);
 			actionBar.removeAllTabs();
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-			Log.e("drawerItemChanged", "setting navigation mode NAVIGATION_MODE_LIST");
 			mSpinnerAdapter = ArrayAdapter.createFromResource(mActivity, R.array.latestobs_text_items,
 					android.R.layout.simple_spinner_dropdown_item);
 
@@ -224,7 +210,6 @@ public class ActionBarPersonalizer {
 			actionBar.removeAllTabs();
 			mActivity.setTitle(R.string.title_webcam);
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-			Log.e("drawerItemChanged", "setting navigation mode NAVIGATION_MODE_STANDARD");
 			mActivity.switchView(ViewType.WEBCAM);
 			
 			break;
