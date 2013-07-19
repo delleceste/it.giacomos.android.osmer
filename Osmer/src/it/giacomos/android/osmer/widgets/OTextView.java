@@ -1,8 +1,6 @@
 package it.giacomos.android.osmer.widgets;
 
 import it.giacomos.android.osmer.ViewType;
-import it.giacomos.android.osmer.textToImage.TextChangeListener;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -15,10 +13,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.TextView;
 
 /** Text change listener is installed here because this class restores from internal storage on her own
@@ -34,7 +29,6 @@ public class OTextView extends TextView implements StateSaver
 		mRestoreSuccessful = false;
 		this.setTextColor(Color.BLACK);
 		this.setPadding(10, 10, 10, 10);
-		mTextChangeListener = null;
 		mStringType = ViewType.HOME;
 		mHtml  = null;
 		//setMovementMethod(LinkMovementMethod.getInstance());
@@ -107,8 +101,6 @@ public class OTextView extends TextView implements StateSaver
 		if(mHtml == null || !html.equals(mHtml))
 		{
 			Spanned fromHtml = Html.fromHtml(html);
-			if(mTextChangeListener != null)
-				mTextChangeListener.onTextChanged(fromHtml.toString(), mStringType);
 
 			mHtml = html;
 //			Log.i("setHtml", "calling setText()");
@@ -166,17 +158,6 @@ public class OTextView extends TextView implements StateSaver
 		return "textViewHtml_" + this.getId() + "txt";
 	}
 	
-	/*
-	 * it.giacomos.android.osmer.textToImage.TextChangeListener
-	 */
-	public void setTextChangeListener(TextChangeListener l)
-	{
-		mTextChangeListener = l;
-	}
-	
-	private boolean mRestoreSuccessful;
-	
-	private TextChangeListener mTextChangeListener;
-	
+	private boolean mRestoreSuccessful;	
 	private ViewType mStringType;
 }

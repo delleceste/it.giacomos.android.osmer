@@ -26,7 +26,6 @@ import it.giacomos.android.osmer.locationUtils.LocationInfo;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCache;
-import it.giacomos.android.osmer.textToImage.TextDecoderListener;
 import it.giacomos.android.osmer.webcams.WebcamDataCache;
 import it.giacomos.android.osmer.widgets.AnimatedImageView;
 import it.giacomos.android.osmer.widgets.InfoHtmlBuilder;
@@ -82,7 +81,6 @@ FlipperChildChangeListener,
 SnapshotManagerListener,
 LocationListener,
 GeocodeAddressUpdateListener,
-TextDecoderListener, 
 OnMenuItemClickListener, 
 OnDismissListener
 {
@@ -649,35 +647,6 @@ OnDismissListener
 	public void onStatusChanged(String provider, int status, Bundle extras) 
 	{
 
-	}
-
-	@Override
-	/**
-	 * called by textToImage.TextChangeListener when a new text has been set on a text view.
-	 * This method, according to the string type (today, tomorrow or 2 days forecast)
-	 * Changes the tab icon according to the forecast.
-	 */
-	public void onTextDecoded(ViewType t, int resId) 
-	{
-		int index = 0;
-		if(resId != 0)
-		{
-			switch(t)
-			{
-			case TODAY:
-				index = 1;
-				break;
-			case TOMORROW:
-				index = 2;
-				break;
-			case TWODAYS:
-				index = 3;
-				break;
-			default:
-				break;
-			}
-			mActionBarPersonalizer.setTabIcon(index, resId);
-		}
 	}
 
 	protected void installOnTouchListener()

@@ -1,64 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Meteo.FVG Oservatorio Regionale Friuli Venezia Giulia</string>
     <string name="app_name">Meteo.FVG</string>
     <string name="version">versione</string>
     <string name="data_source">Fonte dati: http://www.meteo.fvg.it</string>
     <string name="author">&#169; 2013</string>
     <string name="author_web">http://www.giacomos.it</string>
-    <string name="link_osmer">http://www.meteo.fvg.it</string>
-    <string name="today_button">Oggi</string>
-    <string name="tomorrow_button">Domani</string>
-    <string name="twodays_button">2 Giorni</string>
-    <string name="radar_button">Radar</string>
-    <string name="sat_button">Satellite</string>
-    <string name="today_text">Caricamento in corso&#8230;</string>
-    <string name="tomorrow_text">Testo domani</string>
-    <string name="Home">home_button</string>
-    <string name="home_button">Home</string>
     <string name="home_title">Situazione</string>
     <string name="today_title">Oggi</string>
     <string name="tomorrow_title">Domani</string>
     <string name="two_days_title">Dopodomani</string>
     <string name="radar_title">Radar</string>
-    <string name="sat_title">Satellite View</string> 
     <string name="forecast_title">Previsioni</string> 
     <string name="observations_title_daily">Giornaliere</string>
-    <string name="observations_title_daily_sky">Osservazioni Giornaliere - Cielo</string>
-    <string name="observations_title_daily_tmin">Osservazioni Giornaliere - Temp. Min</string>
-    <string name="observations_title_daily_tmean">Osservazioni Giornaliere - Temp. Media</string>
-    <string name="observations_title_daily_tmax">Osservazioni Giornaliere - Temp. Max</string>
-    <string name="observations_title_daily_hmean">Osservazioni Giornaliere - Umidita` Media</string>
-    <string name="observations_title_daily_wmean">Osservazioni Giornaliere - Vento Medio</string>
-    <string name="observations_title_daily_wmax">Osservazioni Giornaliere - Vento Massimo</string>
-    <string name="observations_title_daily_rain">Osservazioni Giornaliere - Pioggia</string>
     <string name="observations_title_latest">Ultim\'ora</string>
-    <string name="observations_title_latest_sky">Osservazioni Ultim\'ora - Cielo</string>
-    <string name="observations_title_latest_temp">Osservazioni Ultim\'ora - Temperatura</string>
-    <string name="observations_title_latest_humidity">Osservazioni Ultim\'ora - Umidita`</string>
-    <string name="observations_title_latest_pressure">Osservazioni Ultim\'ora - Pressione</string>
-    <string name="observations_title_latest_wind">Osservazioni Ultim\'ora - Vento</string>
-    <string name="observations_title_latest_rain">Osservazioni Ultim\'ora - Pioggia</string>
-    <string name="observations_title_latest_sea">Osservazioni Ultim\'ora - Mare</string>
-    <string name="observations_title_latest_snow">Osservazioni Ultim\'ora - Neve</string>
     <string name="title_webcam">Webcam</string>
-    <string name="title_map">Mappa</string>
-    
     <string name="reliability">Affidabilità</string>
     <string name="emission_date">Emessa il: </string>
     <string name="hours">ore</string>
     <string name="offline">Offline</string>  
-    <string name="online">Online</string>
     <string name="downloadingToast">Aggiornamento dati&#8230;</string>
     <string name="netUnavailableToast">La rete non è disponibile.\nI dati saranno aggiornati non appena vi sarà connessione.</string>
     <string name="completingDownloadToast">Completo il download dei dati&#8230;</string>
-    <string name="netBmpErrorToast">Errore nello scaricamento di un\'immagine.</string>
     <string name="netTextErrorToast">Errore nello scaricamento del testo.</string>
     <string name="situation">Situazione</string>
     <string name="network_error">Errore di rete</string>
     <string name="dataExpiredToast">aggiornamento dei dati&#8230;</string>
     <string name="radarUpdateToast">aggiorno l\'immagine del radar&#8230;</string>
-    <string name="webcamUpdateToast">aggiorno la lista delle webcam, se necessario&#8230;</string>
     <string name="webcam_lists_downloaded">lista webcam aggiornata</string>
     <string name="min_temp">Temperatura Minima</string>
     <string name="max_temp">Temperatura Massima</string>
@@ -72,20 +39,15 @@
     <string name="rain">Pioggia</string>
     <string name="temp">Temperatura</string>
     <string name="mean_temp">Temperatura media</string>
-    <string name="mean_temp_abbr">T.Media</string>
     <string name="sea">Mare</string>
     <string name="mean_humidity">Umidità media</string>
     <string name="snow">Neve</string>
     <string name="pressure">Pressione</string>
     <string name="not_available">n.d.</string>
-    <string name="city_click">Clicca su una località&#8230;</string>
     <string name="select_obs_type_daily">Seleziona Osservazioni Giornaliere</string>
     <string name="select_obs_type_latest">Seleziona Osservazioni dell\'ultim\'ora</string>
-    <string name="position">posizione</string>    
-    <string name="unavailable">non disponibile</string>
     <string name="pos_accuracy">accuratezza</string>
     <string name="from">da</string>
-    <string name="mainpage_icon_hint">Tocca un\'icona per ulteriori dettagli&#8230;</string>
     <string name="close_button">Chiudi</string>
     <string name="center_map">Centra mappa</string>
     <string name="sat_view">Vista satellite</string>
@@ -95,8 +57,6 @@
         <!--  hint toasts -->
     <string name="hint_home_icons">Suggerimento: tocca un\'icona e leggi i dettagli in basso a sinistra</string>
     <string name="hint_tap_on_map_markers">Tocca un\'icona per ottenere maggiori dettagli</string>
-    <string name="hint_swipe">Scorri il dito sullo schermo per passare alla pagina seguente o precedente</string>
-    <string name="hint_scroll_buttons">Trascina la barra dei bottoni per scorrerne i contenuti</string>
     <string name="hint_move_to_measure_on_map">Tocca la mappa e sposta la freccia per misurare</string>
     <string name="hint_move_location_to_measure_on_map">Tocca il punto con la tua posizione e spostalo per cambiare centro di misura</string>
     <string name="hint_click_on_map_baloon_webcam_image">Tocca la foto per vederla nel visualizzatore di immagini</string>
@@ -110,18 +70,13 @@
     </string-array>
 
         <!--  MENU -->
-    <string name="menu_radar">Radar</string>
-    <string name="menu_observations">Osservazioni</string>
-    <string name="menu_webcam">Webcam</string>
     
     <string name="menu_info">Informazioni sulla app&#8230;</string>
-    <string name="menu_position">La mia posizione&#8230;</string>
 	<string name="menu_refresh">Info su aggiornamento dati</string>
 	<string name="menu_online_guide">Documentazione Online</string>
 	<string name="menu_author_info">Informazioni sull\'autore</string>
 	<string name="menu_config_info">Caratteristiche tecniche</string>
 	<string name="locality_unavailable">Località non disponibile</string>
-	<string name="getting_locality_wait">Attendi&#8230; recupero località&#8230;</string>
 	<string name="ok_button">Ok</string>
 	<string name="popup_position_title">Informazioni sulla posizione</string>
 	<string name="popup_info_title">Meteo.FVG app info e copyright</string>
@@ -138,16 +93,7 @@
         <item>Osservazioni ultim\'ora</item>
         <item>Webcam</item>
     </string-array>
-    
-    	
-	<string-array name="forecast_text_items">
-        <item>Situazione</item>
-        <item>Oggi</item>
-        <item>Domani</item>
-        <item>Dopodomani</item>
-    </string-array>
-    
-     
+
 	<string-array name="dailyobs_text_items">
         <item>Cielo</item>
         <item>Temperatura minima</item>
@@ -173,9 +119,7 @@
 	<string name="drawer_open">Seleziona una vista</string>
     <string name="drawer_close">Close navigation drawer</string>
 	
-	<!--  WEBCAM -->
-	<string name="webcam_getting_image">Scarico l\'immagine webcam&#8230;</string>
-    
+	<!--  WEBCAM -->    
 	 <string name="popup_data_update_info">
        <![CDATA[
        <h6>Gestione dell\'aggiornamento dei dati meteo</h6>

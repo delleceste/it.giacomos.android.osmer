@@ -6,6 +6,7 @@ import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.content.res.Resources;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import it.giacomos.android.osmer.OsmerActivity;
@@ -21,9 +22,7 @@ public class ActionBarPersonalizer {
 	public  static final int DAILY_OBS = 2;
 	public  static final int LATEST_OBS = 3;
 	public  static final int WEBCAM = 4;
-	
-	private HashMap<Integer, Integer> mIconHash = new HashMap<Integer, Integer>();
-	
+		
 	public void setActionBarStateManager(ActionBarStateManager stateManager)
 	{
 		mActionBarStateManager = stateManager;
@@ -44,19 +43,6 @@ public class ActionBarPersonalizer {
 	{
 		ActionBar actionBar = mActivity.getActionBar();
 		actionBar.setSelectedNavigationItem(index);
-	}
-	
-	public void setTabIcon(int index, int resource)
-	{
-		Resources res = mActivity.getResources();
-		mIconHash.put(index, resource);
-		ActionBar actionBar = mActivity.getActionBar();
-		/* update icon (may be necessary) */
-//		if(actionBar.getTabCount() == 4 && index < 4)
-//		{
-//			ActionBar.Tab tab = actionBar.getTabAt(index);
-//			tab.setIcon(res.getDrawable(resource));
-//		}
 	}
 	
 	/* switches to tab view and selects the given tab

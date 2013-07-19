@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import com.google.android.maps.GeoPoint;
 
-import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
@@ -16,7 +15,6 @@ import it.giacomos.android.osmer.observations.SkyDrawableIdPicker;
 import it.giacomos.android.osmer.preferences.*;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -28,7 +26,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.Toast;
