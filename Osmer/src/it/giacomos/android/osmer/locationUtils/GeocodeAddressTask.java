@@ -47,7 +47,9 @@ public class GeocodeAddressTask extends AsyncTask<Location, Integer, LocationInf
 					locationInfo.provider = location[0].getProvider();
 					locationInfo.accuracy = location[0].getAccuracy();
 					List<Address> listAddresses = geocoder.getFromLocation(location[0].getLatitude(), location[0].getLongitude(), 1);
-					if(listAddresses != null && listAddresses.get(0) != null)
+					if(listAddresses != null 
+							&& listAddresses.size() > 0 
+							&& listAddresses.get(0) != null)
 					{
 						locationInfo.address = "";
 						locationInfo.locality = "";
