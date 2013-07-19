@@ -3,8 +3,6 @@ package it.giacomos.android.osmer.widgets.mapview;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import it.giacomos.android.osmer.OMapViewEventListener;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
@@ -17,7 +15,6 @@ import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.webcams.AdditionalWebcams;
 import it.giacomos.android.osmer.webcams.OtherWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -27,17 +24,12 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
-
-import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
-
 import android.os.Bundle;
 import android.os.Parcelable;
 
@@ -189,7 +181,6 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		if(b.containsKey("measureEnabled"))
 		{
 			setMeasureEnabled(b.getBoolean("measureEnabled"));
-			mMapViewEventListener.onMeasureEnabled(b.getBoolean("measureEnabled"));
 			if(mCircleOverlay != null)
 				mCircleOverlay.restoreState(state);
 		}
@@ -275,6 +266,11 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		setSatellite(satEnabled);
 	}
 	
+	public boolean isMeasureEnabled()
+	{
+		return mCircleOverlay != null;
+	}
+	
 	public void setMeasureEnabled(boolean en)
 	{
 		if(en)
@@ -309,11 +305,6 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 			getController().animateTo(baloon.getGeoPoint());
 			baloon = null;
 		}
-	}
-	
-	public void setMapViewEventListener(OMapViewEventListener l)
-	{
-		mMapViewEventListener = l;
 	}
 	
 	public void dispatchDraw(Canvas canvas)
@@ -377,6 +368,4 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 	private int mOldZoomLevel;
 
 	private ZoomChangeListener mZoomChangeListener;
-	private OMapViewEventListener mMapViewEventListener;
-	private boolean mOnRestoreInstanceStateCalled;
 }

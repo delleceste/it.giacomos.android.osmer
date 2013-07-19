@@ -30,7 +30,6 @@ import it.giacomos.android.osmer.textToImage.TextDecoderListener;
 import it.giacomos.android.osmer.webcams.WebcamDataCache;
 import it.giacomos.android.osmer.widgets.AnimatedImageView;
 import it.giacomos.android.osmer.widgets.InfoHtmlBuilder;
-import it.giacomos.android.osmer.widgets.ActionBarButtons;
 import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
 import it.giacomos.android.osmer.widgets.OTextView;
 import it.giacomos.android.osmer.widgets.OViewFlipper;
@@ -60,6 +59,9 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnDismissListener;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -78,10 +80,11 @@ implements OnClickListener,
 DownloadUpdateListener,
 FlipperChildChangeListener,
 SnapshotManagerListener,
-OMapViewEventListener,
 LocationListener,
 GeocodeAddressUpdateListener,
-TextDecoderListener
+TextDecoderListener, 
+OnMenuItemClickListener, 
+OnDismissListener
 {
 	/** Called when the activity is first created. */
 	@Override
@@ -220,26 +223,19 @@ TextDecoderListener
 				mRefreshAnimatedImageView.getVisibility() == View.VISIBLE);
 		Log.e("onPrepareOtpionsMenu", "getsCalled");
 		mRefreshAnimatedImageView = null;
-		View buttonsActionView = menu.findItem(R.id.actionbarmenu).getActionView();
-		mRefreshAnimatedImageView = (AnimatedImageView) buttonsActionView.findViewById(R.id.refresh_animation);
+		mButtonsActionView = menu.findItem(R.id.actionbarmenu).getActionView();
+		mRefreshAnimatedImageView = (AnimatedImageView) mButtonsActionView.findViewById(R.id.refresh_animation);
 		if(refreshWasVisible)
 			mRefreshAnimatedImageView.start();
-		Log.e("onCreateOptionsMenu", "created new image view for refresh" + mRefreshAnimatedImageView.toString());
-		/* get map related toggle buttons */
-		mActionBarButtons.setButtons(this, (ToggleButton) buttonsActionView.findViewById(R.id.centerMapButton), 
-				(ToggleButton) buttonsActionView.findViewById(R.id.satelliteViewButton), 
-				(ToggleButton) buttonsActionView.findViewById(R.id.measureToggleButton), 
-				(ToggleButton) buttonsActionView.findViewById(R.id.radarInfoButton)); 
+		Log.e("onPrepareOptionsMenu", "created new image view for refresh" + mRefreshAnimatedImageView.toString());
+		mInitButtonMapsOverflowMenu();
+		
 		/* set visibility and state on map buttons */
-		updateMapButtonsState();
 		return super.onPrepareOptionsMenu(menu);
 	}
-	
+
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-//		if(mRefreshAnimatedImageView != null)
-//			mRefreshAnimatedImageView.hide();
-		mActionBarButtons.hideAllButtons();
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.menu, menu);
 		return true;
@@ -306,10 +302,8 @@ TextDecoderListener
 	{
 		mTapOnMarkerHintCount = 0;
 		mRefreshAnimatedImageView = null;
-		mActionBarButtons = new ActionBarButtons();
 
 		OMapView map = (OMapView) findViewById(R.id.mapview);
-		map.setMapViewEventListener(this);
 		
 		m_downloadManager = new DownloadManager(this);
 		m_observationsCache = new ObservationsCache();
@@ -394,6 +388,7 @@ TextDecoderListener
 		/* set html text on Radar info text view */
 		TextView radarInfoTextView = (TextView)findViewById(R.id.radarInfoTextView);
 		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
+		radarInfoTextView.setVisibility(View.GONE);
 	}	
 
 	@Override
@@ -722,18 +717,6 @@ TextDecoderListener
 		oTypeGetter = null;
 	}
 
-
-	@Override
-	public void onSatelliteEnabled(boolean en) 
-	{
-	}
-
-	@Override
-	public void onMeasureEnabled(boolean en) 
-	{
-		mActionBarButtons.setMeasureEnabled(en);
-	}
-
 	public void onSelectionDone(ObservationType type, ObservationTime oTime) 
 	{
 		/* switch the working mode of the map view */
@@ -745,44 +728,131 @@ TextDecoderListener
 	}
 
 	@Override
-	public void onClick(View v)
+	public boolean onMenuItemClick(MenuItem menuItem) 
 	{
+		/* must manually check an unchecked item, and vice versa.
+		 * a checkbox or radio button does not change its state automatically.
+		 */
+		if(menuItem.isCheckable())
+			menuItem.setChecked(!menuItem.isChecked());
+		Log.e("onMenuItemClick", "clicked a menu item id " + menuItem.getItemId());
 		OMapView omv = (OMapView) findViewById(R.id.mapview);
-		switch(v.getId())
+		switch(menuItem.getItemId())
 		{
+		case R.id.centerMapButton:
+			omv.centerMap();
+			break;			
+		case R.id.satelliteViewButton:
+			omv.setSatellite(menuItem.isChecked());
+			break;
 		case R.id.radarInfoButton:
-			ToggleButton radarInfoB = (ToggleButton) v;
 			View radarInfoTextView = findViewById(R.id.radarInfoTextView);
-			if(radarInfoB.isChecked())
+			if(menuItem.isChecked())
 				radarInfoTextView.setVisibility(View.VISIBLE);
 			else
 				radarInfoTextView.setVisibility(View.GONE);
 			break;
-			/* satellite or map on MapView */
-		case R.id.satelliteViewButton:
-			omv.setSatellite(((ToggleButton)v).isChecked());
-			break;
-
 		case R.id.measureToggleButton:
-			boolean buttonChecked = ((ToggleButton)v).isChecked();
-
-			if(buttonChecked && mSettings.isMapMoveToMeasureHintEnabled())
+			Log.e("onMenuItemClick", "clicked measureToggleButton " + menuItem.isChecked() );
+			if(menuItem.isChecked() && mSettings.isMapMoveToMeasureHintEnabled())
 			{
 				Toast.makeText(getApplicationContext(), R.string.hint_move_to_measure_on_map, Toast.LENGTH_LONG).show();
 			}
-			else if(buttonChecked && !mSettings.isMapMoveToMeasureHintEnabled() 
+			else if(menuItem.isChecked() && !mSettings.isMapMoveToMeasureHintEnabled() 
 					&& mSettings.isMapMoveLocationToMeasureHintEnabled())
 			{
 				Toast.makeText(getApplicationContext(), R.string.hint_move_location_to_measure_on_map, Toast.LENGTH_LONG).show();
 			}
-			omv.setMeasureEnabled(buttonChecked);
+			omv.setMeasureEnabled(menuItem.isChecked());
 			break;
-
+		default:
+				break;
+		}
+		return false;
+	}
+	
+	@Override
+	public void onClick(View v)
+	{
+		
+		switch(v.getId())
+		{
+		case R.id.actionOverflow:
+			ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
+			buttonMapsOveflowMenu.setChecked(true);
+			mCreateMapOptionsPopupMenu();
+			break;
 		default:
 			break;		
 		}
 	}
 
+	@Override
+	public void onDismiss(PopupMenu popupMenu) 
+	{
+		/* uncheck button when popup is dismissed */
+		ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
+		buttonMapsOveflowMenu.setChecked(false);
+	} 
+	
+	/* called by onPrepareOptionsMenu every time the action bar is recreated
+	 * @param buttonsActionView the button (view) where the menu is anchored.
+	 * 
+	 */
+	private void mInitButtonMapsOverflowMenu() 
+	{
+		if(mButtonsActionView == null)
+			return;
+		
+		/* button for maps menu */
+		ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
+		switch(mCurrentViewType)
+		{
+		case HOME:
+		case TODAY:
+		case TOMORROW:
+		case TWODAYS:
+			if(buttonMapsOveflowMenu != null)
+				buttonMapsOveflowMenu.setVisibility(View.GONE);
+			break;
+		default:
+			buttonMapsOveflowMenu.setOnClickListener(this);
+			buttonMapsOveflowMenu.setVisibility(View.VISIBLE);
+			break;
+		}
+		
+	}
+	
+	private void mCreateMapOptionsPopupMenu() 
+	{
+		OMapView map = (OMapView) findViewById(R.id.mapview);
+		ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
+		PopupMenu mapOptionsMenu = new PopupMenu(this, buttonMapsOveflowMenu);
+		Menu menu = mapOptionsMenu.getMenu();
+		mapOptionsMenu.getMenuInflater().inflate(R.menu.map_options_popup_menu, menu);
+		menu.findItem(R.id.measureToggleButton).setVisible(mCurrentViewType == ViewType.RADAR);
+		menu.findItem(R.id.radarInfoButton).setVisible(mCurrentViewType == ViewType.RADAR);
+		menu.findItem(R.id.measureToggleButton).setChecked(map.isMeasureEnabled());
+		menu.findItem(R.id.radarInfoButton).setChecked(findViewById(R.id.radarInfoTextView).getVisibility() == View.VISIBLE);
+		
+		switch(mCurrentViewType)
+		{
+		case HOME: case TODAY: case TOMORROW: case TWODAYS:
+			menu.findItem(R.id.satelliteViewButton).setVisible(false);
+			menu.findItem(R.id.centerMapButton).setVisible(false);
+			break;
+		default:
+			menu.findItem(R.id.satelliteViewButton).setVisible(true);
+			menu.findItem(R.id.centerMapButton).setVisible(true);
+			menu.findItem(R.id.satelliteViewButton).setChecked(map.isSatellite());
+			break;
+		}
+		
+		mapOptionsMenu.setOnMenuItemClickListener(this);
+		mapOptionsMenu.setOnDismissListener(this);
+		mapOptionsMenu.show();
+	}
+	
 	public void switchView(ViewType id) 
 	{
 		// TODO Auto-generated method stub
@@ -811,7 +881,6 @@ TextDecoderListener
 			break;
 		case MAP:		
 		case RADAR:
-			mActionBarButtons.btMeasure.setChecked(false);
 			/* remove itemized overlays (observations), if present, and restore radar view */
 			((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 			viewFlipper.setDisplayedChild(FlipperChildren.MAP);
@@ -921,42 +990,43 @@ TextDecoderListener
 				webcams();
 			}
 		}
-
-		updateMapButtonsState();
 		
 		TitlebarUpdater titleUpdater = new TitlebarUpdater();
 		titleUpdater.update(this);
 		titleUpdater = null;
+		
+		/* show or hide maps menu button according to the current view type */
+		mInitButtonMapsOverflowMenu();
 	}
 
-	public void updateMapButtonsState()
-	{
-		switch(mCurrentViewType)
-		{
-		case HOME:
-		case TODAY:
-		case TOMORROW:
-		case TWODAYS:
-			mActionBarButtons.hideAllButtons();
-			break;
-		default:
-			mActionBarButtons.setSatViewVisible(true);
-			mActionBarButtons.setCenterMapVisible(true);
-			break;
-		}
-		/* hide measure and radar button from the map view when not in
-		 * radar mode
-		 */
-		mActionBarButtons.setRadarInfoVisible(mCurrentViewType == ViewType.RADAR);
-		mActionBarButtons.setMeasureVisible(mCurrentViewType == ViewType.RADAR);
-
-		/* hide Radar information text view on google map view */
-		View radarInfoTextView = findViewById(R.id.radarInfoTextView);
-		if(mActionBarButtons.radarInfoEnabled())
-			radarInfoTextView.setVisibility(View.VISIBLE);
-		else
-			radarInfoTextView.setVisibility(View.GONE);
-	}
+//	public void updateMapButtonsState()
+//	{
+//		switch(mCurrentViewType)
+//		{
+//		case HOME:
+//		case TODAY:
+//		case TOMORROW:
+//		case TWODAYS:
+//			mActionBarButtons.hideAllButtons();
+//			break;
+//		default:
+//			mActionBarButtons.setSatViewVisible(true);
+//			mActionBarButtons.setCenterMapVisible(true);
+//			break;
+//		}
+//		/* hide measure and radar button from the map view when not in
+//		 * radar mode
+//		 */
+//		mActionBarButtons.setRadarInfoVisible(mCurrentViewType == ViewType.RADAR);
+//		mActionBarButtons.setMeasureVisible(mCurrentViewType == ViewType.RADAR);
+//
+//		/* hide Radar information text view on google map view */
+//		View radarInfoTextView = findViewById(R.id.radarInfoTextView);
+//		if(mActionBarButtons.radarInfoEnabled())
+//			radarInfoTextView.setVisibility(View.VISIBLE);
+//		else
+//			radarInfoTextView.setVisibility(View.GONE);
+//	}
 	
 	public DownloadManager stateMachine() { return m_downloadManager; }
 
@@ -1063,8 +1133,9 @@ TextDecoderListener
 	private ActionBarStateManager mActionBarStateManager;
 	private ActionBarPersonalizer mActionBarPersonalizer;
 	private AnimatedImageView mRefreshAnimatedImageView;
-	private ActionBarButtons mActionBarButtons;
 	private ViewType mCurrentViewType;
+	/* ActionBar menu button and menu */
+	private View mButtonsActionView;
 	Urls m_urls;
 
 	int availCnt = 0;

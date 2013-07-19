@@ -1,69 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Meteo.FVG Oservatorio Regionale Friuli Venezia Giulia</string>
     <string name="app_name">Meteo.FVG</string>
     <string name="version">version</string>
     <string name="data_source">Data source: http://www.meteo.fvg.it</string>
     <string name="author">&#169; 2013</string>
     <string name="author_web">http://www.giacomos.it</string>
-    <string name="link_osmer">http://www.meteo.fvg.it</string>
-    <string name="today_button">Today</string>
-    <string name="tomorrow_button">Tomorrow</string>
-    <string name="twodays_button">2 Days</string>
-    <string name="radar_button">Radar</string>
-    <string name="dailyobs_button">Daily\nObs</string>
-    <string name="latestobs_button">Latest\nObs</string>
-    <string name="sat_button">Satellite</string>
-    <string name="today_text">&quot;Loading data, please wait&#8230;&quot;</string>
-    <string name="tomorrow_text">"Tomorrow's text"</string>
-    <string name="Home">home_button</string>
-    <string name="home_button">Home</string>
+ 
 
     <string name="home_title">Home</string>
     <string name="today_title">Today</string>
     <string name="tomorrow_title">Tomorrow</string>
     <string name="two_days_title">Two Days Forecast</string>
     <string name="radar_title">Radar</string>
-    <string name="sat_title">Satellite View</string>    
     <string name="forecast_title">Previsioni</string> 
     
     
-    <string name="observations_title_daily">Daily Observations</string>
-    <string name="observations_title_daily_sky">Daily Observations - Sky</string>
-    <string name="observations_title_daily_tmin">Daily Observations - Min. T.</string>
-    <string name="observations_title_daily_tmean">Daily Observations - Mean. T.</string>
-    <string name="observations_title_daily_tmax">Daily Observations - Max. T.</string>
-    <string name="observations_title_daily_hmean">Daily Observations - Mean Humidity</string>
-    <string name="observations_title_daily_wmean">Daily Observations - Mean Wind</string>
-    <string name="observations_title_daily_wmax">Daily Observations - Max Wind</string>
-    <string name="observations_title_daily_rain">Daily Observations - Rain</string>
-    
+    <string name="observations_title_daily">Daily Observations</string>    
     <string name="observations_title_latest">Latest Observations</string>
-    <string name="observations_title_latest_sky">Latest Observations - Sky</string>
-    <string name="observations_title_latest_temp">Latest Observations - Temperature</string>
-    <string name="observations_title_latest_humidity">Latest Observations - Humidity</string>
-    <string name="observations_title_latest_pressure">Latest Observations - Pressure</string>
-    <string name="observations_title_latest_wind">Latest Observations - Wind</string>
-    <string name="observations_title_latest_rain">Latest Observations - Rain</string>
-    <string name="observations_title_latest_sea">Latest Observations - Sea -</string>
-    <string name="observations_title_latest_snow">Latest Observations - Snow -</string>
     <string name="title_webcam">Webcams</string>
-    <string name="title_map">Map</string>
     
     <string name="reliability">Affidabilit&amp;agrave;</string>
     <string name="emission_date">Emessa il: </string>
     <string name="hours">ore</string>
     <string name="offline">Offline</string>  
-    <string name="online">Online</string>
     <string name="downloadingToast">Downloading data&#8230;</string>
     <string name="netUnavailableToast">Network is unavailable.\nData will be updated as\nsoon as network goes up</string>
-    <string name="completingDownloadToast">Completing data download&#8230;</string><string name="netBmpErrorToast">There was an error downloading bitmap.</string>
+    <string name="completingDownloadToast">Completing data download&#8230;</string>
     <string name="netTextErrorToast">There was an error downloading text.</string>
     <string name="situation">Situation</string>
     <string name="network_error">Network error</string>
     <string name="dataExpiredToast">data is old&#8230; updating contents</string>
     <string name="radarUpdateToast">updating radar&#8230;</string>
-    <string name="webcamUpdateToast">updating webcam list, if necessary&#8230;</string>
     <string name="webcam_lists_downloaded">webcam list updated</string>
     <string name="min_temp">Minimum Temperature</string>
     <string name="max_temp">Maximum Temperature</string>
@@ -77,20 +44,15 @@
     <string name="rain">Rain</string>
     <string name="temp">Temperature</string>
     <string name="mean_temp">Mean Temperature</string>
-    <string name="mean_temp_abbr">Mean T.</string>
     <string name="sea">Sea</string>
     <string name="mean_humidity">Mean Humidity</string>
     <string name="snow">Snow</string>
     <string name="pressure">Pressure</string>
     <string name="not_available">n.a.</string>
-    <string name="city_click">Click on a resort&#8230;</string>
     <string name="select_obs_type_daily">Select Daily Observation Type</string>
     <string name="select_obs_type_latest">Select Latest Observation Type</string>
     <string name="pos_accuracy">accuracy</string>
-    <string name="position">position</string>
-    <string name="unavailable">unavailable</string>
     <string name="from">from</string>
-    <string name="mainpage_icon_hint">Touch an element for details&#8230;</string>
     <string name="close_button">Close</string>
     <string name="center_map">Center map</string>
     <string name="sat_view">Satellite view</string>
@@ -102,8 +64,6 @@
     <!--  hint toasts -->
     <string name="hint_home_icons">Touch an icon to read further details</string>
     <string name="hint_tap_on_map_markers">Tap over an icon to get further details</string>
-    <string name="hint_swipe">You can swipe on the screen to go to the next page</string>
-    <string name="hint_scroll_buttons">Scroll on the buttons bar to access more contents</string>
     <string name="hint_move_to_measure_on_map">Touch the map and move the arrow to measure distances</string>
     <string name="hint_move_location_to_measure_on_map">Touch your location point and move it to change the center of the measurement</string>
     <string name="hint_click_on_map_baloon_webcam_image">Tap on the image to open it on the image viewer</string>
@@ -117,17 +77,12 @@
     </string-array>
     
     <!--  MENU -->
-    <string name="menu_radar">Radar</string>
-    <string name="menu_observations">Observations</string>
-    <string name="menu_webcam">Webcam</string>
     <string name="menu_info">Application info&#8230;</string>
-    <string name="menu_position">My position&#8230;</string>
 	<string name="menu_refresh">About data update&#8230;</string>
 	<string name="menu_online_guide">Online documentation</string>
 	<string name="menu_author_info">Author Info</string>
 	<string name="menu_config_info">Technical details</string>
 	<string name="locality_unavailable">Locality unavailable</string>
-	<string name="getting_locality_wait">Wait&#8230; retrieving locality&#8230;</string>
 	<string name="ok_button">@android:string/ok</string>
 	<string name="popup_position_title">About your position</string>
 	<string name="popup_info_title">App info and copyright</string>
@@ -145,15 +100,7 @@
         <item>Osservazioni ultim\'ora</item>
         <item>Webcam</item>
     </string-array>
-    
-	
-   <string-array name="forecast_text_items">
-        <item>Situation</item>
-        <item>Today</item>
-        <item>Tomorrow</item>
-        <item>Two days</item>
-    </string-array>
-	
+
     
 	<string-array name="dailyobs_text_items">
         <item>Sky</item>
@@ -180,9 +127,6 @@
 	
 	<string name="drawer_open">Select a view</string>
     <string name="drawer_close">Close drawer</string>
-	
-	<!--  WEBCAM -->
-	<string name="webcam_getting_image">Downloading webcam image&#8230;</string>
 	
 	
     <string name="popup_data_update_info">

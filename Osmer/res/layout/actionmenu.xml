@@ -15,6 +15,16 @@
     
 </it.giacomos.android.osmer.widgets.AnimatedImageView >
 
+    <ToggleButton 
+         	    android:layout_width="32dp"
+        		android:layout_height="32dp"       		
+				android:layout_marginLeft="2dp"
+				android:textOff=""
+				android:textOn=""
+        		android:background="@drawable/ic_menu_action_overflow" 
+        		android:layout_marginRight="2dp"
+        		android:id="@+id/actionOverflow" />	
+    
     <!--  
         		android:background="@drawable/earth"
         		android:background="@drawable/center_map" 
@@ -31,7 +41,7 @@
         		
         		
         		-->
-   <ToggleButton 
+   <!--  ToggleButton 
          	    android:layout_width="32dp"
         		android:layout_height="32dp"       		
 				android:layout_marginLeft="2dp"
@@ -69,5 +79,8 @@
 				android:textOff=""
 				android:textOn="" 
         		android:background="@drawable/radar_info"
-        		android:id="@+id/radarInfoButton" />	
+        		android:id="@+id/radarInfoButton" />
+        		
+        		-->	
+
 </LinearLayout>

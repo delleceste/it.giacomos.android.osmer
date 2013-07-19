@@ -11,10 +11,6 @@
     <string name="tomorrow_button">Domani</string>
     <string name="twodays_button">2 Giorni</string>
     <string name="radar_button">Radar</string>
-    <string name="dailyobs_button_land">Oss.\ngiorn.</string>
-    <string name="latestobs_button_land">Oss.\nultim\'ora</string>
-    <string name="dailyobs_button_port">Osservazioni\ngiornaliere</string>
-    <string name="latestobs_button_port">Osservazioni\nultim\'ora</string>
     <string name="sat_button">Satellite</string>
     <string name="today_text">Caricamento in corso&#8230;</string>
     <string name="tomorrow_text">Testo domani</string>
