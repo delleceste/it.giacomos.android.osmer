@@ -14,7 +14,6 @@ import android.content.res.Resources;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -22,6 +21,8 @@ import android.widget.Toast;
 public class MenuActionsManager implements GeocodeAddressUpdateListener
 {
 	public static final int TEXT_DIALOG = 10;
+	public static final int UPGRADE_DIALOG = 11;
+	public static final int UPGRADE_DIALOG_STARTUP = 12;
 	
 	private static final String AUTHOR_URL = "http://www.giacomos.it/curriculum/index.html";
 	private static final String DOC_URL = "http://www.giacomos.it/android/meteofvg/index.html";
@@ -37,6 +38,9 @@ public class MenuActionsManager implements GeocodeAddressUpdateListener
 		Bundle data = null;
 		switch(item.getItemId())
 		{
+		case R.id.menu_upgrade:
+			mActivity.showDialog(UPGRADE_DIALOG);
+			break;
 		case R.id.menu_position:
 			SituationImage iv = (SituationImage) mActivity.findViewById(R.id.homeImageView);
 			Location location = iv.getLocation();

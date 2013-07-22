@@ -14,6 +14,7 @@ import it.giacomos.android.osmer.guiHelpers.OnTouchListenerInstaller;
 import it.giacomos.android.osmer.guiHelpers.TextViewUpdater;
 import it.giacomos.android.osmer.guiHelpers.TitlebarUpdater;
 import it.giacomos.android.osmer.guiHelpers.ToggleButtonGroupHelper;
+import it.giacomos.android.osmer.guiHelpers.UpgradeAlertDialogManager;
 import it.giacomos.android.osmer.guiHelpers.WebcamMapUpdater;
 import it.giacomos.android.osmer.instanceSnapshotManager.SnapshotManager;
 import it.giacomos.android.osmer.locationUtils.Constants;
@@ -43,6 +44,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -189,6 +191,7 @@ TextDecoderListener
 		((ODoubleLayerImageView) findViewById(R.id.tomorrowImageView)).unbindDrawables();
 		((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).unbindDrawables();
 		
+		mUpgradeAlertDialogManager.closeDialog();
 		super.onDestroy();
 		
 	}
@@ -256,16 +259,13 @@ TextDecoderListener
 	{
 		if(id == MenuActionsManager.TEXT_DIALOG)
 		{
-			// Use the Builder class for convenient dialog construction
-			Builder builder = new AlertDialog.Builder(this);
-			builder.setPositiveButton(getResources().getString(R.string.ok_button), null);
-			AlertDialog dialog = builder.create();
-			dialog.setTitle(args.getString("title"));
-			dialog.setCancelable(true);
-			dialog.setMessage(Html.fromHtml(args.getString("text")));
-			dialog.show();
-			((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+			return mUpgradeAlertDialogManager.getDialog(args.getString("title"), args.getString("text"), false);
 
+		}
+		else if(id == MenuActionsManager.UPGRADE_DIALOG)
+		{
+			return mUpgradeAlertDialogManager.getDialog(R.string.menu_upgrade, 
+					R.string.upgrade, false);
 		}
 		return super.onCreateDialog(id, args);
 	}
@@ -318,6 +318,10 @@ TextDecoderListener
 		/* set html text on Radar info text view */
 		TextView radarInfoTextView = (TextView)findViewById(R.id.radarInfoTextView);
 		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
+		mUpgradeAlertDialogManager = new UpgradeAlertDialogManager(this);
+		Dialog d = mUpgradeAlertDialogManager.getAtStartup(R.string.menu_upgrade, R.string.upgrade);
+		if(d != null)
+			d.show();
 	}	
 
 	@Override
@@ -365,6 +369,7 @@ TextDecoderListener
 		mToggleButtonGroupHelper.restoreButtonsState(inState);
 	}
 
+	
 	public void getSituation()
 	{
 		m_downloadManager.getSituation();
@@ -1152,7 +1157,7 @@ TextDecoderListener
 	ToggleButtonGroupHelper mToggleButtonGroupHelper;
 	private Settings mSettings;
 	private int mSwipeHintCount, mTapOnMarkerHintCount;
-
+	private UpgradeAlertDialogManager mUpgradeAlertDialogManager;
 
 	Urls m_urls;
 

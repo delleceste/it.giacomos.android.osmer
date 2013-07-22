@@ -127,6 +127,19 @@ public class Settings
 		return res;
 	}
 	
+	public boolean isUpgradeDialogEnabled() 
+	{
+		boolean res = mSharedPreferences.getBoolean("UPGRADE_DIALOG_ENABLED", true);
+		return res;
+	}
+	
+	public void setUpgradeDialogEnabled(boolean en) 
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putBoolean("UPGRADE_DIALOG_ENABLED", en);
+		e.commit();
+	}
+	
 	private final String PREFERENCES_NAME = "Osmer.conf";
 	private SharedPreferences mSharedPreferences;
 	

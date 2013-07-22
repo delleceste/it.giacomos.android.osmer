@@ -51,16 +51,19 @@ public class GeocodeAddressTask extends AsyncTask<Location, Integer, LocationInf
 					{
 						locationInfo.address = "";
 						locationInfo.locality = "";
-						for(int i = 0; i < listAddresses.get(0).getMaxAddressLineIndex() - 1; i++)
-							locationInfo.address += listAddresses.get(0).getAddressLine(0) + "\n";
-
-						locationInfo.locality = listAddresses.get(0).getLocality();
-						locationInfo.subLocality = listAddresses.get(0).getSubLocality();
-						
-						if(locationInfo.locality == null)
-							locationInfo.locality = "";
-						if(locationInfo.subLocality == null)
-							locationInfo.subLocality = "";
+						if(listAddresses.size() > 0 && listAddresses.get(0) != null)
+						{
+							for(int i = 0; i < listAddresses.get(0).getMaxAddressLineIndex() - 1; i++)
+								locationInfo.address += listAddresses.get(0).getAddressLine(0) + "\n";
+	
+							locationInfo.locality = listAddresses.get(0).getLocality();
+							locationInfo.subLocality = listAddresses.get(0).getSubLocality();
+							
+							if(locationInfo.locality == null)
+								locationInfo.locality = "";
+							if(locationInfo.subLocality == null)
+								locationInfo.subLocality = "";
+						}
 					}
 				}
 				catch (IOException e) 
