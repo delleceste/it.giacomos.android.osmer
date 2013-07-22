@@ -313,8 +313,9 @@ public class CircleOverlay extends Overlay {
 
 	private GeoPoint getCenterGeoPoint(MapView mapView)
 	{
-		MyLocationOverlay myLocOv = ((OMapView)mapView).getMyLocationOverlay();
-		return myLocOv.getMyLocation(); /* the most-recently-set user location. */
+//		MyLocationOverlay myLocOv = ((OMapFragment)mapView).getMyLocationOverlay();
+//		return myLocOv.getMyLocation(); /* the most-recently-set user location. */
+		return null; /* MOD MAP v2 */
 	}
 
 	private Point getCenterPoint(MapView mapView)

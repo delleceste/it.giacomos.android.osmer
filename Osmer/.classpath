@@ -6,5 +6,10 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry exported="true" kind="lib" path="/home/giacomo/devel/android-sdks/extras/android/support/v4/android-support-v4.jar"/>
+	<classpathentry kind="lib" path="/home/giacomo/devel/android-sdks/extras/google/google_play_services/libproject/google-play-services_lib/libs/google-play-services.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/home/giacomo/devel/android-sdks/extras/google/google_play_services/libproject/google-play-services_lib/libs/../../../docs/reference/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -32,10 +32,11 @@ import it.giacomos.android.osmer.widgets.InfoHtmlBuilder;
 import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
 import it.giacomos.android.osmer.widgets.OTextView;
 import it.giacomos.android.osmer.widgets.OViewFlipper;
-import it.giacomos.android.osmer.widgets.mapview.OMapView;
+import it.giacomos.android.osmer.widgets.mapview.OMapFragment;
 import it.giacomos.android.osmer.widgets.mapview.MapViewMode;
 import it.giacomos.android.osmer.widgets.SituationImage;
 import it.giacomos.android.osmer.preferences.*;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -74,7 +75,7 @@ import android.widget.ViewFlipper;
  * - in the background, continue downloading all other relevant information (tomorrow, two days image and
  *   forecast), so that it is ready when the user flips.
  */
-public class OsmerActivity extends MapActivity 
+public class OsmerActivity extends Activity 
 implements OnClickListener, 
 DownloadUpdateListener,
 FlipperChildChangeListener,
@@ -94,6 +95,7 @@ OnDismissListener
 		this.setProgressBarVisibility(true);
 
 		setContentView(R.layout.main);
+//		Object test=R.styleable; 
 		init();
 	}
 
@@ -108,8 +110,8 @@ OnDismissListener
 		m_downloadManager.onResume(this);		
 
 		/* Location Manager */
-		OMapView omv = (OMapView)findViewById(R.id.mapview);
-		omv.onResume();
+//		OMapFragment omv = (OMapFragment)getFragmentManager().findFragmentById(R.id.mapview);
+//		omv.onResume();
 		m_locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 		if(m_locationManager != null)
 		{
@@ -143,7 +145,7 @@ OnDismissListener
 		/* unregisters network status monitor broadcast receiver (for this it needs `this')
 		 */
 		m_downloadManager.onPause(this);
-		((OMapView) findViewById(R.id.mapview)).onPause();
+//		((OMapFragment) getFragmentManager().findFragmentById(R.id.mapview)).onPause();
 		if(m_locationManager != null)
 			m_locationManager.removeUpdates(this);
 
@@ -257,10 +259,10 @@ OnDismissListener
 	{
 		/* first of all, if there's a baloon on the map, close it */
 		int displayedChild = ((ViewFlipper) findViewById(R.id.viewFlipper1)).getDisplayedChild();
-		OMapView map = (OMapView) findViewById(R.id.mapview);
-		if(displayedChild == 4 && map.baloonVisible()) /* map view visible */
+//		OMapFragment map = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
+		if(displayedChild == 4 /* &&  ***** map.baloonVisible() *** */) /* map view visible */
 		{
-			map.removeBaloon();
+//			map.removeBaloon();
 		}
 		else
 		{
@@ -299,14 +301,14 @@ OnDismissListener
 		mTapOnMarkerHintCount = 0;
 		mRefreshAnimatedImageView = null;
 
-		OMapView map = (OMapView) findViewById(R.id.mapview);
+//		OMapFragment map = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
 		
 		m_downloadManager = new DownloadManager(this);
 		m_observationsCache = new ObservationsCache();
 		/* map updates the observation data in ItemizedOverlay when new observations are available
 		 *
 		 */
-		m_observationsCache.installObservationsCacheUpdateListener(map);
+//		m_observationsCache.installObservationsCacheUpdateListener(map);
 
 		SituationImage situationImage = (SituationImage) findViewById(R.id.homeImageView);
 		/* Situation Image will listen for cache changes, which happen on store() call
@@ -638,7 +640,7 @@ OnDismissListener
 		 * after MyLocationOverlay.enableMyLocation was called (problem turned out with Galaxy
 		 * S3/Android 4.1)
 		 */
-		((OMapView) findViewById(R.id.mapview)).onPositionProviderEnabled(provider);
+//		((OMapFragment) getFragmentManager().findFragmentById(R.id.mapview)).onPositionProviderEnabled(provider);
 	}
 
 	@Override
@@ -687,11 +689,11 @@ OnDismissListener
 	public void onSelectionDone(ObservationType type, ObservationTime oTime) 
 	{
 		/* switch the working mode of the map view */
-		OMapView map = (OMapView) findViewById(R.id.mapview);
-		map.setMode(new MapViewMode(type, oTime));
-		if(type != ObservationType.WEBCAM)
-			map.updateObservations(m_observationsCache.getObservationData(oTime));
-		((OViewFlipper)findViewById(R.id.viewFlipper1)).setDisplayedChild(FlipperChildren.MAP);
+//		OMapFragment map = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
+//		map.setMode(new MapViewMode(type, oTime));
+//		if(type != ObservationType.WEBCAM)
+//			map.updateObservations(m_observationsCache.getObservationData(oTime));
+//		((OViewFlipper)findViewById(R.id.viewFlipper1)).setDisplayedChild(FlipperChildren.MAP);
 	}
 
 	@Override
@@ -702,14 +704,14 @@ OnDismissListener
 		 */
 		if(menuItem.isCheckable())
 			menuItem.setChecked(!menuItem.isChecked());
-		OMapView omv = (OMapView) findViewById(R.id.mapview);
+//		OMapFragment omv = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
 		switch(menuItem.getItemId())
 		{
 		case R.id.centerMapButton:
-			omv.centerMap();
+//			omv.centerMap();
 			break;			
 		case R.id.satelliteViewButton:
-			omv.setSatellite(menuItem.isChecked());
+//			omv.setSatellite(menuItem.isChecked());
 			break;
 		case R.id.radarInfoButton:
 			View radarInfoTextView = findViewById(R.id.radarInfoTextView);
@@ -728,7 +730,7 @@ OnDismissListener
 			{
 				Toast.makeText(getApplicationContext(), R.string.hint_move_location_to_measure_on_map, Toast.LENGTH_LONG).show();
 			}
-			omv.setMeasureEnabled(menuItem.isChecked());
+//			omv.setMeasureEnabled(menuItem.isChecked());
 			break;
 		default:
 				break;
@@ -790,14 +792,14 @@ OnDismissListener
 	
 	private void mCreateMapOptionsPopupMenu() 
 	{
-		OMapView map = (OMapView) findViewById(R.id.mapview);
+//		OMapFragment map = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
 		ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
 		PopupMenu mapOptionsMenu = new PopupMenu(this, buttonMapsOveflowMenu);
 		Menu menu = mapOptionsMenu.getMenu();
 		mapOptionsMenu.getMenuInflater().inflate(R.menu.map_options_popup_menu, menu);
 		menu.findItem(R.id.measureToggleButton).setVisible(mCurrentViewType == ViewType.RADAR);
 		menu.findItem(R.id.radarInfoButton).setVisible(mCurrentViewType == ViewType.RADAR);
-		menu.findItem(R.id.measureToggleButton).setChecked(map.isMeasureEnabled());
+//		menu.findItem(R.id.measureToggleButton).setChecked(map.isMeasureEnabled());
 		menu.findItem(R.id.radarInfoButton).setChecked(findViewById(R.id.radarInfoTextView).getVisibility() == View.VISIBLE);
 		
 		switch(mCurrentViewType)
@@ -809,7 +811,7 @@ OnDismissListener
 		default:
 			menu.findItem(R.id.satelliteViewButton).setVisible(true);
 			menu.findItem(R.id.centerMapButton).setVisible(true);
-			menu.findItem(R.id.satelliteViewButton).setChecked(map.isSatellite());
+//			menu.findItem(R.id.satelliteViewButton).setChecked(map.isSatellite());
 			break;
 		}
 		
@@ -847,12 +849,12 @@ OnDismissListener
 		case MAP:		
 		case RADAR:
 			/* remove itemized overlays (observations), if present, and restore radar view */
-			((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
+//			((OMapFragment) getFragmentManager().findFragmentById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 			viewFlipper.setDisplayedChild(FlipperChildren.MAP);
 			break;
 
 		case ACTION_CENTER_MAP:
-			((OMapView) findViewById(R.id.mapview)).centerMap();
+//			((OMapFragment) getFragmentManager().findFragmentById(R.id.mapview)).centerMap();
 			break;
 		default:
 			break;
@@ -931,7 +933,7 @@ OnDismissListener
 			if(id == ViewType.RADAR || id == ViewType.MAP)
 			{
 				/* remove itemized overlays (observations), if present, and restore radar view */
-				((OMapView) findViewById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
+//				((OMapFragment) getFragmentManager().findFragmentById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 				radar();
 			}
 			else if(id == ViewType.TODAY)
@@ -998,7 +1000,7 @@ OnDismissListener
 	@Override
 	public void onFlipperChildChangeEvent(int child) {
 
-		OMapView map = null;
+		OMapFragment map = null;
 		MapViewMode mapMode = null;
 		TitlebarUpdater titleUpdater = new TitlebarUpdater();
 		titleUpdater.update(this);
@@ -1025,24 +1027,24 @@ OnDismissListener
 			break;
 		case FlipperChildren.MAP:
 			/* map can be in different modes: radar, webcam or observations */
-			map = (OMapView) findViewById(R.id.mapview);
-			mapMode = map.getMode();
-			if(mapMode.currentType == ObservationType.RADAR)
-			{
-				mDrawerList.setItemChecked(1, true);
-			}
-			else if(mapMode.currentMode == ObservationTime.DAILY)
-			{
-				mDrawerList.setItemChecked(2, true);
-			}
-			else if(mapMode.currentMode == ObservationTime.LATEST)
-			{
-				mDrawerList.setItemChecked(3, true);
-			}
-			else if(mapMode.currentType == ObservationType.WEBCAM)
-			{
-				mDrawerList.setItemChecked(4, true);
-			}
+//			map = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
+//			mapMode = map.getMode();
+//			if(mapMode.currentType == ObservationType.RADAR)
+//			{
+//				mDrawerList.setItemChecked(1, true);
+//			}
+//			else if(mapMode.currentMode == ObservationTime.DAILY)
+//			{
+//				mDrawerList.setItemChecked(2, true);
+//			}
+//			else if(mapMode.currentMode == ObservationTime.LATEST)
+//			{
+//				mDrawerList.setItemChecked(3, true);
+//			}
+//			else if(mapMode.currentType == ObservationType.WEBCAM)
+//			{
+//				mDrawerList.setItemChecked(4, true);
+//			}
 			break;
 		default:
 			break;
@@ -1054,12 +1056,6 @@ OnDismissListener
 	public Location getCurrentLocation()
 	{
 		return mCurrentLocation;
-	}
-
-	@Override
-	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	public  String[] getDrawerItems()

@@ -8,7 +8,7 @@ import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
 import it.giacomos.android.osmer.widgets.mapview.MapViewMode;
-import it.giacomos.android.osmer.widgets.mapview.OMapView;
+import it.giacomos.android.osmer.widgets.mapview.OMapFragment;
 
 public class ImageViewUpdater {
 
@@ -32,9 +32,9 @@ public class ImageViewUpdater {
 		}
 		else if(t == BitmapType.RADAR)
 		{
-			OMapView mapView = (OMapView) a.findViewById(R.id.mapview);
-			/* update bitmap */
-			mapView.setRadarImage(bmp);
+//			OMapFragment mapView = (OMapFragment) a.getFragmentManager().findFragmentById(R.id.mapview);
+//			/* update bitmap */
+//			mapView.setRadarImage(bmp);
 		}
 	}
 }

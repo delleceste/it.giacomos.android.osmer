@@ -3,6 +3,9 @@ package it.giacomos.android.osmer.widgets.mapview;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import com.google.android.gms.maps.MapFragment;
+
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
@@ -15,6 +18,7 @@ import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.webcams.AdditionalWebcams;
 import it.giacomos.android.osmer.webcams.OtherWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -25,29 +29,26 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import com.google.android.maps.MapController;
-import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-public class OMapView extends MapView implements ObservationsCacheUpdateListener
+@SuppressLint("ValidFragment")
+public class OMapFragment extends MapFragment implements ObservationsCacheUpdateListener
 {
 	public final int minLatitude = GeoCoordinates.bottomRight.getLatitudeE6();
 	public final int maxLatitude = GeoCoordinates.topLeft.getLatitudeE6();
 	public final int minLongitude = GeoCoordinates.topLeft.getLongitudeE6();
+	@SuppressLint("ValidFragment")
 	public final int maxLongitude = GeoCoordinates.bottomRight.getLongitudeE6();
 
-	public OMapView(Context context, AttributeSet attrs) 
+	public OMapFragment(Context context, AttributeSet attrs) 
 	{
-		super(context, attrs);
+		super();
 		Settings settings = new Settings(context);
-		setBuiltInZoomControls(true);
+//		setBuiltInZoomControls(true);
 		/* add my location overlay */
-		mMyLocationOverlay = new MyLocationOverlay(context, this);
-		getOverlays().add(mMyLocationOverlay);
+//		mMyLocationOverlay = new MyLocationOverlay(context, this);
+//		getOverlays().add(mMyLocationOverlay);
 		
 		/* The first time the application is started, center the map.
 		 * Afterwards, MapView restores its previous state (center, zoom...)
@@ -59,13 +60,13 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		{
 			Log.i("OMapView.OMapView", "map was not centered.. centering");
 			centerMap();
-			settings.setMapWasCentered(true);
+//			settings.setMapWasCentered(true);
 			settings = null;
 		}
 		
 		mMode = null;
 		setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
-		mOldZoomLevel = this.getZoomLevel();
+//		mOldZoomLevel = this.getZoomLevel();
 	}
 	
 	/** Bug on MyLocationOverlay on android 4??
@@ -79,10 +80,10 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 	 */
 	public void onPositionProviderEnabled(String provider)
 	{
-		if(provider.equals("gps") && mMyLocationOverlay.isMyLocationEnabled())
+//		if(provider.equals("gps") && mMyLocationOverlay.isMyLocationEnabled())
 		{
-			mMyLocationOverlay.disableMyLocation();
-			mMyLocationOverlay.enableMyLocation();
+//			mMyLocationOverlay.disableMyLocation();
+//			mMyLocationOverlay.enableMyLocation();
 		}
 	}
 	
@@ -93,86 +94,86 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 	
 	public void onResume()
 	{
-		mMyLocationOverlay.enableMyLocation();
+//		mMyLocationOverlay.enableMyLocation();
 	}
 
 	public void onPause()
 	{
-		mMyLocationOverlay.disableMyLocation();
+//		mMyLocationOverlay.disableMyLocation();
 	}
 
 	public void centerMap()
 	{		
-		MapController mapController = getController();
-		mapController.setCenter(GeoCoordinates.center);
-		setSpan();
+//		MapController mapController = getController();
+//		mapController.setCenter(GeoCoordinates.center);
+//		setSpan();
 	}
 
 	public void setSpan()
 	{
-		getController().zoomToSpan((maxLatitude - minLatitude)/2, (maxLongitude - minLongitude)/2);
+//		getController().zoomToSpan((maxLatitude - minLatitude)/2, (maxLongitude - minLongitude)/2);
 	}
 
 	public void setRadarImage(Bitmap bmp) 
 	{
 		mRadarOverlay.updateBitmap(bmp);
 		/* forces android.View to call onDraw(canvas) at some time in the future */
-		this.invalidate();
+//		this.invalidate();
 	}
 
 	public void updateWebcamList(ArrayList<WebcamData> webcams)
 	{
-		if(mMode.currentMode == ObservationTime.WEBCAM && 
-				mMode.currentType == ObservationType.WEBCAM &&
-						mWebcamItemizedOverlay != null)
-		{
-			if(mWebcamItemizedOverlay.update(webcams))
-				this.invalidate();
-		}
+//		if(mMode.currentMode == ObservationTime.WEBCAM && 
+//				mMode.currentType == ObservationType.WEBCAM &&
+//						mWebcamItemizedOverlay != null)
+//		{
+//			if(mWebcamItemizedOverlay.update(webcams))
+//				this.invalidate();
+//		}
 	}
 	
 	@Override
 	public void onObservationsCacheUpdate(HashMap<String, ObservationData> map, ViewType t) 
 	{
-		if((t == ViewType.DAILY_TABLE && mMode.currentMode == ObservationTime.DAILY ) ||
-				(t == ViewType.LATEST_TABLE && mMode.currentMode == ObservationTime.LATEST))
-		{
-			this.updateObservations(map);
-			/* forces android.View to call onDraw(canvas) at some time in the future */
-			this.invalidate();
-		}
+//		if((t == ViewType.DAILY_TABLE && mMode.currentMode == ObservationTime.DAILY ) ||
+//				(t == ViewType.LATEST_TABLE && mMode.currentMode == ObservationTime.LATEST))
+//		{
+//			this.updateObservations(map);
+//			/* forces android.View to call onDraw(canvas) at some time in the future */
+//			this.invalidate();
+//		}
 	}
 	
 	public void updateObservations(HashMap<String, ObservationData> map)
 	{
-		if(mObservationsItemizedOverlay != null)
-		{
-			mObservationsItemizedOverlay.update(map, getZoomLevel());
-			this.invalidate(); /* redraw */
-		}
+//		if(mObservationsItemizedOverlay != null)
+//		{
+//			mObservationsItemizedOverlay.update(map, getZoomLevel());
+//			this.invalidate(); /* redraw */
+//		}
 	}
 
-	public MyLocationOverlay getMyLocationOverlay()
-	{
-		return mMyLocationOverlay;
-	}
+//	public MyLocationOverlay getMyLocationOverlay()
+//	{
+//		return mMyLocationOverlay;
+//	}
 	
-	public Parcelable onSaveInstanceState()
+	@Override
+	public void onSaveInstanceState(Bundle outState)
 	{
-		Parcelable p = super.onSaveInstanceState();
+		super.onSaveInstanceState(outState); /* modificato x map v2 */
 		Bundle bundle = new Bundle();
-		bundle.putParcelable("OMapViewState", p);
 		bundle.putParcelable("RadarBitmap", mRadarOverlay.getBitmap());
 		bundle.putBoolean("measureEnabled", mCircleOverlay != null);
 		if(mCircleOverlay != null)
 			mCircleOverlay.saveState(bundle);
-		return bundle;
+//		return bundle;
 	}
 
 	public void onRestoreInstanceState (Parcelable state)
 	{
 		Bundle b = (Bundle) state;
-		super.onRestoreInstanceState(b.getParcelable("OMapViewState"));
+//		super.onRestoreInstanceState(b.getParcelable("OMapViewState"));
 		if(b.containsKey("RadarBitmap"))
 		{
 			Bitmap bmp = b.getParcelable("RadarBitmap");
@@ -194,61 +195,61 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		}
 		
 		mMode = m;
-		new BaloonOffMap(this);
-		List<Overlay> overlays = getOverlays();
-		/* remove our overlays except MyLocationOverlay and MapButtonsOverlay */
-		while(overlays.size() > 1)
-		{
-			overlays.remove(overlays.size() - 1);
-		}
-		
-		switch(m.currentType)
-		{
-		case RADAR:
-			if(mRadarOverlay == null)
-				mRadarOverlay = new RadarOverlay();
-			overlays.add(mRadarOverlay);
-			setOnZoomChangeListener(null);
-			break;
-		case SAT:
-			break;
-		case WEBCAM:
-			Drawable webcamIcon = getResources().getDrawable(R.drawable.camera_web_map);
-			ArrayList<WebcamData> webcamData = null;
-			if(mWebcamItemizedOverlay == null) 
-			{
-				/* first time we enter webcam mode */
-				webcamData = mGetAdditionalWebcamsData();
-				mWebcamItemizedOverlay = new WebcamItemizedOverlay<OverlayItem>(webcamIcon, this);
-				setOnZoomChangeListener(mWebcamItemizedOverlay);
-				this.updateWebcamList(webcamData);
-			}
-			overlays.add(mWebcamItemizedOverlay);
-			break;
-			
-		default:
-			ObservationDrawableIdPicker observationDrawableIdPicker = new ObservationDrawableIdPicker();
-			int resId = observationDrawableIdPicker.pick(m.currentType);
-			observationDrawableIdPicker = null; 
-			if(resId > -1)
-			{
-				Drawable drawable = null;
-				drawable = getResources().getDrawable(resId);
-				if(drawable != null)
-				{
-					mObservationsItemizedOverlay = null;
-					mObservationsItemizedOverlay = new ObservationsItemizedOverlay<OverlayItem>(drawable, 
-							m.currentType, 
-							m.currentMode,
-							this);
-					setOnZoomChangeListener(mObservationsItemizedOverlay);
-					overlays.add(mObservationsItemizedOverlay);
-				}
-			}
-			break;
-		}
-		/* redraw the map view */
-		this.invalidate();
+//		new BaloonOffMap(this);
+//		List<Overlay> overlays = getOverlays();
+//		/* remove our overlays except MyLocationOverlay and MapButtonsOverlay */
+//		while(overlays.size() > 1)
+//		{
+//			overlays.remove(overlays.size() - 1);
+//		}
+//		
+//		switch(m.currentType)
+//		{
+//		case RADAR:
+//			if(mRadarOverlay == null)
+//				mRadarOverlay = new RadarOverlay();
+//			overlays.add(mRadarOverlay);
+//			setOnZoomChangeListener(null);
+//			break;
+//		case SAT:
+//			break;
+//		case WEBCAM:
+//			Drawable webcamIcon = getResources().getDrawable(R.drawable.camera_web_map);
+//			ArrayList<WebcamData> webcamData = null;
+//			if(mWebcamItemizedOverlay == null) 
+//			{
+//				/* first time we enter webcam mode */
+//				webcamData = mGetAdditionalWebcamsData();
+//				mWebcamItemizedOverlay = new WebcamItemizedOverlay<OverlayItem>(webcamIcon, this);
+//				setOnZoomChangeListener(mWebcamItemizedOverlay);
+//				this.updateWebcamList(webcamData);
+//			}
+//			overlays.add(mWebcamItemizedOverlay);
+//			break;
+//			
+//		default:
+//			ObservationDrawableIdPicker observationDrawableIdPicker = new ObservationDrawableIdPicker();
+//			int resId = observationDrawableIdPicker.pick(m.currentType);
+//			observationDrawableIdPicker = null; 
+//			if(resId > -1)
+//			{
+//				Drawable drawable = null;
+//				drawable = getResources().getDrawable(resId);
+//				if(drawable != null)
+//				{
+//					mObservationsItemizedOverlay = null;
+//					mObservationsItemizedOverlay = new ObservationsItemizedOverlay<OverlayItem>(drawable, 
+//							m.currentType, 
+//							m.currentMode,
+//							this);
+//					setOnZoomChangeListener(mObservationsItemizedOverlay);
+//					overlays.add(mObservationsItemizedOverlay);
+//				}
+//			}
+//			break;
+//		}
+//		/* redraw the map view */
+//		this.invalidate();
 	}
 
 	public void setOnZoomChangeListener(ZoomChangeListener l)
@@ -263,7 +264,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 
 	public void setSatEnabled(boolean satEnabled)
 	{
-		setSatellite(satEnabled);
+//		setSatellite(satEnabled);
 	}
 	
 	public boolean isMeasureEnabled()
@@ -273,50 +274,51 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 	
 	public void setMeasureEnabled(boolean en)
 	{
-		if(en)
-		{
-			mCircleOverlay = new CircleOverlay();
-			getOverlays().add(mCircleOverlay);
-		}
-		else
-		{
-			getOverlays().remove(mCircleOverlay);
-			mCircleOverlay = null;
-		}
-		this.invalidate();
+//		if(en)
+//		{
+//			mCircleOverlay = new CircleOverlay();
+//			getOverlays().add(mCircleOverlay);
+//		}
+//		else
+//		{
+//			getOverlays().remove(mCircleOverlay);
+//			mCircleOverlay = null;
+//		}
+//		this.invalidate();
 	}
 	
 	public boolean baloonVisible()
 	{
-		MapBaloon baloon = (MapBaloon) findViewById(R.id.mapbaloon);
-		return (baloon != null && baloon.getVisibility() == View.VISIBLE);
+		return false; // aggiunto temporaneamente
+//		MapBaloon baloon = (MapBaloon) findViewById(R.id.mapbaloon);
+//		return (baloon != null && baloon.getVisibility() == View.VISIBLE);
 	}
 	
 	public void removeBaloon()
 	{
-		MapBaloon baloon = (MapBaloon) findViewById(R.id.mapbaloon);
-		if(baloon != null)
-		{
-			if(mWebcamItemizedOverlay != null)
-				mWebcamItemizedOverlay.cancelCurrentWebcamTask();
-			/* remove baloon */
-			removeView(baloon);
-			/* restore previous position of the map */
-			getController().animateTo(baloon.getGeoPoint());
-			baloon = null;
-		}
+//		MapBaloon baloon = (MapBaloon) findViewById(R.id.mapbaloon);
+//		if(baloon != null)
+//		{
+//			if(mWebcamItemizedOverlay != null)
+//				mWebcamItemizedOverlay.cancelCurrentWebcamTask();
+//			/* remove baloon */
+//			removeView(baloon);
+//			/* restore previous position of the map */
+//			getController().animateTo(baloon.getGeoPoint());
+//			baloon = null;
+//		}
 	}
 	
 	public void dispatchDraw(Canvas canvas)
 	{
-		super.dispatchDraw(canvas);
-		int zoomLevel = getZoomLevel();
-		if(mOldZoomLevel != zoomLevel)
-		{
-			if(mZoomChangeListener != null)
-				mZoomChangeListener.onZoomLevelChanged(zoomLevel);
-			mOldZoomLevel = zoomLevel;
-		}
+//		super.dispatchDraw(canvas);
+//		int zoomLevel = getZoomLevel();
+//		if(mOldZoomLevel != zoomLevel)
+//		{
+//			if(mZoomChangeListener != null)
+//				mZoomChangeListener.onZoomLevelChanged(zoomLevel);
+//			mOldZoomLevel = zoomLevel;
+//		}
 	}
 
 	public int suggestedBaloonWidth(MapBaloon.Type t)
@@ -350,7 +352,7 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 		ArrayList<WebcamData> webcamData = null;
 		String additionalWebcamsTxt = "";
 		/* get fixed additional webcams list from assets */
-		AdditionalWebcams additionalWebcams = new AdditionalWebcams(getContext().getApplicationContext());
+		AdditionalWebcams additionalWebcams = new AdditionalWebcams(this.getActivity().getApplicationContext());
 		additionalWebcamsTxt = additionalWebcams.getText();
 		OtherWebcamListDecoder additionalWebcamsDec = new OtherWebcamListDecoder();
 		webcamData = additionalWebcamsDec.decode(additionalWebcamsTxt, false);
@@ -358,11 +360,11 @@ public class OMapView extends MapView implements ObservationsCacheUpdateListener
 	}
 	
 	
-	private MyLocationOverlay mMyLocationOverlay = null;
+//	private MyLocationOverlay mMyLocationOverlay = null;
 	private RadarOverlay mRadarOverlay = null;
 	private CircleOverlay mCircleOverlay = null;
-	private ObservationsItemizedOverlay<OverlayItem> mObservationsItemizedOverlay = null;
-	private WebcamItemizedOverlay<OverlayItem> mWebcamItemizedOverlay = null;
+//	private ObservationsItemizedOverlay<OverlayItem> mObservationsItemizedOverlay = null;
+//	private WebcamItemizedOverlay<OverlayItem> mWebcamItemizedOverlay = null;
 	
 	private MapViewMode mMode = null;
 	private int mOldZoomLevel;

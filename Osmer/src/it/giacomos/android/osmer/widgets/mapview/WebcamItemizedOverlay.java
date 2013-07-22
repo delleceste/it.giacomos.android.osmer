@@ -51,17 +51,17 @@ public class WebcamItemizedOverlay<Item extends OverlayItem> extends ItemizedOve
 implements ZoomChangeListener, BitmapListener, OnClickListener
 {
 
-	public WebcamItemizedOverlay(Drawable defaultMarker, OMapView map) {
+	public WebcamItemizedOverlay(Drawable defaultMarker, OMapFragment map) {
 		super(boundCenterBottom(defaultMarker));
 		populate();
-		mMap = map;
-		mWebcams = new ArrayList<WebcamData>();
-		mPaint = new Paint();
-		mDensityDpi = map.getResources().getDisplayMetrics().densityDpi;
-		Settings s = new Settings(mMap.getContext().getApplicationContext());
-		mMapClickOnBaloonImageHintEnabled = s.isMapClickOnBaloonImageHintEnabled();
-		mZoomLevel = map.getZoomLevel();
-		mCurrentBitmapTask = null;
+//		mMap = map;
+//		mWebcams = new ArrayList<WebcamData>();
+//		mPaint = new Paint();
+//		mDensityDpi = map.getResources().getDisplayMetrics().densityDpi;
+//		Settings s = new Settings(mMap.getContext().getApplicationContext());
+//		mMapClickOnBaloonImageHintEnabled = s.isMapClickOnBaloonImageHintEnabled();
+//		mZoomLevel = map.getZoomLevel();
+//		mCurrentBitmapTask = null;
 	}
 
 	/**
@@ -95,113 +95,114 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 	@Override
 	protected boolean onTap(int index) 
 	{
-		Resources res = mMap.getResources();
-		OverlayItem item = mOverlayItems.get(index);
-		String location = item.getTitle();
-		WebcamData wd = getDataByGeoPoint(item.getPoint());
-		String message = "";
-		if(wd != null)
-		{
-			/* see method documentation */
-			cancelCurrentWebcamTask();
-			
-			mCurrentBitmapTask = new BitmapTask(this, BitmapType.WEBCAM);
-			try 
-			{
-				URL webcamUrl = new URL(wd.url);
-				mCurrentBitmapTask.parallelExecute(webcamUrl);
-			}
-			catch (MalformedURLException e) 
-			{
-				// TODO Auto-generated catch block
-				message = res.getString(R.string.error_message) + ": " + e.getLocalizedMessage();
-				Toast.makeText(mMap.getContext().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-			}
-
-			/* creates a webcam baloon and adds it to the map */
-			new BaloonOnMap(mMap, location, wd.text, R.drawable.webcam_download, item.getPoint(), true);
-			/* install button close click listener */
-			MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);
-			baloon.findViewById(R.id.baloon_close_button).setOnClickListener(this);
-			
-			Projection projection = mMap.getProjection();
-			/* get the width/height used to create the baloon.
-			 * The map view has a method that returns the values.
-			 */
-			int baloonWidth = mMap.suggestedBaloonWidth(MapBaloon.Type.WEBCAM);
-			int baloonHeight = mMap.suggestedBaloonHeight(MapBaloon.Type.WEBCAM);
-			Point out = null;
-			out = projection.toPixels(item.getPoint(), out);
-			int dx, dy;
-			int markerX = out.x;
-			int markerY = out.y;
-			final int margin = 10;
-				
-			dx = markerX - baloonWidth / 2 - (mMap.getWidth() - baloonWidth) / 2;
-			dy = markerY - baloonHeight - margin;
-
-			mMap.getController().scrollBy(dx, dy);
-		}
-		return true;
+//		Resources res = mMap.getResources();
+//		OverlayItem item = mOverlayItems.get(index);
+//		String location = item.getTitle();
+//		WebcamData wd = getDataByGeoPoint(item.getPoint());
+//		String message = "";
+//		if(wd != null)
+//		{
+//			/* see method documentation */
+//			cancelCurrentWebcamTask();
+//			
+//			mCurrentBitmapTask = new BitmapTask(this, BitmapType.WEBCAM);
+//			try 
+//			{
+//				URL webcamUrl = new URL(wd.url);
+//				mCurrentBitmapTask.parallelExecute(webcamUrl);
+//			}
+//			catch (MalformedURLException e) 
+//			{
+//				// TODO Auto-generated catch block
+//				message = res.getString(R.string.error_message) + ": " + e.getLocalizedMessage();
+//				Toast.makeText(mMap.getContext().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+//			}
+//
+//			/* creates a webcam baloon and adds it to the map */
+//			new BaloonOnMap(mMap, location, wd.text, R.drawable.webcam_download, item.getPoint(), true);
+//			/* install button close click listener */
+//			MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);
+//			baloon.findViewById(R.id.baloon_close_button).setOnClickListener(this);
+//			
+//			Projection projection = mMap.getProjection();
+//			/* get the width/height used to create the baloon.
+//			 * The map view has a method that returns the values.
+//			 */
+//			int baloonWidth = mMap.suggestedBaloonWidth(MapBaloon.Type.WEBCAM);
+//			int baloonHeight = mMap.suggestedBaloonHeight(MapBaloon.Type.WEBCAM);
+//			Point out = null;
+//			out = projection.toPixels(item.getPoint(), out);
+//			int dx, dy;
+//			int markerX = out.x;
+//			int markerY = out.y;
+//			final int margin = 10;
+//				
+//			dx = markerX - baloonWidth / 2 - (mMap.getWidth() - baloonWidth) / 2;
+//			dy = markerY - baloonHeight - margin;
+//
+//			mMap.getController().scrollBy(dx, dy);
+//		}
+//		return true;
+		return super.onTap(index); /* map v2 */
 	}
 
 	@Override
 	public void onBitmapUpdate(Bitmap bmp, BitmapType bt, String errorMessage, AsyncTask<URL, Integer, Bitmap> unusedTaskParameter) 
 	{
-		Context ctx = mMap.getContext().getApplicationContext();
-		MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);
-		if(baloon != null && bmp == null && !errorMessage.isEmpty())
-		{
-			Toast.makeText(ctx, ctx.getResources().getString(R.string.error_message)
-					+ "\n" + errorMessage, Toast.LENGTH_LONG).show();
-
-		}
-		else if(baloon != null && bt == BitmapType.WEBCAM && bmp != null)
-		{
-			if(!errorMessage.isEmpty())
-				Toast.makeText(ctx.getApplicationContext(), ctx.getResources().getString(R.string.error_message) + "\n" + errorMessage, Toast.LENGTH_LONG).show();
-			else
-			{
-				baloon.setIcon(new BitmapDrawable(bmp));
-				/* save image on cache in order to display it in external viewer */
-				LastImageCache saver = new LastImageCache();
-				boolean success = saver.save(bmp, ctx);
-				if(success)
-				{
-					baloon.findViewById(R.id.baloon_icon).setOnClickListener(this);
-					if(mMapClickOnBaloonImageHintEnabled)
-						Toast.makeText(ctx, R.string.hint_click_on_map_baloon_webcam_image, Toast.LENGTH_LONG).show();
-				}
-				else
-					baloon.setOnClickListener(null); /* no clicks */
-			}
-		}
+//		Context ctx = mMap.getContext().getApplicationContext();
+//		MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);
+//		if(baloon != null && bmp == null && !errorMessage.isEmpty())
+//		{
+//			Toast.makeText(ctx, ctx.getResources().getString(R.string.error_message)
+//					+ "\n" + errorMessage, Toast.LENGTH_LONG).show();
+//
+//		}
+//		else if(baloon != null && bt == BitmapType.WEBCAM && bmp != null)
+//		{
+//			if(!errorMessage.isEmpty())
+//				Toast.makeText(ctx.getApplicationContext(), ctx.getResources().getString(R.string.error_message) + "\n" + errorMessage, Toast.LENGTH_LONG).show();
+//			else
+//			{
+//				baloon.setIcon(new BitmapDrawable(bmp));
+//				/* save image on cache in order to display it in external viewer */
+//				LastImageCache saver = new LastImageCache();
+//				boolean success = saver.save(bmp, ctx);
+//				if(success)
+//				{
+//					baloon.findViewById(R.id.baloon_icon).setOnClickListener(this);
+//					if(mMapClickOnBaloonImageHintEnabled)
+//						Toast.makeText(ctx, R.string.hint_click_on_map_baloon_webcam_image, Toast.LENGTH_LONG).show();
+//				}
+//				else
+//					baloon.setOnClickListener(null); /* no clicks */
+//			}
+//		}
 	}
 
 	@Override
 	public void onClick(View view) 
 	{
-		if(view.getId() == R.id.baloon_close_button)
-		{
-			MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);
-			if(baloon != null)
-			{
-				cancelCurrentWebcamTask();
-				/* remove baloon */
-				mMap.removeView(baloon);
-				/* restore previous position of the map */
-				mMap.getController().animateTo(baloon.getGeoPoint());
-				baloon = null;
-			}
-		}
-		else if(view.getId() == R.id.baloon_icon)
-		{
-			ExternalImageViewerLauncher eivl = new ExternalImageViewerLauncher();
-			eivl.startExternalViewer(mMap.getContext());
-			Settings s = new Settings(mMap.getContext().getApplicationContext());
-			s.setMapClickOnBaloonImageHintEnabled(false);
-			mMapClickOnBaloonImageHintEnabled = false;
-		}
+//		if(view.getId() == R.id.baloon_close_button)
+//		{
+//			MapBaloon baloon = (MapBaloon) mMap.findViewById(R.id.mapbaloon);
+//			if(baloon != null)
+//			{
+//				cancelCurrentWebcamTask();
+//				/* remove baloon */
+//				mMap.removeView(baloon);
+//				/* restore previous position of the map */
+//				mMap.getController().animateTo(baloon.getGeoPoint());
+//				baloon = null;
+//			}
+//		}
+//		else if(view.getId() == R.id.baloon_icon)
+//		{
+//			ExternalImageViewerLauncher eivl = new ExternalImageViewerLauncher();
+//			eivl.startExternalViewer(mMap.getContext());
+//			Settings s = new Settings(mMap.getContext().getApplicationContext());
+//			s.setMapClickOnBaloonImageHintEnabled(false);
+//			mMapClickOnBaloonImageHintEnabled = false;
+//		}
 	}
 	
 	public void draw(Canvas canvas, MapView mapView, boolean shadow)
@@ -300,7 +301,7 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 		return false;
 	}
 
-	private OMapView mMap;
+	private OMapFragment mMap;
 	private ArrayList<OverlayItem> mOverlayItems = new ArrayList<OverlayItem>();
 	private ArrayList<WebcamData> mWebcams;
 	private int mDensityDpi;

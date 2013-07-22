@@ -173,11 +173,12 @@
 		<RelativeLayout android:id="@+id/mapRelativeLayout"
 			android:layout_width="match_parent" android:orientation="vertical"
 			android:layout_height="wrap_content">
-			<it.giacomos.android.osmer.widgets.mapview.OMapView
-				android:id="@+id/mapview" android:layout_width="fill_parent"
-				android:layout_height="fill_parent" android:clickable="true"
-				android:apiKey="0AspVUt7XvDhAh_n6QG0MOW4uljL5qW6Iay0abw">
-			</it.giacomos.android.osmer.widgets.mapview.OMapView>
+			<fragment
+				android:id="@+id/mapview" 
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:name="com.google.android.gms.maps.MapFragment">
+			</fragment>
 			
 
 				

@@ -42,13 +42,13 @@ public class BaloonOnMap {
         if(webcamBaloon)
         {
         	/* transform dpi into pixels */
-        	width = ((OMapView)mapView).suggestedBaloonWidth(MapBaloon.Type.WEBCAM);
-        	height = ((OMapView)mapView).suggestedBaloonHeight(MapBaloon.Type.WEBCAM);
-        	
-        	mapBaloon = (MapBaloon) layoutInflater.inflate(R.layout.webcam_mapbaloon, null);
-            layoutParams = new MapView.LayoutParams(
-            		(int)width, (int)height,
-             		point, MapView.LayoutParams.BOTTOM_CENTER);
+//        	width = ((OMapFragment)mapView).suggestedBaloonWidth(MapBaloon.Type.WEBCAM);
+//        	height = ((OMapFragment)mapView).suggestedBaloonHeight(MapBaloon.Type.WEBCAM);
+//        	
+//        	mapBaloon = (MapBaloon) layoutInflater.inflate(R.layout.webcam_mapbaloon, null);
+//            layoutParams = new MapView.LayoutParams(
+//            		(int)width, (int)height,
+//             		point, MapView.LayoutParams.BOTTOM_CENTER);
             
             mapBaloon.setType(Type.WEBCAM);
             mapBaloon.setText(title + " - " + text);
@@ -57,11 +57,11 @@ public class BaloonOnMap {
         else
         {
         	mapBaloon = (MapBaloon) layoutInflater.inflate(R.layout.mapbaloon, null);
-        	width = ((OMapView)mapView).suggestedBaloonWidth(MapBaloon.Type.OBSERVATIONS);
-        	height = ((OMapView)mapView).suggestedBaloonHeight(MapBaloon.Type.OBSERVATIONS);
-            layoutParams = new MapView.LayoutParams(
-            		(int)width, (int)height,
-             		point, MapView.LayoutParams.BOTTOM_CENTER);
+//        	width = ((OMapFragment)mapView).suggestedBaloonWidth(MapBaloon.Type.OBSERVATIONS);
+//        	height = ((OMapFragment)mapView).suggestedBaloonHeight(MapBaloon.Type.OBSERVATIONS);
+//            layoutParams = new MapView.LayoutParams(
+//            		(int)width, (int)height,
+//             		point, MapView.LayoutParams.BOTTOM_CENTER);
 
             mapBaloon.setType(Type.OBSERVATIONS);
             mapBaloon.setTitle(title);
@@ -84,15 +84,15 @@ public class BaloonOnMap {
 	
 	public BaloonOnMap(MapView mapView, ObservationData observationData, GeoPoint point, boolean webcamBaloon) 
 	{   
-        String title = observationData.location;
-        String text = makeText(observationData, (OMapView)mapView);
-        SkyDrawableIdPicker skyDrawableIdPicker = new SkyDrawableIdPicker();
-        int icon = skyDrawableIdPicker.get(observationData.sky);
-        buildBaloon(mapView, title, text, icon, point, webcamBaloon);
-        skyDrawableIdPicker = null;
+//        String title = observationData.location;
+//        String text = makeText(observationData, (OMapFragment)mapView);
+//        SkyDrawableIdPicker skyDrawableIdPicker = new SkyDrawableIdPicker();
+//        int icon = skyDrawableIdPicker.get(observationData.sky);
+//        buildBaloon(mapView, title, text, icon, point, webcamBaloon);
+//        skyDrawableIdPicker = null;
 	}
 	
-	private String makeText(ObservationData od, OMapView mapView)
+	private String makeText(ObservationData od, OMapFragment mapView)
 	{
 		Resources res = mapView.getResources();
 		MapViewMode m = mapView.getMode();
