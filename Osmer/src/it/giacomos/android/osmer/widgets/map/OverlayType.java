@@ -1,4 +1,4 @@
-package it.giacomos.android.osmer.widgets.mapview;
+package it.giacomos.android.osmer.widgets.map;
 
 public class OverlayType {
 	public static final int RADAR= 0;

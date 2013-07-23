@@ -18,6 +18,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.maps.GeoPoint;
 
 import android.text.Html;
@@ -59,16 +60,16 @@ public class OtherWebcamListDecoder implements WebcamListDecoder
 							if(!slat.isEmpty() && !slong.isEmpty())
 							{
 								try{
-									int lat = (int) ( Float.parseFloat(slat) * 1e6);
-									int longit = (int) ( Float.parseFloat(slong) * 1e6);
-									wd.geoPoint = new GeoPoint(lat, longit);
+									float lat =  ( Float.parseFloat(slat));
+									float longit =  ( Float.parseFloat(slong));
+									wd.latLng = new LatLng(lat, longit);
 								}
 								catch(NumberFormatException nfe)
 								{
-									wd.geoPoint = null;
+									wd.latLng = null;
 								}
 							}
-							if(!wd.location.isEmpty() && !wd.url.isEmpty() && wd.geoPoint != null)
+							if(!wd.location.isEmpty() && !wd.url.isEmpty() && wd.latLng != null)
 							{
 //								Log.i("OtherWebcamListDecoder: decode()" , "decoded:" + wd.toString());
 								wcData.add(wd);

@@ -2,8 +2,6 @@ package it.giacomos.android.osmer.widgets;
 
 import java.util.HashMap;
 
-import com.google.android.maps.GeoPoint;
-
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
@@ -32,6 +30,7 @@ import android.widget.Toast;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcelable;
+import com.google.android.gms.maps.model.LatLng;
 
 public class SituationImage extends ODoubleLayerImageView 
 implements LatestObservationCacheChangeListener
@@ -75,13 +74,13 @@ implements LatestObservationCacheChangeListener
 		for(int i = 0; i < locations.length; i++)
 		{
 			int drawableId = -1;
-			GeoPoint gp = locMap.get(locations[i]);
-			if(gp != null)
+			LatLng latlng = locMap.get(locations[i]);
+			if(latlng != null)
 			{
 				/* create a Loation not associated to any provider */
 				Location loc = new Location("");
-				loc.setLatitude(gp.getLatitudeE6()/1E6);
-				loc.setLongitude(gp.getLongitudeE6()/1E6);
+				loc.setLatitude(latlng.latitude);
+				loc.setLongitude(latlng.longitude);
 				ObservationData od = 
 						oCache.getObservationData(locations[i], ViewType.LATEST_TABLE);
 

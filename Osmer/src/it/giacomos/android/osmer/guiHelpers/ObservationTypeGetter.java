@@ -4,7 +4,7 @@ import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
-import it.giacomos.android.osmer.widgets.mapview.MapViewMode;
+import it.giacomos.android.osmer.widgets.map.MapViewMode;
 import android.util.Log;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

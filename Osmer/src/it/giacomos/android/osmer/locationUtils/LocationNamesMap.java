@@ -1,52 +1,52 @@
 package it.giacomos.android.osmer.locationUtils;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 import java.lang.String;
-import com.google.android.maps.GeoPoint;
+
+import com.google.android.gms.maps.model.LatLng;
 
 public class LocationNamesMap {
 
 	public LocationNamesMap()
 	{
-		mMap = new HashMap<String, GeoPoint>();
+		mMap = new HashMap<String, LatLng>();
 		
-		mMap.put("Udine", new GeoPoint(46064313, 13236250));
-		mMap.put("Trieste", new GeoPoint(45649882, 13767350));
-		mMap.put("Gradisca d'Is.", new GeoPoint(45940168, 13623733));
-		mMap.put("Pordenone", new GeoPoint(45962652, 12655043));
-		mMap.put("Tarvisio", new GeoPoint(46505402, 13578493));
-		mMap.put("Cividale d.F.", new GeoPoint(46090648, 13435000));
-		mMap.put("Grado", new GeoPoint(45678462, 13395962));
-		mMap.put("GradoMare", new GeoPoint(45675688, 13394426));
-		mMap.put("Aurisina", new GeoPoint(45740805, 13669846));
-		mMap.put("Claut", new GeoPoint(46217788, 12472057));
-		mMap.put("Lignano", new GeoPoint(45690989, 13138748));
-		mMap.put("Faedis", new GeoPoint(46152939, 13346416));
-		mMap.put("S.Vito al Tgl.", new GeoPoint(45915116, 12856410));
-		mMap.put("Tolmezzo", new GeoPoint(46406251, 13012646));
-		mMap.put("Paluzza", new GeoPoint(46534680, 13020762));
-		mMap.put("Pontebba", new GeoPoint(46504354, 13305738));
-		mMap.put("Zoncolan (1750 m)", new GeoPoint(46500000	,12916670));
-		mMap.put("M.Zoncolan", new GeoPoint(46500000	,12916670));
-		mMap.put("Zoncolan", new GeoPoint(46500000	,12916670));
-		mMap.put("Forni di Sopra", new GeoPoint(46423140,	12583460));
-		mMap.put("Barcis", new GeoPoint(46190718,12559284));
-		mMap.put("Talmassons", new GeoPoint(45930543,13119952));
-		mMap.put("Monfalcone", new GeoPoint(45805047,13533173));
-		mMap.put("Fagagna", new GeoPoint(46117736,1308185));
-		mMap.put("Enemonzo", new GeoPoint(46411656,12887197));
-		mMap.put("Gemona d.F.", new GeoPoint(46289147,13145738));
-		mMap.put("Chievolis", new GeoPoint(46254552,12735398));
-		mMap.put("Vivaro", new GeoPoint(46078226,12776906));	
-		mMap.put("M.Matajur", new GeoPoint(46212500,13529722));
-		mMap.put("Coritis", new GeoPoint(46360673,13354213));
-		mMap.put("S.Vito al Tgl.", new GeoPoint(45917978,12857311));
-		mMap.put("Brugnera", new GeoPoint(45901993,12526491));
-		mMap.put("Piancavallo", new GeoPoint(46107436,12522217));
-		mMap.put("Ligosullo", new GeoPoint(46539706,13076066));
-		mMap.put("Sauris", new GeoPoint(46466675, 12697044));
+		mMap.put("Udine", new LatLng(46.064313, 13.236250));
+		mMap.put("Trieste", new LatLng(45.649882, 13.767350));
+		mMap.put("Gradisca d'Is.", new LatLng(45.940168, 13.623733));
+		mMap.put("Pordenone", new LatLng(45.962652, 12.655043));
+		mMap.put("Tarvisio", new LatLng(46.505402, 13.578493));
+		mMap.put("Cividale d.F.", new LatLng(46.090648, 13.435000));
+		mMap.put("Grado", new LatLng(45.678462, 13.395962));
+		mMap.put("GradoMare", new LatLng(45.675688, 13.394426));
+		mMap.put("Aurisina", new LatLng(45.740805, 13.669846));
+		mMap.put("Claut", new LatLng(46.217788, 12.472057));
+		mMap.put("Lignano", new LatLng(45.690989, 13.138748));
+		mMap.put("Faedis", new LatLng(46.152939, 13.346416));
+		mMap.put("S.Vito al Tgl.", new LatLng(45.915116, 12.856410));
+		mMap.put("Tolmezzo", new LatLng(46.406251, 13.012646));
+		mMap.put("Paluzza", new LatLng(46.534680, 13.020762));
+		mMap.put("Pontebba", new LatLng(46.504354, 13.305738));
+		mMap.put("Zoncolan (1750 m)", new LatLng(46.500000, 12.916670));
+		mMap.put("M.Zoncolan", new LatLng(46.500000	,12.916670));
+		mMap.put("Zoncolan", new LatLng(46.500000	,12.916670));
+		mMap.put("Forni di Sopra", new LatLng(46.423140,	12.583460));
+		mMap.put("Barcis", new LatLng(46.190718,12.559284));
+		mMap.put("Talmassons", new LatLng(45.930543,13.119952));
+		mMap.put("Monfalcone", new LatLng(45.805047,13.533173));
+		mMap.put("Fagagna", new LatLng(46.117736,13.08185));
+		mMap.put("Enemonzo", new LatLng(46.411656,12.887197));
+		mMap.put("Gemona d.F.", new LatLng(46.289147, 13.145738));
+		mMap.put("Chievolis", new LatLng(46.254552, 12.735398));
+		mMap.put("Vivaro", new LatLng(46.078226, 12.776906));	
+		mMap.put("M.Matajur", new LatLng(46.212500, 13.529722));
+		mMap.put("Coritis", new LatLng(46.360673, 13.354213));
+		mMap.put("S.Vito al Tgl.", new LatLng(45.917978, 12.857311));
+		mMap.put("Brugnera", new LatLng(45.901993, 12.526491));
+		mMap.put("Piancavallo", new LatLng(46.107436, 12.522217));
+		mMap.put("Ligosullo", new LatLng(46.539706,13.076066));
+		mMap.put("Sauris", new LatLng(46.466675, 12.697044));
 		
 	}
 	
@@ -97,10 +97,10 @@ public class LocationNamesMap {
 		return locations;
 	}
 	
-	public GeoPoint get(String location)
+	public LatLng get(String location)
 	{
 		return mMap.get(location);
 	}
 	
-	private HashMap<String, GeoPoint> mMap = null;	
+	private HashMap<String, LatLng> mMap = null;	
 }

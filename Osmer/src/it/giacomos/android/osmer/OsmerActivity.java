@@ -32,8 +32,8 @@ import it.giacomos.android.osmer.widgets.InfoHtmlBuilder;
 import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
 import it.giacomos.android.osmer.widgets.OTextView;
 import it.giacomos.android.osmer.widgets.OViewFlipper;
-import it.giacomos.android.osmer.widgets.mapview.OMapFragment;
-import it.giacomos.android.osmer.widgets.mapview.MapViewMode;
+import it.giacomos.android.osmer.widgets.map.MapViewMode;
+import it.giacomos.android.osmer.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.widgets.SituationImage;
 import it.giacomos.android.osmer.preferences.*;
 import android.app.Activity;
@@ -689,11 +689,11 @@ OnDismissListener
 	public void onSelectionDone(ObservationType type, ObservationTime oTime) 
 	{
 		/* switch the working mode of the map view */
-//		OMapFragment map = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
-//		map.setMode(new MapViewMode(type, oTime));
-//		if(type != ObservationType.WEBCAM)
-//			map.updateObservations(m_observationsCache.getObservationData(oTime));
-//		((OViewFlipper)findViewById(R.id.viewFlipper1)).setDisplayedChild(FlipperChildren.MAP);
+		OMapFragment map = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
+		map.setMode(new MapViewMode(type, oTime));
+		if(type != ObservationType.WEBCAM)
+			map.updateObservations(m_observationsCache.getObservationData(oTime));
+		((OViewFlipper)findViewById(R.id.viewFlipper1)).setDisplayedChild(FlipperChildren.MAP);
 	}
 
 	@Override
@@ -933,7 +933,7 @@ OnDismissListener
 			if(id == ViewType.RADAR || id == ViewType.MAP)
 			{
 				/* remove itemized overlays (observations), if present, and restore radar view */
-//				((OMapFragment) getFragmentManager().findFragmentById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
+				((OMapFragment) getFragmentManager().findFragmentById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 				radar();
 			}
 			else if(id == ViewType.TODAY)

@@ -1,60 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<it.giacomos.android.osmer.widgets.mapview.MapBaloon xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mapbaloon"
-    style="@style/ImageView"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="320dp"
     android:layout_height="250dp"
-    android:orientation="horizontal"
     android:paddingBottom="5dp"
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
     android:paddingTop="5dp" >
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <!-- Title -->
+
+
+    <!-- Close button -->
+
+    <ImageView
+        android:id="@+id/baloon_icon"
+        style="@style/ImageView"
+        android:layout_width="260dp"
+        android:layout_height="195dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:paddingRight="10dp"
+        android:scaleType="centerInside"
+        android:color="#0000FF00" />
+
+    <ImageView
+        android:id="@+id/baloon_close_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:src="@drawable/window_close" />
 
-        <!-- Title -->
+    <!-- WEBCAM IMAGE -->
 
-        <!-- Close button -->
 
-		<ImageView
-		    android:id="@+id/baloon_icon"
-		    style="@style/ImageView"
-		    android:layout_width="260dp"
-		    android:layout_height="195dp"
-		    android:layout_alignParentLeft="true"
-		    android:layout_alignParentRight="true"
-		    android:layout_alignParentTop="true"
-		    android:paddingRight="10dp"
-		    android:scaleType="centerInside"
-		    android:color="#0000FF00" />
+    <!-- WEBCAM associated text -->
 
-        <ImageView
-            android:id="@+id/baloon_close_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:clickable="true"
-            android:src="@drawable/window_close" />
+    <TextView
+        android:id="@+id/baloon_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/baloon_icon"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:textSize="5pt" />
 
-        <!-- WEBCAM IMAGE -->
-
-        <!-- WEBCAM associated text -->
-
-        <TextView
-            android:id="@+id/baloon_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/baloon_icon"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:textSize="5pt" />
-
-        
-
-    </RelativeLayout>
-
-</it.giacomos.android.osmer.widgets.mapview.MapBaloon>
+</RelativeLayout>

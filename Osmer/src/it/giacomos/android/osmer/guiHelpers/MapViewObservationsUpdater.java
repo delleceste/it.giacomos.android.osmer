@@ -5,7 +5,7 @@ import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.observations.TableToMap;
-import it.giacomos.android.osmer.widgets.mapview.OMapFragment;
+import it.giacomos.android.osmer.widgets.map.OMapFragment;
 
 public class MapViewObservationsUpdater 
 {

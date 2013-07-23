@@ -53,7 +53,7 @@ public class OsmerWebcamListDecoder implements WebcamListDecoder
 			if(locationMatcher.find())
 				wd.location = locationMatcher.group(1);
 			
-			wd.geoPoint = namesMap.get(wd.location);
+			wd.latLng = namesMap.get(wd.location);
 			
 			fileName = wd.location;
 			if(!fileName.isEmpty())
@@ -79,7 +79,7 @@ public class OsmerWebcamListDecoder implements WebcamListDecoder
 			i = i + 2;
 			
 			/* add valid data only to the list */
-			if(!wd.url.isEmpty() && !wd.location.isEmpty() && !wd.text.isEmpty() && wd.geoPoint != null)
+			if(!wd.url.isEmpty() && !wd.location.isEmpty() && !wd.text.isEmpty() && wd.latLng != null)
 				wcData.add(wd);
 		}
 		if(saveOnCache && wcData.size() > 0) /* cache cleaned file */

@@ -3,8 +3,8 @@ package it.giacomos.android.osmer;
 import android.widget.Toast;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.widgets.OViewFlipper;
-import it.giacomos.android.osmer.widgets.mapview.MapViewMode;
-import it.giacomos.android.osmer.widgets.mapview.OMapFragment;
+import it.giacomos.android.osmer.widgets.map.MapViewMode;
+import it.giacomos.android.osmer.widgets.map.OMapFragment;
 
 public class CurrentViewUpdater {
 	public void update(OsmerActivity a)

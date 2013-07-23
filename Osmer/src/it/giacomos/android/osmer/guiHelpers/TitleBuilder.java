@@ -8,8 +8,8 @@ import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.widgets.CurrentScreen;
 import it.giacomos.android.osmer.widgets.OViewFlipper;
-import it.giacomos.android.osmer.widgets.mapview.MapViewMode;
-import it.giacomos.android.osmer.widgets.mapview.OMapFragment;
+import it.giacomos.android.osmer.widgets.map.MapViewMode;
+import it.giacomos.android.osmer.widgets.map.OMapFragment;
 
 import java.lang.String;
 

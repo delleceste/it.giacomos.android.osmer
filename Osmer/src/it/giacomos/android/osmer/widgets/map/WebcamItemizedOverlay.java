@@ -1,4 +1,4 @@
-package it.giacomos.android.osmer.widgets.mapview;
+package it.giacomos.android.osmer.widgets.map;
 
 import it.giacomos.android.osmer.BitmapType;
 import it.giacomos.android.osmer.R;
@@ -41,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
@@ -77,15 +78,15 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 		{
 			if(!webcamInList(wd))
 			{
-				GeoPoint gp = wd.geoPoint;
-				if(gp != null)
+				LatLng ll = wd.latLng;
+				if(ll != null)
 				{ 
-					OverlayItem overlayitem = new OverlayItem(gp, wd.location, wd.text);
-//					Log.i("WebcamItemizedOverlay: update()", "adding overlay item " + wd.location + " webcams are " + mWebcams.size());
-					mOverlayItems.add(overlayitem);
-					needsRedraw = true;
-					populate();
-					mWebcams.add(wd);
+//					OverlayItem overlayitem = new OverlayItem(gp, wd.location, wd.text);
+////					Log.i("WebcamItemizedOverlay: update()", "adding overlay item " + wd.location + " webcams are " + mWebcams.size());
+//					mOverlayItems.add(overlayitem);
+//					needsRedraw = true;
+//					populate();
+//					mWebcams.add(wd);
 				}
 			}
 		}
@@ -266,7 +267,7 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 	}
 
 	@Override
-	public void onZoomLevelChanged(int level) 
+	public void onZoomLevelChanged(float level) 
 	{
 		mZoomLevel = level;
 	}
@@ -283,11 +284,11 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 		return mOverlayItems.size();
 	}
 
-	protected WebcamData getDataByGeoPoint(GeoPoint gp)
+	protected WebcamData getDataByGeoPoint(LatLng ll)
 	{
 		for(WebcamData wd : mWebcams)
 		{
-			if(wd.geoPoint == gp)
+			if(wd.latLng == ll)
 				return wd;
 		}
 		return null;
@@ -306,7 +307,7 @@ implements ZoomChangeListener, BitmapListener, OnClickListener
 	private ArrayList<WebcamData> mWebcams;
 	private int mDensityDpi;
 	private Paint mPaint;
-	private int mZoomLevel;
+	private float mZoomLevel;
 	private BitmapTask mCurrentBitmapTask;
 	/* stores settings value locally in order not to query Settings every time */
 	private boolean mMapClickOnBaloonImageHintEnabled;

@@ -1,5 +1,9 @@
 package it.giacomos.android.osmer.locationUtils;
 
+import android.location.Location;
+
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.maps.GeoPoint;
 
 public class GeoCoordinates {
@@ -36,4 +40,24 @@ public class GeoCoordinates {
 	 *   http://www.gorissen.info/Pierre/maps/googleMapLocation.php?lat=45.580838&lon=13.810244&setLatLon=Set
 	 */
 	public static final GeoPoint fvgBottomRight = new GeoPoint(45580838, 13918819 );
+	
+	public static final LatLngBounds radarImageBounds = new LatLngBounds(new LatLng(44.6029, 11.8342), 
+			new LatLng(46.8505, 15.0559));
+	
+	public static final LatLng radarImageCenter = new LatLng((radarImageBounds.northeast.latitude + 
+			radarImageBounds.southwest.latitude) / 2.0f, 
+			(radarImageBounds.northeast.longitude + radarImageBounds.southwest.longitude)/2.0f);
+	
+	public static final float radarImageRadius()
+	{
+		float [] results = new float[1];
+		Location.distanceBetween(radarImageCenter.latitude, radarImageCenter.longitude, radarImageCenter.latitude, radarImageBounds.northeast.longitude, results);
+		return results[0];
+	}
+	
+	public static final LatLng fvgNorthEast = new LatLng(46647917/1e6, 13918819/1e6);
+	
+	public static final LatLng fvgSouthWest = new LatLng(45580838/1e6, 12321253/1e6);
+	
+	public static final LatLngBounds regionBounds = new LatLngBounds(fvgSouthWest, fvgNorthEast);
 }

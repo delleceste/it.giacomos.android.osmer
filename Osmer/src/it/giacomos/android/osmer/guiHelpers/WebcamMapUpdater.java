@@ -6,7 +6,7 @@ import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.webcams.*;
-import it.giacomos.android.osmer.widgets.mapview.*;
+import it.giacomos.android.osmer.widgets.map.*;
 
 public class WebcamMapUpdater 
 {

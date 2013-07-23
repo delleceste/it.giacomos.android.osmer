@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.webcams;
 
-import com.google.android.maps.GeoPoint;
+import com.google.android.gms.maps.model.LatLng;
 
 import android.util.Log;
 
@@ -10,7 +10,7 @@ public class WebcamData
 	public String location = "";
 	public String datetime = "";
 	public String text = "";
-	public GeoPoint geoPoint = null;
+	public LatLng latLng = null;
 	
 	public boolean isOther = false;
 	
@@ -22,6 +22,7 @@ public class WebcamData
 	
 	public String toString() 
 	{
-		return "WebcamData: " + location + "/" + text + "/" + url + "(" + geoPoint.getLatitudeE6() + ", " + geoPoint.getLongitudeE6() + ")";
+		return "WebcamData: " + location + "/" + text + "/" + url + "(" + latLng.latitude + ", " + 
+				latLng.longitude + ")";
 	}
 }

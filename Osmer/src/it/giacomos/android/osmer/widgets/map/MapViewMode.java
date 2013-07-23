@@ -1,4 +1,4 @@
-package it.giacomos.android.osmer.widgets.mapview;
+package it.giacomos.android.osmer.widgets.map;
 
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
