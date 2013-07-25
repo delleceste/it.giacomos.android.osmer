@@ -1,5 +1,10 @@
 package it.giacomos.android.osmer.widgets.map;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -9,8 +14,13 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.maps.Overlay;
+
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.LayerDrawable;
 
 public class RadarOverlay extends Overlay implements OOverlayInterface
 {
@@ -38,6 +48,19 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 		mCircleOptions.strokeWidth(1);
 	}
 
+	
+	@Override /* no info windows on radar layer */
+	public void hideInfoWindow()
+	{
+		
+	}
+	
+	@Override /* no info windows on radar layer */
+	public boolean isInfoWindowVisible()
+	{
+		return false;
+	}
+	
 	@Override
 	public int type() 
 	{
@@ -95,8 +118,47 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 	
 	public void updateBitmap(Bitmap bmp)
 	{
+		if(mBitmap != null)
+			mBitmap.recycle();
 		mBitmap = null;
 		mBitmap = bmp;
+	}
+	
+	public void restoreFromInternalStorage(Context ctx)
+	{
+		File filesDir = ctx.getApplicationContext().getFilesDir();
+		Bitmap bmp = BitmapFactory.decodeFile(filesDir.getAbsolutePath() + "/lastRadarImage.bmp");
+		if(bmp != null)
+			updateBitmap(bmp);
+	}
+	
+	public boolean saveOnInternalStorage(Context ctx) 
+	{	
+		if(mBitmap != null)
+		{
+			FileOutputStream fos;
+			try 
+			{
+				fos = ctx.openFileOutput("lastRadarImage.bmp", Context.MODE_PRIVATE);
+				mBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);	
+				fos.close();
+				return true; /* success */
+			} 
+			catch (FileNotFoundException e) {
+					/* nada que hacer */
+			}
+			catch (IOException e) {
+
+			}
+		}
+		return false; /* bitmap null or impossible to save on file */
+	}	
+	
+	public void finalize()
+	{
+		if(mBitmap != null)
+			mBitmap.recycle();
+		mBitmap = null;
 	}
 	
 	private Bitmap mBitmap;

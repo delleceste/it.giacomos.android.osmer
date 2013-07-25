@@ -8,7 +8,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
-
+import it.giacomos.android.osmer.MapFragmentListener;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.observations.ObservationData;
@@ -18,21 +19,24 @@ import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCacheUpdateListener;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.webcams.AdditionalWebcams;
+import it.giacomos.android.osmer.webcams.ExternalImageViewerLauncher;
+import it.giacomos.android.osmer.webcams.LastImageCache;
 import it.giacomos.android.osmer.webcams.OtherWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;
-import android.content.res.Configuration;
-import android.content.res.Resources;
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 import android.os.Bundle;
-import android.os.Parcelable;
 
 public class OMapFragment extends MapFragment 
 implements ObservationsCacheUpdateListener,
-GoogleMap.OnCameraChangeListener
+GoogleMap.OnCameraChangeListener,
+WebcamOverlayChangeListener
 {
 	public final int minLatitude = GeoCoordinates.bottomRight.getLatitudeE6();
 	public final int maxLatitude = GeoCoordinates.topLeft.getLatitudeE6();
@@ -46,8 +50,15 @@ GoogleMap.OnCameraChangeListener
 	private ObservationsOverlay mObservationsOverlay = null;
 	private MapViewMode mMode = null;
 	private GoogleMap mMap;
+	private CameraPosition mSavedCameraPosition;
 	private ZoomChangeListener mZoomChangeListener;
 	private ArrayList <OOverlayInterface> mOverlays;
+	private boolean mMapClickOnBaloonImageHintEnabled;
+
+	/* MapFragmentListener: the activity must implement this in order to be notified when 
+	 * the GoogleMap is ready.
+	 */
+	private MapFragmentListener mMapFragmentListener;
 
 	public OMapFragment() 
 	{
@@ -55,10 +66,26 @@ GoogleMap.OnCameraChangeListener
 		mCenterOnUpdate = false;
 		mMapReady = false;
 		mOldZoomLevel = -1.0f;
+		mMode = null;
 		mZoomChangeListener = null;
+		mSavedCameraPosition = null;
+		mMapFragmentListener = null;
 		mOverlays = new ArrayList<OOverlayInterface>();
 	}
 
+	@Override
+	public void onAttach(Activity activity)
+	{
+		super.onAttach(activity);
+		try 
+		{
+			mMapFragmentListener = (MapFragmentListener) activity;
+		} 
+		catch (ClassCastException e) 
+		{
+			throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
+		}
+	}
 
 	@Override
 	public void onCameraChange(CameraPosition cameraPosition) 
@@ -72,45 +99,74 @@ GoogleMap.OnCameraChangeListener
 		}
 
 		if(!mMapReady)
-		{
 			mMapReady = true;
-			/* bitmap already downloaded ? */
-			if(mRadarOverlay.bitmapValid())
-				mRadarOverlay.update();
-		}
-		if(mOldZoomLevel != cameraPosition.zoom && mZoomChangeListener != null)
-			mZoomChangeListener.onZoomLevelChanged(cameraPosition.zoom);
 
-		mOldZoomLevel = cameraPosition.zoom;
+		if(mSavedCameraPosition != null)
+		{
+			mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mSavedCameraPosition));
+			mSavedCameraPosition = null; /* restore camera just once! */
+		}
+		else
+		{
+			if(mOldZoomLevel != cameraPosition.zoom && mZoomChangeListener != null)
+				mZoomChangeListener.onZoomLevelChanged(cameraPosition.zoom);
+			mOldZoomLevel = cameraPosition.zoom;
+		}
 		Log.e("onCameraChanged: ", "zoom level " + mOldZoomLevel);
 	} 
 
-	/** Bug on MyLocationOverlay on android 4??
-	 * If MyLocationOverlay enableMyLocation is called when GPS is disabled,
-	 * it does not request gps updates. So activating gps later on does not
-	 * make MyLocationOverlay get GPS updates.
-	 * This is a hack to make things work on my Galaxy S3 running 4.1.x
-	 * On 2.3.x things seem to work.
-	 * 
-	 * @param provider
-	 */
-	public void onPositionProviderEnabled(String provider)
+	public void onStart()
 	{
-		//		if(provider.equals("gps") && mMyLocationOverlay.isMyLocationEnabled())
-		{
-			//			mMyLocationOverlay.disableMyLocation();
-			//			mMyLocationOverlay.enableMyLocation();
-		}
+		//		Log.e("OMapFragment", "onStart()");
+		super.onStart();
 	}
 
-	public void onPositionProviderDisabled(String provider)
+	public void onDestroy ()
 	{
+		//		Log.e("OMapFragment", "onDestroy()");
+		Settings settings = new Settings(getActivity().getApplicationContext());
+		CameraPosition cameraPos = mMap.getCameraPosition();
+		settings.saveMapCameraPosition(cameraPos);
+		/* The bitmap stored into the mRadarOverlay has to be saved */
+		mRadarOverlay.saveOnInternalStorage(getActivity().getApplicationContext());
+		mRadarOverlay.finalize(); /* recycles bitmap for GC */
+		super.onDestroy();
+	}
 
+	public void onCreate(Bundle savedInstanceState)
+	{
+		//		Log.e("OMapFragment", "onCreate()");
+		super.onCreate(savedInstanceState);
 	}
 
 	public void onResume()
 	{
+		//		Log.e("OMapFragment", "onResume()");
 		super.onResume();
+	}
+
+	public void onPause()
+	{
+		//		Log.e("OMapFragment", "onPause()");
+		super.onPause();
+		mMap.setMyLocationEnabled(false);
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState)
+	{
+		super.onSaveInstanceState(outState); /* modificato x map v2 */
+	}
+
+	public void onActivityCreated(Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
+	}
+
+	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	{
+		View view = super.onCreateView(inflater, container, savedInstanceState);
+
 		/* get the GoogleMap object. Must be called after onCreateView is called.
 		 * If it returns null, then Google Play services is not available.
 		 */
@@ -118,40 +174,65 @@ GoogleMap.OnCameraChangeListener
 		mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 		mMap.setMyLocationEnabled(true);
 
-		Settings settings = new Settings(this.getActivity().getApplicationContext());
-		if(settings.mapNeverCentered())
+		Settings settings = new Settings(getActivity().getApplicationContext());
+		mSavedCameraPosition = settings.getCameraPosition();
+		if(mSavedCameraPosition == null) /* never saved */
 		{
+			Log.e("onCreateView", "no Camera position saved in settings  state or no key: centering FIRST TIME!");
 			/* schedule center map on first camera update */
 			mCenterOnUpdate = true;
-			settings.setMapWasCentered(true);
+		}
+		else /* restore previously saved camera properties */
+		{
+			Log.e("onCreateView", "RESTORING previously saved camera status!");
 		}
 		mMap.setOnCameraChangeListener(this);
-		mMode = null;
+		mRadarOverlay = new RadarOverlay(mMap);
+		/* initializes internal bitmap loading the last bitmap saved in the internal memory.
+		 * This does not imply an update of the image over the map.
+		 */
+		mRadarOverlay.restoreFromInternalStorage(getActivity().getApplicationContext());
+
+		Log.e("onCreateView", "calling set mode RADAR/DAILY!");
 		setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
+
+		mMapFragmentListener.onGoogleMapReady();
+		
+		Settings s = new Settings(getActivity().getApplicationContext());
+		mMapClickOnBaloonImageHintEnabled = s.isMapClickOnBaloonImageHintEnabled();
+
+		return view;
 	}
 
-	public void onPause()
-	{
-		super.onPause();
-		mMap.setMyLocationEnabled(false);
-	}
 
 	public void setRadarImage(Bitmap bmp) 
 	{
+		Log.e("setRadarImage", "entro, mode " + mMode.currentMode + ", type " + mMode.currentType);
 		mRadarOverlay.updateBitmap(bmp);
-		if(mMapReady) /* after first camera update */
+		if(mMapReady && mMode.currentType == ObservationType.RADAR) /* after first camera update */
+		{
+			Log.e("setRadarImage", "in effetti, aggiorno");
 			mRadarOverlay.update();
+		}
+	}
+
+	public void centerMap() 
+	{
+		if(mMapReady)
+		{
+			CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(GeoCoordinates.regionBounds, 20);
+			mMap.animateCamera(cu);
+		}
 	}
 
 	public void updateWebcamList(ArrayList<WebcamData> webcams)
 	{
-		//		if(mMode.currentMode == ObservationTime.WEBCAM && 
-		//				mMode.currentType == ObservationType.WEBCAM &&
-		//						mWebcamItemizedOverlay != null)
-		//		{
-		//			if(mWebcamItemizedOverlay.update(webcams))
-		//				this.invalidate();
-		//		}
+		if(mMode.currentMode == ObservationTime.WEBCAM && 
+				mMode.currentType == ObservationType.WEBCAM &&
+				mWebcamOverlay != null)
+		{
+			mWebcamOverlay.update(webcams, this.getResources());
+		}
 	}
 
 	@Override
@@ -164,91 +245,70 @@ GoogleMap.OnCameraChangeListener
 		}
 	}
 
+	/* the main activity after setMode invokes this method.
+	 * ObservationData contains the last observation data, be it from cache or from 
+	 * the net.
+	 */
 	public void updateObservations(HashMap<String, ObservationData> map)
 	{
 		if(mObservationsOverlay != null)
 		{
-			mObservationsOverlay.setData(map);
-			mObservationsOverlay.update(Math.round(mMap.getCameraPosition().zoom));
-		}
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState)
-	{
-		super.onSaveInstanceState(outState); /* modificato x map v2 */
-		Bundle bundle = new Bundle();
-		bundle.putParcelable("RadarBitmap", mRadarOverlay.getBitmap());
-		bundle.putBoolean("measureEnabled", mCircleOverlay != null);
-		if(mCircleOverlay != null)
-			mCircleOverlay.saveState(bundle);
-		//		return bundle;
-	}
-
-	public void onRestoreInstanceState (Parcelable state)
-	{
-		Bundle b = (Bundle) state;
-		//		super.onRestoreInstanceState(b.getParcelable("OMapViewState"));
-		if(b.containsKey("RadarBitmap"))
-		{
-			Bitmap bmp = b.getParcelable("RadarBitmap");
-			mRadarOverlay.updateBitmap(bmp);
-		}
-		if(b.containsKey("measureEnabled"))
-		{
-			setMeasureEnabled(b.getBoolean("measureEnabled"));
-			if(mCircleOverlay != null)
-				mCircleOverlay.restoreState(state);
+			mObservationsOverlay.setData(map); /* update data */
+			/* if the map mode is LATEST or DAILY, update the overlay */
+			if(mMode != null && (mMode.currentMode == ObservationTime.LATEST || mMode.currentMode == ObservationTime.DAILY ) )
+			{
+				Log.e("updateObservations:", "updating obs overlay current mode " + mMode.currentMode + ", type " + mMode.currentType);
+				mObservationsOverlay.update(Math.round(mMap.getCameraPosition().zoom));
+			}
+			else
+				Log.e("updateObservations:", "NOT !! updating obs overlay current mode " + mMode.currentMode + ", type " + mMode.currentType);
 		}
 	}
 
 	public void setMode(MapViewMode m)
 	{
+		Log.e("--->OMApFtagment: setMode invoked", "setMode invoked with mode: " + m.currentMode + ", time (type): " + m.currentType);
 		if(m.equals(mMode))
-		{
 			return;
-		}
 
 		mMode = m;
-		//		new BaloonOffMap(this);
-		for(int i = 0; i < mOverlays.size(); i++)
-			mOverlays.get(i).clear();
-		mOverlays.clear();
 
+		mUninstallAdaptersAndListeners();
+		
 		switch(m.currentType)
 		{
 		case RADAR:
-			if(mRadarOverlay == null)
-				mRadarOverlay = new RadarOverlay(mMap);
+			/* update the overlay with a previously set bitmap */
+			Log.e("OMapFtagment: setMode:", "calling update on radar overlay");
+			mRadarOverlay.update();
+			mRemoveOverlays();
 			mOverlays.add(mRadarOverlay);
+
 			break;
-			//		case SAT:
-			//			break;
-			//		case WEBCAM:
-			//			Drawable webcamIcon = getResources().getDrawable(R.drawable.camera_web_map);
-			//			ArrayList<WebcamData> webcamData = null;
-			//			if(mWebcamItemizedOverlay == null) 
-			//			{
-			//				/* first time we enter webcam mode */
-			//				webcamData = mGetAdditionalWebcamsData();
-			//				mWebcamItemizedOverlay = new WebcamItemizedOverlay<OverlayItem>(webcamIcon, this);
-			//				setOnZoomChangeListener(mWebcamItemizedOverlay);
-			//				this.updateWebcamList(webcamData);
-			//			}
-			//			overlays.add(mWebcamItemizedOverlay);
-			//			break;
-			//			
+		case WEBCAM:
+			ArrayList<WebcamData> webcamData = mGetAdditionalWebcamsData();
+			/// if(mWebcamOverlay == null)  /* first time we enter webcam mode */
+				mWebcamOverlay = new WebcamOverlay(R.drawable.camera_web_map, this);
+			
+			this.updateWebcamList(webcamData);
+			mRemoveOverlays();
+			mOverlays.add(mWebcamOverlay);
+			break;
+
 		default:
 			ObservationDrawableIdPicker observationDrawableIdPicker = new ObservationDrawableIdPicker();
 			int resId = observationDrawableIdPicker.pick(m.currentType);
 			observationDrawableIdPicker = null; 
 			if(resId > -1)
 			{
+				/* no need for clear(). It is called in mObservationsOverlay.update() */
 				mObservationsOverlay = null;
 				mObservationsOverlay = new ObservationsOverlay(resId, m.currentType, 
 						m.currentMode, this);
 				setOnZoomChangeListener(mObservationsOverlay);
+				mRemoveOverlays();
 				mOverlays.add(mObservationsOverlay);
+				mObservationsOverlay.update(Math.round(mMap.getCameraPosition().zoom));
 			}
 			break;
 		}
@@ -264,14 +324,39 @@ GoogleMap.OnCameraChangeListener
 		return mMode;
 	}
 
+	public void setTerrainEnabled(boolean satEnabled)
+	{
+		mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+	}
+
+	public boolean isTerrainEnabled()
+	{
+		return mMap.getMapType() == GoogleMap.MAP_TYPE_TERRAIN;
+	}
+
 	public void setSatEnabled(boolean satEnabled)
 	{
-		//		setSatellite(satEnabled);
+		mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+	}
+
+	public boolean isSatEnabled()
+	{
+		return mMap.getMapType() == GoogleMap.MAP_TYPE_SATELLITE;
+	}
+
+	public void setNormalViewEnabled(boolean checked) 
+	{
+		mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+	}
+
+	public boolean isNormalViewEnabled()
+	{
+		return mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL;
 	}
 
 	public boolean isMeasureEnabled()
 	{
-		return mCircleOverlay != null;
+		return mMeasureOverlay != null;
 	}
 
 	public void setMeasureEnabled(boolean en)
@@ -289,66 +374,62 @@ GoogleMap.OnCameraChangeListener
 		//		this.invalidate();
 	}
 
-	public boolean baloonVisible()
+	public boolean isInfoWindowVisible()
 	{
-		return false; // aggiunto temporaneamente
-		//		MapBaloon baloon = (MapBaloon) findViewById(R.id.mapbaloon);
-		//		return (baloon != null && baloon.getVisibility() == View.VISIBLE);
+		for(int i = 0; i < mOverlays.size(); i++)
+			if(mOverlays.get(i).isInfoWindowVisible())
+				return true;
+		return false;
 	}
 
-	public void removeBaloon()
+	public void hideInfoWindow()
 	{
-		//		MapBaloon baloon = (MapBaloon) findViewById(R.id.mapbaloon);
-		//		if(baloon != null)
-		//		{
-		//			if(mWebcamItemizedOverlay != null)
-		//				mWebcamItemizedOverlay.cancelCurrentWebcamTask();
-		//			/* remove baloon */
-		//			removeView(baloon);
-		//			/* restore previous position of the map */
-		//			getController().animateTo(baloon.getGeoPoint());
-		//			baloon = null;
-		//		}
+		for(int i = 0; i < mOverlays.size(); i++)
+			mOverlays.get(i).hideInfoWindow();
+	}
+	
+	@Override
+	public void onBitmapChanged(Bitmap bmp) 
+	{
+		Context ctx = getActivity().getApplicationContext();
+		/* save image on cache in order to display it in external viewer */
+		LastImageCache saver = new LastImageCache();
+		boolean success = saver.save(bmp, ctx);
+		if(success)
+		{
+			if(mMapClickOnBaloonImageHintEnabled)
+				Toast.makeText(ctx, R.string.hint_click_on_map_baloon_webcam_image, Toast.LENGTH_LONG).show();
+		}
+	}
+	
+	@Override
+	public void onInfoWindowImageClicked() 
+	{
+		ExternalImageViewerLauncher eivl = new ExternalImageViewerLauncher();
+		eivl.startExternalViewer(getActivity());
+		new Settings(getActivity().getApplicationContext()).setMapClickOnBaloonImageHintEnabled(false);
+		mMapClickOnBaloonImageHintEnabled = false;	
+	}
+	
+	@Override
+	public void onErrorMessageChanged(String message) 
+	{
+		message = getResources().getString(R.string.error_message) + ": " + message;
+		Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_LONG).show();
+	}@Override
+	
+	public void onMessageChanged(int stringId) 
+	{
+		Toast.makeText(getActivity().getApplicationContext(), getResources().getString(stringId), Toast.LENGTH_SHORT).show();
 	}
 
-	public void dispatchDraw(Canvas canvas)
+	@Override
+	public void onBitmapTaskCanceled(String url) 
 	{
-		//		super.dispatchDraw(canvas);
-		//		int zoomLevel = getZoomLevel();
-		//		if(mOldZoomLevel != zoomLevel)
-		//		{
-		//			if(mZoomChangeListener != null)
-		//				mZoomChangeListener.onZoomLevelChanged(zoomLevel);
-		//			mOldZoomLevel = zoomLevel;
-		//		}
+		String message = getResources().getString(R.string.webcam_download_task_canceled)  + url;
+		Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 	}
-
-	public int suggestedBaloonWidth(MapBaloonInfoWindowAdapter.Type t)
-	{
-		int  wpix = 170; /* observations */
-		Resources r = getResources();
-		int orientation = r.getConfiguration().orientation;
-		if(orientation == Configuration.ORIENTATION_PORTRAIT && t == MapBaloonInfoWindowAdapter.Type.WEBCAM)
-			wpix = 310;
-		else if(orientation == Configuration.ORIENTATION_LANDSCAPE && t == MapBaloonInfoWindowAdapter.Type.WEBCAM)
-			wpix = 270;
-
-		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, wpix, r.getDisplayMetrics());
-	}
-
-	public int suggestedBaloonHeight(MapBaloonInfoWindowAdapter.Type t)
-	{
-		int  hpix = 130; /* observations */
-		Resources r = getResources();
-		int orientation = r.getConfiguration().orientation;
-		if(orientation == Configuration.ORIENTATION_PORTRAIT && t == MapBaloonInfoWindowAdapter.Type.WEBCAM)
-			hpix = 280;
-		else if(orientation == Configuration.ORIENTATION_LANDSCAPE && t == MapBaloonInfoWindowAdapter.Type.WEBCAM)
-			hpix = 250;
-
-		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, hpix, r.getDisplayMetrics());
-	}
-
+	
 	public ArrayList<WebcamData > mGetAdditionalWebcamsData()
 	{
 		ArrayList<WebcamData> webcamData = null;
@@ -361,10 +442,22 @@ GoogleMap.OnCameraChangeListener
 		return webcamData;
 	}
 
+	private void mRemoveOverlays()
+	{
+		for(int i = 0; i < mOverlays.size(); i++)
+			mOverlays.get(i).clear();
+		mOverlays.clear();
+	}
+	
+	private void mUninstallAdaptersAndListeners()
+	{
+		mMap.setInfoWindowAdapter(null);
+		mMap.setOnMapClickListener(null);
+		mMap.setOnMarkerClickListener(null);
+		mMap.setOnMarkerDragListener(null);
+		mMap.setOnInfoWindowClickListener(null);
+	}
 
-	//	private MyLocationOverlay mMyLocationOverlay = null;
-	private CircleOverlay mCircleOverlay = null;
-	//	private WebcamItemizedOverlay<OverlayItem> mWebcamItemizedOverlay = null;
-
-
+	private MeasureOverlay mMeasureOverlay = null;
+	private WebcamOverlay mWebcamOverlay = null;
 }

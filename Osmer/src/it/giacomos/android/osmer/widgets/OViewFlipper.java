@@ -29,10 +29,11 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 			mSwipeHintEnabled = mSettings.isSwipeHintEnabled();
 	}
 
-	public void setDisplayedChild(int child)
+	public void setDisplayedChild(int child, boolean notifyListener)
 	{
 		super.setDisplayedChild(child);
-		mFlipperChildChangeListener.onFlipperChildChangeEvent(child);
+		if(notifyListener)
+			mFlipperChildChangeListener.onFlipperChildChangeEvent(child);
 	}
 
 	public void setOnChildPageChangedListener(FlipperChildChangeListener l)

@@ -17,7 +17,7 @@ public class TitleBuilder
 {
 	public String makeTitle(OsmerActivity a)
 	{
-//		OMapFragment map = (OMapFragment) a.getFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment map = (OMapFragment) a.getFragmentManager().findFragmentById(R.id.mapview);
 		MapViewMode mapMode = null;
 		OViewFlipper flipper = (OViewFlipper) a.findViewById(R.id.viewFlipper1);
 		DownloadStatus ds = DownloadStatus.Instance();
@@ -36,16 +36,16 @@ public class TitleBuilder
 			break;
 			
 		case CurrentScreen.MAPVIEW_SCREEN:
-//			mapMode = map.getMode();
-//			if(mapMode.currentType == ObservationType.RADAR)
-//				t += res.getString(R.string.radar_title);
-//			else if(mapMode.currentType == ObservationType.WEBCAM)
-//				t += res.getString(R.string.title_webcam);
-//			else if(mapMode.currentMode == ObservationTime.DAILY)
-//				t += res.getString(R.string.observations_title_daily);
-//			else if(mapMode.currentMode == ObservationTime.LATEST)
-//				t += res.getString(R.string.observations_title_latest);
-//			break;
+			mapMode = map.getMode();
+			if(mapMode.currentType == ObservationType.RADAR)
+				t += res.getString(R.string.radar_title);
+			else if(mapMode.currentType == ObservationType.WEBCAM)
+				t += res.getString(R.string.title_webcam);
+			else if(mapMode.currentMode == ObservationTime.DAILY)
+				t += res.getString(R.string.observations_title_daily);
+			else if(mapMode.currentMode == ObservationTime.LATEST)
+				t += res.getString(R.string.observations_title_latest);
+			break;
 			
 		default:
 			t += "untitled (yet)";

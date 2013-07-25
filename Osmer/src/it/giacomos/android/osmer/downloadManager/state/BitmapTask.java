@@ -57,15 +57,15 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
 		m_errorMessage = "";
         if(urls.length == 1)
         {
-        	URL url = urls[0];
+        	mUrl = urls[0];
         	try
         	{
-        		InputStream inputStream = (InputStream) url.getContent();
+        		InputStream inputStream = (InputStream) mUrl.getContent();
         		bitmap = BitmapFactory.decodeStream(inputStream);
         	}
         	catch(IOException e)
         	{
-        		m_errorMessage = "IOException: URL: \"" + url.toString() + "\":\n\"" + e.getLocalizedMessage() + "\"";
+        		m_errorMessage = "IOException: URL: \"" + mUrl.toString() + "\":\n\"" + e.getLocalizedMessage() + "\"";
         	}
         	publishProgress(100);
         }    
@@ -74,7 +74,12 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
 	
 	public void onCancelled(Bitmap bmp)
 	{
-		
+		if(bmp != null)
+			bmp.recycle();
+		bmp = null;
+		if(m_bitmap != null)
+			m_bitmap.recycle();
+		m_bitmap = null;
 	}
 	
 	public void onPostExecute(Bitmap bmp)
@@ -98,9 +103,17 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
 		m_bitmapType = bt;
 	}
 	
+	public String getUrl()
+	{
+		if(mUrl != null)
+			return mUrl.toString();
+		return "No URL";
+	}
+	
 	private BitmapType m_bitmapType;
 	private Bitmap m_bitmap; 
 	private BitmapListener m_stateUpdateListener;
 	private String m_errorMessage;
+	private URL mUrl;
 
 }

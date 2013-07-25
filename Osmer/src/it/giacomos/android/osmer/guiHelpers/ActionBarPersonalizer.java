@@ -5,6 +5,7 @@ import android.app.ActionBar.OnNavigationListener;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.content.res.Resources;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import it.giacomos.android.osmer.OsmerActivity;
@@ -54,6 +55,7 @@ public class ActionBarPersonalizer {
 	
 	public void drawerItemChanged(int id)
 	{
+		Log.e("drawerItemChaneged in ActionBarPersonalizer", "drawerOtemChanged to " + id);
 		mSpinnerAdapter = null;
 		mOnNavigationListener = null;
 		ActionBar actionBar = mActivity.getActionBar();

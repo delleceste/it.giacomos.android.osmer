@@ -54,6 +54,12 @@ public class TextTask extends AsyncTask<URL, Integer, String> {
 		m_textUpdateListener.onTextUpdate(doc, m_type, m_errorMessage, this);
 	}
 
+	public void onCancelled(String doc)
+	{
+		if(doc != null)
+			doc = null;
+	}
+	
 	String errorMessage() { return m_errorMessage; }
 
 	protected String doInBackground(URL... urls) 

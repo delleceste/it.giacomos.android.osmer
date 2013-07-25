@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.guiHelpers;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 import it.giacomos.android.osmer.BitmapType;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
@@ -34,6 +35,8 @@ public class ImageViewUpdater {
 		{
 			OMapFragment mapView = (OMapFragment) a.getFragmentManager().findFragmentById(R.id.mapview);
 			/* update bitmap */
+			if(mapView == null)
+				Log.e("ImageViewUpdater!", "mapView is null!!");
 			mapView.setRadarImage(bmp);
 		}
 	}

@@ -31,9 +31,9 @@ import com.google.android.maps.Overlay;
  * @author giacomo
  *
  */
-public class CircleOverlay extends Overlay {
+public class MeasureOverlay extends Overlay {
 
-	CircleOverlay()
+	MeasureOverlay()
 	{
 		mCurrentGeoPoint = null;
 		mJustMoved = false;

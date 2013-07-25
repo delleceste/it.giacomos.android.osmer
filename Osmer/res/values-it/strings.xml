@@ -27,6 +27,9 @@
     <string name="dataExpiredToast">aggiornamento dei dati&#8230;</string>
     <string name="radarUpdateToast">aggiorno l\'immagine del radar&#8230;</string>
     <string name="webcam_lists_downloaded">lista webcam aggiornata</string>
+    <string name="webcam_downloading">download immagine webcam&#8230;</string>
+    <string name="webcam_download_task_canceled">annullo il download di </string>
+    <string name="webcam_wait_for_image">aspetta che si carichi l\'immagine&#8230;</string>
     <string name="min_temp">Temperatura Minima</string>
     <string name="max_temp">Temperatura Massima</string>
     <string name="min_temp_abbr">Min.T</string>
@@ -51,6 +54,8 @@
     <string name="close_button">Chiudi</string>
     <string name="center_map">Centra mappa</string>
     <string name="sat_view">Vista satellite</string>
+    <string name="terrain_view">Vista terreno</string>
+    <string name="map_normal_view">Vista normale</string>
     <string name="measure_mode">Modalità misura</string>
     <string name="radar_help">Informazioni radar</string>
     

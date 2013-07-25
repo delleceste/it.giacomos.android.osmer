@@ -63,6 +63,7 @@ public class ObservationsOverlay
 	private Resources mResources;
 	private int mDefaultMarkerIconResourceId;
 	private MapBaloonInfoWindowAdapter mMapBaloonInfoWindowAdapter;
+	private Settings mSettings;
 	
 	public ObservationsOverlay(int defaultMarkerIconResId, 
 			ObservationType oType, 
@@ -80,6 +81,12 @@ public class ObservationsOverlay
 		mMapBaloonInfoWindowAdapter = new MapBaloonInfoWindowAdapter(mapFragment.getActivity());
 		mMap.setInfoWindowAdapter(mMapBaloonInfoWindowAdapter);
 		mMap.setOnMarkerClickListener(this);
+		mSettings = new Settings(mapFragment.getActivity().getApplicationContext());
+	}
+	
+	public void initListenersAndAdapters()
+	{
+		
 	}
 	
 	public void setData(HashMap<String, ObservationData> map)
@@ -93,17 +100,27 @@ public class ObservationsOverlay
 	 */
 	public void update(int level)
 	{
-		this.clear();
-		
 		if(mDataMap.size() == 0)
 			return;
 		
 		LocationNamesMap locMap = new LocationNamesMap();
 		Vector<String> locationsForLevel = locMap.locationsForLevel(level);
+		CustomMarkerBitmapFactory obsBmpFactory = new CustomMarkerBitmapFactory(mResources);
+		if(mSettings.hasObservationsMarkerFontSize())
+			obsBmpFactory.setInitialFontSize(mSettings.observationsMarkerFontSize());
+		
+		/* 1. remove unnecessary markers (if zoom has decreased the number of necessary markers may 
+		 *    decrease too.)
+		 */
+		
+		/* remove */
+		mRemoveUnnecessaryMarkers(locationsForLevel);
+		
 		for(String location : locationsForLevel)
 		{
 			LatLng latLng = locMap.get(location);
-			if(latLng != null)
+			/* 2. build and add the marker only if it is not already shown */
+			if(latLng != null && !mMarkerPresent(latLng))
 			{ 
 				String data = mResources.getString(R.string.not_available);
 				ObservationData odata = null;
@@ -114,37 +131,77 @@ public class ObservationsOverlay
 				
 				MarkerOptions markerOptions = null;
 				/* in the title marker option we save the location */
-				if(mObservationType == ObservationType.SKY)
-				{
-					markerOptions = new MarkerOptions();
-					SkyDrawableIdPicker skyDrawableIdPicker = new SkyDrawableIdPicker();
-					int resourceId = skyDrawableIdPicker.get(data);
-					if(resourceId > -1 && odata != null)
-					{
-						BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(resourceId);
-						if(bitmapDescriptor != null)
-						{
-							markerOptions.icon(bitmapDescriptor);
-							markerOptions.position(latLng);
-							markerOptions.title(location);
-							markerOptions.snippet(makeText(odata));
-						}
-					}
-				}
-				else if(!data.contains("---"))
+				if(mObservationType == ObservationType.SKY && odata != null)
 				{
 					markerOptions = new MarkerOptions();
 					markerOptions.position(latLng);
 					markerOptions.title(location);
 					markerOptions.snippet(makeText(odata));
-					markerOptions.icon(BitmapDescriptorFactory.fromResource(mDefaultMarkerIconResourceId));
+					
+					SkyDrawableIdPicker skyDrawableIdPicker = new SkyDrawableIdPicker();
+					int resourceId = skyDrawableIdPicker.get(data);
+					if(resourceId > -1)
+					{
+						BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(resourceId);
+						if(bitmapDescriptor != null)
+							markerOptions.icon(obsBmpFactory.getIcon(resourceId, mResources, data));
+					}
+				}
+				else if(!data.contains("---") && odata != null)
+				{
+					markerOptions = new MarkerOptions();
+					markerOptions.position(latLng);
+					markerOptions.title(location);
+					markerOptions.snippet(makeText(odata));
+					markerOptions.icon(obsBmpFactory.getIcon(mDefaultMarkerIconResourceId, mResources, data));
 				}
 				if(markerOptions != null)
+				{
 					mMarkers.add(mMap.addMarker(markerOptions));
+				}
+			}
+		} /* end for */
+		mSettings.setObservationsMarkerFontSize(obsBmpFactory.getCachedFontSize());
+	}
+
+	private boolean mMarkerPresent(LatLng ll)
+	{
+		for(Marker m : mMarkers)
+			if(m.getPosition() == ll)
+				return true;
+		return false;
+	}
+	
+	private void mRemoveUnnecessaryMarkers(Vector<String> locationsForLevel) 
+	{
+		if(mMarkers.size() == 0)
+			return;
+		Log.e("mRemoveUnnecessaryMarkers", "processing locations n. " + locationsForLevel.size() + ", markers " + mMarkers.size());
+		boolean found = false; 
+		Marker m = null;
+		ArrayList<Marker> newMarkers = new ArrayList<Marker>();
+		for(String location : locationsForLevel)
+		{
+			found = false;
+			for(int i = 0; i < mMarkers.size(); i++)
+			{
+				m = mMarkers.get(i);
+				if(m.getTitle().compareTo(location) == 0)
+				{
+					found = true;
+					Log.e("mRemoveUnnecessaryMarkers", "keeping " + m.getTitle());
+					newMarkers.add(m);
+					break;
+				}
+			}
+			if(!found) /* add to new list */
+			{
+				m.remove();
+				mMarkers.remove(m);
+				Log.e("mRemoveUnnecessaryMarkers", "removing " + m.getTitle());
 			}
 		}
 	}
-
 
 	@Override
 	public boolean onMarkerClick(Marker m) 
@@ -228,6 +285,20 @@ public class ObservationsOverlay
 		}
 
 		return txt;
+	}
+	
+	public boolean isInfoWindowVisible()
+	{
+		for(int i = 0; i < mMarkers.size(); i++)
+			if(mMarkers.get(i).isInfoWindowShown())
+				return true;
+		return false;
+	}
+	
+	public void hideInfoWindow()
+	{
+		for(int i = 0; i < mMarkers.size(); i++)
+			mMarkers.get(i).hideInfoWindow();
 	}
 	
 	@Override

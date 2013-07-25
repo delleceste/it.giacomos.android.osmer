@@ -55,12 +55,14 @@ public class LocationNamesMap {
 		Vector<String> locations = new Vector<String>();
 		switch(level)
 		{
-		case 13:
+		case 10: case 11: case 12: case 13: case 14: case 15: case 16:
+		case 17: case 18: case 19: case 20:
+		case 21: case 22: case 23: case 24:
 			locations.add("Enemonzo");
 			locations.add("Chievolis");
 			locations.add("M.Matajur");
 			locations.add("Brugnera");
-		case 12:
+		case 9:
 			locations.add("Barcis");
 			locations.add("Talmassons");
 			locations.add("Monfalcone");
@@ -68,7 +70,7 @@ public class LocationNamesMap {
 			locations.add("Piancavallo");
 			locations.add("M.Zoncolan");
 			locations.add("Faedis");
-		case 11:
+		case 8:
 			locations.add("S.Vito al Tgl.");
 			locations.add("Tolmezzo");
 			locations.add("Paluzza");
@@ -77,14 +79,14 @@ public class LocationNamesMap {
 			locations.add("Cividale d.F.");
 			locations.add("S.Vito al Tgl.");
 			/* do not put break here: add also level 1 locations */
-		case 10:
+		case 7:
 			locations.add("Capriva d.F.");
 			locations.add("Grado");
 			locations.add("Gemona d.F.");
 			locations.add("Lignano");
 			
 			/* do not put break here: add also level 1 locations */
-		case 9:
+
 		default:
 			locations.add("Udine");
 			locations.add("Trieste");
@@ -99,7 +101,9 @@ public class LocationNamesMap {
 	
 	public LatLng get(String location)
 	{
-		return mMap.get(location);
+		if(mMap.containsKey(location))
+			return mMap.get(location);
+		return null;
 	}
 	
 	private HashMap<String, LatLng> mMap = null;	

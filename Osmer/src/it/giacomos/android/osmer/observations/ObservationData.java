@@ -43,7 +43,7 @@ public class ObservationData {
 	public boolean has(ObservationType t)
 	{
 		String data = get(t);
-		return data != "" && !data.contains("---") && data != null;
+		return data != null && data != "" && !data.contains("---");
 	}
 	
 	public String location;

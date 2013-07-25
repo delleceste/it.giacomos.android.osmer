@@ -151,6 +151,10 @@ public class ODoubleLayerImageView extends ImageView
 			LayerDrawable lDrawable = (LayerDrawable) getDrawable();
 			if(lDrawable != null)
 			{	
+				BitmapDrawable bmpD = (BitmapDrawable) lDrawable.getDrawable(0);
+				bmpD.getBitmap().recycle();
+				bmpD = (BitmapDrawable) lDrawable.getDrawable(1);
+				bmpD.getBitmap().recycle();
 				lDrawable.getDrawable(1).setCallback(null);
 				lDrawable.getDrawable(0).setCallback(null);
 				lDrawable.setCallback(null);

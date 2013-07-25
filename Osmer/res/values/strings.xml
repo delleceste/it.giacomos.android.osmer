@@ -32,20 +32,23 @@
     <string name="dataExpiredToast">data is old&#8230; updating contents</string>
     <string name="radarUpdateToast">updating radar&#8230;</string>
     <string name="webcam_lists_downloaded">webcam list updated</string>
+    <string name="webcam_downloading"> downloading webcam image&#8230;</string>
+    <string name="webcam_download_task_canceled">canceling image download</string>
+    <string name="webcam_wait_for_image">please wait for image to load</string>
     <string name="min_temp">Minimum Temperature</string>
     <string name="max_temp">Maximum Temperature</string>
     <string name="min_temp_abbr">Min.T</string>
     <string name="max_temp_abbr">Max.T</string>
     <string name="humidity">Humidity</string>
     <string name="wind">Wind</string>
-    <string name="mean_wind">Mean Wind</string>
+    <string name="mean_wind">Average Wind</string>
     <string name="max_wind">Max Wind</string>
     <string name="sky">Sky</string>
     <string name="rain">Rain</string>
     <string name="temp">Temperature</string>
-    <string name="mean_temp">Mean Temperature</string>
+    <string name="mean_temp">Average Temperature</string>
     <string name="sea">Sea</string>
-    <string name="mean_humidity">Mean Humidity</string>
+    <string name="mean_humidity">Average Humidity</string>
     <string name="snow">Snow</string>
     <string name="pressure">Pressure</string>
     <string name="not_available">n.a.</string>
@@ -56,6 +59,8 @@
     <string name="close_button">Close</string>
     <string name="center_map">Center map</string>
     <string name="sat_view">Satellite view</string>
+    <string name="terrain_view">Terrain view</string>
+    <string name="map_normal_view">Classic view</string>
     <string name="measure_mode">Measure mode</string>
     <string name="radar_help">Radar info</string>
     
