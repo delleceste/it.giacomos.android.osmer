@@ -1,21 +1,24 @@
 package it.giacomos.android.osmer.widgets.map;
 
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.preferences.Settings;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.location.Location;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
-import android.view.MotionEvent;
 
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapView;
-import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.Overlay;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
 
 /**
  * This class manages distance measuring between two points: mCenterPoint and mTappedPoint.
@@ -31,335 +34,187 @@ import com.google.android.maps.Overlay;
  * @author giacomo
  *
  */
-public class MeasureOverlay extends Overlay {
+public class MeasureOverlay implements OOverlayInterface ,
+OnMarkerDragListener,
+OnMapClickListener
+{
+	private OMapFragment mMapFragment;
+	private Marker mp0;
+	private Marker mp1;
+	private Polyline mLine;
+	private MeasureOverlayChangeListener mMeasureOverlayChangeListener;
 
-	MeasureOverlay()
+	MeasureOverlay(OMapFragment mapFragment)
 	{
-		mCurrentGeoPoint = null;
-		mJustMoved = false;
-		mMovingCenter = false;
-		mCustomCenter = false;
-		mIsActive = false;
+		mp0 = null;
+		mp1 = null;
+		mLine = null;
+		mMapFragment = mapFragment;
+		mMeasureOverlayChangeListener = mapFragment;
 	}
 
-	public boolean onTap(GeoPoint gp,
-			MapView mapView)
+	public void show()
 	{
-		if(!mIsActive) /* enter distance mode */
+		GoogleMap map = mMapFragment.getMap();
+		Resources res = mMapFragment.getResources();
+		LatLng ll0 = null, ll1;
+		Location l0 = null;
+		try
 		{
-			mCurrentGeoPoint = gp;
-			mIsActive = true;
+			l0 = map.getMyLocation();
+			ll0 = new LatLng(l0.getLatitude(), l0.getLongitude());
 		}
-		else if(!mJustMoved) /* exit distance mode */
+		catch(IllegalArgumentException e)
 		{
-			mIsActive = false;
-			mMovingCenter = false;
-			mCurrentGeoPoint = null;
-			mCustomCenter = false;
+			mMeasureOverlayChangeListener.onMeasureOverlayErrorMessage(R.string.my_location_layer_not_enabled);
+			ll0 = GeoCoordinates.fvgNorthEast;
 		}
-		return true;
+		float [] results = new float[1];
+
+		Settings settings = new Settings(mMapFragment.getActivity().getApplicationContext());
+		boolean restore = settings.hasMeasureMarker1LatLng();
+		if(restore)
+		{
+			float [] positions = settings.getMeasureMarker1LatLng();
+			ll1 = new LatLng(positions[0], positions[1]);
+		}
+		else
+		{
+			Location.distanceBetween(ll0.latitude, ll0.longitude, 
+					GeoCoordinates.radarImageCenter.latitude, 
+					GeoCoordinates.radarImageCenter.longitude, results);
+			
+			if(results[0] < 5000) /* position of the user too close to the radar image center */
+				ll1 = GeoCoordinates.fvgSouthWest;
+			else /* decide arbitrarily to put p1 in the center of the radar image */
+				ll1 = GeoCoordinates.radarImageCenter;
+		}
+
+		BitmapDescriptor marker0BitmapDescriptor = 
+				BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+		BitmapDescriptor marker1BitmapDescriptor = 
+				BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+
+		mp0 = map.addMarker(new MarkerOptions().icon(marker0BitmapDescriptor).title("PO").position(ll0)
+				.snippet(res.getString(R.string.drag_p0)));
+
+		mp1 = map.addMarker(new MarkerOptions().icon(marker1BitmapDescriptor).title("P1").position(ll1)
+				.snippet(res.getString(R.string.drag_p1)));
+		
+		mp0.setDraggable(true);
+		mp1.setDraggable(true);
+		
+		mp1.showInfoWindow();
+		
+		map.setOnMarkerDragListener(this);
+		map.setOnMapClickListener(this);
 	}
 
 	@Override
-	public boolean draw(Canvas canvas, MapView mapView, boolean shadow, long when)
+	public void clear() 
 	{
-		super.draw(canvas, mapView, shadow);
-
-		if(mCurrentGeoPoint == null)
-			return false;
-		/* 
-		 * get center point and current (tapped) point
-		 */
-		GeoPoint centerGeoPoint = null;
-		Point centerPoint = null;
-
-		Point currentPoint = mapView.getProjection().toPixels(mCurrentGeoPoint, null);
-
-		if(mCustomCenter) /* a custom center has been specified */
-		{
-			centerGeoPoint = mCenterGeoPoint; /* take it from the internal variable */
-			centerPoint = mapView.getProjection().toPixels(centerGeoPoint, null);
-		}
-		else 
-		{
-			/* get the center every time we draw */
-			centerGeoPoint = getCenterGeoPoint(mapView);
-			centerPoint = getCenterPoint(mapView);	
-		}
-		if(centerGeoPoint != null)
-		{
-			float dist [] = new float[1];
-			/* calculate distance */
-			Location.distanceBetween(centerGeoPoint.getLatitudeE6()/1E6,
-					centerGeoPoint.getLongitudeE6()/1E6, 
-					mCurrentGeoPoint.getLatitudeE6()/1E6,
-					mCurrentGeoPoint.getLongitudeE6()/1E6, dist);
-			/* from meters to km */
-			dist[0] /= 1000.0f;
-
-			/* arrow ;-) */
-			float radius = (float) Math.sqrt(Math.pow(centerPoint.x - currentPoint.x, 2) +
-					Math.pow(centerPoint.y - currentPoint.y, 2));
-
-			double alphaArrow = Math.PI / 48;
-			double alpha;
-
-			if(currentPoint.x < centerPoint.x)
-				alpha =  Math.asin(-(centerPoint.y - currentPoint.y)/radius) + Math.PI;
-			else
-				alpha =  Math.asin((centerPoint.y - currentPoint.y)/radius);
-
-			Paint p = new Paint();
-			if(mJustMoved && mapView.isSatellite())
-				p.setARGB(255, 255, 233, 233);
-			else if(mJustMoved)
-				p.setARGB(185, 26, 120, 6);
-			else if(mapView.isSatellite())
-				p.setARGB(255, 255, 255, 255);
-			else
-				p.setARGB(155, 0, 113, 188);
-
-			float yArr1Coord = (float) (centerPoint.y -  0.9f * radius* Math.sin(alpha - alphaArrow));
-			float xArr1Coord = (float) (centerPoint.x + 0.9f * radius * Math.cos(alpha - alphaArrow));
-
-			if(mCustomCenter)
-				canvas.drawCircle(centerPoint.x, centerPoint.y, 6, p);
-
-			if(mMovingCenter)
-			{
-				canvas.drawLine(0, centerPoint.y, mapView.getWidth(), centerPoint.y, p);
-				canvas.drawLine(centerPoint.x, 0, centerPoint.x, mapView.getHeight(), p);
-			}
-			canvas.drawLine(centerPoint.x, centerPoint.y, currentPoint.x, currentPoint.y, p);
-
-			canvas.drawLine((float)currentPoint.x, (float)currentPoint.y, 
-					xArr1Coord,
-					yArr1Coord, p);
-
-			canvas.drawLine((float)currentPoint.x, (float)currentPoint.y, 
-					(float) (centerPoint.x +  0.9f * radius * Math.cos(alpha + alphaArrow)),
-					(float) (centerPoint.y -  0.9f * radius * Math.sin(alpha + alphaArrow)), p);
-
-			/* draw the circle */
-			if(mapView.isSatellite())
-				p.setAlpha(40);
-			else
-				p.setAlpha(20);
-			p.setStyle(Paint.Style.FILL_AND_STROKE);
-			canvas.drawCircle((float)centerPoint.x, (float) centerPoint.y, radius, p);
-
-			p.setARGB(130, 255, 255, 255);
-			Rect txtBounds = new Rect();
-			String text = String.format("%.1fkm", dist[0]);
-			p.getTextBounds(text, 0, text.length(), txtBounds);
-
-			txtBounds.set((int)xArr1Coord + 3,  (int)yArr1Coord - txtBounds.height(), 
-					(int)xArr1Coord + 3 + txtBounds.width(),
-					(int) yArr1Coord);
-
-			RectF rectF = new RectF(txtBounds);
-			rectF.bottom += 3;
-			rectF.right += 3;
-			canvas.drawRoundRect(rectF, 5.0f, 5.0f, p);
-
-			p.setARGB(255, 0, 0, 246);
-			canvas.drawText(String.format("%.1fkm", dist[0]), txtBounds.left, txtBounds.bottom, p);
-		}
-
-		return false;
+		/* save the position of p1 for the next time */
+		Settings settings = new Settings(mMapFragment.getActivity().getApplicationContext());
+		settings.setMeasureMarker1LatLng((float) mp1.getPosition().latitude, (float) mp1.getPosition().longitude);
+		
+		if(mp0 != null)
+			mp0.remove();
+		if(mp1 != null)
+			mp1.remove();
+		if(mLine != null)
+			mLine.remove();
 	}
 
-
-	public boolean onTouchEvent(MotionEvent e, MapView mapView)
+	@Override
+	public int type() 
 	{
-		/* touching myLocation? */
-		if(e.getAction() == MotionEvent.ACTION_DOWN && !mJustMoved)
+		return 0;
+	}
+
+	@Override
+	public void hideInfoWindow() 
+	{
+		mp0.hideInfoWindow();
+		mp1.hideInfoWindow();
+	}
+
+	@Override
+	public boolean isInfoWindowVisible() 
+	{
+		return mp0.isInfoWindowShown() || mp1.isInfoWindowShown();
+	}
+
+	@Override
+	public void onMarkerDrag(Marker m) 
+	{
+		
+		
+	}
+
+	@Override
+	public void onMarkerDragEnd(Marker m) 
+	{
+		Resources res = mMapFragment.getResources();
+		/* calculate distance */
+		String measUnit = res.getString(R.string.km);
+		float [] distance = new float[1];
+		Location.distanceBetween(
+				mp0.getPosition().latitude, 
+				mp0.getPosition().longitude, 
+				mp1.getPosition().latitude, 
+				mp1.getPosition().longitude, 
+				distance);
+		
+		if(distance[0] < 1000)
+			measUnit = res.getString(R.string.meters);
+		else
+			distance[0] = distance[0] / 1000.0f; /* convert to km */
+		
+		mp0.setSnippet(res.getString(R.string.dist_from_p1) + String.format(" %.1f", distance[0]) + measUnit);
+		mp1.setSnippet(res.getString(R.string.dist_from_p0) + String.format(" %.1f", distance[0]) + measUnit);
+		
+		if(m.getTitle().equalsIgnoreCase("P0"))
 		{
-			Settings settings = new Settings(mapView.getContext().getApplicationContext());
-			Point centerPoint = null;
-			mLastX = e.getX();
-			mLastY = e.getY();
-			if(!mCustomCenter) /* update center geo point from map */
-				mCenterGeoPoint = getCenterGeoPoint(mapView); /* the most-recently-set user location. */
-
-			if(mCenterGeoPoint != null)
-				centerPoint = mapView.getProjection().toPixels(mCenterGeoPoint, null);
-
-			if(centerPoint != null)
-			{
-				/* if we touch near the center, then set mMovingCenter to true: next moves will move the
-				 * center and the tapped point, i.e. the circle will be translated.
-				 */
-				if(mCurrentGeoPoint != null && 
-						Math.abs(e.getX() - centerPoint.x) < mCenterSensibilityDelta && 
-						Math.abs(e.getY() - centerPoint.y) < mCenterSensibilityDelta)
-				{
-					mMovingCenter = true;
-					mCustomCenter = true;
-					
-					/* disable move location center hint forever */
-					settings.setMapMoveLocationToMeasureHintEnabled(false);
-				}
-				else if(mCurrentGeoPoint == null)
-				{			
-					mMovingCenter = false;
-				}
-			}
-			/* disable map move hint forever */
-			settings.setMapMoveToMeasureHintEnabled(false);
+			mp0.showInfoWindow();
 		}
-		else if(e.getAction() == MotionEvent.ACTION_UP && mJustMoved)
+		else
 		{
-			mJustMoved = false;
-			mMovingCenter = false;
-			/* do not do anything else */
-			return true;
+			mp1.showInfoWindow();
 		}
-		else if(e.getAction() == MotionEvent.ACTION_MOVE) /* screen touched */
-		{			
-			mJustMoved = false;
-			if(mCurrentGeoPoint != null && mCenterGeoPoint != null)
-			{
-				float x = e.getX();
-				float y = e.getY();
-				float deltaX, deltaY;
-				deltaX = x - mLastX;
-				deltaY = y - mLastY;
-
-				/* center point in screen coordinates */
-				Point centerPoint = mapView.getProjection().toPixels(mCenterGeoPoint, null);
-				/* current point in screen coordinates */
-				Point currentPoint = mapView.getProjection().toPixels(mCurrentGeoPoint, null);
-				
-				if(mMovingCenter) /* translate center and tapped point */
-				{			
-					currentPoint.x += Math.round(deltaX);
-					currentPoint.y += Math.round(deltaY);			
-					centerPoint.x += Math.round(deltaX);
-					centerPoint.y += Math.round(deltaY);	
-					mJustMoved = true;
-				}
-				else
-				{
-					//Log.i("center current ", "center " + centerPoint + " current " + currentPoint);
-					/* calculate the square of the radiuses interval, augmented and diminished */
-					float squareRadius = (float) (Math.pow(centerPoint.x - currentPoint.x, 2) + Math.pow(centerPoint.y - currentPoint.y, 2));
-					float squareRadiusPlus = squareRadius + 0.6f * squareRadius;
-					float squareRadiusMinus = 0; //squareRadius - squareRadius / 2;
-
-					float circleSquareR = (float) Math.pow(x - centerPoint.x, 2) + (float) Math.pow(y - centerPoint.y, 2);
-
-					if(squareRadiusMinus <= circleSquareR && circleSquareR <= squareRadiusPlus)
-					{
-						/* if we touch near the arrow, then we can change orientation */
-						int sensibleDelta = (int) Math.round(Math.sqrt(squareRadius)/3);
-						//sensibleDelta = 40;
-						if(x < currentPoint.x + sensibleDelta && x > currentPoint.x - sensibleDelta 
-								&& y < currentPoint.y + sensibleDelta && y > currentPoint.y - sensibleDelta)
-						{
-							/* move the arrow according to the movement of the finger */
-							currentPoint.x += Math.round(deltaX);
-							currentPoint.y += Math.round(deltaY);
-						}
-						else /*  the radius grows or shrinks according to the gesture movement */
-						{
-							float delta;
-							float radius;
-							double alpha;
-							float oldRadius =  (float) Math.sqrt(squareRadius);
-							if(currentPoint.x < centerPoint.x) /* terzo o quarto quadrante [PI/2; 3/2PI ] */
-								alpha = (Math.asin(-(currentPoint.y - centerPoint.y)/ oldRadius) + Math.PI);
-							else
-								alpha =  Math.asin((currentPoint.y - centerPoint.y)/ oldRadius);
-
-
-							double squareLastTouchRadius = Math.pow(centerPoint.x - mLastX, 2) + Math.pow(centerPoint.y - mLastY, 2);
-							double squareNewTouchRadius = Math.pow(centerPoint.x - x, 2) + Math.pow(centerPoint.y - y, 2);
-
-							if(squareLastTouchRadius > squareNewTouchRadius) /* moved towards inside: diminish radius */
-							{
-								delta = (float) (Math.sqrt(squareLastTouchRadius) - Math.sqrt(squareNewTouchRadius));
-								radius = oldRadius - delta;
-							}
-							else
-							{
-								delta = (float) (Math.sqrt(squareNewTouchRadius) - Math.sqrt(squareLastTouchRadius));
-								radius = oldRadius + delta;
-							}
-							double newX =  (centerPoint.x + radius * Math.cos(alpha));
-							double newY =  (centerPoint.y + radius * Math.sin(alpha));
-
-							currentPoint.x = (int)Math.round(newX);
-							currentPoint.y = (int)Math.round(newY);
-						}
-						mJustMoved = true;
-					}
-				}
-				if(mJustMoved)
-				{
-					mLastX = x;
-					mLastY = y;
-
-					/* save center and current in geographical coordinates */
-					mCurrentGeoPoint = mapView.getProjection().fromPixels(currentPoint.x, currentPoint.y);
-					mCenterGeoPoint = mapView.getProjection().fromPixels(centerPoint.x, centerPoint.y);
-					return true;
-				}
-
-			}	
-		}
-		return false;
+		
+		int color = Color.argb(130, 0, 25, 245);
+		PolylineOptions poly = new PolylineOptions();
+		poly.add(mp0.getPosition());
+		poly.add(mp1.getPosition());
+		poly.color(color);
+		poly.width(2.5f);
+		
+		mLine = mMapFragment.getMap().addPolyline(poly);
 	}
 
-	private GeoPoint getCenterGeoPoint(MapView mapView)
+	@Override
+	public void onMarkerDragStart(Marker m) 
 	{
-//		MyLocationOverlay myLocOv = ((OMapFragment)mapView).getMyLocationOverlay();
-//		return myLocOv.getMyLocation(); /* the most-recently-set user location. */
-		return null; /* MOD MAP v2 */
-	}
-
-	private Point getCenterPoint(MapView mapView)
-	{
-		GeoPoint geoPoint = getCenterGeoPoint(mapView);
-		if(geoPoint != null)
-			return  mapView.getProjection().toPixels(geoPoint, null);
-		return null;
-	}
-
-	public Parcelable saveState(Bundle bundle)
-	{
-		bundle.putBoolean("customCenter", mCustomCenter);
-		if(mCenterGeoPoint != null)
+		mp1.hideInfoWindow();
+		if(mLine != null)
 		{
-			bundle.putInt("centerGeoPointLat", mCenterGeoPoint.getLatitudeE6());
-			bundle.putInt("centerGeoPointLong", mCenterGeoPoint.getLongitudeE6());
+			mLine.remove();
+			mLine = null;
 		}
-		if(mCurrentGeoPoint != null)
-		{
-			bundle.putInt("currentGeoPointLat", mCurrentGeoPoint.getLatitudeE6());
-			bundle.putInt("currentGeoPointLong", mCurrentGeoPoint.getLongitudeE6());
-		}
-		return bundle;
 	}
 
-	public void restoreState (Parcelable state)
+	@Override
+	public void onMapClick(LatLng ll) 
 	{
-		Bundle b = (Bundle) state;
-		if(b.containsKey("customCenter"))
-			mCustomCenter = b.getBoolean("customCenter");
-		if(b.containsKey("centerGeoPointLat") && b.containsKey("centerGeoPointLong"))
-			mCenterGeoPoint = new GeoPoint(b.getInt("centerGeoPointLat"), b.getInt("centerGeoPointLong"));
-		if(b.containsKey("currentGeoPointLat") && b.containsKey("currentGeoPointLong"))
-			mCurrentGeoPoint = new GeoPoint(b.getInt("currentGeoPointLat"), b.getInt("currentGeoPointLong"));		
+		Log.e("MeasureOverlay: onMapClick", "clicked on " + ll.latitude + ", " + ll.longitude);
+		if(mLine != null)
+		{
+			mLine.remove();
+			mLine = null;
+		}
+		
 	}
-	
-	private GeoPoint mCenterGeoPoint, mCurrentGeoPoint;
-	private boolean mJustMoved;
-	private boolean mMovingCenter;
-	private boolean mCustomCenter;
-	private boolean mIsActive;
-	private float mLastX, mLastY;
-	private final int mCenterSensibilityDelta = 40; /* pixel */
+
 }
 
 

@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -18,20 +17,20 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 public class CustomMarkerBitmapFactory 
 {
 	private int mCachedFontSize = -1;
-	private float mInitialFontSize;
+	private float mInitialFontSize = 25.0f;
 	private int  mTextBgColor;
 	private float mTextWidthScaleFactor;
-	private int mAlphaBelowText;
+	private int mAlphaTextContainer;
 	
 	public void setTextWidthScaleFactor(float factor)
 	{
 		mTextWidthScaleFactor = factor;
 	}
 	
-	public void setAlphaBelowText(int alpha)
+	public void setAlphaTextContainer(int alpha)
 	{
-		mAlphaBelowText = alpha;
-		mTextBgColor = Color.argb(mAlphaBelowText, 250, 252, 255);
+		mAlphaTextContainer = alpha;
+		mTextBgColor = Color.argb(mAlphaTextContainer, 250, 252, 255);
 	}
 	
 	public void setInitialFontSize(float fontSize)
@@ -50,30 +49,31 @@ public class CustomMarkerBitmapFactory
 		if(dm.densityDpi == DisplayMetrics.DENSITY_LOW)
 			mInitialFontSize = 12;
 		else if(dm.densityDpi == DisplayMetrics.DENSITY_MEDIUM)
-			mInitialFontSize = 15;
+			mInitialFontSize = 16;
 		else
-			mInitialFontSize = 25;
-		mAlphaBelowText = 160;
-		mTextBgColor = Color.argb(mAlphaBelowText, 250, 252, 255);	
-		mTextWidthScaleFactor = 2.0f;
+			mInitialFontSize = 26;
+		mAlphaTextContainer = 230;
+		mTextBgColor = Color.argb(mAlphaTextContainer, 250, 252, 255);	
+		mTextWidthScaleFactor = 2.4f;
 	}
 	
 	/*  <iconW>
-	 * +------+-----+
-	 * |      |     | <- iconH
-	 * | icon |     |
-	 * +------------+
-	 * |        text| <- iconH * 0.5
-	 * +------------+
-	 * <-- textW --->
+	 * +------+--+
+	 * |      |  | <- iconH
+	 * | icon |  |
+	 * +---------+           ---
+	 * |  text   | <- textH   | textH + marginH
+	 * +---------+           ---
+	 * <--- + --->
+	 *      \
+	 *       max(textContainerW, iconW)
 	 */
-	public BitmapDescriptor getIcon(int resId, Resources res, String label)
+	public BitmapDescriptor getIcon(Bitmap icon0, String label)
 	{
-		int iconW, iconH;
+		int iconW, iconH, textContainerW, textContainerH, marginW = 8, marginH = 8;
 		int textW, textH;
-		Bitmap icon = BitmapFactory.decodeResource(res, resId);
-		iconW = icon.getWidth();
-		iconH = icon.getHeight();
+		iconW = icon0.getWidth();
+		iconH = icon0.getHeight();
 		textW = (int) Math.round(iconW * mTextWidthScaleFactor);
 		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		paint.setColor(Color.BLACK);
@@ -87,21 +87,23 @@ public class CustomMarkerBitmapFactory
 		/* scale text while its length or height fall outside bounds */
 		while(bounds.width() > textW)
 		{
-			Log.e("getIcon", "scaled to " + paint.getTextSize());
 			paint.setTextSize(paint.getTextSize() - 1);
 			paint.getTextBounds(label, 0, label.length(), bounds);
 		}
 		textH = bounds.height();
 		textW = bounds.width();
-		Bitmap bitmap = Bitmap.createBitmap(Math.max(textW, iconW), iconH + textH, Bitmap.Config.ARGB_8888);
+		textContainerW = textW + marginW;
+		textContainerH = textH + marginH;
+		Bitmap bitmap = Bitmap.createBitmap(Math.max(textContainerW, iconW), iconH + textContainerH, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 		/* draw the text */
 		paint.setColor(mTextBgColor);
-		canvas.drawRoundRect(new RectF(bitmap.getWidth() - textW, iconH, textW + iconW, textH + iconH), 2, 2, paint);
+		canvas.drawRoundRect(new RectF(bitmap.getWidth() - textContainerW, iconH, textContainerW, textContainerH + iconH), marginW/2, marginH/2, paint);
 		paint.setColor(Color.BLACK);
 		/* draw the original bitmap */
-		canvas.drawBitmap(icon, 0, 0, paint);
-		canvas.drawText(label, bitmap.getWidth() - textW, iconH + textH - 2, paint);
+		canvas.drawBitmap(icon0, 0, 0, paint);
+		canvas.drawText(label, bitmap.getWidth() - textContainerW + marginW / 2,
+				iconH + textContainerH - marginH / 2, paint);
 		
 		if(mCachedFontSize != Math.round(paint.getTextSize()))
 			mCachedFontSize = Math.round(paint.getTextSize()); /* save it for future use (optimization) */

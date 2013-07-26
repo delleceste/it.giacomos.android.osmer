@@ -300,7 +300,7 @@ MapFragmentListener
 
 	public void onGoogleMapReady()
 	{
-		Log.e("onGoogleMapReady", "GOOOGLEMAAAPREADDYYYY");
+		
 	}
 	
 	public void init()
@@ -687,7 +687,7 @@ MapFragmentListener
 
 	public void onSelectionDone(ObservationType type, ObservationTime oTime) 
 	{
-		Log.e("onSelectionDone", "setting map mode in onSelectionDone " + type + " " + oTime);
+//		Log.e("onSelectionDone", "setting map mode in onSelectionDone " + type + " " + oTime);
 		/* switch the working mode of the map view */
 		OMapFragment map = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
 		map.setMode(new MapViewMode(type, oTime));
@@ -730,11 +730,6 @@ MapFragmentListener
 			if(menuItem.isChecked() && mSettings.isMapMoveToMeasureHintEnabled())
 			{
 				Toast.makeText(getApplicationContext(), R.string.hint_move_to_measure_on_map, Toast.LENGTH_LONG).show();
-			}
-			else if(menuItem.isChecked() && !mSettings.isMapMoveToMeasureHintEnabled() 
-					&& mSettings.isMapMoveLocationToMeasureHintEnabled())
-			{
-				Toast.makeText(getApplicationContext(), R.string.hint_move_location_to_measure_on_map, Toast.LENGTH_LONG).show();
 			}
 			omv.setMeasureEnabled(menuItem.isChecked());
 			break;
@@ -861,7 +856,7 @@ MapFragmentListener
 		case MAP:		
 		case RADAR:
 			/* remove itemized overlays (observations), if present, and restore radar view */
-			Log.e("switchView", "setting map mode in switchView RADAR/DAILY");
+//			Log.e("switchView", "setting map mode in switchView RADAR/DAILY");
 			((OMapFragment) getFragmentManager().findFragmentById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 			viewFlipper.setDisplayedChild(FlipperChildren.MAP, false);
 			break;

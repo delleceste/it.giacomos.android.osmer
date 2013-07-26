@@ -62,8 +62,8 @@
         <!--  hint toasts -->
     <string name="hint_home_icons">Suggerimento: tocca un\'icona e leggi i dettagli in basso a sinistra</string>
     <string name="hint_tap_on_map_markers">Tocca un\'icona per ottenere maggiori dettagli</string>
-    <string name="hint_move_to_measure_on_map">Tocca la mappa e sposta la freccia per misurare</string>
-    <string name="hint_move_location_to_measure_on_map">Tocca il punto con la tua posizione e spostalo per cambiare centro di misura</string>
+    <string name="hint_move_to_measure_on_map">Tocca un segnaposti a lungo poi inizia a muovere.\n
+        Rilascia per completare la misura.</string>
     <string name="hint_click_on_map_baloon_webcam_image">Tocca la foto per vederla nel visualizzatore di immagini</string>
     
     <string-array name="observation_types">
@@ -124,6 +124,16 @@
 	<string name="drawer_open">Seleziona una vista</string>
     <string name="drawer_close">Close navigation drawer</string>
 	
+	
+    <!--  MEASURE MARKERS -->
+    <string name="drag_p0">Tocca a lungo poi muovi P0</string>
+    <string name="drag_p1">Tocca a lungo poi muovi P1</string>
+    <string name="dist_from_p0">distanza(P0, P1): </string>
+    <string name="dist_from_p1">distanza(P1, P0): </string>
+    <string name="meters">metri</string>
+    <string name="km">km</string>
+    <string name="my_location_layer_not_enabled">my-location layer is not enabled</string>
+    
 	<!--  WEBCAM -->    
 	 <string name="popup_data_update_info">
        <![CDATA[

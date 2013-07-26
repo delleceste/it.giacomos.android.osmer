@@ -69,8 +69,7 @@
     <!--  hint toasts -->
     <string name="hint_home_icons">Touch an icon to read further details</string>
     <string name="hint_tap_on_map_markers">Tap over an icon to get further details</string>
-    <string name="hint_move_to_measure_on_map">Touch the map and move the arrow to measure distances</string>
-    <string name="hint_move_location_to_measure_on_map">Touch your location point and move it to change the center of the measurement</string>
+    <string name="hint_move_to_measure_on_map">Long click on a marker and move to start measure</string>
     <string name="hint_click_on_map_baloon_webcam_image">Tap on the image to open it on the image viewer</string>
     
     <string-array name="observation_types">
@@ -133,6 +132,14 @@
 	<string name="drawer_open">Select a view</string>
     <string name="drawer_close">Close drawer</string>
 	
+    <!--  MEASURE MARKERS -->
+    <string name="drag_p0">Long click and then move P0</string>
+    <string name="drag_p1">Long click and then move P1</string>
+    <string name="dist_from_p0">Distance from P0: </string>
+    <string name="dist_from_p1">Distance from P1: </string>
+    <string name="meters">meters</string>
+    <string name="km">km</string>
+	<string name="my_location_layer_not_enabled">il livello my-location non è abilitato</string>
 	
     <string name="popup_data_update_info">
        <![CDATA[

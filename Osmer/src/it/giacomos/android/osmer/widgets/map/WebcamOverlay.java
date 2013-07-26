@@ -46,7 +46,7 @@ public class WebcamOverlay implements
 		mCurrentBitmapTask = null;
 		mCustomMarkerBitmapFactory = new CustomMarkerBitmapFactory(mapFrag.getResources());
 		mCustomMarkerBitmapFactory.setTextWidthScaleFactor(2.5f);
-		mCustomMarkerBitmapFactory.setAlphaBelowText(100);
+		mCustomMarkerBitmapFactory.setAlphaTextContainer(100);
 		mCustomMarkerBitmapFactory.setInitialFontSize(mSettings.mapWebcamMarkerFontSize());
 		Log.e("WebcamOverlay", "initial font size of marker " + mSettings.mapWebcamMarkerFontSize());
 		mWebcamOverlayChangeListener = mapFrag;
@@ -69,6 +69,7 @@ public class WebcamOverlay implements
 	{
 		/* fixes a bug in maps */
 		boolean needsRedraw = false;
+		Bitmap icon = BitmapFactory.decodeResource(res, mMarkerResId);
 		for(WebcamData wd : webcams)
 		{
 			if(!webcamInList(wd))
@@ -78,7 +79,7 @@ public class WebcamOverlay implements
 				{ 
 					MarkerOptions mo = new MarkerOptions();
 					mo.title(wd.location).snippet(wd.text).position(wd.latLng);
-					BitmapDescriptor bmpDescriptor = mCustomMarkerBitmapFactory.getIcon(mMarkerResId, res, wd.location);
+					BitmapDescriptor bmpDescriptor = mCustomMarkerBitmapFactory.getIcon(icon, wd.location);
 					mo.icon(bmpDescriptor);
 					Marker m = mMap.addMarker(mo);
 					needsRedraw = true;

@@ -6,7 +6,9 @@ import java.util.HashMap;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import it.giacomos.android.osmer.MapFragmentListener;
 import it.giacomos.android.osmer.R;
@@ -36,7 +38,8 @@ import android.os.Bundle;
 public class OMapFragment extends MapFragment 
 implements ObservationsCacheUpdateListener,
 GoogleMap.OnCameraChangeListener,
-WebcamOverlayChangeListener
+WebcamOverlayChangeListener,
+MeasureOverlayChangeListener
 {
 	public final int minLatitude = GeoCoordinates.bottomRight.getLatitudeE6();
 	public final int maxLatitude = GeoCoordinates.topLeft.getLatitudeE6();
@@ -112,7 +115,6 @@ WebcamOverlayChangeListener
 				mZoomChangeListener.onZoomLevelChanged(cameraPosition.zoom);
 			mOldZoomLevel = cameraPosition.zoom;
 		}
-		Log.e("onCameraChanged: ", "zoom level " + mOldZoomLevel);
 	} 
 
 	public void onStart()
@@ -173,19 +175,13 @@ WebcamOverlayChangeListener
 		mMap = getMap();
 		mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 		mMap.setMyLocationEnabled(true);
+		UiSettings uiS = mMap.getUiSettings();
+		uiS.setRotateGesturesEnabled(false);
 
 		Settings settings = new Settings(getActivity().getApplicationContext());
 		mSavedCameraPosition = settings.getCameraPosition();
 		if(mSavedCameraPosition == null) /* never saved */
-		{
-			Log.e("onCreateView", "no Camera position saved in settings  state or no key: centering FIRST TIME!");
-			/* schedule center map on first camera update */
 			mCenterOnUpdate = true;
-		}
-		else /* restore previously saved camera properties */
-		{
-			Log.e("onCreateView", "RESTORING previously saved camera status!");
-		}
 		mMap.setOnCameraChangeListener(this);
 		mRadarOverlay = new RadarOverlay(mMap);
 		/* initializes internal bitmap loading the last bitmap saved in the internal memory.
@@ -193,7 +189,6 @@ WebcamOverlayChangeListener
 		 */
 		mRadarOverlay.restoreFromInternalStorage(getActivity().getApplicationContext());
 
-		Log.e("onCreateView", "calling set mode RADAR/DAILY!");
 		setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 
 		mMapFragmentListener.onGoogleMapReady();
@@ -207,11 +202,11 @@ WebcamOverlayChangeListener
 
 	public void setRadarImage(Bitmap bmp) 
 	{
-		Log.e("setRadarImage", "entro, mode " + mMode.currentMode + ", type " + mMode.currentType);
+//		Log.e("setRadarImage", "entro, mode " + mMode.currentMode + ", type " + mMode.currentType);
 		mRadarOverlay.updateBitmap(bmp);
 		if(mMapReady && mMode.currentType == ObservationType.RADAR) /* after first camera update */
 		{
-			Log.e("setRadarImage", "in effetti, aggiorno");
+//			Log.e("setRadarImage", "in effetti, aggiorno");
 			mRadarOverlay.update();
 		}
 	}
@@ -257,20 +252,24 @@ WebcamOverlayChangeListener
 			/* if the map mode is LATEST or DAILY, update the overlay */
 			if(mMode != null && (mMode.currentMode == ObservationTime.LATEST || mMode.currentMode == ObservationTime.DAILY ) )
 			{
-				Log.e("updateObservations:", "updating obs overlay current mode " + mMode.currentMode + ", type " + mMode.currentType);
+//				Log.e("updateObservations:", "updating obs overlay current mode " + mMode.currentMode + ", type " + mMode.currentType);
 				mObservationsOverlay.update(Math.round(mMap.getCameraPosition().zoom));
 			}
-			else
-				Log.e("updateObservations:", "NOT !! updating obs overlay current mode " + mMode.currentMode + ", type " + mMode.currentType);
+//			else
+//				Log.e("updateObservations:", "NOT !! updating obs overlay current mode " + mMode.currentMode + ", type " + mMode.currentType);
 		}
 	}
 
 	public void setMode(MapViewMode m)
 	{
-		Log.e("--->OMApFtagment: setMode invoked", "setMode invoked with mode: " + m.currentMode + ", time (type): " + m.currentType);
+//		Log.e("--->OMApFtagment: setMode invoked", "setMode invoked with mode: " + m.currentMode + ", time (type): " + m.currentType);
 		if(m.equals(mMode))
 			return;
 
+		/* mMode is still null the first time this method is invoked */
+		if(mMode != null && mMode.currentType == ObservationType.RADAR)
+			setMeasureEnabled(false);
+		
 		mMode = m;
 
 		mUninstallAdaptersAndListeners();
@@ -279,7 +278,7 @@ WebcamOverlayChangeListener
 		{
 		case RADAR:
 			/* update the overlay with a previously set bitmap */
-			Log.e("OMapFtagment: setMode:", "calling update on radar overlay");
+//			Log.e("OMapFtagment: setMode:", "calling update on radar overlay");
 			mRadarOverlay.update();
 			mRemoveOverlays();
 			mOverlays.add(mRadarOverlay);
@@ -361,17 +360,20 @@ WebcamOverlayChangeListener
 
 	public void setMeasureEnabled(boolean en)
 	{
-		//		if(en)
-		//		{
-		//			mCircleOverlay = new CircleOverlay();
-		//			getOverlays().add(mCircleOverlay);
-		//		}
-		//		else
-		//		{
-		//			getOverlays().remove(mCircleOverlay);
-		//			mCircleOverlay = null;
-		//		}
-		//		this.invalidate();
+		if(en && mMode.currentType == ObservationType.RADAR)
+		{
+			mMeasureOverlay = new MeasureOverlay(this);
+			mMeasureOverlay.show();
+		}
+		else if(mMeasureOverlay != null && mMode.currentType == ObservationType.RADAR)
+		{
+			/* removes markers, line (if drawn) and saves settings */
+			mMeasureOverlay.clear(); 
+			mMeasureOverlay = null;
+			/* no markers in radar mode if measure overlay is disabled */
+			mMap.setOnMarkerDragListener(null);
+			mMap.setOnMapClickListener(null);
+		}
 	}
 
 	public boolean isInfoWindowVisible()
@@ -456,8 +458,19 @@ WebcamOverlayChangeListener
 		mMap.setOnMarkerClickListener(null);
 		mMap.setOnMarkerDragListener(null);
 		mMap.setOnInfoWindowClickListener(null);
+		setOnZoomChangeListener(null);
 	}
 
 	private MeasureOverlay mMeasureOverlay = null;
 	private WebcamOverlay mWebcamOverlay = null;
+
+	@Override
+	public void onMeasureOverlayErrorMessage(int stringId) 
+	{
+		Toast.makeText(this.getActivity().getApplicationContext(), getResources().getString(stringId), Toast.LENGTH_LONG).show();
+	}
+{
+		// TODO Auto-generated method stub
+		
+	}
 }

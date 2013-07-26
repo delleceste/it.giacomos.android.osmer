@@ -39,55 +39,37 @@ public class Settings
 		e.commit();
 	}
 
-	public boolean mapNeverCentered()
+	public boolean hasMeasureMarker1LatLng()
 	{
-		boolean res = mSharedPreferences.getBoolean("MAP_NEVER_CENTERED", true);
-		return res;
+		return mSharedPreferences.contains("MEASURE_MARKER_LAT1");
 	}
-
-	public void setMapWasCentered(boolean was)
+	
+	public void setMeasureMarker1LatLng(float lat1, float long1)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
-		e.putBoolean("MAP_NEVER_CENTERED", !was);
+		e.putFloat("MEASURE_MARKER_LAT1", lat1);
+		e.putFloat("MEASURE_MARKER_LONG1", long1);
 		e.commit();
 	}
 
-	public boolean isMapMeasureHintEnabled()
+	public float[] getMeasureMarker1LatLng()
 	{
-		boolean res = mSharedPreferences.getBoolean("HINT_MAP_MEASURE", true);
+		float [] res = new float[2];
+		res[0] = mSharedPreferences.getFloat("MEASURE_MARKER_LAT1", -1.0f);
+		res[1] = mSharedPreferences.getFloat("MEASURE_MARKER_LONG1", -1.0f);
 		return res;
-	}
-
-	public void setMapMeasureHintEnabled(boolean en)
-	{
-		SharedPreferences.Editor e = mSharedPreferences.edit();
-		e.putBoolean("HINT_MAP_MEASURE", en);
-		e.commit();
 	}
 
 	public boolean isMapMoveToMeasureHintEnabled()
 	{
-		boolean res = mSharedPreferences.getBoolean("HINT_MAP_MOVE_TO_MEASURE", true);
+		boolean res = mSharedPreferences.getBoolean("HINT_MAP_MOVE_P1_TO_MEASURE", true);
 		return res;
 	}
 
 	public void setMapMoveToMeasureHintEnabled(boolean en)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
-		e.putBoolean("HINT_MAP_MOVE_TO_MEASURE", en);
-		e.commit();
-	}
-
-	public boolean isMapMoveLocationToMeasureHintEnabled()
-	{
-		boolean res = mSharedPreferences.getBoolean("HINT_MAP_MOVE_LOCATION_TO_MEASURE", true);
-		return res;
-	}
-
-	public void setMapMoveLocationToMeasureHintEnabled(boolean en)
-	{
-		SharedPreferences.Editor e = mSharedPreferences.edit();
-		e.putBoolean("HINT_MAP_MOVE_LOCATION_TO_MEASURE", en);
+		e.putBoolean("HINT_MAP_MOVE_P1_TO_MEASURE", en);
 		e.commit();
 	}
 
@@ -142,7 +124,7 @@ public class Settings
 	
 	public float observationsMarkerFontSize()
 	{
-		float res = mSharedPreferences.getFloat("MAP_OBSERVATIONS_MARKER_FONT_SIZE", 25);
+		float res = mSharedPreferences.getFloat("MAP_OBSERVATIONS_MARKER_FONT_SIZE", 25.0f);
 		return res;
 	}
 	

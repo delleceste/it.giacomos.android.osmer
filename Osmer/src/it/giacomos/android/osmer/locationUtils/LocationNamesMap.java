@@ -3,7 +3,6 @@ package it.giacomos.android.osmer.locationUtils;
 import java.util.HashMap;
 import java.util.Vector;
 import java.lang.String;
-
 import com.google.android.gms.maps.model.LatLng;
 
 public class LocationNamesMap {
@@ -47,7 +46,10 @@ public class LocationNamesMap {
 		mMap.put("Piancavallo", new LatLng(46.107436, 12.522217));
 		mMap.put("Ligosullo", new LatLng(46.539706,13.076066));
 		mMap.put("Sauris", new LatLng(46.466675, 12.697044));
-		
+		mMap.put("Capriva d.F.", new LatLng(45.9423, 13.5145));
+		mMap.put("Gorizia", new LatLng(45.9413046, 13.6215457));
+		mMap.put("Borgo Grotta Gigante", new LatLng(45.942132,13.51439));
+		mMap.put("Gradisca d'Is.", new LatLng(45.942132,13.51439));
 	}
 	
 	public Vector<String> locationsForLevel(int level)
@@ -55,35 +57,34 @@ public class LocationNamesMap {
 		Vector<String> locations = new Vector<String>();
 		switch(level)
 		{
-		case 10: case 11: case 12: case 13: case 14: case 15: case 16:
+		case 11: case 12: case 13: case 14: case 15: case 16:
 		case 17: case 18: case 19: case 20:
-		case 21: case 22: case 23: case 24:
+		case 21: case 22: case 23: case 24: case 25:
 			locations.add("Enemonzo");
 			locations.add("Chievolis");
 			locations.add("M.Matajur");
 			locations.add("Brugnera");
-		case 9:
-			locations.add("Barcis");
+		case 10:
 			locations.add("Talmassons");
 			locations.add("Monfalcone");
 			locations.add("Coritis");
 			locations.add("Piancavallo");
-			locations.add("M.Zoncolan");
 			locations.add("Faedis");
-		case 8:
+			locations.add("Gradisca d'Is.");
+		case 9:
 			locations.add("S.Vito al Tgl.");
-			locations.add("Tolmezzo");
+			locations.add("Barcis");
 			locations.add("Paluzza");
 			locations.add("Pontebba");
 			locations.add("Vivaro");
+			locations.add("Borgo Grotta Gigante");
 			locations.add("Cividale d.F.");
-			locations.add("S.Vito al Tgl.");
-			/* do not put break here: add also level 1 locations */
-		case 7:
-			locations.add("Capriva d.F.");
+		case 8:
 			locations.add("Grado");
 			locations.add("Gemona d.F.");
 			locations.add("Lignano");
+			locations.add("Tolmezzo");
+			locations.add("M.Zoncolan");
 			
 			/* do not put break here: add also level 1 locations */
 
@@ -93,6 +94,7 @@ public class LocationNamesMap {
 			locations.add("Gorizia");
 			locations.add("Pordenone");
 			locations.add("Tarvisio");
+			locations.add("Capriva d.F.");
 			break;
 		}
 		
