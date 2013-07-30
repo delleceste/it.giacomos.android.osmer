@@ -145,6 +145,7 @@ MeasureOverlayChangeListener
 	{
 		//		Log.e("OMapFragment", "onResume()");
 		super.onResume();
+		mMap.setMyLocationEnabled(true);
 	}
 
 	public void onPause()
@@ -174,7 +175,6 @@ MeasureOverlayChangeListener
 		 */
 		mMap = getMap();
 		mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-		mMap.setMyLocationEnabled(true);
 		UiSettings uiS = mMap.getUiSettings();
 		uiS.setRotateGesturesEnabled(false);
 
