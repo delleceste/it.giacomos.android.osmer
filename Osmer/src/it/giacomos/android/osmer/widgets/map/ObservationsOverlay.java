@@ -95,7 +95,10 @@ OnMarkerClickListener
 		if(mSettings.hasObservationsMarkerFontSize())
 			obsBmpFactory.setInitialFontSize(mSettings.observationsMarkerFontSize());
 		Bitmap icon = null;
-		if(mObservationType == ObservationType.SKY)
+		/* get the icon if observation type != SKY. If observation type == SKY, then the
+		 * icon is picked through skyDrawableIdPicker (see if branch below).
+		 */
+		if(mObservationType != ObservationType.SKY)
 			icon = BitmapFactory.decodeResource(mResources, mDefaultMarkerIconResourceId);
 
 		/* 1. remove unnecessary markers (if zoom has decreased the number of necessary markers may 

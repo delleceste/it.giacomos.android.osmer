@@ -13,10 +13,10 @@ public class SnapshotManager {
 	
 	public void restore(Bundle b, OsmerActivity a)
 	{
-		InstanceRestorer instanceRestorer = new InstanceRestorer(b);
-		instanceRestorer.restore(a);
-		instanceRestorer.updateDownloadStatus(a);
-		instanceRestorer = null;
+		DownloadStatusRestorer downloadStatusRestorer = new DownloadStatusRestorer(b);
+		downloadStatusRestorer.restore(a);
+		downloadStatusRestorer.updateDownloadStatus(a);
+		downloadStatusRestorer = null;
 	}
 	
 	public void save(Bundle b, OsmerActivity a)

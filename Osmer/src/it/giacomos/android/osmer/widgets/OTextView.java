@@ -14,6 +14,7 @@ import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.TextView;
 
 /** Text change listener is installed here because this class restores from internal storage on her own
@@ -21,25 +22,26 @@ import android.widget.TextView;
  * @author giacomo
  *
  */
-public class OTextView extends TextView implements StateSaver
+public class OTextView extends TextView implements StateRestorer
 {
 
-	public OTextView(Context context, AttributeSet attrs) {
+	public OTextView(Context context, AttributeSet attrs) 
+	{
 		super(context, attrs);	
 		mRestoreSuccessful = false;
 		this.setTextColor(Color.BLACK);
 		this.setPadding(10, 10, 10, 10);
 		mStringType = ViewType.HOME;
 		mHtml  = null;
-		//setMovementMethod(LinkMovementMethod.getInstance());
 	}
 
-	@Override
-	public boolean saveOnInternalStorage() 
+	private boolean mSaveOnInternalStorage() 
 	{
 		if(mHtml == null)
 			return false;
 		
+
+		Log.e("mSaveOnInternalStorage", this.getId() +", string type " + this.mStringType);
 		FileOutputStream fos;
 		try {
 			fos = getContext().getApplicationContext().openFileOutput(makeFileName(), Context.MODE_PRIVATE);
@@ -60,6 +62,7 @@ public class OTextView extends TextView implements StateSaver
 
 	public boolean restoreFromInternalStorage()
 	{
+		Log.e("restoreFromInternalStorage", this.getId() +", string type " + this.mStringType);
 		String html = "";
 		/* Open a private file associated with this Context's application package for reading. */
 		try {
@@ -75,12 +78,15 @@ public class OTextView extends TextView implements StateSaver
 				}
 				if(html.length() > 0)
 					html = html.substring(0, html.length() - 1);
+				mRestoreSuccessful = true;
 			} 
-			catch (IOException e) {}		
+			catch (IOException e) {
+				
+			}		
 		} 
 		catch (FileNotFoundException e) {}
 		
-		setHtml(html);
+		setHtml(html, false); /* false: do not save on internal storage again! */
 		return true;
 	}
 	
@@ -89,48 +95,18 @@ public class OTextView extends TextView implements StateSaver
 		return s;
 	}
 	
-	public final void setHtml(String html)
+	/* invoked by TextViewUpdater after that the TextTask has completed */
+	public final void setHtml(String html, boolean saveOnInternalStorage)
 	{
-		/* store raw html for save and restore purposes */
-//		if(mHtml != null)
-//			Log.i("setHtml mHtml was", "\"" + mHtml + "\"");
-//		else
-//			Log.i("setHtml mHtml is null", "null mHtml");
-//		
-//		Log.i("setHtml new html is ", "\"" + html + "\"");
 		if(mHtml == null || !html.equals(mHtml))
 		{
 			Spanned fromHtml = Html.fromHtml(html);
-
 			mHtml = html;
-//			Log.i("setHtml", "calling setText()");
 			setText(fromHtml);
+			/* each time text is updated, save it, if the flag is true */
+			if(saveOnInternalStorage)
+				mSaveOnInternalStorage();
 		}
-	}
-	
-	public Parcelable onSaveInstanceState()
-	{
-		Parcelable p = super.onSaveInstanceState();
-		Bundle bundle = new Bundle();
-		bundle.putParcelable("OTextViewState", p);
-		if(mHtml != null)
-			bundle.putString("html", mHtml);
-		return bundle;
-	}
-	
-	public void onRestoreInstanceState (Parcelable state)
-	{
-		Bundle b = (Bundle) state;
-		String htm = b.getString("html");
-		if(htm != null)
-		{
-			/* directly set saved html, do not call setHtml here:
-			 * saved text is already ready to use.
-			 */
-			setHtml(htm);
-			mRestoreSuccessful = true;
-		}
-		super.onRestoreInstanceState(b.getParcelable("OTextViewState"));
 	}
 	
 	public void setStringType(ViewType t)

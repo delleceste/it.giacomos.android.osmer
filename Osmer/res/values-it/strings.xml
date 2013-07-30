@@ -26,6 +26,8 @@
     <string name="network_error">Errore di rete</string>
     <string name="dataExpiredToast">aggiornamento dei dati&#8230;</string>
     <string name="radarUpdateToast">aggiorno l\'immagine del radar&#8230;</string>
+    <string name="radarUpdatedOn">Immagine radar aggiornata alle </string>
+    <string name="radarImageOld">Attenzione: l\'immagine radar risale a più di un\'ora fa</string>
     <string name="webcam_lists_downloaded">lista webcam aggiornata</string>
     <string name="webcam_downloading">download immagine webcam&#8230;</string>
     <string name="webcam_download_task_canceled">annullo il download di </string>

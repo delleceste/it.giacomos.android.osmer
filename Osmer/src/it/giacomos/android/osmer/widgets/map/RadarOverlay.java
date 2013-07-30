@@ -18,9 +18,14 @@ import com.google.android.maps.Overlay;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.LayerDrawable;
+import android.util.Log;
 
 public class RadarOverlay extends Overlay implements OOverlayInterface
 {
@@ -29,6 +34,9 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 	private Circle mGroundOverlayCircle;
 	private CircleOptions mCircleOptions;
 	private GroundOverlayOptions mGroundOverlayOptions;
+	
+
+	public static final long ACCEPTABLE_RADAR_DIFF_TIMESTAMP = 1000 * 10;
 	
 	RadarOverlay(GoogleMap googleMap) 
 	{
@@ -92,6 +100,34 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 	
 	public void update()
 	{
+		mRefreshBitmap();
+	}
+	
+
+	public void updateBlackAndWhite() 
+	{
+		Bitmap blackAndWhiteBmp;
+		Log.e("updateBlackAndWhite", "creo black and white");
+	//	update();
+		/* bitmap to black and white */
+		int width, height;
+	    height = mBitmap.getHeight();
+	    width = mBitmap.getWidth();    
+	    blackAndWhiteBmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+	    Canvas c = new Canvas(blackAndWhiteBmp);
+	    Paint paint = new Paint();
+	    ColorMatrix cm = new ColorMatrix();
+	    cm.setSaturation(0);
+	    ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+	    paint.setColorFilter(f);
+	    c.drawBitmap(mBitmap, 0, 0, paint);
+	    mBitmap.recycle();
+	    mBitmap = blackAndWhiteBmp;
+	    update();
+	}
+	
+	private void mRefreshBitmap()
+	{
 		if(mBitmap == null)
 			return;
 		
@@ -101,9 +137,7 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 			mGroundOverlay = null;
 		}
 		if(mGroundOverlayCircle == null)
-		{
 			mGroundOverlayCircle = mMap.addCircle(mCircleOptions);
-		}
 		
 		/* specify the image before the ovelay is added */
 		BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(mBitmap);
@@ -162,4 +196,5 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 	}
 	
 	private Bitmap mBitmap;
+
 }

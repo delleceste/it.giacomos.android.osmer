@@ -10,11 +10,10 @@ import it.giacomos.android.osmer.downloadManager.DownloadStatus;
 import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
 import it.giacomos.android.osmer.widgets.OTextView;
 
-public class InstanceRestorer {
-	protected InstanceRestorer(Bundle b)
+public class DownloadStatusRestorer {
+	protected DownloadStatusRestorer(Bundle b)
 	{
 		m_bundle = b;
-		
 	}
 	
 	/** a Bundle is considered restorable if saved a couple of minutes before.

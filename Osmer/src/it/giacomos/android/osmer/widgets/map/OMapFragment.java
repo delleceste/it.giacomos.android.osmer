@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.widgets.map;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -12,6 +13,7 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import it.giacomos.android.osmer.MapFragmentListener;
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.RadarOverlayUpdateListener;
 import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.observations.ObservationData;
@@ -25,9 +27,12 @@ import it.giacomos.android.osmer.webcams.ExternalImageViewerLauncher;
 import it.giacomos.android.osmer.webcams.LastImageCache;
 import it.giacomos.android.osmer.webcams.OtherWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import java.text.DateFormat;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +50,7 @@ MeasureOverlayChangeListener
 	public final int maxLatitude = GeoCoordinates.topLeft.getLatitudeE6();
 	public final int minLongitude = GeoCoordinates.topLeft.getLongitudeE6();
 	public final int maxLongitude = GeoCoordinates.bottomRight.getLongitudeE6();
+	
 
 	private float mOldZoomLevel;
 	private boolean mCenterOnUpdate;
@@ -57,6 +63,8 @@ MeasureOverlayChangeListener
 	private ZoomChangeListener mZoomChangeListener;
 	private ArrayList <OOverlayInterface> mOverlays;
 	private boolean mMapClickOnBaloonImageHintEnabled;
+	private Settings mSettings;
+	private RadarOverlayUpdateListener mRadarOverlayUpdateListener;
 
 	/* MapFragmentListener: the activity must implement this in order to be notified when 
 	 * the GoogleMap is ready.
@@ -74,6 +82,7 @@ MeasureOverlayChangeListener
 		mSavedCameraPosition = null;
 		mMapFragmentListener = null;
 		mOverlays = new ArrayList<OOverlayInterface>();
+		
 	}
 
 	@Override
@@ -83,10 +92,12 @@ MeasureOverlayChangeListener
 		try 
 		{
 			mMapFragmentListener = (MapFragmentListener) activity;
+			mRadarOverlayUpdateListener = (RadarOverlayUpdateListener) activity;
 		} 
 		catch (ClassCastException e) 
 		{
-			throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
+			throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener and " +
+					"RadarOverlayUpdateListener");
 		}
 	}
 
@@ -120,18 +131,21 @@ MeasureOverlayChangeListener
 	public void onStart()
 	{
 		//		Log.e("OMapFragment", "onStart()");
+
+		setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 		super.onStart();
 	}
 
 	public void onDestroy ()
 	{
 		//		Log.e("OMapFragment", "onDestroy()");
-		Settings settings = new Settings(getActivity().getApplicationContext());
 		CameraPosition cameraPos = mMap.getCameraPosition();
-		settings.saveMapCameraPosition(cameraPos);
+		mSettings.saveMapCameraPosition(cameraPos);
 		/* The bitmap stored into the mRadarOverlay has to be saved */
 		mRadarOverlay.saveOnInternalStorage(getActivity().getApplicationContext());
 		mRadarOverlay.finalize(); /* recycles bitmap for GC */
+		/* save the map mode */
+		mSettings.setMapType(mMap.getMapType());
 		super.onDestroy();
 	}
 
@@ -174,12 +188,15 @@ MeasureOverlayChangeListener
 		 * If it returns null, then Google Play services is not available.
 		 */
 		mMap = getMap();
-		mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 		UiSettings uiS = mMap.getUiSettings();
 		uiS.setRotateGesturesEnabled(false);
+		uiS.setZoomControlsEnabled(false);
 
-		Settings settings = new Settings(getActivity().getApplicationContext());
-		mSavedCameraPosition = settings.getCameraPosition();
+		mSettings = new Settings(getActivity().getApplicationContext());
+		/* restore last used map type */
+		mMap.setMapType(mSettings.getMapType());
+		/* restore last camera position */
+		mSavedCameraPosition = mSettings.getCameraPosition();
 		if(mSavedCameraPosition == null) /* never saved */
 			mCenterOnUpdate = true;
 		mMap.setOnCameraChangeListener(this);
@@ -189,12 +206,8 @@ MeasureOverlayChangeListener
 		 */
 		mRadarOverlay.restoreFromInternalStorage(getActivity().getApplicationContext());
 
-		setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
-
 		mMapFragmentListener.onGoogleMapReady();
-		
-		Settings s = new Settings(getActivity().getApplicationContext());
-		mMapClickOnBaloonImageHintEnabled = s.isMapClickOnBaloonImageHintEnabled();
+		mMapClickOnBaloonImageHintEnabled = mSettings.isMapClickOnBaloonImageHintEnabled();
 
 		return view;
 	}
@@ -203,12 +216,36 @@ MeasureOverlayChangeListener
 	public void setRadarImage(Bitmap bmp) 
 	{
 //		Log.e("setRadarImage", "entro, mode " + mMode.currentMode + ", type " + mMode.currentType);
+		long currentTimestampMillis = System.currentTimeMillis();
 		mRadarOverlay.updateBitmap(bmp);
-		if(mMapReady && mMode.currentType == ObservationType.RADAR) /* after first camera update */
+		mSettings.setRadarImageTimestamp(currentTimestampMillis);
+		mRefreshRadarImage();
+	}
+	
+	private void mRefreshRadarImage() 
+	{
+		if(mMode.currentType == ObservationType.RADAR) /* after first camera update */
 		{
-//			Log.e("setRadarImage", "in effetti, aggiorno");
-			mRadarOverlay.update();
+			Log.e("setRadarImage", "in effetti, aggiorno");
+			long radarTimestampMillis = mSettings.getRadarImageTimestamp();
+			long currentTimestampMillis = System.currentTimeMillis();
+			
+			if(currentTimestampMillis - radarTimestampMillis < RadarOverlay.ACCEPTABLE_RADAR_DIFF_TIMESTAMP)
+			{
+				mRadarOverlay.update();
+			}
+			else
+			{
+				mRadarOverlay.updateBlackAndWhite();
+			}
+			mRadarOverlayUpdateListener.onRadarImageUpdated();
+				
 		}
+		else if(!mMapReady)
+			Log.e("setRadarImage", "modalita` non ready");
+		else if(mMode.currentType != ObservationType.RADAR)
+			Log.e("setRadarImage", "modalita` " +
+					mMode.currentType);
 	}
 
 	public void centerMap() 
@@ -262,7 +299,7 @@ MeasureOverlayChangeListener
 
 	public void setMode(MapViewMode m)
 	{
-//		Log.e("--->OMApFtagment: setMode invoked", "setMode invoked with mode: " + m.currentMode + ", time (type): " + m.currentType);
+		Log.e("--->OMApFtagment: setMode invoked", "setMode invoked with mode: " + m.currentMode + ", time (type): " + m.currentType);
 		if(m.equals(mMode))
 			return;
 
@@ -278,8 +315,8 @@ MeasureOverlayChangeListener
 		{
 		case RADAR:
 			/* update the overlay with a previously set bitmap */
-//			Log.e("OMapFtagment: setMode:", "calling update on radar overlay");
-			mRadarOverlay.update();
+			Log.e("OMapFtagment: setMode:", "calling update on radar overlay");
+			mRefreshRadarImage();
 			mRemoveOverlays();
 			mOverlays.add(mRadarOverlay);
 

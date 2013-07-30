@@ -324,19 +324,6 @@ implements LatestObservationCacheChangeListener
 		return super.onTouchEvent(event);
 	}
 
-	private RectF getSensibleRect(float x, float y) {
-		for(RectF r : mObsRects.keySet())
-		{
-			if(x <= r.right && x >= r.left &&
-					y >= r.top && y <= r.bottom)
-			{
-				return r;
-			}
-
-		}
-		return null;
-	}
-
 	public void cleanup()
 	{
 		for(SituationImageObservationData siod : mMap.values())
@@ -360,19 +347,6 @@ implements LatestObservationCacheChangeListener
 			}
 		}
 		mObsRects.clear();
-	}
-	
-	@Override
-	public boolean saveOnInternalStorage() 
-	{	
-		return true;
-	}
-
-	public boolean restoreFromInternalStorage()
-	{
-		/* no bitmap to restore in this case */
-		this.mRestoredFromInternalStorage = true;
-		return true;
 	}
 
 	public Parcelable onSaveInstanceState()

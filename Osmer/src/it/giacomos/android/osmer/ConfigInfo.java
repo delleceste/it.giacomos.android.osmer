@@ -5,7 +5,6 @@ import it.giacomos.android.osmer.locationUtils.Constants;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import android.app.Activity;
 import android.location.Location;

@@ -33,7 +33,7 @@
     <!-- android:label="@string/app_name" before releasing!!! -->
 
     <application
-        android:debuggable="false"
+        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="Meteo.FVG" >
 
@@ -49,7 +49,10 @@
 
         <uses-library android:name="com.google.android.maps" />
 
-        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCGUzGHmL9CFe3jUnKbeRi91v0sNPaRhPA"/>
+        <!--  starting from versionCode > 231 I created a map key with release and debug SHA1 together.
+        	  This way, the key below applies both to release and debug builds.
+         -->
+        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyDJgjfl55IsnAaYWkyaQbrDWH_0S7FhrmM"/>
 
     </application>
 

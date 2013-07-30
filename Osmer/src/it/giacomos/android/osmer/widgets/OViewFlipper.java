@@ -16,7 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ViewFlipper;
 import it.giacomos.android.osmer.preferences.*;
 
-public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchListener
+public class OViewFlipper extends ViewFlipper implements OnTouchListener
 {
 	public OViewFlipper(Context context, AttributeSet attrs) {
 		super(context, attrs);	
@@ -39,17 +39,6 @@ public class OViewFlipper extends ViewFlipper implements StateSaver , OnTouchLis
 	public void setOnChildPageChangedListener(FlipperChildChangeListener l)
 	{
 		mFlipperChildChangeListener = l;
-	}
-
-	@Override
-	public boolean saveOnInternalStorage() 
-	{
-		return true;
-	}
-
-	public boolean restoreFromInternalStorage()
-	{
-		return true;
 	}
 
 	public Parcelable onSaveInstanceState()

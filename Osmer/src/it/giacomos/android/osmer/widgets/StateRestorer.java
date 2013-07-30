@@ -2,8 +2,7 @@ package it.giacomos.android.osmer.widgets;
 
 import java.lang.String;
 
-public interface StateSaver {
-	boolean saveOnInternalStorage();
+public interface StateRestorer {
 	boolean restoreFromInternalStorage();
 	boolean isRestoreSuccessful();
 	

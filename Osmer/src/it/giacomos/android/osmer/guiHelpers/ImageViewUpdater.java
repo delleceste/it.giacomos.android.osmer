@@ -19,17 +19,18 @@ public class ImageViewUpdater {
 		if(t == BitmapType.TODAY)
 		{
 			ov = (ODoubleLayerImageView) a.findViewById(R.id.todayImageView);
-			ov.setBitmap(bmp);
+			/* true: save on internal storage during the update */
+			ov.setBitmap(bmp, true);
 		}
 		else if(t == BitmapType.TOMORROW)
 		{
 			ov = (ODoubleLayerImageView) a.findViewById(R.id.tomorrowImageView);
-			ov.setBitmap(bmp);
+			ov.setBitmap(bmp, true);
 		}
 		else if(t == BitmapType.TWODAYS)
 		{
 			ov = (ODoubleLayerImageView) a.findViewById(R.id.twoDaysImageView);
-			ov.setBitmap(bmp);
+			ov.setBitmap(bmp, true);
 		}
 		else if(t == BitmapType.RADAR)
 		{

@@ -1,5 +1,7 @@
 package it.giacomos.android.osmer;
-import com.google.android.maps.MapActivity;
+
+import java.text.DateFormat;
+import java.util.Calendar;
 
 import it.giacomos.android.osmer.downloadManager.DownloadManager;
 import it.giacomos.android.osmer.downloadManager.DownloadReason;
@@ -34,6 +36,7 @@ import it.giacomos.android.osmer.widgets.OTextView;
 import it.giacomos.android.osmer.widgets.OViewFlipper;
 import it.giacomos.android.osmer.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
+import it.giacomos.android.osmer.widgets.map.RadarOverlay;
 import it.giacomos.android.osmer.widgets.SituationImage;
 import it.giacomos.android.osmer.preferences.*;
 import android.app.Activity;
@@ -47,6 +50,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -84,7 +88,8 @@ LocationListener,
 GeocodeAddressUpdateListener,
 OnMenuItemClickListener, 
 OnDismissListener,
-MapFragmentListener
+MapFragmentListener,
+RadarOverlayUpdateListener
 {
 	/** Called when the activity is first created. */
 	@Override
@@ -147,15 +152,7 @@ MapFragmentListener
 		m_downloadManager.onPause(this);
 		if(m_locationManager != null)
 			m_locationManager.removeUpdates(this);
-
 		m_observationsCache.saveLatestToStorage(this);
-		/* saves text and images on the internal storage 
-		 * calling saveOnInternalStorage on OTextViews and ODoubleLayerImageViews,
-		 * that implement the StateSaver interface.
-		 */
-		InternalStorageSaver iss = new InternalStorageSaver();
-		iss.save(this);
-		iss = null;
 	}
 
 	/**
@@ -305,6 +302,7 @@ MapFragmentListener
 	
 	public void init()
 	{
+		mSettings = new Settings(this);
 		mTapOnMarkerHintCount = 0;
 		mRefreshAnimatedImageView = null;
 
@@ -377,8 +375,12 @@ MapFragmentListener
 		/* Before calling onResume on download manager */
 		m_observationsCache.restoreFromStorage(this);
 
+		/* calls restoreFromInternalStorage() on ODoubleLayerTextView and 
+		 * OTextView. That method restores texts and images saved on the 
+		 * storage at each text or image update from the network async tasks.
+		 */
 		mRestoreFromInternalStorage();
-		mSettings = new Settings(this);
+		
 		mMenuActionsManager = null;
 		mCurrentLocation = null;
 
@@ -1084,6 +1086,32 @@ MapFragmentListener
 		return mRefreshAnimatedImageView;
 	}
 
+	@Override
+	public void onRadarImageUpdated() 
+	{
+		Settings settings = new Settings(this);
+		long radarTimestampMillis = settings.getRadarImageTimestamp();
+		long currentTimestampMillis = System.currentTimeMillis();
+		String text;
+		if(currentTimestampMillis - radarTimestampMillis < RadarOverlay.ACCEPTABLE_RADAR_DIFF_TIMESTAMP)
+		{
+			DateFormat formatter = DateFormat.getTimeInstance();
+			Calendar calendar = Calendar.getInstance();
+		    calendar.setTimeInMillis(currentTimestampMillis);
+		    text = getResources().getString(R.string.radarUpdatedOn)
+					+ " " + formatter.format(calendar.getTime());
+		}
+		else
+		{
+			DateFormat formatter = DateFormat.getDateTimeInstance();
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(settings.getRadarImageTimestamp());
+			text = getResources().getString(R.string.radarImageOld)
+					+ " (" + formatter.format(calendar.getTime()) + ")";
+		}
+	    ((TextView) findViewById(R.id.radarTimestempTextView)).setText(text);
+	}
+	
 	/* private members */
 	int mTapOnMarkerHintCount;
 	private DownloadManager m_downloadManager;

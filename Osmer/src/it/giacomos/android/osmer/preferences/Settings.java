@@ -1,5 +1,6 @@
 package it.giacomos.android.osmer.preferences;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -58,6 +59,18 @@ public class Settings
 		res[0] = mSharedPreferences.getFloat("MEASURE_MARKER_LAT1", -1.0f);
 		res[1] = mSharedPreferences.getFloat("MEASURE_MARKER_LONG1", -1.0f);
 		return res;
+	}
+	
+	public void setMapType(int mapType)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putInt("MAP_TYPE", mapType);
+		e.commit();
+	}
+	
+	public int getMapType()
+	{
+		return mSharedPreferences.getInt("MAP_TYPE", GoogleMap.MAP_TYPE_NORMAL);
 	}
 
 	public boolean isMapMoveToMeasureHintEnabled()
@@ -159,6 +172,19 @@ public class Settings
 		e.commit();
 	}
 
+
+	public void setRadarImageTimestamp(long currentTimeMillis) 
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putFloat("RADAR_IMAGE_TIMESTAMP", currentTimeMillis);
+		e.commit();
+	}
+	
+	public long getRadarImageTimestamp()
+	{
+		return (long) mSharedPreferences.getFloat("RADAR_IMAGE_TIMESTAMP", 0);
+	}
+	
 	public CameraPosition getCameraPosition()
 	{
 		CameraPosition pos;
