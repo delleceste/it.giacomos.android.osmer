@@ -1,13 +1,11 @@
 package it.giacomos.android.osmer.widgets.map;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -27,6 +25,7 @@ import it.giacomos.android.osmer.webcams.ExternalImageViewerLauncher;
 import it.giacomos.android.osmer.webcams.LastImageCache;
 import it.giacomos.android.osmer.webcams.OtherWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;
+import it.giacomos.android.osmer.widgets.OAnimatedTextView;
 
 import android.app.Activity;
 import android.content.Context;
@@ -112,6 +111,10 @@ MeasureOverlayChangeListener
 			mMap.animateCamera(cu);
 		}
 
+		OAnimatedTextView radarUpdateTimestampText = (OAnimatedTextView) getActivity().findViewById(R.id.radarTimestampTextView);
+		if(mMapReady && radarUpdateTimestampText.getVisibility() == View.VISIBLE && !radarUpdateTimestampText.animationHasStarted())
+			radarUpdateTimestampText.animateHide();	
+		
 		if(!mMapReady)
 			mMapReady = true;
 
@@ -126,19 +129,17 @@ MeasureOverlayChangeListener
 				mZoomChangeListener.onZoomLevelChanged(cameraPosition.zoom);
 			mOldZoomLevel = cameraPosition.zoom;
 		}
+			
 	} 
 
 	public void onStart()
 	{
-		//		Log.e("OMapFragment", "onStart()");
-
-		setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 		super.onStart();
+		getActivity().findViewById(R.id.radarTimestampTextView).setVisibility(View.GONE);
 	}
 
 	public void onDestroy ()
 	{
-		//		Log.e("OMapFragment", "onDestroy()");
 		CameraPosition cameraPos = mMap.getCameraPosition();
 		mSettings.saveMapCameraPosition(cameraPos);
 		/* The bitmap stored into the mRadarOverlay has to be saved */
@@ -151,20 +152,17 @@ MeasureOverlayChangeListener
 
 	public void onCreate(Bundle savedInstanceState)
 	{
-		//		Log.e("OMapFragment", "onCreate()");
 		super.onCreate(savedInstanceState);
 	}
 
 	public void onResume()
 	{
-		//		Log.e("OMapFragment", "onResume()");
 		super.onResume();
 		mMap.setMyLocationEnabled(true);
 	}
 
 	public void onPause()
 	{
-		//		Log.e("OMapFragment", "onPause()");
 		super.onPause();
 		mMap.setMyLocationEnabled(false);
 	}
@@ -215,7 +213,6 @@ MeasureOverlayChangeListener
 
 	public void setRadarImage(Bitmap bmp) 
 	{
-//		Log.e("setRadarImage", "entro, mode " + mMode.currentMode + ", type " + mMode.currentType);
 		long currentTimestampMillis = System.currentTimeMillis();
 		mRadarOverlay.updateBitmap(bmp);
 		mSettings.setRadarImageTimestamp(currentTimestampMillis);
@@ -226,11 +223,10 @@ MeasureOverlayChangeListener
 	{
 		if(mMode.currentType == ObservationType.RADAR) /* after first camera update */
 		{
-			Log.e("setRadarImage", "in effetti, aggiorno");
 			long radarTimestampMillis = mSettings.getRadarImageTimestamp();
 			long currentTimestampMillis = System.currentTimeMillis();
 			
-			if(currentTimestampMillis - radarTimestampMillis < RadarOverlay.ACCEPTABLE_RADAR_DIFF_TIMESTAMP)
+			if(currentTimestampMillis - radarTimestampMillis < RadarOverlay.ACCEPTABLE_RADAR_DIFF_TIMESTAMP_MILLIS)
 			{
 				mRadarOverlay.update();
 			}
@@ -241,11 +237,6 @@ MeasureOverlayChangeListener
 			mRadarOverlayUpdateListener.onRadarImageUpdated();
 				
 		}
-		else if(!mMapReady)
-			Log.e("setRadarImage", "modalita` non ready");
-		else if(mMode.currentType != ObservationType.RADAR)
-			Log.e("setRadarImage", "modalita` " +
-					mMode.currentType);
 	}
 
 	public void centerMap() 
@@ -270,6 +261,8 @@ MeasureOverlayChangeListener
 	@Override
 	public void onObservationsCacheUpdate(HashMap<String, ObservationData> map, ViewType t) 
 	{
+		if(mMode == null)
+			return;
 		if((t == ViewType.DAILY_TABLE && mMode.currentMode == ObservationTime.DAILY ) ||
 				(t == ViewType.LATEST_TABLE && mMode.currentMode == ObservationTime.LATEST))
 		{
@@ -288,18 +281,22 @@ MeasureOverlayChangeListener
 			mObservationsOverlay.setData(map); /* update data */
 			/* if the map mode is LATEST or DAILY, update the overlay */
 			if(mMode != null && (mMode.currentMode == ObservationTime.LATEST || mMode.currentMode == ObservationTime.DAILY ) )
-			{
-//				Log.e("updateObservations:", "updating obs overlay current mode " + mMode.currentMode + ", type " + mMode.currentType);
 				mObservationsOverlay.update(Math.round(mMap.getCameraPosition().zoom));
-			}
-//			else
-//				Log.e("updateObservations:", "NOT !! updating obs overlay current mode " + mMode.currentMode + ", type " + mMode.currentType);
 		}
 	}
 
 	public void setMode(MapViewMode m)
 	{
-		Log.e("--->OMApFtagment: setMode invoked", "setMode invoked with mode: " + m.currentMode + ", time (type): " + m.currentType);
+		OAnimatedTextView radarTimestampText = (OAnimatedTextView) getActivity().findViewById(R.id.radarTimestampTextView);		
+		Log.e("--->OMapFragment: setMode invoked", "setMode invoked with mode: " + m.currentMode + ", time (type): " + m.currentType);
+		
+		/* show the radar timestamp text anytime the mode is set to RADAR
+		 * if (!m.equals(mMode)) then the radar timestamp text is scheduled to be shown
+		 * inside if (m.currentType == ObservationType.RADAR) branch below.
+		 */
+		if (m.equals(mMode) && m.currentType == ObservationType.RADAR)
+			radarTimestampText.scheduleShow();
+		
 		if(m.equals(mMode))
 			return;
 
@@ -311,30 +308,28 @@ MeasureOverlayChangeListener
 
 		mUninstallAdaptersAndListeners();
 		
-		switch(m.currentType)
+		if (m.currentType == ObservationType.RADAR) 
 		{
-		case RADAR:
 			/* update the overlay with a previously set bitmap */
 			Log.e("OMapFtagment: setMode:", "calling update on radar overlay");
 			mRefreshRadarImage();
-			mRemoveOverlays();
-			mOverlays.add(mRadarOverlay);
-
-			break;
-		case WEBCAM:
+			mUpdateOverlays(mRadarOverlay);
+			radarTimestampText.scheduleShow();
+		} 
+		else if (m.currentType == ObservationType.WEBCAM) 
+		{
 			ArrayList<WebcamData> webcamData = mGetAdditionalWebcamsData();
 			/// if(mWebcamOverlay == null)  /* first time we enter webcam mode */
-				mWebcamOverlay = new WebcamOverlay(R.drawable.camera_web_map, this);
-			
+			mWebcamOverlay = new WebcamOverlay(R.drawable.camera_web_map, this);
 			this.updateWebcamList(webcamData);
-			mRemoveOverlays();
-			mOverlays.add(mWebcamOverlay);
-			break;
-
-		default:
+			mUpdateOverlays(mWebcamOverlay);
+			radarTimestampText.hide();
+		} 
+		else 
+		{
 			ObservationDrawableIdPicker observationDrawableIdPicker = new ObservationDrawableIdPicker();
 			int resId = observationDrawableIdPicker.pick(m.currentType);
-			observationDrawableIdPicker = null; 
+			observationDrawableIdPicker = null;
 			if(resId > -1)
 			{
 				/* no need for clear(). It is called in mObservationsOverlay.update() */
@@ -342,11 +337,10 @@ MeasureOverlayChangeListener
 				mObservationsOverlay = new ObservationsOverlay(resId, m.currentType, 
 						m.currentMode, this);
 				setOnZoomChangeListener(mObservationsOverlay);
-				mRemoveOverlays();
-				mOverlays.add(mObservationsOverlay);
+				mUpdateOverlays(mObservationsOverlay);
 				mObservationsOverlay.update(Math.round(mMap.getCameraPosition().zoom));
 			}
-			break;
+			radarTimestampText.hide();
 		}
 	}
 
@@ -481,6 +475,12 @@ MeasureOverlayChangeListener
 		return webcamData;
 	}
 
+	private void mUpdateOverlays(OOverlayInterface newOverlay)
+	{
+		mRemoveOverlays();
+		mOverlays.add(newOverlay);
+	}
+	
 	private void mRemoveOverlays()
 	{
 		for(int i = 0; i < mOverlays.size(); i++)

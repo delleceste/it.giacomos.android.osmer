@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/todayMainScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="vertical" >
+
+    <LinearLayout
+        android:id="@+id/todayRelativeLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <it.giacomos.android.osmer.widgets.ODoubleLayerImageView
+            android:id="@+id/todayImageView"
+            style="@style/ImageView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:minHeight="280dp"
+            android:src="@drawable/fvg_background2" />
+
+        <it.giacomos.android.osmer.widgets.ForecastTextView
+            android:id="@+id/todayTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:background="@drawable/shape_textview"
+            android:inputType="none" >
+        </it.giacomos.android.osmer.widgets.ForecastTextView>
+    </LinearLayout>
+
+</ScrollView>

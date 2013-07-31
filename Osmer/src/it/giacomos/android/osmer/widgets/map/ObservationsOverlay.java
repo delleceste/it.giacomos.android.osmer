@@ -200,6 +200,8 @@ OnMarkerClickListener
 			}
 			else
 				mMapBaloonInfoWindowAdapter.setIcon(mResources.getDrawable(mDefaultMarkerIconResourceId));
+			/* disable baloon hint from now on */
+			mSettings.setMapMarkerHintEnabled(false);
 		}
 		return false;
 	}

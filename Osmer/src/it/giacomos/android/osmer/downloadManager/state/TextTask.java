@@ -90,10 +90,6 @@ public class TextTask extends AsyncTask<URL, Integer, String> {
 				m_errorMessage = "Error downloading text document: "  + e.toString();
 			}
 		}
-
-		//  DocDownloader downloader = new DocDownloader(urls[0]);    
-		//  webPage = downloader.html();
-		//  publishProgress(100);
 		return doc;
 	}
 

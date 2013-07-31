@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tomorrowRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <it.giacomos.android.osmer.widgets.ODoubleLayerImageView
+        android:id="@+id/tomorrowImageView"
+        android:layout_width="0dip"
+        android:layout_height="fill_parent"
+        android:layout_weight="1.0"
+        android:src="@drawable/fvg_background2" />
+
+    <ScrollView
+        android:id="@+id/tomorrowTextScrollView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0" >
+
+        <it.giacomos.android.osmer.widgets.ForecastTextView
+            android:id="@+id/tomorrowTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none" >
+
+            <requestFocus>
+            </requestFocus>
+        </it.giacomos.android.osmer.widgets.ForecastTextView>
+    </ScrollView>
+
+</LinearLayout>

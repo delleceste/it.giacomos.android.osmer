@@ -43,6 +43,8 @@ OnMapClickListener
 	private Marker mp1;
 	private Polyline mLine;
 	private MeasureOverlayChangeListener mMeasureOverlayChangeListener;
+	private boolean markerDragHintEnabled;
+	private Settings mSettings;
 
 	MeasureOverlay(OMapFragment mapFragment)
 	{
@@ -51,6 +53,8 @@ OnMapClickListener
 		mLine = null;
 		mMapFragment = mapFragment;
 		mMeasureOverlayChangeListener = mapFragment;
+		mSettings = new Settings(mapFragment.getActivity().getApplicationContext());
+		markerDragHintEnabled = mSettings.isMapMoveToMeasureHintEnabled();
 	}
 
 	public void show()
@@ -114,8 +118,10 @@ OnMapClickListener
 	public void clear() 
 	{
 		/* save the position of p1 for the next time */
-		Settings settings = new Settings(mMapFragment.getActivity().getApplicationContext());
-		settings.setMeasureMarker1LatLng((float) mp1.getPosition().latitude, (float) mp1.getPosition().longitude);
+		mSettings.setMeasureMarker1LatLng((float) mp1.getPosition().latitude, (float) mp1.getPosition().longitude);
+		/* do not show baloon hint again */
+		if(mSettings.isMapMoveToMeasureHintEnabled() && !markerDragHintEnabled)
+			mSettings.setMapMoveToMeasureHintEnabled(false);
 		
 		if(mp0 != null)
 			mp0.remove();
@@ -190,6 +196,7 @@ OnMapClickListener
 		poly.width(2.5f);
 		
 		mLine = mMapFragment.getMap().addPolyline(poly);
+		markerDragHintEnabled = false;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import it.giacomos.android.osmer.downloadManager.DownloadManager;
@@ -15,6 +16,7 @@ import it.giacomos.android.osmer.guiHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.guiHelpers.NetworkGuiErrorManager;
 import it.giacomos.android.osmer.guiHelpers.ObservationTypeGetter;
 import it.giacomos.android.osmer.guiHelpers.OnTouchListenerInstaller;
+import it.giacomos.android.osmer.guiHelpers.RadarImageTimestampTextBuilder;
 import it.giacomos.android.osmer.guiHelpers.TextViewUpdater;
 import it.giacomos.android.osmer.guiHelpers.TitlebarUpdater;
 import it.giacomos.android.osmer.guiHelpers.WebcamMapUpdater;
@@ -31,6 +33,7 @@ import it.giacomos.android.osmer.observations.ObservationsCache;
 import it.giacomos.android.osmer.webcams.WebcamDataCache;
 import it.giacomos.android.osmer.widgets.AnimatedImageView;
 import it.giacomos.android.osmer.widgets.InfoHtmlBuilder;
+import it.giacomos.android.osmer.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
 import it.giacomos.android.osmer.widgets.OTextView;
 import it.giacomos.android.osmer.widgets.OViewFlipper;
@@ -108,7 +111,7 @@ RadarOverlayUpdateListener
 
 	public void onResume()
 	{	
-//		Log.e("onResume ", "application resumed");
+		Log.e("onResume ", "application resumed");
 		super.onResume();
 
 		/* registers network status monitor broadcast receiver (for this it needs `this')
@@ -201,7 +204,7 @@ RadarOverlayUpdateListener
 
 	public void onRestart()
 	{
-//		Log.e("Activity onRestart ", "application restarted");
+		Log.e("Activity onRestart ", "application restarted");
 
 		super.onRestart();
 	}
@@ -730,9 +733,7 @@ RadarOverlayUpdateListener
 			break;
 		case R.id.measureToggleButton:
 			if(menuItem.isChecked() && mSettings.isMapMoveToMeasureHintEnabled())
-			{
 				Toast.makeText(getApplicationContext(), R.string.hint_move_to_measure_on_map, Toast.LENGTH_LONG).show();
-			}
 			omv.setMeasureEnabled(menuItem.isChecked());
 			break;
 		default:
@@ -1092,24 +1093,11 @@ RadarOverlayUpdateListener
 		Settings settings = new Settings(this);
 		long radarTimestampMillis = settings.getRadarImageTimestamp();
 		long currentTimestampMillis = System.currentTimeMillis();
-		String text;
-		if(currentTimestampMillis - radarTimestampMillis < RadarOverlay.ACCEPTABLE_RADAR_DIFF_TIMESTAMP)
-		{
-			DateFormat formatter = DateFormat.getTimeInstance();
-			Calendar calendar = Calendar.getInstance();
-		    calendar.setTimeInMillis(currentTimestampMillis);
-		    text = getResources().getString(R.string.radarUpdatedOn)
-					+ " " + formatter.format(calendar.getTime());
-		}
-		else
-		{
-			DateFormat formatter = DateFormat.getDateTimeInstance();
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTimeInMillis(settings.getRadarImageTimestamp());
-			text = getResources().getString(R.string.radarImageOld)
-					+ " (" + formatter.format(calendar.getTime()) + ")";
-		}
-	    ((TextView) findViewById(R.id.radarTimestempTextView)).setText(text);
+		CharSequence text = new RadarImageTimestampTextBuilder().buildText(currentTimestampMillis, 
+				radarTimestampMillis, getResources(), mSettings.isFirstExecution());
+		OAnimatedTextView radarTimestampText = (OAnimatedTextView) findViewById(R.id.radarTimestampTextView);
+		if(radarTimestampText != null)
+			radarTimestampText.setText(text);
 	}
 	
 	/* private members */

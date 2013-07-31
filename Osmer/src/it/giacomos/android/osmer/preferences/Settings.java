@@ -185,6 +185,19 @@ public class Settings
 		return (long) mSharedPreferences.getFloat("RADAR_IMAGE_TIMESTAMP", 0);
 	}
 	
+	/** returns true if this is the first execution. Then sets the first execution flag to 
+	 * false for the next invocations
+	 * @return true/false
+	 */
+	public boolean isFirstExecution()
+	{
+		boolean ret = mSharedPreferences.getBoolean("IS_FIRST_EXECUTION", true);
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putBoolean("IS_FIRST_EXECUTION", false);
+		e.commit();
+		return ret;
+	}
+	
 	public CameraPosition getCameraPosition()
 	{
 		CameraPosition pos;

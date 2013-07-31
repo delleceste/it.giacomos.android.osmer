@@ -36,7 +36,7 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 	private GroundOverlayOptions mGroundOverlayOptions;
 	
 
-	public static final long ACCEPTABLE_RADAR_DIFF_TIMESTAMP = 1000 * 10;
+	public static final long ACCEPTABLE_RADAR_DIFF_TIMESTAMP_MILLIS = 1000 * 60 * 60;
 	
 	RadarOverlay(GoogleMap googleMap) 
 	{

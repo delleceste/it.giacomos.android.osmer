@@ -27,7 +27,8 @@
     <string name="dataExpiredToast">aggiornamento dei dati&#8230;</string>
     <string name="radarUpdateToast">aggiorno l\'immagine del radar&#8230;</string>
     <string name="radarUpdatedOn">Immagine radar aggiornata alle </string>
-    <string name="radarImageOld">Attenzione: l\'immagine radar risale a più di un\'ora fa</string>
+    <string name="radarImageOld">L\'immagine radar risale a più di un\'ora fa</string>    
+    <string name="radarImageBlackWhiteHint">(Per questo è in bianco e nero)</string>
     <string name="webcam_lists_downloaded">lista webcam aggiornata</string>
     <string name="webcam_downloading">download immagine webcam&#8230;</string>
     <string name="webcam_download_task_canceled">annullo il download di </string>
@@ -246,9 +247,9 @@
 	    
 	     <p>
 	    
-	    L\'applicazione Meteo.FVG per Android utilizza le Google Maps, API v1.
+	    L\'applicazione Meteo.FVG per Android, a partire dalla versione 2.0, utilizza le Google Maps, API v2.
 	    
-	    - <a href="https://developers.google.com/maps/documentation/android/v1/index">Google Maps API v1</a>
+	    - <a href="https://developers.google.com/maps/documentation/android/">Google Maps API v2</a>
 	    	
 	    </p>
 	      
