@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     android:orientation="horizontal" >
 
     <it.giacomos.android.osmer.widgets.AnimatedImageView 
@@ -21,8 +22,9 @@
 				android:layout_marginLeft="2dp"
 				android:textOff=""
 				android:textOn=""
-        		android:background="@drawable/ic_menu_action_overflow" 
+        		android:background="@drawable/ic_menu_more_actionbar_icon" 
         		android:layout_marginRight="2dp"
+        		android:gravity="center"
         		android:id="@+id/actionOverflow" />	
     
     <!--  
