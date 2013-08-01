@@ -1,9 +1,5 @@
 package it.giacomos.android.osmer;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import it.giacomos.android.osmer.downloadManager.DownloadManager;
 import it.giacomos.android.osmer.downloadManager.DownloadReason;
 import it.giacomos.android.osmer.downloadManager.DownloadStatus;
@@ -39,7 +35,6 @@ import it.giacomos.android.osmer.widgets.OTextView;
 import it.giacomos.android.osmer.widgets.OViewFlipper;
 import it.giacomos.android.osmer.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
-import it.giacomos.android.osmer.widgets.map.RadarOverlay;
 import it.giacomos.android.osmer.widgets.SituationImage;
 import it.giacomos.android.osmer.preferences.*;
 import android.app.Activity;
@@ -53,7 +48,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -97,15 +91,12 @@ RadarOverlayUpdateListener
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		//		Log.i("onCreate", "application created");
 		super.onCreate(savedInstanceState);
-//		Log.e("Activity onCreate ", "CREATED");
 
 		requestWindowFeature(Window.FEATURE_PROGRESS);
 		this.setProgressBarVisibility(true);
 
 		setContentView(R.layout.main);
-//		Object test=R.styleable; 
 		init();
 	}
 
@@ -204,15 +195,11 @@ RadarOverlayUpdateListener
 
 	public void onRestart()
 	{
-		Log.e("Activity onRestart ", "application restarted");
-
 		super.onRestart();
 	}
 
 	public void onStart()
 	{
-//		Log.e("Activity onStart ", "application started");
-
 		super.onStart();
 	}
 
@@ -859,7 +846,6 @@ RadarOverlayUpdateListener
 		case MAP:		
 		case RADAR:
 			/* remove itemized overlays (observations), if present, and restore radar view */
-//			Log.e("switchView", "setting map mode in switchView RADAR/DAILY");
 			((OMapFragment) getFragmentManager().findFragmentById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 			viewFlipper.setDisplayedChild(FlipperChildren.MAP, false);
 			break;
@@ -974,35 +960,6 @@ RadarOverlayUpdateListener
 		/* show or hide maps menu button according to the current view type */
 		mInitButtonMapsOverflowMenu();
 	}
-
-//	public void updateMapButtonsState()
-//	{
-//		switch(mCurrentViewType)
-//		{
-//		case HOME:
-//		case TODAY:
-//		case TOMORROW:
-//		case TWODAYS:
-//			mActionBarButtons.hideAllButtons();
-//			break;
-//		default:
-//			mActionBarButtons.setSatViewVisible(true);
-//			mActionBarButtons.setCenterMapVisible(true);
-//			break;
-//		}
-//		/* hide measure and radar button from the map view when not in
-//		 * radar mode
-//		 */
-//		mActionBarButtons.setRadarInfoVisible(mCurrentViewType == ViewType.RADAR);
-//		mActionBarButtons.setMeasureVisible(mCurrentViewType == ViewType.RADAR);
-//
-//		/* hide Radar information text view on google map view */
-//		View radarInfoTextView = findViewById(R.id.radarInfoTextView);
-//		if(mActionBarButtons.radarInfoEnabled())
-//			radarInfoTextView.setVisibility(View.VISIBLE);
-//		else
-//			radarInfoTextView.setVisibility(View.GONE);
-//	}
 	
 	public DownloadManager stateMachine() { return m_downloadManager; }
 

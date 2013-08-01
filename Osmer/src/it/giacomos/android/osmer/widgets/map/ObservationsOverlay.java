@@ -250,7 +250,7 @@ OnMarkerClickListener
 	@Override
 	public void clear() 
 	{
-		Log.e("ObservationsOverlay: cleara called", "maerkers size " + mMarkers.size());
+//		Log.e("ObservationsOverlay: cleara called", "maerkers size " + mMarkers.size());
 		for(int i = 0; i < mMarkers.size(); i++)
 			mMarkers.get(i).remove();
 		mMarkers.clear();

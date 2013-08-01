@@ -81,6 +81,7 @@ MeasureOverlayChangeListener
 		mMapFragmentListener = null;
 		mOverlays = new ArrayList<OOverlayInterface>();
 		mMode = new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY);
+		mMode.isExplicit = false; /* setMode is not called */
 	}
 
 	@Override
@@ -210,11 +211,14 @@ MeasureOverlayChangeListener
 	}
 
 
-	public void setRadarImage(Bitmap bmp) 
+	public void setRadarImage(Bitmap bmp, boolean isUpToDate) 
 	{
-		long currentTimestampMillis = System.currentTimeMillis();
+		if(isUpToDate)
+		{
+			long currentTimestampMillis = System.currentTimeMillis();
+			mSettings.setRadarImageTimestamp(currentTimestampMillis);
+		}
 		mRadarOverlay.updateBitmap(bmp);
-		mSettings.setRadarImageTimestamp(currentTimestampMillis);
 		mRefreshRadarImage();
 	}
 	
@@ -292,6 +296,10 @@ MeasureOverlayChangeListener
 		/* show the radar timestamp text anytime the mode is set to RADAR
 		 * if (!m.equals(mMode)) then the radar timestamp text is scheduled to be shown
 		 * inside if (m.currentType == ObservationType.RADAR) branch below.
+		 * Two modes also differ when the isExplicit flag is different.
+		 * All MapViewModes are constructed with isExplicit = true. The OMapFragment 
+		 * constructor sets isExplicit to false in order to allocate a non null map mode
+		 * and not to call setMode.
 		 */
 		if (m.equals(mMode) && m.currentType == ObservationType.RADAR)
 			radarTimestampText.scheduleShow();

@@ -36,9 +36,7 @@ public class ImageViewUpdater {
 		{
 			OMapFragment mapView = (OMapFragment) a.getFragmentManager().findFragmentById(R.id.mapview);
 			/* update bitmap */
-			if(mapView == null)
-				Log.e("ImageViewUpdater!", "mapView is null!!");
-			mapView.setRadarImage(bmp);
+			mapView.setRadarImage(bmp, bmp != null);
 		}
 	}
 }

@@ -19,7 +19,7 @@ public class RadarImageTimestampTextBuilder
 		if(currentTimestampMillis - radarTimestampMillis < RadarOverlay.ACCEPTABLE_RADAR_DIFF_TIMESTAMP_MILLIS)
 		{
 			Calendar calendar = Calendar.getInstance();
-		    calendar.setTimeInMillis(currentTimestampMillis);
+		    calendar.setTimeInMillis(radarTimestampMillis);
 		    text = android.text.format.DateFormat.format("kk:mm", calendar.getTime());
 		    text = resources.getString(R.string.radarUpdatedOn)
 					+ " <b>" + text + "</b>";
