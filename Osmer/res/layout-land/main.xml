@@ -23,7 +23,7 @@
         android:background="@drawable/shape_background_landscape"
         android:orientation="horizontal" >
 
-        <it.giacomos.android.osmer.widgets.OViewFlipper
+        <it.giacomos.android.meteofvg2.widgets.OViewFlipper
             android:id="@+id/viewFlipper1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -41,7 +41,7 @@
             <include layout="@layout/map" />
             
            
-        </it.giacomos.android.osmer.widgets.OViewFlipper>
+        </it.giacomos.android.meteofvg2.widgets.OViewFlipper>
         
     </LinearLayout>
 

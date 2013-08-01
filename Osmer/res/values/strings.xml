@@ -94,7 +94,6 @@
 	<string name="popup_position_title">About your position</string>
 	<string name="popup_info_title">App info and copyright</string>
 	<string name="popup_data_update_title">Data automatic refresh</string>
-	<string name="meters">m</string>
 	<string name="error_message">Error message</string>
 	
     
