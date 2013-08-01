@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
+    android:layout_gravity="center_horizontal|center_vertical"
     android:orientation="horizontal" >
 
     <it.giacomos.android.osmer.widgets.AnimatedImageView 
@@ -24,65 +24,6 @@
 				android:textOn=""
         		android:background="@drawable/ic_menu_more_actionbar_icon" 
         		android:layout_marginRight="2dp"
-        		android:gravity="center"
+	    		android:layout_gravity="center_horizontal|center_vertical"
         		android:id="@+id/actionOverflow" />	
-    
-    <!--  
-        		android:background="@drawable/earth"
-        		android:background="@drawable/center_map" 
-        		android:background="@drawable/radar_info"
-        		android:background="@drawable/measure"
-				android:textOff="@string/sat_view"
-				android:textOn="@string/sat_view"
-				android:textOff="@string/center_map"
-				android:textOn="@string/center_map" 
-				android:textOff="@string/measure_mode"
-				android:textOn="@string/measure_mode"
-				android:textOff="@string/radar_help"
-				android:textOn="@string/radar_help" 
-        		
-        		
-        		-->
-   <!--  ToggleButton 
-         	    android:layout_width="32dp"
-        		android:layout_height="32dp"       		
-				android:layout_marginLeft="2dp"
-				android:textOff=""
-				android:textOn=""
-        		android:background="@drawable/center_map" 
-        		android:layout_marginRight="2dp"
-        		android:id="@+id/centerMapButton" />		
-			
-			<ToggleButton 
-         	    android:layout_width="32dp"
-        		android:layout_height="32dp" 
-				android:layout_marginLeft="2dp"
-        		android:layout_marginRight="2dp"
-				android:textOff=""
-				android:textOn=""
-        		android:background="@drawable/earth"
-        		android:id="@+id/satelliteViewButton" />
-        		
-        	<ToggleButton 
-         	    android:layout_width="32dp"
-        		android:layout_height="32dp"
-				android:layout_marginLeft="2dp"
-        		android:layout_marginRight="2dp"
-				android:textOff=""
-				android:textOn=""
-        		android:background="@drawable/measure"
-        		android:id="@+id/measureToggleButton" />
-        	
-         	 <ToggleButton 
-         	    android:layout_width="32dp"
-        		android:layout_height="32dp"
-				android:layout_marginLeft="2dp"
-        		android:layout_marginRight="2dp"
-				android:textOff=""
-				android:textOn="" 
-        		android:background="@drawable/radar_info"
-        		android:id="@+id/radarInfoButton" />
-        		
-        		-->	
-
 </LinearLayout>

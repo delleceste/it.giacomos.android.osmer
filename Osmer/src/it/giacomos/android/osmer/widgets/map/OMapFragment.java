@@ -76,12 +76,11 @@ MeasureOverlayChangeListener
 		mCenterOnUpdate = false;
 		mMapReady = false;
 		mOldZoomLevel = -1.0f;
-		mMode = null;
 		mZoomChangeListener = null;
 		mSavedCameraPosition = null;
 		mMapFragmentListener = null;
 		mOverlays = new ArrayList<OOverlayInterface>();
-		
+		mMode = new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY);
 	}
 
 	@Override

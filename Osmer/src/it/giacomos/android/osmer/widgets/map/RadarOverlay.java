@@ -106,6 +106,9 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 
 	public void updateBlackAndWhite() 
 	{
+		if(mBitmap == null)
+			return;
+		
 		Bitmap blackAndWhiteBmp;
 		Log.e("updateBlackAndWhite", "creo black and white");
 	//	update();
