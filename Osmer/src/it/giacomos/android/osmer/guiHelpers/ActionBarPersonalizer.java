@@ -5,11 +5,14 @@ import android.app.ActionBar.OnNavigationListener;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
+import it.giacomos.android.osmer.ForecastFragment;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.TabsAdapter;
 import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.guiHelpers.MyTabListener;
 
@@ -20,6 +23,8 @@ public class ActionBarPersonalizer {
 	public  static final int DAILY_OBS = 2;
 	public  static final int LATEST_OBS = 3;
 	public  static final int WEBCAM = 4;
+	
+	private TabsAdapter mTabsAdapter;
 		
 	public void setActionBarStateManager(ActionBarStateManager stateManager)
 	{
@@ -35,6 +40,7 @@ public class ActionBarPersonalizer {
 	{
 		mActivity = a;
 		mActionBarStateManager = null;
+		mTabsAdapter = new TabsAdapter(a, a.getViewPager());
 	}
 	
 	public void setNavigationItem(int index)
@@ -73,28 +79,46 @@ public class ActionBarPersonalizer {
 
 			if(actionBar.getTabCount() == 0)
 			{
-				MyTabListener tabListener = new MyTabListener(mActivity);
-				tabListener.setActionBarStateManager(mActionBarStateManager);
-
-				Tab homeTab = actionBar.newTab().setText(res.getString(R.string.situation)).
-						setTabListener(tabListener)
-						.setTag(R.string.home_title);
-				actionBar.addTab(homeTab);
-
-				Tab todayTab = actionBar.newTab().setText(res.getString(R.string.today_title)).
-						setTabListener(tabListener)
-						.setTag(R.string.today_title);
-				actionBar.addTab(todayTab);
-
-				Tab tomorrowTab = actionBar.newTab().setText(res.getString(R.string.tomorrow_title)).
-						setTabListener(tabListener)
-						.setTag(R.string.tomorrow_title);
-				actionBar.addTab(tomorrowTab);
-
-				Tab twodaysTab = actionBar.newTab().setText(res.getString(R.string.two_days_title)).
-						setTabListener(tabListener)
-						.setTag(R.string.two_days_title);
-				actionBar.addTab(twodaysTab);
+//				MyTabListener tabListener = new MyTabListener(mActivity);
+//				tabListener.setActionBarStateManager(mActionBarStateManager);
+//
+//				Tab homeTab = actionBar.newTab().setText(res.getString(R.string.situation)).
+//						setTabListener(tabListener)
+//						.setTag(R.string.home_title);
+//				actionBar.addTab(homeTab);
+//
+//				Tab todayTab = actionBar.newTab().setText(res.getString(R.string.today_title)).
+//						setTabListener(tabListener)
+//						.setTag(R.string.today_title);
+//				actionBar.addTab(todayTab);
+//
+//				Tab tomorrowTab = actionBar.newTab().setText(res.getString(R.string.tomorrow_title)).
+//						setTabListener(tabListener)
+//						.setTag(R.string.tomorrow_title);
+//				actionBar.addTab(tomorrowTab);
+//
+//				Tab twodaysTab = actionBar.newTab().setText(res.getString(R.string.two_days_title)).
+//						setTabListener(tabListener)
+//						.setTag(R.string.two_days_title);
+//				actionBar.addTab(twodaysTab);
+				Bundle bSituation = new Bundle();
+				Bundle bToday = new Bundle();
+				Bundle bTomorrow = new Bundle();
+				Bundle bTwodays = new Bundle();
+				
+				bSituation.putInt("type", R.string.situation);
+				bToday.putInt("type", R.string.today_title);
+				bTomorrow.putInt("type", R.string.tomorrow_title);
+				bTwodays.putInt("type", R.string.two_days_title);
+				
+				mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.situation)),
+		                ForecastFragment.class, bSituation);
+		        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.today_title)),
+		                ForecastFragment.class, bToday);
+		        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.tomorrow_title)),
+		        		ForecastFragment.class, bTomorrow);
+		        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.two_days_title)),
+		        		ForecastFragment.class, bTwodays);
 			}
 
 			break;

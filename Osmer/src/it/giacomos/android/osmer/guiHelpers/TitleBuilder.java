@@ -17,7 +17,7 @@ public class TitleBuilder
 {
 	public String makeTitle(OsmerActivity a)
 	{
-		OMapFragment map = (OMapFragment) a.getFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment map = (OMapFragment) a.getSupportFragmentManager().findFragmentById(R.id.mapview);
 		MapViewMode mapMode = null;
 		OViewFlipper flipper = (OViewFlipper) a.findViewById(R.id.viewFlipper1);
 		DownloadStatus ds = DownloadStatus.Instance();

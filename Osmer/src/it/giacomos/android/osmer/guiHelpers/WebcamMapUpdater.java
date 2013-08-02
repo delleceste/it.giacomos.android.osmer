@@ -15,7 +15,7 @@ public class WebcamMapUpdater
 		if(!text.isEmpty())
 		{
 			ArrayList<WebcamData> wcData = null;
-			OMapFragment map = (OMapFragment) a.getFragmentManager().findFragmentById(R.id.mapview);
+			OMapFragment map = (OMapFragment) a.getSupportFragmentManager().findFragmentById(R.id.mapview);
 			switch(t)
 			{
 			case WEBCAMLIST_OSMER:

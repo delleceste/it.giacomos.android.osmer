@@ -7,6 +7,7 @@
 
     <!-- The main content view -->
 
+
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mainRelativeLayout"
@@ -15,24 +16,9 @@
         android:background="@drawable/shape_background"
         android:orientation="vertical"
         tools:ignore="UnusedNamespace" >
-
-        <it.giacomos.android.osmer.widgets.OViewFlipper
-            android:id="@+id/viewFlipper1"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-
-            <include layout="@layout/home" />
-
-            <include layout="@layout/today" />
-
-            <include layout="@layout/tomorrow" />
-
-            <include layout="@layout/twodays" />
-
-            <include layout="@layout/map" />
-            
-        </it.giacomos.android.osmer.widgets.OViewFlipper>
+        
     </LinearLayout>
+    
 
     <!-- The navigation drawer -->
 

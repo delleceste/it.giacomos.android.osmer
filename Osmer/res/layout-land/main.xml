@@ -14,7 +14,7 @@
     In Eclipse
     android:layout_width="400px" android:layout_height="800px"
     -->
-
+  
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mainRelativeLayout"
@@ -22,29 +22,9 @@
         android:layout_height="match_parent"
         android:background="@drawable/shape_background_landscape"
         android:orientation="horizontal" >
-
-        <it.giacomos.android.osmer.widgets.OViewFlipper
-            android:id="@+id/viewFlipper1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-             >
-
-            
-            <include layout="@layout/home" />
-
-            <include layout="@layout/today" />
-
-            <include layout="@layout/tomorrow" />
-
-            <include layout="@layout/twodays" />
-
-            <include layout="@layout/map" />
-            
-           
-        </it.giacomos.android.osmer.widgets.OViewFlipper>
         
     </LinearLayout>
-
+    
     <!-- The navigation drawer -->
 
     <ListView

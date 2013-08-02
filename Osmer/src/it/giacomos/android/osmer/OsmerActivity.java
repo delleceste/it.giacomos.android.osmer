@@ -11,7 +11,6 @@ import it.giacomos.android.osmer.guiHelpers.ImageViewUpdater;
 import it.giacomos.android.osmer.guiHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.guiHelpers.NetworkGuiErrorManager;
 import it.giacomos.android.osmer.guiHelpers.ObservationTypeGetter;
-import it.giacomos.android.osmer.guiHelpers.OnTouchListenerInstaller;
 import it.giacomos.android.osmer.guiHelpers.RadarImageTimestampTextBuilder;
 import it.giacomos.android.osmer.guiHelpers.TextViewUpdater;
 import it.giacomos.android.osmer.guiHelpers.TitlebarUpdater;
@@ -48,6 +47,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTabHost;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -76,7 +78,7 @@ import android.widget.ViewFlipper;
  * - in the background, continue downloading all other relevant information (tomorrow, two days image and
  *   forecast), so that it is ready when the user flips.
  */
-public class OsmerActivity extends Activity 
+public class OsmerActivity extends FragmentActivity 
 implements OnClickListener, 
 DownloadUpdateListener,
 FlipperChildChangeListener,
@@ -250,7 +252,7 @@ RadarOverlayUpdateListener
 	{
 		/* first of all, if there's a info window on the map, close it */
 		int displayedChild = ((ViewFlipper) findViewById(R.id.viewFlipper1)).getDisplayedChild();
-		OMapFragment map = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
 		if(displayedChild == 4  &&  map.isInfoWindowVisible()) /* map view visible */
 			map.hideInfoWindow();
 		else
@@ -292,11 +294,13 @@ RadarOverlayUpdateListener
 	
 	public void init()
 	{
+		mViewPager = (ViewPager) findViewById(R.id.viewPager);
+		
 		mSettings = new Settings(this);
 		mTapOnMarkerHintCount = 0;
 		mRefreshAnimatedImageView = null;
 
-		OMapFragment map = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
 		
 		m_downloadManager = new DownloadManager(this);
 		m_observationsCache = new ObservationsCache();
@@ -312,9 +316,10 @@ RadarOverlayUpdateListener
 		m_observationsCache.setLatestObservationCacheChangeListener(situationImage);
 
 		/* install onTouchListener */
-		installOnTouchListener();
+		Log.e("init()", "is flipper null? " + findViewById(R.id.viewFlipper1));
 		((OViewFlipper) findViewById(R.id.viewFlipper1)).setOnChildPageChangedListener(this);
 
+		Log.e("init()", "is Resources null? " + getResources());
 		mDrawerItems = getResources().getStringArray(R.array.drawer_text_items);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -631,7 +636,7 @@ RadarOverlayUpdateListener
 		 * after MyLocationOverlay.enableMyLocation was called (problem turned out with Galaxy
 		 * S3/Android 4.1)
 		 */
-//		((OMapFragment) getFragmentManager().findFragmentById(R.id.mapview)).onPositionProviderEnabled(provider);
+//		((OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview)).onPositionProviderEnabled(provider);
 	}
 
 	@Override
@@ -640,34 +645,10 @@ RadarOverlayUpdateListener
 
 	}
 
-	protected void installOnTouchListener()
-	{
-		OnTouchListenerInstaller otli = new OnTouchListenerInstaller();
-		otli.install(this);
-		otli = null;
-	}
-
 	private void mRestoreFromInternalStorage() 
 	{
 		/* save text views */
-		OTextView ov = (OTextView) findViewById(R.id.homeTextView);
-		ov.restoreFromInternalStorage();
-		ov = (OTextView) findViewById(R.id.todayTextView);
-		ov.restoreFromInternalStorage();
-		ov = (OTextView) findViewById(R.id.tomorrowTextView);
-		ov.restoreFromInternalStorage();
-		ov = (OTextView) findViewById(R.id.twoDaysTextView);
-		ov.restoreFromInternalStorage();
-
-		/* save images */
-		ODoubleLayerImageView dliv = (ODoubleLayerImageView) findViewById(R.id.homeImageView);
-		dliv.restoreFromInternalStorage();
-		dliv = (ODoubleLayerImageView) findViewById(R.id.todayImageView);
-		dliv.restoreFromInternalStorage();
-		dliv = (ODoubleLayerImageView) findViewById(R.id.tomorrowImageView);
-		dliv.restoreFromInternalStorage();
-		dliv = (ODoubleLayerImageView) findViewById(R.id.twoDaysImageView);
-		dliv.restoreFromInternalStorage();
+		
 	}
 
 	void executeObservationTypeSelectionDialog(ObservationTime oTime)
@@ -681,7 +662,7 @@ RadarOverlayUpdateListener
 	{
 //		Log.e("onSelectionDone", "setting map mode in onSelectionDone " + type + " " + oTime);
 		/* switch the working mode of the map view */
-		OMapFragment map = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
 		map.setMode(new MapViewMode(type, oTime));
 		if(type != ObservationType.WEBCAM)
 			map.updateObservations(m_observationsCache.getObservationData(oTime));
@@ -696,7 +677,7 @@ RadarOverlayUpdateListener
 		 */
 		if(menuItem.isCheckable())
 			menuItem.setChecked(!menuItem.isChecked());
-		OMapFragment omv = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment omv = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
 		switch(menuItem.getItemId())
 		{
 		case R.id.centerMapButton:
@@ -783,7 +764,7 @@ RadarOverlayUpdateListener
 	
 	private void mCreateMapOptionsPopupMenu() 
 	{
-		OMapFragment map = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
 		ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
 		PopupMenu mapOptionsMenu = new PopupMenu(this, buttonMapsOveflowMenu);
 		Menu menu = mapOptionsMenu.getMenu();
@@ -846,12 +827,12 @@ RadarOverlayUpdateListener
 		case MAP:		
 		case RADAR:
 			/* remove itemized overlays (observations), if present, and restore radar view */
-			((OMapFragment) getFragmentManager().findFragmentById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
+			((OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
 			viewFlipper.setDisplayedChild(FlipperChildren.MAP, false);
 			break;
 
 		case ACTION_CENTER_MAP:
-			((OMapFragment) getFragmentManager().findFragmentById(R.id.mapview)).centerMap();
+			((OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview)).centerMap();
 			break;
 		default:
 			break;
@@ -993,7 +974,7 @@ RadarOverlayUpdateListener
 			break;
 		case FlipperChildren.MAP:
 			/* map can be in different modes: radar, webcam or observations */
-			map = (OMapFragment) getFragmentManager().findFragmentById(R.id.mapview);
+			map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
 			mapMode = map.getMode();
 			if(mapMode.currentType == ObservationType.RADAR)
 			{
@@ -1017,6 +998,11 @@ RadarOverlayUpdateListener
 		}
 		if(index > -1)
 			mActionBarPersonalizer.setTabSelected(index);
+	}
+	
+	public ViewPager getViewPager()
+	{
+		return mViewPager;
 	}
 
 	public Location getCurrentLocation()
@@ -1077,6 +1063,12 @@ RadarOverlayUpdateListener
 	/* ActionBar menu button and menu */
 	private View mButtonsActionView;
 	Urls m_urls;
+	
+	private FragmentTabHost mTabHost;
+
+    ViewPager mViewPager;
+    TabsAdapter mTabsAdapter;
+
 
 	int availCnt = 0;
 }

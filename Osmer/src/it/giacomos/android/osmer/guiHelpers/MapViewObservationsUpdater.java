@@ -11,7 +11,7 @@ public class MapViewObservationsUpdater
 {
 	public MapViewObservationsUpdater(OsmerActivity a, String text, ViewType t)
 	{
-		OMapFragment mapView = (OMapFragment) a.getFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment mapView = (OMapFragment) a.getSupportFragmentManager().findFragmentById(R.id.mapview);
 		TableToMap tableToMap = new TableToMap();
 		mapView.updateObservations(tableToMap.convert(text, t));
 		tableToMap = null;

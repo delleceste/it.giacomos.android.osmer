@@ -12,7 +12,7 @@ public class CurrentViewUpdater {
 		int displayedChild = ((OViewFlipper) a.findViewById(R.id.viewFlipper1)).getDisplayedChild();
 		if(displayedChild == FlipperChildren.MAP)
 		{
-			OMapFragment mapView = (OMapFragment) a.getFragmentManager().findFragmentById(R.id.mapview); 
+			OMapFragment mapView = (OMapFragment) a.getSupportFragmentManager().findFragmentById(R.id.mapview); 
 			MapViewMode mapMode = mapView.getMode();
 			/* update radar if mapview is showing the radar */
 			if(mapMode.currentType == ObservationType.RADAR)

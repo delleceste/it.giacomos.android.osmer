@@ -7,6 +7,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import it.giacomos.android.osmer.MapFragmentListener;
@@ -39,7 +40,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import android.os.Bundle;
 
-public class OMapFragment extends MapFragment 
+public class OMapFragment extends SupportMapFragment 
 implements ObservationsCacheUpdateListener,
 GoogleMap.OnCameraChangeListener,
 WebcamOverlayChangeListener,
