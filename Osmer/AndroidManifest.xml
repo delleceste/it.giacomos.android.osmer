@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="237"
-    android:versionName="2.1.0-alpha3" >
+    android:versionCode="239"
+    android:versionName="2.1.0-beta0" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -52,7 +52,7 @@
         <!--  starting from versionCode > 231 I created a map key with release and debug SHA1 together.
         	  This way, the key below applies both to release and debug builds.
          -->
-        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyDJgjfl55IsnAaYWkyaQbrDWH_0S7FhrmM"/>
+        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyBhRcwqzgppnwzQApAHcV7-Rer1JhXiDQs"/>
 
     </application>
 
