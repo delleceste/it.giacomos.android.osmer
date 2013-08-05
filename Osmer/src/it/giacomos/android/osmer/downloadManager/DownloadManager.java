@@ -1,9 +1,10 @@
 package it.giacomos.android.osmer.downloadManager;
 
 import it.giacomos.android.osmer.BitmapType;
-import it.giacomos.android.osmer.DownloadUpdateListener;
+import it.giacomos.android.osmer.DownloadStateListener;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.ViewType;
+import it.giacomos.android.osmer.downloadManager.Data.DownloadListener;
 import it.giacomos.android.osmer.downloadManager.state.Offline;
 import it.giacomos.android.osmer.downloadManager.state.Online;
 import it.giacomos.android.osmer.downloadManager.state.State;
@@ -23,7 +24,7 @@ import android.util.Log;
 public class DownloadManager  implements NetworkStatusMonitorListener, 
 	DownloadManagerUpdateListener
 {
-	public DownloadManager(DownloadUpdateListener l)
+	public DownloadManager(DownloadStateListener l)
 	{
 		m_downloadUpdateListener = l;
 //		ConnectivityManager cm = (ConnectivityManager) activity.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -31,6 +32,11 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 //			setState(new Online());
 //		else
 		setState(new Offline(this));
+	}
+	
+	public void setDownloadListener(DownloadListener dl)
+	{
+		mDownloadListener = dl;
 	}
 	
 	public void onPause(OsmerActivity activity)
@@ -113,17 +119,17 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 	@Override
 	public void onBitmapUpdate(Bitmap bmp, BitmapType t, String errorMessage) {
 		if(bmp != null)
-			m_downloadUpdateListener.onBitmapUpdate(bmp, t);
+			mDownloadListener.onBitmapUpdate(bmp, t);
 		else
-			m_downloadUpdateListener.onBitmapUpdateError(t, errorMessage);
+			mDownloadListener.onBitmapUpdateError(t, errorMessage);
 	}
 
 	@Override
 	public void onTextUpdate(String txt, ViewType t, String errorMessage) {
 		if(txt != null)
-			m_downloadUpdateListener.onTextUpdate(txt, t);
+			mDownloadListener.onTextUpdate(txt, t);
 		else
-			m_downloadUpdateListener.onTextUpdateError(t, errorMessage);
+			mDownloadListener.onTextUpdateError(t, errorMessage);
 	}
 
 	@Override
@@ -142,7 +148,8 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 	}
 	
 	private State m_state;
-	private DownloadUpdateListener m_downloadUpdateListener;
+	private DownloadStateListener m_downloadUpdateListener;
+	private DownloadListener mDownloadListener;
 	private NetworkStatusMonitor m_networkStatusMonitor;
 	
 	

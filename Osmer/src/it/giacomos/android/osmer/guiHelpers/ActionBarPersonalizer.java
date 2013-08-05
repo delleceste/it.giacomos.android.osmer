@@ -2,8 +2,6 @@ package it.giacomos.android.osmer.guiHelpers;
 
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
-import android.app.ActionBar.Tab;
-import android.app.ActionBar.TabListener;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,9 +12,9 @@ import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.TabsAdapter;
 import it.giacomos.android.osmer.ViewType;
-import it.giacomos.android.osmer.guiHelpers.MyTabListener;
 
-public class ActionBarPersonalizer {
+public class ActionBarPersonalizer implements ActionBarTabChangeListener 
+{
 	
 	public static final int FORECAST = 0;
 	public  static final int RADAR = 1;
@@ -40,12 +38,12 @@ public class ActionBarPersonalizer {
 	{
 		mActivity = a;
 		mActionBarStateManager = null;
-		mTabsAdapter = new TabsAdapter(a, a.getViewPager());
 	}
 	
 	public void setNavigationItem(int index)
 	{
 		ActionBar actionBar = mActivity.getActionBar();
+		Log.e("setNavigationItem", "setting selected navigation indx " + index);
 		actionBar.setSelectedNavigationItem(index);
 	}
 	
@@ -56,7 +54,10 @@ public class ActionBarPersonalizer {
 	{
 		ActionBar actionBar = mActivity.getActionBar();
 		if(index < actionBar.getTabCount())
+		{
+			Log.e("setTabSelected", "setting selected navigation indx " + index);
 			actionBar.setSelectedNavigationItem(index);
+		}
 	}
 	
 	public void drawerItemChanged(int id)
@@ -74,33 +75,17 @@ public class ActionBarPersonalizer {
 			 * OsmerActivity.java
 			 */
 			if(actionBar.getNavigationMode() != ActionBar.NAVIGATION_MODE_TABS)
+			{
 				actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+				/* tabs were removed. Navigation mode was changed: create a new TabsAdapter */
+				mTabsAdapter = null;
+				mTabsAdapter = new TabsAdapter(mActivity, mActivity.getViewPager());	
+				mTabsAdapter.setActionBarTabChangeListener(this);
+			}
 			mActivity.setTitle(R.string.situation);
 
 			if(actionBar.getTabCount() == 0)
 			{
-//				MyTabListener tabListener = new MyTabListener(mActivity);
-//				tabListener.setActionBarStateManager(mActionBarStateManager);
-//
-//				Tab homeTab = actionBar.newTab().setText(res.getString(R.string.situation)).
-//						setTabListener(tabListener)
-//						.setTag(R.string.home_title);
-//				actionBar.addTab(homeTab);
-//
-//				Tab todayTab = actionBar.newTab().setText(res.getString(R.string.today_title)).
-//						setTabListener(tabListener)
-//						.setTag(R.string.today_title);
-//				actionBar.addTab(todayTab);
-//
-//				Tab tomorrowTab = actionBar.newTab().setText(res.getString(R.string.tomorrow_title)).
-//						setTabListener(tabListener)
-//						.setTag(R.string.tomorrow_title);
-//				actionBar.addTab(tomorrowTab);
-//
-//				Tab twodaysTab = actionBar.newTab().setText(res.getString(R.string.two_days_title)).
-//						setTabListener(tabListener)
-//						.setTag(R.string.two_days_title);
-//				actionBar.addTab(twodaysTab);
 				Bundle bSituation = new Bundle();
 				Bundle bToday = new Bundle();
 				Bundle bTomorrow = new Bundle();
@@ -111,6 +96,7 @@ public class ActionBarPersonalizer {
 				bTomorrow.putInt("type", R.string.tomorrow_title);
 				bTwodays.putInt("type", R.string.two_days_title);
 				
+				Log.e("ActionBarPErsonalizer: drawerItemChanged", "addingTabs");
 				mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.situation)),
 		                ForecastFragment.class, bSituation);
 		        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.today_title)),
@@ -119,8 +105,9 @@ public class ActionBarPersonalizer {
 		        		ForecastFragment.class, bTomorrow);
 		        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.two_days_title)),
 		        		ForecastFragment.class, bTwodays);
+		        Log.e("ActionBarPersonalizer", "added " + mTabsAdapter.getCount());
 			}
-
+			mActivity.setTitle(R.string.home_title);
 			break;
 
 		case 1:
@@ -200,7 +187,8 @@ public class ActionBarPersonalizer {
 				@Override
 				public boolean onNavigationItemSelected(int position, long itemId) 
 				{
-					switch(position)
+					Log.e("onNavigationItemSelected", "switch view to " + itemId);
+					switch(position) 
 					{
 					case 0:
 						mActivity.switchView(ViewType.LATEST_SKY);
@@ -247,11 +235,16 @@ public class ActionBarPersonalizer {
 		mActionBarStateManager.onActionBarTypeChanged(mType);
 	}
 
+	@Override
+	public void onActionBarTabChanged(int tab) 
+	{
+		mActionBarStateManager.onActionBarTabChanged(tab);
+	}
 
 	private OsmerActivity mActivity;
 	private SpinnerAdapter mSpinnerAdapter;
 	private OnNavigationListener mOnNavigationListener;
-	private TabListener mTabListener;
 	private int mType;
 	private ActionBarStateManager mActionBarStateManager;
+
 }

@@ -1,6 +1,5 @@
 package it.giacomos.android.osmer.guiHelpers;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 
 public class ActionBarStateManager 
@@ -45,6 +44,11 @@ public class ActionBarStateManager
 		{
 			
 		}
+	}
+	
+	public int getSelectedTab()
+	{
+		return mActionBarTab;
 	}
 	
 	public void backToForecast(ActionBarPersonalizer abp)

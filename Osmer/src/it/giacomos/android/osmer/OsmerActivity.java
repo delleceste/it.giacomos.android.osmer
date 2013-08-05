@@ -30,16 +30,14 @@ import it.giacomos.android.osmer.widgets.AnimatedImageView;
 import it.giacomos.android.osmer.widgets.InfoHtmlBuilder;
 import it.giacomos.android.osmer.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
-import it.giacomos.android.osmer.widgets.OTextView;
-import it.giacomos.android.osmer.widgets.OViewFlipper;
 import it.giacomos.android.osmer.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.widgets.SituationImage;
 import it.giacomos.android.osmer.preferences.*;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -50,10 +48,12 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -61,6 +61,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
@@ -80,7 +81,7 @@ import android.widget.ViewFlipper;
  */
 public class OsmerActivity extends FragmentActivity 
 implements OnClickListener, 
-DownloadUpdateListener,
+DownloadStateListener,
 FlipperChildChangeListener,
 SnapshotManagerListener,
 LocationListener,
@@ -181,13 +182,7 @@ RadarOverlayUpdateListener
 
 	protected void onDestroy()
 	{
-		((SituationImage) findViewById(R.id.homeImageView)).unbindDrawables();
-		/* clear HashMaps and bitmaps in hash values */
-		((SituationImage) findViewById(R.id.homeImageView)).cleanup();
-		/* ODoubleLayerImageView */
-		((ODoubleLayerImageView) findViewById(R.id.todayImageView)).unbindDrawables();
-		((ODoubleLayerImageView) findViewById(R.id.tomorrowImageView)).unbindDrawables();
-		((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).unbindDrawables();
+		/* drawables are unbinded inside ForecastFragment's onDestroy() */
 		if(mRefreshAnimatedImageView != null)
 			mRefreshAnimatedImageView.hide();
 		/* cancel async tasks that may be running when the application is destroyed */
@@ -251,7 +246,7 @@ RadarOverlayUpdateListener
 	public void onBackPressed()
 	{
 		/* first of all, if there's a info window on the map, close it */
-		int displayedChild = ((ViewFlipper) findViewById(R.id.viewFlipper1)).getDisplayedChild();
+		int displayedChild = mViewPager.getCurrentItem();
 		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
 		if(displayedChild == 4  &&  map.isInfoWindowVisible()) /* map view visible */
 			map.hideInfoWindow();
@@ -294,7 +289,11 @@ RadarOverlayUpdateListener
 	
 	public void init()
 	{
-		mViewPager = (ViewPager) findViewById(R.id.viewPager);
+		Log.e("init()", ">>>> enter");
+		mViewPager = new ViewPager(this);
+		mViewPager.setId(R.id.pager);
+		mMainLayout = (LinearLayout) findViewById(R.id.mainLayout);
+		mMainLayout.addView(mViewPager);
 		
 		mSettings = new Settings(this);
 		mTapOnMarkerHintCount = 0;
@@ -314,10 +313,6 @@ RadarOverlayUpdateListener
 		 * in this class or when cache is restored from the internal storage.
 		 */
 		m_observationsCache.setLatestObservationCacheChangeListener(situationImage);
-
-		/* install onTouchListener */
-		Log.e("init()", "is flipper null? " + findViewById(R.id.viewFlipper1));
-		((OViewFlipper) findViewById(R.id.viewFlipper1)).setOnChildPageChangedListener(this);
 
 		Log.e("init()", "is Resources null? " + getResources());
 		mDrawerItems = getResources().getStringArray(R.array.drawer_text_items);
@@ -347,7 +342,6 @@ RadarOverlayUpdateListener
 			/** Called when a drawer has settled in a completely closed state. */
 			public void onDrawerClosed(View view) 
 			{
-				((OViewFlipper) findViewById(R.id.viewFlipper1)).setDrawerVisible(false);
 				getActionBar().setTitle(mTitle);
 				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}
@@ -355,8 +349,6 @@ RadarOverlayUpdateListener
 			/** Called when a drawer has settled in a completely open state. */
 			public void onDrawerOpened(View drawerView) 
 			{
-				/* block view touch event */
-				((OViewFlipper) findViewById(R.id.viewFlipper1)).setDrawerVisible(true);
 				getActionBar().setTitle(mDrawerTitle);
 				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}
@@ -378,11 +370,13 @@ RadarOverlayUpdateListener
 		
 		mMenuActionsManager = null;
 		mCurrentLocation = null;
-
+		
 		/* set html text on Radar info text view */
 		TextView radarInfoTextView = (TextView)findViewById(R.id.radarInfoTextView);
+		Log.e("onCreateView MapFragment: ", "infoTextVIew is null? " + radarInfoTextView);
 		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
 		radarInfoTextView.setVisibility(View.GONE);
+		Log.e("init()", "<<<<< exit");
 	}	
 
 	@Override
@@ -505,35 +499,65 @@ RadarOverlayUpdateListener
 			mRefreshAnimatedImageView.start();
 	}
 
-	@Override
-	public void onTextUpdate(String txt, ViewType t)
-	{
-		switch(t)
-		{
-		case HOME: case TODAY: case TOMORROW: case TWODAYS:
-			TextViewUpdater textViewUpdater = new TextViewUpdater();
-			textViewUpdater.update(this, txt, t);
-			textViewUpdater = null;
-			break;
-		case WEBCAMLIST_OSMER:
-		case WEBCAMLIST_OTHER:
-			/* true: save data on cache: onTextUpdate is called after a Download Task, so the data
-			 * passed to WebcamMapUpdater is fresh: store it into cache.
-			 */
-			WebcamMapUpdater webcamUpdater = new WebcamMapUpdater();
-			webcamUpdater.update(this, txt, t, true);
-			webcamUpdater = null;
-			break;
-		default:
-			/* situation image will be updated directly by the cache, since SituationImage is 
-			 * listening to the ObservationCache through the LatestObservationCacheChangeListener
-			 * interface.
-			 */
-			m_observationsCache.store(txt, t);
-			break;
-		}
-	}
+//	@Override
+//	public void onTextUpdate(String txt, ViewType t)
+//	{
+//		switch(t)
+//		{
+//		case HOME: case TODAY: case TOMORROW: case TWODAYS:
+//			TextViewUpdater textViewUpdater = new TextViewUpdater();
+//			textViewUpdater.update(this, txt, t);
+//			textViewUpdater = null;
+//			break;
+//		case WEBCAMLIST_OSMER:
+//		case WEBCAMLIST_OTHER:
+//			/* true: save data on cache: onTextUpdate is called after a Download Task, so the data
+//			 * passed to WebcamMapUpdater is fresh: store it into cache.
+//			 */
+//			WebcamMapUpdater webcamUpdater = new WebcamMapUpdater();
+//			webcamUpdater.update(this, txt, t, true);
+//			webcamUpdater = null;
+//			break;
+//		default:
+//			/* situation image will be updated directly by the cache, since SituationImage is 
+//			 * listening to the ObservationCache through the LatestObservationCacheChangeListener
+//			 * interface.
+//			 */
+//			m_observationsCache.store(txt, t);
+//			break;
+//		}
+//	}
 
+//	@Override
+//	public void onTextUpdateError(ViewType t, String errorMessage)
+//	{
+//		InfoHtmlBuilder infoHtmlBuilder = new InfoHtmlBuilder();
+//		String text = infoHtmlBuilder.wrapErrorIntoHtml(errorMessage, getResources());
+//		TextViewUpdater tvu = new TextViewUpdater();
+//		tvu.update(this, text, t);
+//		infoHtmlBuilder = null;
+//		tvu = null;
+//		NetworkGuiErrorManager ngem = new NetworkGuiErrorManager();
+//		ngem.onError(this, errorMessage);
+//		ngem = null;
+//	}
+
+//	@Override
+//	public void onBitmapUpdate(Bitmap bmp, BitmapType bType)
+//	{
+//		ImageViewUpdater imageViewUpdater = new ImageViewUpdater();
+//		imageViewUpdater.update(this, bmp, bType);
+//		imageViewUpdater = null;
+//	}
+//
+//	@Override
+//	public void onBitmapUpdateError(BitmapType bType, String errorMessage)
+//	{
+//		NetworkGuiErrorManager ngem = new NetworkGuiErrorManager();
+//		ngem.onError(this, errorMessage);
+//		ngem = null;
+//	}
+	
 	@Override
 	public void onDownloadStart(DownloadReason reason)
 	{
@@ -551,35 +575,7 @@ RadarOverlayUpdateListener
 			mRefreshAnimatedImageView.resetErrorFlag();
 	}
 
-	@Override
-	public void onTextUpdateError(ViewType t, String errorMessage)
-	{
-		InfoHtmlBuilder infoHtmlBuilder = new InfoHtmlBuilder();
-		String text = infoHtmlBuilder.wrapErrorIntoHtml(errorMessage, getResources());
-		TextViewUpdater tvu = new TextViewUpdater();
-		tvu.update(this, text, t);
-		infoHtmlBuilder = null;
-		tvu = null;
-		NetworkGuiErrorManager ngem = new NetworkGuiErrorManager();
-		ngem.onError(this, errorMessage);
-		ngem = null;
-	}
 
-	@Override
-	public void onBitmapUpdate(Bitmap bmp, BitmapType bType)
-	{
-		ImageViewUpdater imageViewUpdater = new ImageViewUpdater();
-		imageViewUpdater.update(this, bmp, bType);
-		imageViewUpdater = null;
-	}
-
-	@Override
-	public void onBitmapUpdateError(BitmapType bType, String errorMessage)
-	{
-		NetworkGuiErrorManager ngem = new NetworkGuiErrorManager();
-		ngem.onError(this, errorMessage);
-		ngem = null;
-	}
 
 	@Override
 	public void onStateChanged(long previousState, long state) 
@@ -606,10 +602,10 @@ RadarOverlayUpdateListener
 		LocationComparer locationComparer = new LocationComparer();
 		if(locationComparer.isBetterLocation(location, mCurrentLocation))
 		{	
-			((ODoubleLayerImageView) findViewById(R.id.homeImageView)).onLocationChanged(location);
-			((ODoubleLayerImageView) findViewById(R.id.todayImageView)).onLocationChanged(location);
-			((ODoubleLayerImageView) findViewById(R.id.tomorrowImageView)).onLocationChanged(location);
-			((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).onLocationChanged(location);
+//			((ODoubleLayerImageView) findViewById(R.id.homeImageView)).onLocationChanged(location);
+//			((ODoubleLayerImageView) findViewById(R.id.todayImageView)).onLocationChanged(location);
+//			((ODoubleLayerImageView) findViewById(R.id.tomorrowImageView)).onLocationChanged(location);
+//			((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).onLocationChanged(location);
 			mCurrentLocation = location;
 			if(this.m_downloadManager.state().name() == StateName.Online)
 			{
@@ -662,13 +658,13 @@ RadarOverlayUpdateListener
 	{
 //		Log.e("onSelectionDone", "setting map mode in onSelectionDone " + type + " " + oTime);
 		/* switch the working mode of the map view */
+		mViewPager.setCurrentItem(FlipperChildren.MAP);
 		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
 		map.setMode(new MapViewMode(type, oTime));
 		if(type != ObservationType.WEBCAM)
 			map.updateObservations(m_observationsCache.getObservationData(oTime));
-		((OViewFlipper)findViewById(R.id.viewFlipper1)).setDisplayedChild(FlipperChildren.MAP, false);
 	}
-
+	
 	@Override
 	public boolean onMenuItemClick(MenuItem menuItem) 
 	{
@@ -800,41 +796,43 @@ RadarOverlayUpdateListener
 	
 	public void switchView(ViewType id) 
 	{
-		// TODO Auto-generated method stub
-		OViewFlipper viewFlipper = (OViewFlipper) this.findViewById(R.id.viewFlipper1);
-		viewFlipper.setOutAnimation(null);
-		viewFlipper.setInAnimation(null);
-		
+		Log.e("switchView", "view type " + id);
 		mCurrentViewType = id;
+		ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 
 		/* if not already checked, changed flipper page */
 		/* change flipper child. Title is updated by the FlipperChildChangeListener */
 		switch(id)
 		{
 		case HOME:
-			viewFlipper.setDisplayedChild(FlipperChildren.HOME, false);
-			/* set checked  the clicked button */
+			viewFlipper.setDisplayedChild(0);
+			mViewPager.setCurrentItem(FlipperChildren.HOME);
 			break;
 		case TODAY:
-			viewFlipper.setDisplayedChild(FlipperChildren.TODAY, false);
+			viewFlipper.setDisplayedChild(0);
+			mViewPager.setCurrentItem(FlipperChildren.TODAY);
 			break;
 		case TOMORROW:
-			viewFlipper.setDisplayedChild(FlipperChildren.TOMORROW, false);
+			viewFlipper.setDisplayedChild(0);
+			mViewPager.setCurrentItem(FlipperChildren.TOMORROW);
 			break;
 		case TWODAYS:
-			viewFlipper.setDisplayedChild(FlipperChildren.TWODAYS, false);
+			mActionBarPersonalizer.drawerItemChanged(0);
+			mViewPager.setCurrentItem(FlipperChildren.TWODAYS);
 			break;
 		case MAP:		
-		case RADAR:
+		case RADAR:			
+			viewFlipper.setDisplayedChild(1);
+			mViewPager.setCurrentItem(FlipperChildren.MAP);
 			/* remove itemized overlays (observations), if present, and restore radar view */
 			((OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
-			viewFlipper.setDisplayedChild(FlipperChildren.MAP, false);
 			break;
 
 		case ACTION_CENTER_MAP:
 			((OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview)).centerMap();
 			break;
 		default:
+			viewFlipper.setDisplayedChild(1);
 			break;
 		}
 
@@ -1068,6 +1066,7 @@ RadarOverlayUpdateListener
 
     ViewPager mViewPager;
     TabsAdapter mTabsAdapter;
+    LinearLayout mMainLayout;
 
 
 	int availCnt = 0;

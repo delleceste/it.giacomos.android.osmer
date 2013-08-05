@@ -15,15 +15,23 @@
     android:layout_width="400px" android:layout_height="800px"
     -->
   
+  <ViewFlipper
+        android:id="@+id/viewFlipper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+  
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/mainRelativeLayout"
+        android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/shape_background_landscape"
         android:orientation="horizontal" >
         
     </LinearLayout>
+    
+    <include  layout="@layout/map"></include>
+    
+    </ViewFlipper>
     
     <!-- The navigation drawer -->
 

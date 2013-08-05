@@ -2,14 +2,13 @@ package it.giacomos.android.osmer;
 
 import android.widget.Toast;
 import it.giacomos.android.osmer.observations.ObservationType;
-import it.giacomos.android.osmer.widgets.OViewFlipper;
 import it.giacomos.android.osmer.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
 
 public class CurrentViewUpdater {
 	public void update(OsmerActivity a)
 	{
-		int displayedChild = ((OViewFlipper) a.findViewById(R.id.viewFlipper1)).getDisplayedChild();
+		int displayedChild = a.getViewPager().getCurrentItem();
 		if(displayedChild == FlipperChildren.MAP)
 		{
 			OMapFragment mapView = (OMapFragment) a.getSupportFragmentManager().findFragmentById(R.id.mapview); 

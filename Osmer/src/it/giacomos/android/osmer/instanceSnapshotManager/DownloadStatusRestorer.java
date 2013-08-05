@@ -4,11 +4,9 @@ import android.os.Bundle;
 
 import it.giacomos.android.osmer.BitmapType;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.ViewType;
 import it.giacomos.android.osmer.downloadManager.DownloadStatus;
-import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
-import it.giacomos.android.osmer.widgets.OTextView;
+import it.giacomos.android.osmer.downloadManager.Data.DataPool;
 
 public class DownloadStatusRestorer {
 	protected DownloadStatusRestorer(Bundle b)
@@ -41,30 +39,17 @@ public class DownloadStatusRestorer {
 	{
 		DownloadStatus ds = DownloadStatus.Instance();
 		ds.state = DownloadStatus.INIT;
+		DataPool dataPool = DataPool.Instance();
 		/* ask each interesting view whether it succeeded in restoring the state */
 		
-		/* OTextViews */
-		OTextView otw = (OTextView) a.findViewById(R.id.homeTextView);
-		ds.updateState(ViewType.HOME, otw.isRestoreSuccessful());
+		ds.updateState(ViewType.HOME, dataPool.isTextValid(ViewType.HOME));
+		ds.updateState(ViewType.TODAY, dataPool.isTextValid(ViewType.TODAY));
+		ds.updateState(ViewType.TOMORROW, dataPool.isTextValid(ViewType.TOMORROW));
+		ds.updateState(ViewType.TWODAYS, dataPool.isTextValid(ViewType.TWODAYS));
 		
-		otw = (OTextView) a.findViewById(R.id.todayTextView);
-		ds.updateState(ViewType.TODAY, otw.isRestoreSuccessful());
-		
-		otw = (OTextView) a.findViewById(R.id.tomorrowTextView);
-		ds.updateState(ViewType.TOMORROW, otw.isRestoreSuccessful());
-		
-		otw = (OTextView) a.findViewById(R.id.twoDaysTextView);
-		ds.updateState(ViewType.TWODAYS, otw.isRestoreSuccessful());
-		
-		/* ODoubleLayerImageViews */
-		ODoubleLayerImageView iv = (ODoubleLayerImageView) a.findViewById(R.id.todayImageView);
-		ds.updateState(BitmapType.TODAY, iv.isRestoreSuccessful());
-		
-		iv = (ODoubleLayerImageView) a.findViewById(R.id.tomorrowImageView);
-		ds.updateState(BitmapType.TOMORROW, iv.isRestoreSuccessful());
-		
-		iv = (ODoubleLayerImageView) a.findViewById(R.id.twoDaysImageView);
-		ds.updateState(BitmapType.TWODAYS, iv.isRestoreSuccessful());
+		ds.updateState(BitmapType.TODAY, dataPool.isBitmapValid(BitmapType.TODAY));
+		ds.updateState(BitmapType.TOMORROW, dataPool.isBitmapValid(BitmapType.TOMORROW));
+		ds.updateState(BitmapType.TWODAYS, dataPool.isBitmapValid(BitmapType.TWODAYS));
 
 		/* download marked complete/uncomplete */
 		ds.setDownloadErrorCondition(ds.downloadErrorCondition());
@@ -72,7 +57,6 @@ public class DownloadStatusRestorer {
 		/* restore last download timestamp on the state machine */
 		ds.setLastUpdateCompletedOn(m_bundle.getLong("lastDownloadTimestamp"));
 	}
-
 	
 	private Bundle m_bundle;
 }
