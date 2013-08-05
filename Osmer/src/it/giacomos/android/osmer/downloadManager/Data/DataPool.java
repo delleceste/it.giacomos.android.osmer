@@ -23,6 +23,16 @@ public class DataPool implements DownloadListener
 	
 	private HashMap<ViewType, DataPoolTextListener> mTextListeners;
 
+	public HashMap<BitmapType, BitmapData> getBitmapData()
+	{
+		return mBitmapData;
+	}
+	
+	public HashMap<ViewType, StringData>  getStringData()
+	{
+		return mStringData;
+	}
+	
 	private DataPool()
 	{
 		mBitmapData = new HashMap<BitmapType, BitmapData>();
