@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.guiHelpers;
 
 import android.os.Bundle;
+import android.util.Log;
 
 public class ActionBarStateManager 
 {
@@ -13,22 +14,22 @@ public class ActionBarStateManager
 	
 	public void saveState(Bundle bu)
 	{
-		bu.putInt("tabTag", mActionBarTab);
+		if(mActionBarType == ActionBarPersonalizer.FORECAST)
+			bu.putInt("tabTag", mActionBarTab);
 		bu.putInt("spinnerPosition", mSpinnerPosition);
 		bu.putInt("actionBarType", mActionBarType);
 	}
 	
 	public void restoreState(Bundle b, ActionBarPersonalizer abp)
 	{
-		mActionBarTab = b.getInt("tabTag");
-		mSpinnerPosition = b.getInt("spinnerPosition");
-		mActionBarType = b.getInt("actionBarType");
+		mActionBarTab = b.getInt("tabTag", 0);
+		mSpinnerPosition = b.getInt("spinnerPosition", 0);
+		mActionBarType = b.getInt("actionBarType", 0);
 		
-		/* change the action bar type and mode */
-		abp.drawerItemChanged(mActionBarType);
 		
 		if(mActionBarType == ActionBarPersonalizer.FORECAST)
 		{
+			Log.e("restoreState (ActionBarStateManager)", "setTabSelected " + mActionBarTab);
 			abp.setTabSelected(mActionBarTab);
 		}
 		else if(mActionBarType == ActionBarPersonalizer.DAILY_OBS 
@@ -38,12 +39,15 @@ public class ActionBarStateManager
 		}
 		else if(mActionBarType == ActionBarPersonalizer.RADAR)
 		{
-			
+			abp.setTabSelected(0);
 		}
 		else if(mActionBarType == ActionBarPersonalizer.WEBCAM)
 		{
-			
+			abp.setTabSelected(0);
 		}
+		/* change the action bar type and mode */
+		Log.e("restoreState (ActionBarStateManager)", "calling drawerItemChanged " + mActionBarType);
+		abp.drawerItemChanged(mActionBarType);
 	}
 	
 	public int getSelectedTab()

@@ -3,16 +3,15 @@ package it.giacomos.android.osmer;
 import it.giacomos.android.osmer.downloadManager.DownloadManager;
 import it.giacomos.android.osmer.downloadManager.DownloadReason;
 import it.giacomos.android.osmer.downloadManager.DownloadStatus;
+import it.giacomos.android.osmer.downloadManager.Data.DataPool;
 import it.giacomos.android.osmer.downloadManager.state.StateName;
 import it.giacomos.android.osmer.downloadManager.state.Urls;
 import it.giacomos.android.osmer.guiHelpers.ActionBarPersonalizer;
 import it.giacomos.android.osmer.guiHelpers.ActionBarStateManager;
-import it.giacomos.android.osmer.guiHelpers.ImageViewUpdater;
 import it.giacomos.android.osmer.guiHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.guiHelpers.NetworkGuiErrorManager;
 import it.giacomos.android.osmer.guiHelpers.ObservationTypeGetter;
 import it.giacomos.android.osmer.guiHelpers.RadarImageTimestampTextBuilder;
-import it.giacomos.android.osmer.guiHelpers.TextViewUpdater;
 import it.giacomos.android.osmer.guiHelpers.TitlebarUpdater;
 import it.giacomos.android.osmer.guiHelpers.WebcamMapUpdater;
 import it.giacomos.android.osmer.guiHelpers.DrawerItemClickListener;
@@ -37,9 +36,7 @@ import it.giacomos.android.osmer.preferences.*;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -48,12 +45,10 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -82,14 +77,14 @@ import android.widget.ViewFlipper;
 public class OsmerActivity extends FragmentActivity 
 implements OnClickListener, 
 DownloadStateListener,
-FlipperChildChangeListener,
 SnapshotManagerListener,
 LocationListener,
 GeocodeAddressUpdateListener,
 OnMenuItemClickListener, 
 OnDismissListener,
 MapFragmentListener,
-RadarOverlayUpdateListener
+RadarOverlayUpdateListener,
+DataPoolErrorListener
 {
 	/** Called when the activity is first created. */
 	@Override
@@ -105,9 +100,7 @@ RadarOverlayUpdateListener
 
 	public void onResume()
 	{	
-		Log.e("onResume ", "application resumed");
 		super.onResume();
-
 		/* registers network status monitor broadcast receiver (for this it needs `this')
 		 * Must be called _after_ instance restorer's onResume!
 		 */
@@ -149,7 +142,6 @@ RadarOverlayUpdateListener
 		m_downloadManager.onPause(this);
 		if(m_locationManager != null)
 			m_locationManager.removeUpdates(this);
-		m_observationsCache.saveLatestToStorage(this);
 	}
 
 	/**
@@ -187,6 +179,8 @@ RadarOverlayUpdateListener
 			mRefreshAnimatedImageView.hide();
 		/* cancel async tasks that may be running when the application is destroyed */
 		m_downloadManager.stopPendingTasks();
+		/* save downloaded data to storage */
+		DataPool.Instance().store(getApplicationContext());
 		super.onDestroy();
 	}
 
@@ -289,9 +283,12 @@ RadarOverlayUpdateListener
 	
 	public void init()
 	{
-		Log.e("init()", ">>>> enter");
 		mViewPager = new ViewPager(this);
 		mViewPager.setId(R.id.pager);
+		/* Set the number of pages that should be retained to either side of 
+		 * the current page in the view hierarchy in an idle state
+		 */
+//		mViewPager.setOffscreenPageLimit(3);
 		mMainLayout = (LinearLayout) findViewById(R.id.mainLayout);
 		mMainLayout.addView(mViewPager);
 		
@@ -301,20 +298,26 @@ RadarOverlayUpdateListener
 
 		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
 		
+		/* DataPool. Obtain the instance and load data from storage */
+		DataPool dataPool = DataPool.Instance();
+		dataPool.registerErrorListener(this); /* listen for network errors */
+		dataPool.load(getApplicationContext());
+		
+		/* download manager */
 		m_downloadManager = new DownloadManager(this);
+		m_downloadManager.setDownloadListener(dataPool);
+		
 		m_observationsCache = new ObservationsCache();
+		
+		
 		/* map updates the observation data in ItemizedOverlay when new observations are available
 		 *
 		 */
 		m_observationsCache.installObservationsCacheUpdateListener(map);
+		/* observations are updated by the DataPool data center */
+		dataPool.registerTextListener(ViewType.DAILY_TABLE, m_observationsCache);
+		dataPool.registerTextListener(ViewType.LATEST_TABLE, m_observationsCache);
 
-		SituationImage situationImage = (SituationImage) findViewById(R.id.homeImageView);
-		/* Situation Image will listen for cache changes, which happen on store() call
-		 * in this class or when cache is restored from the internal storage.
-		 */
-		m_observationsCache.setLatestObservationCacheChangeListener(situationImage);
-
-		Log.e("init()", "is Resources null? " + getResources());
 		mDrawerItems = getResources().getStringArray(R.array.drawer_text_items);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -359,9 +362,6 @@ RadarOverlayUpdateListener
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 
-		/* Before calling onResume on download manager */
-		m_observationsCache.restoreFromStorage(this);
-
 		/* calls restoreFromInternalStorage() on ODoubleLayerTextView and 
 		 * OTextView. That method restores texts and images saved on the 
 		 * storage at each text or image update from the network async tasks.
@@ -373,10 +373,8 @@ RadarOverlayUpdateListener
 		
 		/* set html text on Radar info text view */
 		TextView radarInfoTextView = (TextView)findViewById(R.id.radarInfoTextView);
-		Log.e("onCreateView MapFragment: ", "infoTextVIew is null? " + radarInfoTextView);
 		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
 		radarInfoTextView.setVisibility(View.GONE);
-		Log.e("init()", "<<<<< exit");
 	}	
 
 	@Override
@@ -420,7 +418,7 @@ RadarOverlayUpdateListener
 		/* to restore action bar and displayed mode */
 		mActionBarStateManager.saveState(outState);
 	}
-
+	
 	protected void onRestoreInstanceState(Bundle inState)
 	{
 		super.onRestoreInstanceState(inState);
@@ -528,19 +526,13 @@ RadarOverlayUpdateListener
 //		}
 //	}
 
-//	@Override
-//	public void onTextUpdateError(ViewType t, String errorMessage)
-//	{
-//		InfoHtmlBuilder infoHtmlBuilder = new InfoHtmlBuilder();
-//		String text = infoHtmlBuilder.wrapErrorIntoHtml(errorMessage, getResources());
-//		TextViewUpdater tvu = new TextViewUpdater();
-//		tvu.update(this, text, t);
-//		infoHtmlBuilder = null;
-//		tvu = null;
-//		NetworkGuiErrorManager ngem = new NetworkGuiErrorManager();
-//		ngem.onError(this, errorMessage);
-//		ngem = null;
-//	}
+	@Override
+	public void onTextUpdateError(ViewType t, String errorMessage)
+	{
+		NetworkGuiErrorManager ngem = new NetworkGuiErrorManager();
+		ngem.onError(this, errorMessage);
+		ngem = null;
+	}
 
 //	@Override
 //	public void onBitmapUpdate(Bitmap bmp, BitmapType bType)
@@ -550,13 +542,13 @@ RadarOverlayUpdateListener
 //		imageViewUpdater = null;
 //	}
 //
-//	@Override
-//	public void onBitmapUpdateError(BitmapType bType, String errorMessage)
-//	{
-//		NetworkGuiErrorManager ngem = new NetworkGuiErrorManager();
-//		ngem.onError(this, errorMessage);
-//		ngem = null;
-//	}
+	@Override
+	public void onBitmapUpdateError(BitmapType bType, String errorMessage)
+	{
+		NetworkGuiErrorManager ngem = new NetworkGuiErrorManager();
+		ngem.onError(this, errorMessage);
+		ngem = null;
+	}
 	
 	@Override
 	public void onDownloadStart(DownloadReason reason)
@@ -656,7 +648,6 @@ RadarOverlayUpdateListener
 
 	public void onSelectionDone(ObservationType type, ObservationTime oTime) 
 	{
-//		Log.e("onSelectionDone", "setting map mode in onSelectionDone " + type + " " + oTime);
 		/* switch the working mode of the map view */
 		mViewPager.setCurrentItem(FlipperChildren.MAP);
 		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
@@ -941,61 +932,10 @@ RadarOverlayUpdateListener
 	}
 	
 	public DownloadManager stateMachine() { return m_downloadManager; }
-
-	@Override
-	public void onFlipperChildChangeEvent(int child) {
-
-		OMapFragment map = null;
-		MapViewMode mapMode = null;
-		TitlebarUpdater titleUpdater = new TitlebarUpdater();
-		titleUpdater.update(this);
-		titleUpdater = null;
-		int index = -1;
-
-		switch(child)
-		{
-		case FlipperChildren.HOME:
-			index = 0;
-			mDrawerList.setItemChecked(0, true);
-			break;
-		case FlipperChildren.TODAY:
-			mDrawerList.setItemChecked(0, true);
-			index = 1;
-			break;
-		case FlipperChildren.TOMORROW:
-			mDrawerList.setItemChecked(0, true);
-			index = 2;
-			break;
-		case FlipperChildren.TWODAYS:
-			mDrawerList.setItemChecked(0, true);
-			index = 3;
-			break;
-		case FlipperChildren.MAP:
-			/* map can be in different modes: radar, webcam or observations */
-			map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
-			mapMode = map.getMode();
-			if(mapMode.currentType == ObservationType.RADAR)
-			{
-				mDrawerList.setItemChecked(1, true);
-			}
-			else if(mapMode.currentMode == ObservationTime.DAILY)
-			{
-				mDrawerList.setItemChecked(2, true);
-			}
-			else if(mapMode.currentMode == ObservationTime.LATEST)
-			{
-				mDrawerList.setItemChecked(3, true);
-			}
-			else if(mapMode.currentType == ObservationType.WEBCAM)
-			{
-				mDrawerList.setItemChecked(4, true);
-			}
-			break;
-		default:
-			break;
-		}
-		if(index > -1)
-			mActionBarPersonalizer.setTabSelected(index);
+	
+	public ObservationsCache getObservationsCache()
+	{
+		return m_observationsCache;
 	}
 	
 	public ViewPager getViewPager()

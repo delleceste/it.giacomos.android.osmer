@@ -6,10 +6,12 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.SpinnerAdapter;
 import it.giacomos.android.osmer.ForecastFragment;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.SituationFragment;
 import it.giacomos.android.osmer.TabsAdapter;
 import it.giacomos.android.osmer.ViewType;
 
@@ -78,6 +80,8 @@ public class ActionBarPersonalizer implements ActionBarTabChangeListener
 			{
 				actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 				/* tabs were removed. Navigation mode was changed: create a new TabsAdapter */
+				if(mTabsAdapter != null)
+					mTabsAdapter.clear();
 				mTabsAdapter = null;
 				mTabsAdapter = new TabsAdapter(mActivity, mActivity.getViewPager());	
 				mTabsAdapter.setActionBarTabChangeListener(this);
@@ -86,32 +90,31 @@ public class ActionBarPersonalizer implements ActionBarTabChangeListener
 
 			if(actionBar.getTabCount() == 0)
 			{
-				Bundle bSituation = new Bundle();
 				Bundle bToday = new Bundle();
 				Bundle bTomorrow = new Bundle();
 				Bundle bTwodays = new Bundle();
 				
-				bSituation.putInt("type", R.string.situation);
 				bToday.putInt("type", R.string.today_title);
 				bTomorrow.putInt("type", R.string.tomorrow_title);
 				bTwodays.putInt("type", R.string.two_days_title);
 				
-				Log.e("ActionBarPErsonalizer: drawerItemChanged", "addingTabs");
 				mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.situation)),
-		                ForecastFragment.class, bSituation);
+		                SituationFragment.class, null);
 		        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.today_title)),
 		                ForecastFragment.class, bToday);
 		        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.tomorrow_title)),
 		        		ForecastFragment.class, bTomorrow);
 		        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.two_days_title)),
 		        		ForecastFragment.class, bTwodays);
-		        Log.e("ActionBarPersonalizer", "added " + mTabsAdapter.getCount());
 			}
 			mActivity.setTitle(R.string.home_title);
 			break;
 
 		case 1:
+			Log.e("drawerItemChanged", "switching to radar");
 			mType = RADAR;
+			mTabsAdapter.clear();
+			actionBar.selectTab(actionBar.getTabAt(0));
 			actionBar.removeAllTabs();
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			mActivity.switchView(ViewType.RADAR);
@@ -120,6 +123,7 @@ public class ActionBarPersonalizer implements ActionBarTabChangeListener
 			
 		case 2:
 			mType = DAILY_OBS;
+			mTabsAdapter.clear();
 			mActivity.setTitle(R.string.observations_title_daily);
 			actionBar.removeAllTabs();
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -131,6 +135,7 @@ public class ActionBarPersonalizer implements ActionBarTabChangeListener
 				@Override
 				public boolean onNavigationItemSelected(int position, long itemId) 
 				{
+					Log.e("ActionBarPersonalizer", "onNavigationItemSelected " + position);
 					switch(position)
 					{
 					case 0:
@@ -166,6 +171,7 @@ public class ActionBarPersonalizer implements ActionBarTabChangeListener
 
 		case 3:
 			mType = LATEST_OBS;
+			mTabsAdapter.clear();
 			mActivity.setTitle(R.string.observations_title_latest);
 			actionBar.removeAllTabs();
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -221,6 +227,7 @@ public class ActionBarPersonalizer implements ActionBarTabChangeListener
 			
 		case 4:
 			mType = WEBCAM;
+			mTabsAdapter.clear();
 			actionBar.removeAllTabs();
 			mActivity.setTitle(R.string.title_webcam);
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -239,6 +246,14 @@ public class ActionBarPersonalizer implements ActionBarTabChangeListener
 	public void onActionBarTabChanged(int tab) 
 	{
 		mActionBarStateManager.onActionBarTabChanged(tab);
+		ViewType viewType = ViewType.HOME;
+		if(tab == 1) /* i == 0 -> ViewType.HOME, but already initialized */
+        	viewType = ViewType.TODAY;
+        else if(tab == 2)
+        	viewType = ViewType.TOMORROW;
+        else if(tab == 3)
+        	viewType = ViewType.TWODAYS;
+        mActivity.switchView(viewType);
 	}
 
 	private OsmerActivity mActivity;

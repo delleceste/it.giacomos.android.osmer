@@ -1,9 +1,6 @@
 package it.giacomos.android.osmer.widgets;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import it.giacomos.android.osmer.BitmapType;
 import it.giacomos.android.osmer.R;
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,21 +14,16 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.Location;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.widget.ImageView;
 
 
 public class ODoubleLayerImageView extends ImageView 
-implements StateRestorer
 {
 
 	public ODoubleLayerImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		mRestoreSuccessful = false;
 		mLocation = null;
 		mLocationPoint = null;
 		mPaint = new Paint();
@@ -41,42 +33,17 @@ implements StateRestorer
 				BitmapFactory.decodeResource(getResources(), R.drawable.fvg_background2));
 	}
 
-
-	private boolean mSaveOnInternalStorage(Bitmap bitmap) 
-	{	
-		Log.e("mSaveOnInternalStorage", "bitmap : " + this.getId());
-		FileOutputStream fos;
-		try {
-			fos = getContext().openFileOutput(makeFileName(), Context.MODE_PRIVATE);
-			bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);	
-			return true; /* success */
-		} 
-		catch (FileNotFoundException e) {
-			/* nada que hacer */
-		}
-		catch (IOException e) {
-
-		}
-		return false; /* bitmap null or impossible to save on file */
-	}
-
-	public boolean restoreFromInternalStorage()
+	public void setBitmapType(BitmapType bt)
 	{
-		Log.e("restoreFromInternalStorage", "bitmap : " + this.getId());
-		/* Decode a file path into a bitmap. If the specified file name is null, 
-		 * or cannot be decoded into a bitmap, the function returns null. 
-		 */
-		File filesDir = this.getContext().getApplicationContext().getFilesDir();
-		Bitmap bmp = BitmapFactory.decodeFile(filesDir.getAbsolutePath() + "/" + makeFileName());
-		if(bmp != null)
-		{
-			setBitmap(bmp, false);
-			mRestoreSuccessful = true;
-		}
-		return bmp != null;
+		mBitmapType = bt;
 	}
-
-	public void setBitmap(Bitmap bitmap, boolean saveInternalStorage) 
+	
+	public BitmapType getBitmapType()
+	{
+		return mBitmapType;
+	}
+	
+	public void setBitmap(Bitmap bitmap) 
 	{
 		Drawable layers[] = new Drawable[2];
 		Context appContext = this.getContext().getApplicationContext();
@@ -86,13 +53,8 @@ implements StateRestorer
 		LayerDrawable layerDrawable = new LayerDrawable(layers);
 		setImageDrawable(layerDrawable);
 		mLayerDrawableAvailable = true;
-		if(saveInternalStorage)
-			mSaveOnInternalStorage(bitmap);
 	}
 
-	public boolean isRestoreSuccessful() {
-		return mRestoreSuccessful;
-	}
 
 	public String makeFileName()
 	{
@@ -107,9 +69,9 @@ implements StateRestorer
 			if(lDrawable != null)
 			{	
 				BitmapDrawable bmpD = (BitmapDrawable) lDrawable.getDrawable(0);
-				bmpD.getBitmap().recycle();
+//				bmpD.getBitmap().recycle();
 				bmpD = (BitmapDrawable) lDrawable.getDrawable(1);
-				bmpD.getBitmap().recycle();
+//				bmpD.getBitmap().recycle();
 				lDrawable.getDrawable(1).setCallback(null);
 				lDrawable.getDrawable(0).setCallback(null);
 				lDrawable.setCallback(null);
@@ -230,12 +192,12 @@ implements StateRestorer
 
 	private PointF mLocationPoint;
 
-	private boolean mRestoreSuccessful = false;
-
 	private boolean mDrawLocationEnabled = true;
 
 	protected Paint mPaint;
 
 	private boolean mLayerDrawableAvailable;
+	
+	private BitmapType mBitmapType;
 
 }

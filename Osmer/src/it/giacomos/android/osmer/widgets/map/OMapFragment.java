@@ -114,9 +114,12 @@ MeasureOverlayChangeListener
 			mMap.animateCamera(cu);
 		}
 
-		OAnimatedTextView radarUpdateTimestampText = (OAnimatedTextView) getActivity().findViewById(R.id.radarTimestampTextView);
-		if(mMapReady && radarUpdateTimestampText.getVisibility() == View.VISIBLE && !radarUpdateTimestampText.animationHasStarted())
-			radarUpdateTimestampText.animateHide();	
+		if(getActivity() != null && getActivity().findViewById(R.id.radarTimestampTextView) != null)
+		{
+			OAnimatedTextView radarUpdateTimestampText = (OAnimatedTextView) getActivity().findViewById(R.id.radarTimestampTextView);
+			if(mMapReady && radarUpdateTimestampText.getVisibility() == View.VISIBLE && !radarUpdateTimestampText.animationHasStarted())
+				radarUpdateTimestampText.animateHide();	
+		}
 		
 		if(!mMapReady)
 			mMapReady = true;

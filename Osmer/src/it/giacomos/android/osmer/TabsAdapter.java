@@ -9,11 +9,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
-import android.content.Context;
 
 public class TabsAdapter  extends FragmentPagerAdapter
 implements ActionBar.TabListener, ViewPager.OnPageChangeListener
@@ -34,6 +32,13 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 			clss = _class;
 			args = _args;
 		}
+	}
+	
+	public void clear()
+	{
+		mViewPager.setOnPageChangeListener(null);
+		mTabs.clear();
+		notifyDataSetChanged();
 	}
 	
 	public TabsAdapter(FragmentActivity activity, ViewPager pager) {
@@ -58,9 +63,6 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 	public Fragment getItem(int position) 
 	{    
         TabInfo info = mTabs.get(position);
-		Log.e("getItem", "getting position " + position + " tabs size " + mTabs.size() + " info " + info + " name "
-				+ info.clss.getName());
-		Log.e("getItem", "instantiating " + info.clss.getName() + " int type from args " + info.args.getInt("type"));
         return Fragment.instantiate(mActivity.getApplicationContext(), info.clss.getName(), info.args);     
 	}
 
@@ -71,6 +73,18 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 	}
 
 	@Override
+	public int getItemPosition(Object object)
+	{
+		int p;
+		if(mTabs.size() == 0)
+			p = POSITION_NONE;
+		else
+			p = super.getItemPosition(object);
+		return p;
+		
+	}
+	
+	@Override
 	public void onPageScrollStateChanged(int arg0) 
 	{
 
@@ -79,8 +93,7 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 	@Override
 	public void onPageScrolled(int position, float arg1, int arg2) 
 	{
-//		if(position < 3)
-//			mActionBar.setSelectedNavigationItem(position);
+
 	}
 
 	public void setActionBarTabChangeListener(ActionBarTabChangeListener l)
@@ -91,9 +104,11 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 	@Override
 	public void onPageSelected(int position) 
 	{
-		Log.e("onPageSelected", "position " + position);
 		if(position < 4 && mActionBar.getNavigationMode() == ActionBar.NAVIGATION_MODE_TABS)
+		{
+			mViewPager.setCurrentItem(position);
 			mActionBar.setSelectedNavigationItem(position);
+		}
 	}
 
 	@Override
@@ -102,28 +117,13 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 	}
 
 	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction arg1) 
+	public void onTabSelected(Tab tab, FragmentTransaction ft) 
 	{
 		Object tag = tab.getTag();
-		ViewType viewType = ViewType.HOME;
         for (int i = 0; i < mTabs.size(); i++) 
         {
             if (mTabs.get(i) == tag) 
             {
-            	Log.e("onTabSelected", "calling setCurrentItem on view Pager: " + i);
-             //   mViewPager.setCurrentItem(i);
-                if(i == 1) /* i == 0 -> ViewType.HOME, but already initialized */
-                	viewType = ViewType.TODAY;
-                else if(i == 2)
-                	viewType = ViewType.TOMORROW;
-                else if(i == 3)
-                	viewType = ViewType.TWODAYS;
-                
-                mActivity.switchView(viewType);
-                /* ActionBarPersonalizer is an ActionBarTabChangedListener and 
-                 * sets the tab index on the ActionBarStateManager in order to
-                 * be able to restore the tab index through screen orientation changes.
-                 */
                 mActionBarTabChangeListener.onActionBarTabChanged(i);
             }
         }

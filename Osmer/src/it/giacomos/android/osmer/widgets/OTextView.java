@@ -1,6 +1,8 @@
 package it.giacomos.android.osmer.widgets;
 
 import it.giacomos.android.osmer.ViewType;
+import it.giacomos.android.osmer.downloadManager.Data.DataPoolTextListener;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -22,72 +24,16 @@ import android.widget.TextView;
  * @author giacomo
  *
  */
-public class OTextView extends TextView implements StateRestorer
+public class OTextView extends TextView implements DataPoolTextListener
 {
 
 	public OTextView(Context context, AttributeSet attrs) 
 	{
 		super(context, attrs);	
-		mRestoreSuccessful = false;
 		this.setTextColor(Color.BLACK);
 		this.setPadding(10, 10, 10, 10);
 		mStringType = ViewType.HOME;
 		mHtml  = null;
-	}
-
-	private boolean mSaveOnInternalStorage() 
-	{
-		if(mHtml == null)
-			return false;
-		
-
-		Log.e("mSaveOnInternalStorage", this.getId() +", string type " + this.mStringType);
-		FileOutputStream fos;
-		try {
-			fos = getContext().getApplicationContext().openFileOutput(makeFileName(), Context.MODE_PRIVATE);
-			try {
-				fos.write(mHtml.getBytes());
-				fos.close();
-				return true; /* success */
-			} 
-			catch (IOException e) 
-			{
-			}
-		} 
-		catch (FileNotFoundException e) {
-			/* nada que hacer */
-		}
-		return false;
-	}
-
-	public boolean restoreFromInternalStorage()
-	{
-		Log.e("restoreFromInternalStorage", this.getId() +", string type " + this.mStringType);
-		String html = "";
-		/* Open a private file associated with this Context's application package for reading. */
-		try {
-			String line;
-			BufferedReader in = new BufferedReader(new FileReader(getContext().getApplicationContext().getFilesDir().getAbsolutePath() + "/" + makeFileName()));
-			
-			try {
-				line = in.readLine();
-				while(line != null)
-				{
-					html += line + "\n";
-					line = in.readLine();
-				}
-				if(html.length() > 0)
-					html = html.substring(0, html.length() - 1);
-				mRestoreSuccessful = true;
-			} 
-			catch (IOException e) {
-				
-			}		
-		} 
-		catch (FileNotFoundException e) {}
-		
-		setHtml(html, false); /* false: do not save on internal storage again! */
-		return true;
 	}
 	
 	public String formatText(String s)
@@ -95,26 +41,35 @@ public class OTextView extends TextView implements StateRestorer
 		return s;
 	}
 	
-	/* invoked by TextViewUpdater after that the TextTask has completed */
-	public final void setHtml(String html, boolean saveOnInternalStorage)
+	/* invoked after that the TextTask has completed */
+	public final void setHtml(String html)
 	{
 		if(mHtml == null || !html.equals(mHtml))
 		{
+			Log.e("OTextView:setHtml", "updating html cause differs");
 			Spanned fromHtml = Html.fromHtml(html);
 			mHtml = html;
 			setText(fromHtml);
-			/* each time text is updated, save it, if the flag is true */
-			if(saveOnInternalStorage)
-				mSaveOnInternalStorage();
 		}
 	}
+
+	@Override
+	public void onTextChanged(String txt, ViewType t) 
+	{
+		setHtml(txt);
+	}
 	
-	public void setStringType(ViewType t)
+	public void onTextError(String error, ViewType t)
+	{
+		
+	}
+	
+	public void setViewType(ViewType t)
 	{
 		mStringType = t;
 	}
 	
-	public ViewType getStringType()
+	public ViewType getViewType()
 	{
 		return mStringType;
 	}
@@ -124,16 +79,6 @@ public class OTextView extends TextView implements StateRestorer
 	}
 
 	private String mHtml;
-	
-	public boolean isRestoreSuccessful() {
-		return mRestoreSuccessful;
-	}
-	
-	public String makeFileName()
-	{
-		return "textViewHtml_" + this.getId() + "txt";
-	}
-	
-	private boolean mRestoreSuccessful;	
 	private ViewType mStringType;
+
 }

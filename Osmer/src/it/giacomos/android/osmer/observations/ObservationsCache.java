@@ -1,19 +1,12 @@
 package it.giacomos.android.osmer.observations;
-
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 
-import it.giacomos.android.osmer.ViewType;
-import it.giacomos.android.osmer.widgets.LatestObservationCacheChangeListener;
-import android.content.Context;
 import android.util.Log;
+import it.giacomos.android.osmer.ViewType;
+import it.giacomos.android.osmer.downloadManager.Data.DataPoolTextListener;
+import it.giacomos.android.osmer.widgets.LatestObservationCacheChangeListener;
 
-public class ObservationsCache implements TableToMapUpdateListener 
+public class ObservationsCache implements TableToMapUpdateListener, DataPoolTextListener 
 {
 	public ObservationsCache()
 	{
@@ -39,6 +32,8 @@ public class ObservationsCache implements TableToMapUpdateListener
 	public void setLatestObservationCacheChangeListener(LatestObservationCacheChangeListener l)
 	{
 		mLatestObservationCacheChangeListener = l;
+		if(mLatestMap != null)
+			l.onCacheUpdate(this);
 	}
 
 	public void clear()
@@ -59,6 +54,7 @@ public class ObservationsCache implements TableToMapUpdateListener
 
 	public void onTableUpdate(HashMap <String, ObservationData> map, ViewType t)
 	{
+		Log.e("ObservationsCache.onTableUpdate", "got update type " + t);
 		switch(t)
 		{
 		case DAILY_TABLE:
@@ -74,7 +70,9 @@ public class ObservationsCache implements TableToMapUpdateListener
 			mObservationsCacheUpdateListener.onObservationsCacheUpdate(map, t);
 	}
 	
-	public void store(String s, ViewType t)
+
+	@Override
+	public void onTextChanged(String s, ViewType t) 
 	{
 		if(t == ViewType.DAILY_TABLE && s != mDailyObservation)
 		{
@@ -89,6 +87,12 @@ public class ObservationsCache implements TableToMapUpdateListener
 			at.execute(s);
 			mLatestObservation = s;
 		}
+	}
+
+	@Override
+	public void onTextError(String error, ViewType t) 
+	{
+		
 	}
 
 	public HashMap<String, ObservationData> getObservationData(ObservationTime oTime) {
@@ -120,80 +124,9 @@ public class ObservationsCache implements TableToMapUpdateListener
 		return null;
 	}
 
-	public boolean restoreFromStorage(Context ctx)
-	{
-		String data = "";
-		final String[] filenames = { "latest_observations.txt", "daily_observations.txt" };
-		for(String filename : filenames)
-		{
-			data = ""; /* clear! */
-			try {
-				String line;
-				BufferedReader in = new BufferedReader(
-						new FileReader(ctx.getFilesDir().getAbsolutePath() + "/" + filename));
-				try {
-					line = in.readLine();
-					while(line != null)
-					{
-						data += line + "\n";
-						line = in.readLine();
-					}
-				} 
-				catch (IOException e) {}		
-			} 
-			catch (FileNotFoundException e) {}
-
-			/* store the read file or the empty string */
-			ViewType stringType;
-			if(filename == "latest_observations.txt")
-				stringType = ViewType.LATEST_TABLE;
-			else
-				stringType = ViewType.DAILY_TABLE;
-
-			this.store(data, stringType);
-		}
-
-		return true;
-	}
-
-	public boolean saveLatestToStorage(Context ctx)
-	{
-		if(mLatestObservation != "")
-		{
-			try {
-				FileOutputStream fos = ctx.openFileOutput("latest_observations.txt", Context.MODE_PRIVATE);
-				fos.write(mLatestObservation.getBytes());
-				fos.close();
-			} 
-			catch (FileNotFoundException e) {
-				/* nada que hacer */
-			}
-			catch (IOException e) {
-
-			}
-		}
-		if(mDailyObservation != "")
-		{
-			try {
-				FileOutputStream fos = ctx.openFileOutput("daily_observations.txt", Context.MODE_PRIVATE);
-				fos.write(mDailyObservation.getBytes());
-				fos.close();
-			} 
-			catch (FileNotFoundException e) {
-				/* nada que hacer */
-			}
-			catch (IOException e) {
-
-			}
-		}
-		return true; 
-	}
-
-
 	private LatestObservationCacheChangeListener mLatestObservationCacheChangeListener;
 	private HashMap <String, ObservationData> mDailyMap;
 	private HashMap <String, ObservationData> mLatestMap;
 	private String mLatestObservation, mDailyObservation;
 	private  ObservationsCacheUpdateListener mObservationsCacheUpdateListener;
-
 }
