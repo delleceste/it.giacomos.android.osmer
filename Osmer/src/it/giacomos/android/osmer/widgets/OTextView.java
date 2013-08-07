@@ -54,7 +54,7 @@ public class OTextView extends TextView implements DataPoolTextListener
 	}
 
 	@Override
-	public void onTextChanged(String txt, ViewType t) 
+	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
 	{
 		setHtml(txt);
 	}

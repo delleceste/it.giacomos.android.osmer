@@ -129,6 +129,7 @@
         <item>Wind speed</item>
         <item>Rain</item>
         <item>Snow</item>
+        <item>Sea</item>
         <item>Humidity</item>
     </string-array>
 	
@@ -140,7 +141,7 @@
     <string name="drag_p1">Long click and then move P1</string>
     <string name="dist_from_p0">Distance from P0: </string>
     <string name="dist_from_p1">Distance from P1: </string>
-    <string name="meters">meters</string>
+    <string name="meters">mt</string>
     <string name="km">km</string>
 	<string name="my_location_layer_not_enabled">il livello my-location non è abilitato</string>
 	

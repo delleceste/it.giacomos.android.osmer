@@ -65,10 +65,8 @@ public class ConfigInfo {
 			+ Constants.LOCATION_COMPARER_ACCURACY + "(meters);<br/>";
 		
 		info += "<p><strong>Location update request parameters</strong>:<br/>" +
-				"* NETWORK, minTime: " + Constants.LOCATION_UPDATES_NETWORK_MIN_TIME + "ms<br/>" +
-				"* NETWORK, minDistance: " + Constants.LOCATION_UPDATES_NETWORK_MIN_DIST + "m<br/>" +
-				"* GPS, minTime: " + Constants.LOCATION_UPDATES_GPS_MIN_TIME + "ms<br/>" +
-				"* GPS, minDistance: " + Constants.LOCATION_UPDATES_GPS_MIN_DIST + "m<br/>"; 
+				"* Update interval: " + Constants.LOCATION_UPDATE_INTERVAL + "ms<br/>" +
+				"* Fastest update interval: " + Constants.LOCATION_FASTEST_UPDATE_INTERVAL + "ms<br/>"; 
 		
 		//		"* PASSIVE, minTime: " + Constants.LOCATION_UPDATES_PASSIVE_MIN_TIME + "ms<br/>" +
 			//	"* PASSIVE, minDistance: " + Constants.LOCATION_UPDATES_PASSIVE_MIN_DIST + "m<br/>";

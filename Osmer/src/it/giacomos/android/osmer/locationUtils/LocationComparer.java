@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.locationUtils;
 
 import android.location.Location;
+import android.util.Log;
 
 /* taken from 
  * http://developer.android.com/guide/topics/location/strategies.html
@@ -17,6 +18,7 @@ public class LocationComparer {
 	 */
 	public boolean isBetterLocation(Location newLocation, Location currentBestLocation) {
 	    if (currentBestLocation == null) {
+	    	Log.e("isBetterLocation", "current best location is NULL, return true");
 	        // A new location is always better than no location
 	        return true;
 	    }
@@ -42,34 +44,40 @@ public class LocationComparer {
 	     */
 	    if (isNewer && !isSignificantlyLessAccurate && newLocation.getProvider().equals("gps")) 
 	    {
+	    	Log.e("isBetterLocation", "true, 1");
 	        return true;
 	    }
 	    // If it's been more than two minutes since the current location, use the new location
 	    // because the user has likely moved
 	    if (isSignificantlyNewer) 
 	    {
+	    	Log.e("isBetterLocation", "true, isSignificantlyNewer");
 	        return true;
 	    // If the new location is more than two minutes older, it must be worse
 	    } 
 	    else if (isSignificantlyOlder) 
 	    {
+	    	Log.e("isBetterLocation", "false, isSignificantlyOlder");
 	        return false;
 	    }
 
 	    // Determine location quality using a combination of timeliness and accuracy
 	    if (isMoreAccurate) 
 	    {
+	    	Log.e("isBetterLocation", "true, isMoreAccurate");
 	        return true;
 	    } 
 	    else if (isNewer && !isLessAccurate) 
 	    {
-	    	
+	    	Log.e("isBetterLocation", "true, isNewer && !isLessAccurate");
 	        return true;
 	    } 
 	    else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) 
 	    {
+	    	Log.e("isBetterLocation", "isNewer && !isSignificantlyLessAccurate && isFromSameProvider");
 	        return true;
 	    }
+	    Log.e("isBetterLocation", "false");
 	    return false;
 	}
 

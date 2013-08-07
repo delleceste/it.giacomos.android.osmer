@@ -1,5 +1,7 @@
 package it.giacomos.android.osmer.guiHelpers;
+import android.app.ActionBar;
 import android.content.res.Resources;
+import android.util.Log;
 
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
@@ -24,10 +26,19 @@ public class TitleBuilder
 		Resources res = a.getResources();
 		String t = "";
 		
-		if (scr == CurrentScreen.HOME_SCREEN || scr == CurrentScreen.TODAY_SCREEN
-				|| scr == CurrentScreen.TOMORROW_SCREEN || scr == CurrentScreen.TWODAYS_SCREEN) {
+		Log.e("makeTitle", "selectedItemPos" + a.getDrawerListView().getSelectedItemPosition()
+				+ " scr " + scr);
+		if (a.getDrawerListView().getCheckedItemPosition() == 0
+				&& (scr == CurrentScreen.HOME_SCREEN || 
+				scr == CurrentScreen.TODAY_SCREEN
+				|| scr == CurrentScreen.TOMORROW_SCREEN || 
+				scr == CurrentScreen.TWODAYS_SCREEN)) 
+		{
 			t += res.getString(R.string.forecast_title);
-		} else if (scr == CurrentScreen.MAPVIEW_SCREEN) {
+			
+		} 
+		else
+		{
 			mapMode = map.getMode();
 			if(mapMode.currentType == ObservationType.RADAR)
 				t += res.getString(R.string.radar_title);
@@ -37,8 +48,6 @@ public class TitleBuilder
 				t += res.getString(R.string.observations_title_daily);
 			else if(mapMode.currentMode == ObservationTime.LATEST)
 				t += res.getString(R.string.observations_title_latest);
-		} else {
-			t += "untitled (yet)";
 		}
 		
 		t += " - " + res.getString(R.string.app_name);
@@ -46,6 +55,7 @@ public class TitleBuilder
 		/* network status */
 		if(!networkAvailable)
 			t += " - " + res.getString(R.string.offline);
+		
 		return t;
 	}
 }

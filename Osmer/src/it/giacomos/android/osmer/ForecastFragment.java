@@ -91,9 +91,9 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 	}
 
 	@Override
-	public void onBitmapChanged(Bitmap bmp, BitmapType t) 
+	public void onBitmapChanged(Bitmap bmp, BitmapType t, boolean fromCache) 
 	{
-		Log.e("onBitmapChanged", "bitmap null? " + (bmp == null) + " image view null ? " + mImageView);
+		Log.e("onBitmapChanged", "bitmap null? " + (bmp == null) + " fromCache" + fromCache);
 		mImageView.setBitmap(bmp);
 	}
 
@@ -104,7 +104,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 	}
 
 	@Override
-	public void onTextChanged(String txt, ViewType t) 
+	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
 	{
 		mTextView.setHtml(mTextView.formatText(txt));
 	}

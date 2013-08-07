@@ -2,6 +2,9 @@ package it.giacomos.android.osmer.widgets;
 
 import it.giacomos.android.osmer.BitmapType;
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.locationUtils.LocationService;
+import it.giacomos.android.osmer.locationUtils.LocationServiceAddressUpdateListener;
+import it.giacomos.android.osmer.locationUtils.LocationServiceUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -16,10 +19,14 @@ import android.graphics.drawable.LayerDrawable;
 import android.location.Location;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 public class ODoubleLayerImageView extends ImageView 
+implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 {
 
 	public ODoubleLayerImageView(Context context, AttributeSet attrs) {
@@ -31,6 +38,10 @@ public class ODoubleLayerImageView extends ImageView
 		mLayerDrawableAvailable = false;
 		mFvgBackgroundDrawable = new BitmapDrawable(getResources(), 
 				BitmapFactory.decodeResource(getResources(), R.drawable.fvg_background2));
+		/* register for location updates */
+		LocationService locationService = LocationService.Instance();
+		locationService.registerLocationServiceAddressUpdateListener(this);
+		locationService.registerLocationServiceUpdateListener(this);
 	}
 
 	public void setBitmapType(BitmapType bt)
@@ -87,12 +98,21 @@ public class ODoubleLayerImageView extends ImageView
 		this.invalidate();
 	}
 
+	@Override
 	public void onLocationChanged(Location location) {
 		mLocation = location;
 		mLocationPoint = new LocationToImgPixelMapper().mapToPoint(this, location);
 		this.invalidate();
 	}
 
+	@Override
+	public void onLocationServiceError(String message) 
+	{
+		/* show a toast if visible */
+		if(this.getVisibility() == View.VISIBLE)
+			Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+	}
+	
 	protected void setDrawLocationEnabled(boolean ena)
 	{
 		mDrawLocationEnabled = ena;
@@ -145,8 +165,8 @@ public class ODoubleLayerImageView extends ImageView
 			else if(!mLocality.isEmpty())
 				txtLoc = mLocality;
 			else
-				txtLoc = "...";
-			// mAccuracy + " " + String.format("%.2f", mLocation.getAccuracy()) + "m";
+				txtLoc = "";
+
 			int densityDpi = this.getResources().getDisplayMetrics().densityDpi;
 
 			if(densityDpi == DisplayMetrics.DENSITY_XHIGH)
@@ -199,5 +219,4 @@ public class ODoubleLayerImageView extends ImageView
 	private boolean mLayerDrawableAvailable;
 	
 	private BitmapType mBitmapType;
-
 }

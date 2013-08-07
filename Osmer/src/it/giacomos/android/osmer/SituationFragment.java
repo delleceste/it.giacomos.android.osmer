@@ -60,7 +60,7 @@ public class SituationFragment extends Fragment implements DataPoolTextListener,
 	}
 
 	@Override
-	public void onBitmapChanged(Bitmap bmp, BitmapType t) 
+	public void onBitmapChanged(Bitmap bmp, BitmapType t, boolean fromCache) 
 	{
 		mSituationImage.setBitmap(bmp);
 	}
@@ -72,7 +72,7 @@ public class SituationFragment extends Fragment implements DataPoolTextListener,
 	}
 
 	@Override
-	public void onTextChanged(String txt, ViewType t) 
+	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
 	{
 		mHomeTextView.setHtml(mHomeTextView.formatText(txt));
 	}

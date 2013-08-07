@@ -6,8 +6,7 @@ import it.giacomos.android.osmer.downloadManager.DownloadStatus;
 import it.giacomos.android.osmer.downloadManager.Data.DataPool;
 import it.giacomos.android.osmer.downloadManager.state.StateName;
 import it.giacomos.android.osmer.downloadManager.state.Urls;
-import it.giacomos.android.osmer.guiHelpers.ActionBarPersonalizer;
-import it.giacomos.android.osmer.guiHelpers.ActionBarStateManager;
+import it.giacomos.android.osmer.guiHelpers.ActionBarManager;
 import it.giacomos.android.osmer.guiHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.guiHelpers.NetworkGuiErrorManager;
 import it.giacomos.android.osmer.guiHelpers.ObservationTypeGetter;
@@ -16,30 +15,28 @@ import it.giacomos.android.osmer.guiHelpers.TitlebarUpdater;
 import it.giacomos.android.osmer.guiHelpers.WebcamMapUpdater;
 import it.giacomos.android.osmer.guiHelpers.DrawerItemClickListener;
 import it.giacomos.android.osmer.instanceSnapshotManager.SnapshotManager;
-import it.giacomos.android.osmer.locationUtils.Constants;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressUpdateListener;
-import it.giacomos.android.osmer.locationUtils.LocationComparer;
 import it.giacomos.android.osmer.locationUtils.LocationInfo;
+import it.giacomos.android.osmer.locationUtils.LocationService;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCache;
 import it.giacomos.android.osmer.webcams.WebcamDataCache;
 import it.giacomos.android.osmer.widgets.AnimatedImageView;
-import it.giacomos.android.osmer.widgets.InfoHtmlBuilder;
 import it.giacomos.android.osmer.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
 import it.giacomos.android.osmer.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
-import it.giacomos.android.osmer.widgets.SituationImage;
 import it.giacomos.android.osmer.preferences.*;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
@@ -78,8 +75,6 @@ public class OsmerActivity extends FragmentActivity
 implements OnClickListener, 
 DownloadStateListener,
 SnapshotManagerListener,
-LocationListener,
-GeocodeAddressUpdateListener,
 OnMenuItemClickListener, 
 OnDismissListener,
 MapFragmentListener,
@@ -104,32 +99,8 @@ DataPoolErrorListener
 		/* registers network status monitor broadcast receiver (for this it needs `this')
 		 * Must be called _after_ instance restorer's onResume!
 		 */
-		m_downloadManager.onResume(this);		
-
-		/* Location Manager */
-		m_locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-		if(m_locationManager != null)
-		{
-			try
-			{
-				/*  (String provider, long minTime, float minDistance, LocationListener listener)
-				 * 5000 the LocationManager could potentially rest for minTime milliseconds between location updates to conserve power.
-				 * If minDistance is greater than 0, a location will only be broadcasted if the device moves by minDistance meters.
-				 */
-				m_locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 
-						Constants.LOCATION_UPDATES_NETWORK_MIN_TIME, 
-						Constants.LOCATION_UPDATES_NETWORK_MIN_DIST, this);
-
-				m_locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 
-						Constants.LOCATION_UPDATES_GPS_MIN_TIME, 
-						Constants.LOCATION_UPDATES_GPS_MIN_DIST, this);
-			}
-			catch(IllegalArgumentException iae)
-			{
-				Log.e("OsmerActivity: onResume: requestLocationUpdates", iae.getLocalizedMessage());
-			}
-		}
-
+		m_downloadManager.onResume(this);
+		
 		/* create WebcamDataCache with the Context */
 		WebcamDataCache.getInstance(this.getCacheDir());
 	}
@@ -140,8 +111,7 @@ DataPoolErrorListener
 		/* unregisters network status monitor broadcast receiver (for this it needs `this')
 		 */
 		m_downloadManager.onPause(this);
-		if(m_locationManager != null)
-			m_locationManager.removeUpdates(this);
+		LocationService.Instance().disconnect();
 	}
 
 	/**
@@ -153,6 +123,8 @@ DataPoolErrorListener
 		super.onPostCreate(savedInstanceState);
 		// Sync the toggle state after onRestoreInstanceState has occurred.
 		mDrawerToggle.syncState();
+
+		mActionBarManager.init(savedInstanceState);
 	}
 
 	@Override
@@ -192,12 +164,17 @@ DataPoolErrorListener
 	public void onStart()
 	{
 		super.onStart();
+		/* create the location update client and connect it to the location service */
+		LocationService locationService = LocationService.Instance();
+		locationService.init(this);
+		locationService.connect();
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) 
 	{
+		Log.e("onPrepareOptionsMenu", " action bar navigation mode " + getActionBar().getNavigationMode());
 		/* save refresh state of the refresh animated circular scrollbar in order to 
 		 * restore its state and visibility right after the menu is recreated.
 		 */
@@ -209,7 +186,7 @@ DataPoolErrorListener
 		if(refreshWasVisible)
 			mRefreshAnimatedImageView.start();
 		mInitButtonMapsOverflowMenu();
-		
+
 		/* set visibility and state on map buttons */
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -240,21 +217,17 @@ DataPoolErrorListener
 	public void onBackPressed()
 	{
 		/* first of all, if there's a info window on the map, close it */
-		int displayedChild = mViewPager.getCurrentItem();
+		int displayedChild = ((ViewFlipper) findViewById(R.id.viewFlipper)).getDisplayedChild();
 		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
-		if(displayedChild == 4  &&  map.isInfoWindowVisible()) /* map view visible */
+		if(displayedChild == 1  &&  map.isInfoWindowVisible()) /* map view visible */
 			map.hideInfoWindow();
-		else
+		else if(displayedChild == 1)
 		{
-			switch(displayedChild)
-			{
-			case 4:
-				mActionBarStateManager.backToForecast(mActionBarPersonalizer);
-				break;
-			default:
-				super.onBackPressed();
-			}
+			mDrawerList.setItemChecked(0, true);
+			mActionBarManager.drawerItemChanged(0);
 		}
+		else
+			super.onBackPressed();
 	}
 
 	@Override
@@ -276,40 +249,66 @@ DataPoolErrorListener
 		return super.onCreateDialog(id, args);
 	}
 
+	/*
+	 * Handle results returned to the FragmentActivity
+	 * by Google Play services
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+	{
+		// Decide what to do based on the original request code
+		switch (requestCode) 
+		{
+		case LocationService.CONNECTION_FAILURE_RESOLUTION_REQUEST :
+			/*
+			 * If the result code is Activity.RESULT_OK, try
+			 * to connect again
+			 */
+			switch (resultCode) 
+			{
+			case Activity.RESULT_OK :
+				/*
+				 * Try the request again
+				 */
+				break;
+			}
+		}
+	}
+
 	public void onGoogleMapReady()
 	{
-		
+
 	}
-	
+
 	public void init()
 	{
+		mCurrentViewType = ViewType.HOME;
 		mViewPager = new ViewPager(this);
 		mViewPager.setId(R.id.pager);
 		/* Set the number of pages that should be retained to either side of 
 		 * the current page in the view hierarchy in an idle state
 		 */
-//		mViewPager.setOffscreenPageLimit(3);
+		//		mViewPager.setOffscreenPageLimit(3);
 		mMainLayout = (LinearLayout) findViewById(R.id.mainLayout);
 		mMainLayout.addView(mViewPager);
-		
+
 		mSettings = new Settings(this);
 		mTapOnMarkerHintCount = 0;
 		mRefreshAnimatedImageView = null;
 
 		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
-		
+
 		/* DataPool. Obtain the instance and load data from storage */
 		DataPool dataPool = DataPool.Instance();
 		dataPool.registerErrorListener(this); /* listen for network errors */
 		dataPool.load(getApplicationContext());
-		
+
 		/* download manager */
 		m_downloadManager = new DownloadManager(this);
 		m_downloadManager.setDownloadListener(dataPool);
-		
+
 		m_observationsCache = new ObservationsCache();
-		
-		
+
 		/* map updates the observation data in ItemizedOverlay when new observations are available
 		 *
 		 */
@@ -322,11 +321,7 @@ DataPoolErrorListener
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
 		/* Action bar stuff.  */
-		mActionBarPersonalizer = new ActionBarPersonalizer(this);
-		mActionBarStateManager = new ActionBarStateManager();
-		/* set the state manager on the personalizer. */
-		mActionBarPersonalizer.setActionBarStateManager(mActionBarStateManager);
-		mActionBarPersonalizer.drawerItemChanged(0);
+		mActionBarManager = new ActionBarManager(this);
 		// Set the adapter for the list view
 		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
 				R.layout.drawer_list_item, mDrawerItems));
@@ -362,15 +357,11 @@ DataPoolErrorListener
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 
-		/* calls restoreFromInternalStorage() on ODoubleLayerTextView and 
-		 * OTextView. That method restores texts and images saved on the 
-		 * storage at each text or image update from the network async tasks.
-		 */
-		mRestoreFromInternalStorage();
-		
+		mActionBarManager.drawerItemChanged(0);
+
 		mMenuActionsManager = null;
 		mCurrentLocation = null;
-		
+
 		/* set html text on Radar info text view */
 		TextView radarInfoTextView = (TextView)findViewById(R.id.radarInfoTextView);
 		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
@@ -400,12 +391,10 @@ DataPoolErrorListener
 			currenvViewUpdater.update(this);
 			currenvViewUpdater = null;
 
-			/* update locality if Location is available */
-			if(mCurrentLocation != null)
-			{
-				GeocodeAddressTask geocodeAddressTask = new GeocodeAddressTask(this.getApplicationContext(), this);
-				geocodeAddressTask.parallelExecute(mCurrentLocation);
-			}
+			/* trigger an update of the locality if Location is available */
+			LocationService locationService = LocationService.Instance();
+			if(locationService.getCurrentLocation() != null)
+				LocationService.Instance().updateGeocodeAddress();
 		}
 	}
 
@@ -415,10 +404,8 @@ DataPoolErrorListener
 		SnapshotManager snapManager = new SnapshotManager();
 		snapManager.save(outState, this);
 		snapManager = null;
-		/* to restore action bar and displayed mode */
-		mActionBarStateManager.saveState(outState);
 	}
-	
+
 	protected void onRestoreInstanceState(Bundle inState)
 	{
 		super.onRestoreInstanceState(inState);
@@ -428,7 +415,6 @@ DataPoolErrorListener
 		SnapshotManager snapManager = new SnapshotManager();
 		snapManager.restore(inState, this);
 		snapManager = null;
-		mActionBarStateManager.restoreState(inState, mActionBarPersonalizer);
 	}
 
 	public void getSituation()
@@ -497,35 +483,6 @@ DataPoolErrorListener
 			mRefreshAnimatedImageView.start();
 	}
 
-//	@Override
-//	public void onTextUpdate(String txt, ViewType t)
-//	{
-//		switch(t)
-//		{
-//		case HOME: case TODAY: case TOMORROW: case TWODAYS:
-//			TextViewUpdater textViewUpdater = new TextViewUpdater();
-//			textViewUpdater.update(this, txt, t);
-//			textViewUpdater = null;
-//			break;
-//		case WEBCAMLIST_OSMER:
-//		case WEBCAMLIST_OTHER:
-//			/* true: save data on cache: onTextUpdate is called after a Download Task, so the data
-//			 * passed to WebcamMapUpdater is fresh: store it into cache.
-//			 */
-//			WebcamMapUpdater webcamUpdater = new WebcamMapUpdater();
-//			webcamUpdater.update(this, txt, t, true);
-//			webcamUpdater = null;
-//			break;
-//		default:
-//			/* situation image will be updated directly by the cache, since SituationImage is 
-//			 * listening to the ObservationCache through the LatestObservationCacheChangeListener
-//			 * interface.
-//			 */
-//			m_observationsCache.store(txt, t);
-//			break;
-//		}
-//	}
-
 	@Override
 	public void onTextUpdateError(ViewType t, String errorMessage)
 	{
@@ -534,14 +491,6 @@ DataPoolErrorListener
 		ngem = null;
 	}
 
-//	@Override
-//	public void onBitmapUpdate(Bitmap bmp, BitmapType bType)
-//	{
-//		ImageViewUpdater imageViewUpdater = new ImageViewUpdater();
-//		imageViewUpdater.update(this, bmp, bType);
-//		imageViewUpdater = null;
-//	}
-//
 	@Override
 	public void onBitmapUpdateError(BitmapType bType, String errorMessage)
 	{
@@ -549,7 +498,7 @@ DataPoolErrorListener
 		ngem.onError(this, errorMessage);
 		ngem = null;
 	}
-	
+
 	@Override
 	public void onDownloadStart(DownloadReason reason)
 	{
@@ -576,68 +525,6 @@ DataPoolErrorListener
 			Toast.makeText(getApplicationContext(), R.string.webcam_lists_downloaded, Toast.LENGTH_SHORT).show();
 
 	}
-	/* executed when a new locality / address becomes available.
-	 */
-	public void onGeocodeAddressUpdate(LocationInfo locInfo)
-	{
-		if(locInfo.error.isEmpty())
-		{
-			((ODoubleLayerImageView) findViewById(R.id.homeImageView)).onLocalityChanged(locInfo.locality, locInfo.subLocality, locInfo.address);
-			((ODoubleLayerImageView) findViewById(R.id.todayImageView)).onLocalityChanged(locInfo.locality, locInfo.subLocality, locInfo.address);
-			((ODoubleLayerImageView) findViewById(R.id.tomorrowImageView)).onLocalityChanged(locInfo.locality, locInfo.subLocality, locInfo.address);
-			((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).onLocalityChanged(locInfo.locality, locInfo.subLocality, locInfo.address);
-		}
-	}
-
-	@Override
-	public void onLocationChanged(Location location) {
-		LocationComparer locationComparer = new LocationComparer();
-		if(locationComparer.isBetterLocation(location, mCurrentLocation))
-		{	
-//			((ODoubleLayerImageView) findViewById(R.id.homeImageView)).onLocationChanged(location);
-//			((ODoubleLayerImageView) findViewById(R.id.todayImageView)).onLocationChanged(location);
-//			((ODoubleLayerImageView) findViewById(R.id.tomorrowImageView)).onLocationChanged(location);
-//			((ODoubleLayerImageView) findViewById(R.id.twoDaysImageView)).onLocationChanged(location);
-			mCurrentLocation = location;
-			if(this.m_downloadManager.state().name() == StateName.Online)
-			{
-				GeocodeAddressTask geocodeAddressTask = new GeocodeAddressTask(this.getApplicationContext(), this);
-				geocodeAddressTask.parallelExecute(mCurrentLocation);
-			}
-		}
-		locationComparer = null;
-	}
-
-	@Override
-	public void onProviderDisabled(String provider) 
-	{
-
-	}
-
-	/** 
-	 * Called when the provider is enabled by the user.
-	 */
-	@Override
-	public void onProviderEnabled(String provider) 
-	{
-		/* hack to make MyLocationOverlay fix the location with GPS even when GPS is enabled
-		 * after MyLocationOverlay.enableMyLocation was called (problem turned out with Galaxy
-		 * S3/Android 4.1)
-		 */
-//		((OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview)).onPositionProviderEnabled(provider);
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) 
-	{
-
-	}
-
-	private void mRestoreFromInternalStorage() 
-	{
-		/* save text views */
-		
-	}
 
 	void executeObservationTypeSelectionDialog(ObservationTime oTime)
 	{
@@ -655,7 +542,7 @@ DataPoolErrorListener
 		if(type != ObservationType.WEBCAM)
 			map.updateObservations(m_observationsCache.getObservationData(oTime));
 	}
-	
+
 	@Override
 	public boolean onMenuItemClick(MenuItem menuItem) 
 	{
@@ -692,15 +579,15 @@ DataPoolErrorListener
 			omv.setMeasureEnabled(menuItem.isChecked());
 			break;
 		default:
-				break;
+			break;
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void onClick(View v)
 	{
-		
+
 		switch(v.getId())
 		{
 		case R.id.actionOverflow:
@@ -720,7 +607,7 @@ DataPoolErrorListener
 		ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
 		buttonMapsOveflowMenu.setChecked(false);
 	} 
-	
+
 	/* called by onPrepareOptionsMenu every time the action bar is recreated
 	 * @param buttonsActionView the button (view) where the menu is anchored.
 	 * 
@@ -729,7 +616,7 @@ DataPoolErrorListener
 	{
 		if(mButtonsActionView == null)
 			return;
-		
+
 		/* button for maps menu */
 		ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
 		switch(mCurrentViewType)
@@ -746,9 +633,9 @@ DataPoolErrorListener
 			buttonMapsOveflowMenu.setVisibility(View.VISIBLE);
 			break;
 		}
-		
+
 	}
-	
+
 	private void mCreateMapOptionsPopupMenu() 
 	{
 		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
@@ -760,7 +647,7 @@ DataPoolErrorListener
 		menu.findItem(R.id.radarInfoButton).setVisible(mCurrentViewType == ViewType.RADAR);
 		menu.findItem(R.id.measureToggleButton).setChecked(map.isMeasureEnabled());
 		menu.findItem(R.id.radarInfoButton).setChecked(findViewById(R.id.radarInfoTextView).getVisibility() == View.VISIBLE);
-		
+
 		switch(mCurrentViewType)
 		{
 		case HOME: case TODAY: case TOMORROW: case TWODAYS:
@@ -779,12 +666,12 @@ DataPoolErrorListener
 			menu.findItem(R.id.mapNormalViewButton).setChecked(map.isNormalViewEnabled());
 			break;
 		}
-		
+
 		mapOptionsMenu.setOnMenuItemClickListener(this);
 		mapOptionsMenu.setOnDismissListener(this);
 		mapOptionsMenu.show();
 	}
-	
+
 	public void switchView(ViewType id) 
 	{
 		Log.e("switchView", "view type " + id);
@@ -808,7 +695,7 @@ DataPoolErrorListener
 			mViewPager.setCurrentItem(FlipperChildren.TOMORROW);
 			break;
 		case TWODAYS:
-			mActionBarPersonalizer.drawerItemChanged(0);
+			mActionBarManager.drawerItemChanged(0);
 			mViewPager.setCurrentItem(FlipperChildren.TWODAYS);
 			break;
 		case MAP:		
@@ -922,22 +809,22 @@ DataPoolErrorListener
 				webcams();
 			}
 		}
-		
+
 		TitlebarUpdater titleUpdater = new TitlebarUpdater();
 		titleUpdater.update(this);
 		titleUpdater = null;
-		
+
 		/* show or hide maps menu button according to the current view type */
 		mInitButtonMapsOverflowMenu();
 	}
-	
+
 	public DownloadManager stateMachine() { return m_downloadManager; }
-	
+
 	public ObservationsCache getObservationsCache()
 	{
 		return m_observationsCache;
 	}
-	
+
 	public ViewPager getViewPager()
 	{
 		return mViewPager;
@@ -958,9 +845,9 @@ DataPoolErrorListener
 		return mDrawerList;
 	}
 
-	public ActionBarPersonalizer getActionBarPersonalizer()
+	public ActionBarManager getActionBarPersonalizer()
 	{
-		return mActionBarPersonalizer;
+		return mActionBarManager;
 	}
 
 	public AnimatedImageView getRefreshAnimatedImageView()
@@ -980,11 +867,11 @@ DataPoolErrorListener
 		if(radarTimestampText != null)
 			radarTimestampText.setText(text);
 	}
+
 	
 	/* private members */
 	int mTapOnMarkerHintCount;
 	private DownloadManager m_downloadManager;
-	private LocationManager m_locationManager; 
 	private Location mCurrentLocation;
 	private ObservationsCache m_observationsCache;
 	private MenuActionsManager mMenuActionsManager;
@@ -994,19 +881,21 @@ DataPoolErrorListener
 	private String[] mDrawerItems;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private CharSequence mTitle, mDrawerTitle;
-	private ActionBarStateManager mActionBarStateManager;
-	private ActionBarPersonalizer mActionBarPersonalizer;
+	private ActionBarManager mActionBarManager;
 	private AnimatedImageView mRefreshAnimatedImageView;
 	private ViewType mCurrentViewType;
 	/* ActionBar menu button and menu */
 	private View mButtonsActionView;
 	Urls m_urls;
-	
+
 	private FragmentTabHost mTabHost;
 
-    ViewPager mViewPager;
-    TabsAdapter mTabsAdapter;
-    LinearLayout mMainLayout;
+
+
+
+	ViewPager mViewPager;
+	TabsAdapter mTabsAdapter;
+	LinearLayout mMainLayout;
 
 
 	int availCnt = 0;

@@ -72,7 +72,7 @@ public class ObservationsCache implements TableToMapUpdateListener, DataPoolText
 	
 
 	@Override
-	public void onTextChanged(String s, ViewType t) 
+	public void onTextChanged(String s, ViewType t, boolean fromCache) 
 	{
 		if(t == ViewType.DAILY_TABLE && s != mDailyObservation)
 		{

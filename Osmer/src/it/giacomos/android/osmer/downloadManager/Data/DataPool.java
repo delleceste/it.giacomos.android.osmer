@@ -96,7 +96,7 @@ public class DataPool implements DownloadListener
 		{
 			StringData sd = mStringData.get(vt);
 			if(sd.isValid())
-				txtL.onTextChanged(sd.text, vt);
+				txtL.onTextChanged(sd.text, vt, sd.fromCache);
 			else
 				txtL.onTextError(sd.error, vt);
 		}
@@ -109,7 +109,7 @@ public class DataPool implements DownloadListener
 		{
 			BitmapData bd = mBitmapData.get(bt);
 			if(bd.isValid())
-				bmpL.onBitmapChanged(bd.bitmap, bt);
+				bmpL.onBitmapChanged(bd.bitmap, bt, bd.fromCache);
 			else
 				bmpL.onBitmapError(bd.error, bt);
 		}
@@ -118,20 +118,20 @@ public class DataPool implements DownloadListener
 	@Override
 	public void onBitmapUpdate(Bitmap bmp, BitmapType t) 
 	{
-		mBitmapData.put(t, new BitmapData(bmp));
+		mBitmapData.put(t, new BitmapData(bmp)); /* put in hash */
 		if(mBitmapListeners.containsKey(t))
-			mBitmapListeners.get(t).onBitmapChanged(bmp, t);
+			mBitmapListeners.get(t).onBitmapChanged(bmp, t, false);
 	}
 
 	@Override
 	public void onBitmapUpdateError(BitmapType t, String error) 
 	{
-		mBitmapData.put(t, new BitmapData(null, error));
+		mBitmapData.put(t, new BitmapData(null, error)); /* put in hash */
 		if(mBitmapListeners.containsKey(t))
 			mBitmapListeners.get(t).onBitmapError(error, t);
 		mDataPoolErrorListener.onBitmapUpdateError(t, error);
 	}
-
+	
 	@Override
 	public void onTextUpdate(String text, ViewType t) 
 	{
@@ -139,12 +139,36 @@ public class DataPool implements DownloadListener
 		StringData newSd = new StringData(text);
 		if(!newSd.equals(sd))
 		{
-			mStringData.put(t, newSd);
+			mStringData.put(t, newSd); /* put in hash */
 			if(mTextListeners.containsKey(t))
-				mTextListeners.get(t).onTextChanged(text, t);
+				mTextListeners.get(t).onTextChanged(text, t, false);
 		}
 		else
 			Log.e("DataPool.onTextUpdate", "not updated: data not changed!");
+	}
+
+	public void onCacheTextUpdate(String text, ViewType t)
+	{
+		StringData sd = mStringData.get(t);
+		StringData newSd = new StringData(text);
+		newSd.fromCache = true; /* mark as coming from cache */
+		if(!newSd.equals(sd))
+		{
+			mStringData.put(t, newSd); /* put in hash */
+			if(mTextListeners.containsKey(t))
+				mTextListeners.get(t).onTextChanged(text, t, true);
+		}
+		else
+			Log.e("DataPool.onCacheTextUpdate", "not updated: data not changed!");
+	}
+	
+	public void onCacheBitmapUpdate(Bitmap bmp, BitmapType t) 
+	{
+		BitmapData bd = new BitmapData(bmp);
+		bd.fromCache = true; /* mark as coming from cache */
+		mBitmapData.put(t, bd); /* put in hash */
+		if(mBitmapListeners.containsKey(t))
+			mBitmapListeners.get(t).onBitmapChanged(bmp, t, true);
 	}
 
 	@Override

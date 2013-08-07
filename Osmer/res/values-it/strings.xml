@@ -120,6 +120,7 @@
         <item>Velocità vento</item>
         <item>Pioggia</item>
         <item>Neve</item>
+        <item>Mare</item>
         <item>Umidità</item>
     </string-array>
         
@@ -133,7 +134,7 @@
     <string name="drag_p1">Tocca a lungo poi muovi P1</string>
     <string name="dist_from_p0">distanza(P0, P1): </string>
     <string name="dist_from_p1">distanza(P1, P0): </string>
-    <string name="meters">metri</string>
+    <string name="meters">m</string>
     <string name="km">km</string>
     <string name="my_location_layer_not_enabled">my-location layer is not enabled</string>
     

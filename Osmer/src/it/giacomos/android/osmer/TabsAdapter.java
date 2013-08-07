@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
@@ -20,6 +21,7 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 	private final ActionBar mActionBar;
 	private final ViewPager mViewPager;
 	private final OsmerActivity mActivity;
+	private boolean mEnabled;
 	private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
 	private ActionBarTabChangeListener mActionBarTabChangeListener;
 
@@ -33,11 +35,18 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 			args = _args;
 		}
 	}
+
+	public void enable() 
+	{
+		mEnabled = true;	
+		notifyDataSetChanged();
+	}
 	
-	public void clear()
+	public void disable()
 	{
 		mViewPager.setOnPageChangeListener(null);
-		mTabs.clear();
+		//mTabs.clear();
+		mEnabled = false;
 		notifyDataSetChanged();
 	}
 	
@@ -48,6 +57,7 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 		mViewPager = pager;
 		mViewPager.setAdapter(this);
 		mViewPager.setOnPageChangeListener(this);
+		mEnabled = false;
 	}
 
 	public void addTab(ActionBar.Tab tab, Class<?> clss, Bundle args) {
@@ -63,25 +73,26 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 	public Fragment getItem(int position) 
 	{    
         TabInfo info = mTabs.get(position);
+		Log.e("getItem", "position is " + position);
         return Fragment.instantiate(mActivity.getApplicationContext(), info.clss.getName(), info.args);     
 	}
 
 	@Override
 	public int getCount() 
 	{
-		return mTabs.size();
+		if(mEnabled)
+			return mTabs.size();
+		else
+			return 0;
 	}
 
 	@Override
 	public int getItemPosition(Object object)
 	{
-		int p;
-		if(mTabs.size() == 0)
-			p = POSITION_NONE;
+		if(!mEnabled)
+			return POSITION_NONE;
 		else
-			p = super.getItemPosition(object);
-		return p;
-		
+			return super.getItemPosition(object);
 	}
 	
 	@Override

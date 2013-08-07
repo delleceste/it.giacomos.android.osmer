@@ -65,7 +65,7 @@ public class DataPoolCacheUtils
 						txt = txt.substring(0, txt.length() - 1);
 					/* save text on DataPool */
 					if(txt != null)
-						dp.onTextUpdate(txt, e.getKey());
+						dp.onCacheTextUpdate(txt, e.getKey());
 			}
 				catch (IOException ex) {
 					
@@ -86,7 +86,7 @@ public class DataPoolCacheUtils
 			File filesDir = ctx.getFilesDir();
 			bmp = BitmapFactory.decodeFile(filesDir.getAbsolutePath() + "/" + makeFileName(be.getKey()));
 			if(bmp != null)
-				dp.onBitmapUpdate(bmp, be.getKey());
+				dp.onCacheBitmapUpdate(bmp, be.getKey());
 		}
 		
 		/* observations */
@@ -118,7 +118,7 @@ public class DataPoolCacheUtils
 			else
 				observationsStringType = ViewType.DAILY_TABLE;
 
-			dp.onTextUpdate(data, observationsStringType);
+			dp.onCacheTextUpdate(data, observationsStringType);
 		}
 	}
 	
