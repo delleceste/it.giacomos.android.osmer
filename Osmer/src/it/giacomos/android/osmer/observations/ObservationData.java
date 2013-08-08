@@ -22,17 +22,17 @@ public class ObservationData {
 			return pressure;
 		case SEA:
 			return sea;
-		case MEAN_TEMP:
+		case AVERAGE_TEMP:
 			return tMed;
 		case SKY:
 			return sky;
 		case TEMP:
 			return temp;
-		case MEAN_WIND:
+		case AVERAGE_WIND:
 			return vMed;
 		case MAX_WIND:
 			return vMax;
-		case MEAN_HUMIDITY:
+		case AVERAGE_HUMIDITY:
 			return uMed;
 		case WEBCAM:
 			return "webcam";

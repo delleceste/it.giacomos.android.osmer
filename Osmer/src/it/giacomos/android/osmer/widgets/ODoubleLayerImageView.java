@@ -1,10 +1,10 @@
 package it.giacomos.android.osmer.widgets;
 
-import it.giacomos.android.osmer.BitmapType;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.LocationService;
 import it.giacomos.android.osmer.locationUtils.LocationServiceAddressUpdateListener;
 import it.giacomos.android.osmer.locationUtils.LocationServiceUpdateListener;
+import it.giacomos.android.osmer.network.state.BitmapType;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;

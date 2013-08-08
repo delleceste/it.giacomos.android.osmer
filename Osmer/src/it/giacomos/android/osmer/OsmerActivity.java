@@ -1,33 +1,39 @@
 package it.giacomos.android.osmer;
 
-import it.giacomos.android.osmer.downloadManager.DownloadManager;
-import it.giacomos.android.osmer.downloadManager.DownloadReason;
-import it.giacomos.android.osmer.downloadManager.DownloadStatus;
-import it.giacomos.android.osmer.downloadManager.Data.DataPool;
-import it.giacomos.android.osmer.downloadManager.state.StateName;
-import it.giacomos.android.osmer.downloadManager.state.Urls;
-import it.giacomos.android.osmer.guiHelpers.ActionBarManager;
-import it.giacomos.android.osmer.guiHelpers.MenuActionsManager;
-import it.giacomos.android.osmer.guiHelpers.NetworkGuiErrorManager;
-import it.giacomos.android.osmer.guiHelpers.ObservationTypeGetter;
-import it.giacomos.android.osmer.guiHelpers.RadarImageTimestampTextBuilder;
-import it.giacomos.android.osmer.guiHelpers.TitlebarUpdater;
-import it.giacomos.android.osmer.guiHelpers.WebcamMapUpdater;
-import it.giacomos.android.osmer.guiHelpers.DrawerItemClickListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import it.giacomos.android.osmer.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.instanceSnapshotManager.SnapshotManager;
-import it.giacomos.android.osmer.locationUtils.GeocodeAddressTask;
-import it.giacomos.android.osmer.locationUtils.GeocodeAddressUpdateListener;
-import it.giacomos.android.osmer.locationUtils.LocationInfo;
+import it.giacomos.android.osmer.instanceSnapshotManager.SnapshotManagerListener;
+import it.giacomos.android.osmer.interfaceHelpers.MenuActionsManager;
+import it.giacomos.android.osmer.interfaceHelpers.NetworkGuiErrorManager;
+import it.giacomos.android.osmer.interfaceHelpers.ObservationTypeGetter;
+import it.giacomos.android.osmer.interfaceHelpers.RadarImageTimestampTextBuilder;
+import it.giacomos.android.osmer.interfaceHelpers.TitlebarUpdater;
 import it.giacomos.android.osmer.locationUtils.LocationService;
+import it.giacomos.android.osmer.network.DownloadManager;
+import it.giacomos.android.osmer.network.DownloadReason;
+import it.giacomos.android.osmer.network.DownloadStateListener;
+import it.giacomos.android.osmer.network.DownloadStatus;
+import it.giacomos.android.osmer.network.Data.DataPool;
+import it.giacomos.android.osmer.network.Data.DataPoolErrorListener;
+import it.giacomos.android.osmer.network.state.BitmapType;
+import it.giacomos.android.osmer.network.state.StateName;
+import it.giacomos.android.osmer.network.state.Urls;
+import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.observations.ObservationTime;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCache;
-import it.giacomos.android.osmer.webcams.WebcamDataCache;
+import it.giacomos.android.osmer.webcams.WebcamDataHelper;
 import it.giacomos.android.osmer.widgets.AnimatedImageView;
 import it.giacomos.android.osmer.widgets.OAnimatedTextView;
-import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
 import it.giacomos.android.osmer.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
+import it.giacomos.android.osmer.widgets.map.RadarOverlayUpdateListener;
+import it.giacomos.android.osmer.pager.ActionBarManager;
+import it.giacomos.android.osmer.pager.DrawerItemClickListener;
+import it.giacomos.android.osmer.pager.TabsAdapter;
+import it.giacomos.android.osmer.pager.ViewPagerPages;
 import it.giacomos.android.osmer.preferences.*;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -36,7 +42,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
@@ -89,25 +94,39 @@ DataPoolErrorListener
 		requestWindowFeature(Window.FEATURE_PROGRESS);
 		this.setProgressBarVisibility(true);
 
-		setContentView(R.layout.main);
-		init();
+
+		/* create the location update client and connect it to the location service */
+		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+		if(resultCode == ConnectionResult.SUCCESS)
+		{
+			mGoogleServicesAvailable = true;
+			setContentView(R.layout.main);
+			init();
+		}
+		else
+		{
+			mGoogleServicesAvailable = false;
+			GooglePlayServicesUtil.getErrorDialog(resultCode, this, 0).show();
+		}
+		
 	}
 
 	public void onResume()
 	{	
 		super.onResume();
+		if(!mGoogleServicesAvailable)
+			return;
 		/* registers network status monitor broadcast receiver (for this it needs `this')
 		 * Must be called _after_ instance restorer's onResume!
 		 */
 		m_downloadManager.onResume(this);
-		
-		/* create WebcamDataCache with the Context */
-		WebcamDataCache.getInstance(this.getCacheDir());
 	}
 
 	public void onPause()
 	{
 		super.onPause();
+		if(!mGoogleServicesAvailable)
+			return;
 		/* unregisters network status monitor broadcast receiver (for this it needs `this')
 		 */
 		m_downloadManager.onPause(this);
@@ -121,6 +140,8 @@ DataPoolErrorListener
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
+		if(!mGoogleServicesAvailable)
+			return;
 		// Sync the toggle state after onRestoreInstanceState has occurred.
 		mDrawerToggle.syncState();
 
@@ -130,6 +151,8 @@ DataPoolErrorListener
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
+		if(!mGoogleServicesAvailable)
+			return;
 		// Pass any configuration change to the drawer toggls
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
@@ -142,28 +165,37 @@ DataPoolErrorListener
 		 * after its onPause() method is called. 
 		 */
 		super.onStop();
+		if(!mGoogleServicesAvailable)
+			return;
 	}
 
 	protected void onDestroy()
 	{
-		/* drawables are unbinded inside ForecastFragment's onDestroy() */
-		if(mRefreshAnimatedImageView != null)
-			mRefreshAnimatedImageView.hide();
-		/* cancel async tasks that may be running when the application is destroyed */
-		m_downloadManager.stopPendingTasks();
-		/* save downloaded data to storage */
-		DataPool.Instance().store(getApplicationContext());
+		if(mGoogleServicesAvailable)
+		{
+			/* drawables are unbinded inside ForecastFragment's onDestroy() */
+			if(mRefreshAnimatedImageView != null)
+				mRefreshAnimatedImageView.hide();
+			/* cancel async tasks that may be running when the application is destroyed */
+			m_downloadManager.stopPendingTasks();
+			/* save downloaded data to storage */
+			DataPool.Instance().store(getApplicationContext());
+		}
 		super.onDestroy();
 	}
 
 	public void onRestart()
 	{
 		super.onRestart();
+		if(!mGoogleServicesAvailable)
+			return;
 	}
 
 	public void onStart()
 	{
 		super.onStart();
+		if(!mGoogleServicesAvailable)
+			return;
 		/* create the location update client and connect it to the location service */
 		LocationService locationService = LocationService.Instance();
 		locationService.init(this);
@@ -216,18 +248,23 @@ DataPoolErrorListener
 	@Override
 	public void onBackPressed()
 	{
-		/* first of all, if there's a info window on the map, close it */
-		int displayedChild = ((ViewFlipper) findViewById(R.id.viewFlipper)).getDisplayedChild();
-		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
-		if(displayedChild == 1  &&  map.isInfoWindowVisible()) /* map view visible */
-			map.hideInfoWindow();
-		else if(displayedChild == 1)
-		{
-			mDrawerList.setItemChecked(0, true);
-			mActionBarManager.drawerItemChanged(0);
-		}
-		else
+		if(!mGoogleServicesAvailable)
 			super.onBackPressed();
+		else
+		{
+			/* first of all, if there's a info window on the map, close it */
+			int displayedChild = ((ViewFlipper) findViewById(R.id.viewFlipper)).getDisplayedChild();
+			OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+			if(displayedChild == 1  &&  map.isInfoWindowVisible()) /* map view visible */
+				map.hideInfoWindow();
+			else if(displayedChild == 1)
+			{
+				mDrawerList.setItemChecked(0, true);
+				mActionBarManager.drawerItemChanged(0);
+			}
+			else
+				super.onBackPressed();
+		}
 	}
 
 	@Override
@@ -387,7 +424,7 @@ DataPoolErrorListener
 		}
 		else
 		{
-			CurrentViewUpdater currenvViewUpdater = new CurrentViewUpdater();
+			MapViewUpdater currenvViewUpdater = new MapViewUpdater();
 			currenvViewUpdater.update(this);
 			currenvViewUpdater = null;
 
@@ -447,25 +484,16 @@ DataPoolErrorListener
 		//TextView textView = (TextView) findViewById(R.id.mainTextView);
 	}
 
-	void webcams()
+	void updateWbcamList()
 	{
-		/* The download manager checks whether the webcam data is old or not.
-		 * If it is old, new data will be downloaded. If not, it does nothing.
-		 * If data is not old, we can populate the webcam overlay on the map
-		 * with the cached data.
-		 * 
-		 * 
-		 */
-		WebcamDataCache webcamData = WebcamDataCache.getInstance();
-		if(!webcamData.dataIsTooOld())
+		WebcamDataHelper webcamDataHelper = new WebcamDataHelper();
+		if(webcamDataHelper.dataIsOld(getApplicationContext()))
 		{
-			/* false: do not save on cache because we are already reusing cached data */
-			WebcamMapUpdater webcamUpdater = new WebcamMapUpdater();
-			webcamUpdater.update(this, webcamData.getFromCache(ViewType.WEBCAMLIST_OSMER), ViewType.WEBCAMLIST_OSMER, false);
-			webcamUpdater.update(this, webcamData.getFromCache(ViewType.WEBCAMLIST_OTHER), ViewType.WEBCAMLIST_OTHER, false);
-			webcamUpdater = null;
+			Log.e("OsmerActivity.webcams()", "updating webcam list");
+			m_downloadManager.getWebcamList();
 		}
-		m_downloadManager.getWebcamList();
+		else
+			Log.e("OsmerActivity.webcams()", "not updating webcam list");
 	}
 
 	@Override
@@ -516,14 +544,11 @@ DataPoolErrorListener
 			mRefreshAnimatedImageView.resetErrorFlag();
 	}
 
-
-
 	@Override
 	public void onStateChanged(long previousState, long state) 
 	{
 		if(((state & DownloadStatus.WEBCAM_OSMER_DOWNLOADED) != 0) &&  ((state & DownloadStatus.WEBCAM_OTHER_DOWNLOADED) != 0 ))
 			Toast.makeText(getApplicationContext(), R.string.webcam_lists_downloaded, Toast.LENGTH_SHORT).show();
-
 	}
 
 	void executeObservationTypeSelectionDialog(ObservationTime oTime)
@@ -535,8 +560,7 @@ DataPoolErrorListener
 
 	public void onSelectionDone(ObservationType type, ObservationTime oTime) 
 	{
-		/* switch the working mode of the map view */
-		mViewPager.setCurrentItem(FlipperChildren.MAP);
+		/* switch the working mode of the map view. Already in PAGE_MAP view flipper page */
 		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
 		map.setMode(new MapViewMode(type, oTime));
 		if(type != ObservationType.WEBCAM)
@@ -614,7 +638,7 @@ DataPoolErrorListener
 	 */
 	private void mInitButtonMapsOverflowMenu() 
 	{
-		if(mButtonsActionView == null)
+		if(mButtonsActionView == null || !mGoogleServicesAvailable)
 			return;
 
 		/* button for maps menu */
@@ -633,7 +657,6 @@ DataPoolErrorListener
 			buttonMapsOveflowMenu.setVisibility(View.VISIBLE);
 			break;
 		}
-
 	}
 
 	private void mCreateMapOptionsPopupMenu() 
@@ -678,136 +701,96 @@ DataPoolErrorListener
 		mCurrentViewType = id;
 		ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 
-		/* if not already checked, changed flipper page */
-		/* change flipper child. Title is updated by the FlipperChildChangeListener */
-		switch(id)
+		if (id == ViewType.HOME) 
 		{
-		case HOME:
 			viewFlipper.setDisplayedChild(0);
-			mViewPager.setCurrentItem(FlipperChildren.HOME);
-			break;
-		case TODAY:
+			mViewPager.setCurrentItem(ViewPagerPages.HOME);
+		} 
+		else if (id == ViewType.TODAY) 
+		{
 			viewFlipper.setDisplayedChild(0);
-			mViewPager.setCurrentItem(FlipperChildren.TODAY);
-			break;
-		case TOMORROW:
+			mViewPager.setCurrentItem(ViewPagerPages.TODAY);
+		} 
+		else if (id == ViewType.TOMORROW) 
+		{
 			viewFlipper.setDisplayedChild(0);
-			mViewPager.setCurrentItem(FlipperChildren.TOMORROW);
-			break;
-		case TWODAYS:
+			mViewPager.setCurrentItem(ViewPagerPages.TOMORROW);
+		} 
+		else if (id == ViewType.TWODAYS) 
+		{
 			mActionBarManager.drawerItemChanged(0);
-			mViewPager.setCurrentItem(FlipperChildren.TWODAYS);
-			break;
-		case MAP:		
-		case RADAR:			
+			mViewPager.setCurrentItem(ViewPagerPages.TWODAYS);
+		} 
+		else if (id == ViewType.MAP || id == ViewType.RADAR) 
+		{
 			viewFlipper.setDisplayedChild(1);
-			mViewPager.setCurrentItem(FlipperChildren.MAP);
 			/* remove itemized overlays (observations), if present, and restore radar view */
 			((OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
-			break;
-
-		case ACTION_CENTER_MAP:
+		} 
+		else if (id == ViewType.ACTION_CENTER_MAP) 
+		{
 			((OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview)).centerMap();
-			break;
-		default:
+		} 
+		else 
+		{
 			viewFlipper.setDisplayedChild(1);
-			break;
 		}
 
-		/* ViewTypes that can have effect even when offline
-		 * daily and latest observations are cached in the ObservationCache, so it is 
-		 * not compulsory to be online to show them.
-		 */	
-		switch(id)
-		{
-		case DAILY_SKY:
+		if (id == ViewType.DAILY_SKY) {
 			onSelectionDone(ObservationType.SKY, ObservationTime.DAILY);
 			if(mSettings.isMapMarkerHintEnabled() && mTapOnMarkerHintCount == 0)
 			{
 				Toast.makeText(getApplicationContext(), R.string.hint_tap_on_map_markers, Toast.LENGTH_LONG).show();
 				mTapOnMarkerHintCount++; /* do not be too annoying */
 			}
-			break;
-		case DAILY_HUMIDITY:
-			onSelectionDone(ObservationType.MEAN_HUMIDITY, ObservationTime.DAILY);
-			break;
-		case DAILY_WIND_MAX:
+		} 
+		else if (id == ViewType.DAILY_HUMIDITY) 
+			onSelectionDone(ObservationType.AVERAGE_HUMIDITY, ObservationTime.DAILY);
+		else if (id == ViewType.DAILY_WIND_MAX) 
 			onSelectionDone(ObservationType.MAX_WIND, ObservationTime.DAILY);
-			break;
-		case DAILY_WIND:
-			onSelectionDone(ObservationType.MEAN_WIND, ObservationTime.DAILY);
-			break;
-		case DAILY_RAIN:
+		else if (id == ViewType.DAILY_WIND) 
+			onSelectionDone(ObservationType.AVERAGE_WIND, ObservationTime.DAILY);
+		else if (id == ViewType.DAILY_RAIN) 
 			onSelectionDone(ObservationType.RAIN, ObservationTime.DAILY);
-			break;
-		case DAILY_MIN_TEMP:
+		else if (id == ViewType.DAILY_MIN_TEMP) 
 			onSelectionDone(ObservationType.MIN_TEMP, ObservationTime.DAILY);
-			break;
-		case DAILY_MEAN_TEMP:
-			onSelectionDone(ObservationType.MEAN_TEMP, ObservationTime.DAILY);
-			break;
-		case DAILY_MAX_TEMP:
+		else if (id == ViewType.DAILY_MEAN_TEMP) 
+			onSelectionDone(ObservationType.AVERAGE_TEMP, ObservationTime.DAILY);
+		else if (id == ViewType.DAILY_MAX_TEMP) 
 			onSelectionDone(ObservationType.MAX_TEMP, ObservationTime.DAILY);
-			break;
-
-			/* latest */
-		case LATEST_SKY:
+		else if (id == ViewType.LATEST_SKY) 
 			onSelectionDone(ObservationType.SKY, ObservationTime.LATEST);
-			break;
-		case LATEST_HUMIDITY:
+		else if (id == ViewType.LATEST_HUMIDITY) 
 			onSelectionDone(ObservationType.HUMIDITY, ObservationTime.LATEST);
-			break;
-		case LATEST_WIND:
+		else if (id == ViewType.LATEST_WIND) 
 			onSelectionDone(ObservationType.WIND, ObservationTime.LATEST);
-			break;
-		case LATEST_PRESSURE:
+		else if (id == ViewType.LATEST_PRESSURE) 
 			onSelectionDone(ObservationType.PRESSURE, ObservationTime.LATEST);
-			break;
-		case LATEST_RAIN:
+		else if (id == ViewType.LATEST_RAIN) 
 			onSelectionDone(ObservationType.RAIN, ObservationTime.LATEST);
-			break;
-		case LATEST_SEA:
+		else if (id == ViewType.LATEST_SEA) 
 			onSelectionDone(ObservationType.SEA, ObservationTime.LATEST);
-			break;
-		case LATEST_SNOW:
+		else if (id == ViewType.LATEST_SNOW) 
 			onSelectionDone(ObservationType.SNOW, ObservationTime.LATEST);
-			break;
-		case LATEST_TEMP:
+		else if (id == ViewType.LATEST_TEMP) 
 			onSelectionDone(ObservationType.TEMP, ObservationTime.LATEST);
-			break;
-
-			/* webcam */
-		case WEBCAM:
+		else if (id == ViewType.WEBCAM) 
 			onSelectionDone(ObservationType.WEBCAM, ObservationTime.WEBCAM);
-			break;
-		}	
 		/* try to download only if online */
 		if(m_downloadManager.state().name() == StateName.Online)
 		{
 			if(id == ViewType.RADAR || id == ViewType.MAP)
-			{
 				radar(); /* map mode has already been set if type is MAP or RADAR */
-			}
 			else if(id == ViewType.TODAY)
-			{
 				getTodayForecast();
-			}
 			else if(id == ViewType.TOMORROW)
-			{
 				getTomorrowForecast();
-			}
 			else if(id == ViewType.TWODAYS)
-			{
 				getTwoDaysForecast();
-			}
 			else if(id == ViewType.HOME)
-			{
-
-			}
+			{ }
 			else if(id == ViewType.WEBCAM)
-			{
-				webcams();
-			}
+				updateWbcamList();
 		}
 
 		TitlebarUpdater titleUpdater = new TitlebarUpdater();
@@ -868,7 +851,7 @@ DataPoolErrorListener
 			radarTimestampText.setText(text);
 	}
 
-	
+
 	/* private members */
 	int mTapOnMarkerHintCount;
 	private DownloadManager m_downloadManager;
@@ -886,6 +869,7 @@ DataPoolErrorListener
 	private ViewType mCurrentViewType;
 	/* ActionBar menu button and menu */
 	private View mButtonsActionView;
+	private boolean mGoogleServicesAvailable;
 	Urls m_urls;
 
 	private FragmentTabHost mTabHost;

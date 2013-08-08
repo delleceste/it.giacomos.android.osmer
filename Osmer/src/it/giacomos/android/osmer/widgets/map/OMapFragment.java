@@ -6,15 +6,18 @@ import java.util.HashMap;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
-import it.giacomos.android.osmer.MapFragmentListener;
+
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.RadarOverlayUpdateListener;
-import it.giacomos.android.osmer.ViewType;
+import it.giacomos.android.osmer.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
+import it.giacomos.android.osmer.network.Data.DataPool;
+import it.giacomos.android.osmer.network.Data.DataPoolBitmapListener;
+import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
+import it.giacomos.android.osmer.network.state.BitmapType;
+import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.observations.ObservationData;
 import it.giacomos.android.osmer.observations.ObservationDrawableIdPicker;
 import it.giacomos.android.osmer.observations.ObservationTime;
@@ -24,21 +27,19 @@ import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.webcams.AdditionalWebcams;
 import it.giacomos.android.osmer.webcams.ExternalImageViewerLauncher;
 import it.giacomos.android.osmer.webcams.LastImageCache;
+import it.giacomos.android.osmer.webcams.OsmerWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.OtherWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;
+import it.giacomos.android.osmer.webcams.WebcamDataHelper;
 import it.giacomos.android.osmer.widgets.OAnimatedTextView;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import java.text.DateFormat;
-
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Bundle;
 
@@ -46,7 +47,9 @@ public class OMapFragment extends SupportMapFragment
 implements ObservationsCacheUpdateListener,
 GoogleMap.OnCameraChangeListener,
 WebcamOverlayChangeListener,
-MeasureOverlayChangeListener
+MeasureOverlayChangeListener,
+DataPoolBitmapListener,
+DataPoolTextListener
 {
 	public final int minLatitude = GeoCoordinates.bottomRight.getLatitudeE6();
 	public final int maxLatitude = GeoCoordinates.topLeft.getLatitudeE6();
@@ -148,8 +151,6 @@ MeasureOverlayChangeListener
 	{
 		CameraPosition cameraPos = mMap.getCameraPosition();
 		mSettings.saveMapCameraPosition(cameraPos);
-		/* The bitmap stored into the mRadarOverlay has to be saved */
-		mRadarOverlay.saveOnInternalStorage(getActivity().getApplicationContext());
 		mRadarOverlay.finalize(); /* recycles bitmap for GC */
 		/* save the map mode */
 		mSettings.setMapType(mMap.getMapType());
@@ -182,11 +183,6 @@ MeasureOverlayChangeListener
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-	}
-
-	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
-		View view = super.onCreateView(inflater, container, savedInstanceState);
 
 		/* get the GoogleMap object. Must be called after onCreateView is called.
 		 * If it returns null, then Google Play services is not available.
@@ -205,27 +201,40 @@ MeasureOverlayChangeListener
 			mCenterOnUpdate = true;
 		mMap.setOnCameraChangeListener(this);
 		mRadarOverlay = new RadarOverlay(mMap);
-		/* initializes internal bitmap loading the last bitmap saved in the internal memory.
-		 * This does not imply an update of the image over the map.
-		 */
-		mRadarOverlay.restoreFromInternalStorage(getActivity().getApplicationContext());
 
 		mMapFragmentListener.onGoogleMapReady();
 		mMapClickOnBaloonImageHintEnabled = mSettings.isMapClickOnBaloonImageHintEnabled();
-
-		return view;
+		
+		/* register for radar image bitmap updates */
+		DataPool.Instance().registerBitmapListener(BitmapType.RADAR, this);
+		/* register for webcam list text update */
+		DataPool.Instance().registerTextListener(ViewType.WEBCAMLIST_OSMER, this);
+		DataPool.Instance().registerTextListener(ViewType.WEBCAMLIST_OTHER, this);
 	}
 
-
-	public void setRadarImage(Bitmap bmp, boolean isUpToDate) 
+	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		if(isUpToDate)
+		View view = super.onCreateView(inflater, container, savedInstanceState);
+		return view;
+	}
+	
+	@Override
+	public void onBitmapChanged(Bitmap bmp, BitmapType t, boolean fromCache) 
+	{
+		if(!fromCache) /* up to date */
 		{
 			long currentTimestampMillis = System.currentTimeMillis();
 			mSettings.setRadarImageTimestamp(currentTimestampMillis);
 		}
 		mRadarOverlay.updateBitmap(bmp);
-		mRefreshRadarImage();
+		mRefreshRadarImage();	
+	}
+
+	@Override
+	public void onBitmapError(String error, BitmapType t) 
+	{
+		Toast.makeText(getActivity().getApplicationContext(), getResources().getString(R.string.radarDownloadError) 
+				+ "\n" + error, Toast.LENGTH_LONG).show();
 	}
 	
 	private void mRefreshRadarImage() 
@@ -357,6 +366,43 @@ MeasureOverlayChangeListener
 		}
 	}
 
+	/** Implements DataPoolTextListener onTextChanged  (for webcam list) */
+	@Override
+	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
+	{
+		Log.e("OMapFragment", "onTextChanged, viewType " + t + " from cache " + fromCache);
+		
+		if(!fromCache)
+		{
+			WebcamDataHelper webcamDataHelper = new WebcamDataHelper();
+			webcamDataHelper.setDataUpdatedNow(getActivity().getApplicationContext());
+			webcamDataHelper = null;
+		}
+		
+		ArrayList<WebcamData> wcData = null;
+		if (t == ViewType.WEBCAMLIST_OSMER) 
+		{
+			OsmerWebcamListDecoder osmerDec = new OsmerWebcamListDecoder();
+			wcData = osmerDec.decode(txt);
+			updateWebcamList(wcData);
+		} 
+		else if (t == ViewType.WEBCAMLIST_OTHER) 
+		{
+			OtherWebcamListDecoder otherDec = new OtherWebcamListDecoder();
+			wcData = otherDec.decode(txt);
+			updateWebcamList(wcData);
+		}
+	}
+
+	/** Implements DataPoolTextListener onTextError (for webcam list) */
+	@Override
+	public void onTextError(String error, ViewType t) 
+	{
+		Toast.makeText(getActivity().getApplicationContext(),
+				getResources().getString(R.string.webcam_list_error) +
+				"\n" + error, Toast.LENGTH_LONG).show();
+	}
+	
 	public void setOnZoomChangeListener(ZoomChangeListener l)
 	{
 		mZoomChangeListener = l;
@@ -435,7 +481,7 @@ MeasureOverlayChangeListener
 	}
 	
 	@Override
-	public void onBitmapChanged(Bitmap bmp) 
+	public void onWebcamBitmapChanged(Bitmap bmp) 
 	{
 		Context ctx = getActivity().getApplicationContext();
 		/* save image on cache in order to display it in external viewer */
@@ -449,7 +495,7 @@ MeasureOverlayChangeListener
 	}
 	
 	@Override
-	public void onInfoWindowImageClicked() 
+	public void onWebcamInfoWindowImageClicked() 
 	{
 		ExternalImageViewerLauncher eivl = new ExternalImageViewerLauncher();
 		eivl.startExternalViewer(getActivity());
@@ -458,19 +504,20 @@ MeasureOverlayChangeListener
 	}
 	
 	@Override
-	public void onErrorMessageChanged(String message) 
+	public void onWebcamErrorMessageChanged(String message) 
 	{
 		message = getResources().getString(R.string.error_message) + ": " + message;
 		Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_LONG).show();
-	}@Override
+	}
 	
-	public void onMessageChanged(int stringId) 
+	@Override
+	public void onWebcamMessageChanged(int stringId) 
 	{
 		Toast.makeText(getActivity().getApplicationContext(), getResources().getString(stringId), Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
-	public void onBitmapTaskCanceled(String url) 
+	public void onWebcamBitmapTaskCanceled(String url) 
 	{
 		String message = getResources().getString(R.string.webcam_download_task_canceled)  + url;
 		Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
@@ -484,7 +531,7 @@ MeasureOverlayChangeListener
 		AdditionalWebcams additionalWebcams = new AdditionalWebcams(this.getActivity().getApplicationContext());
 		additionalWebcamsTxt = additionalWebcams.getText();
 		OtherWebcamListDecoder additionalWebcamsDec = new OtherWebcamListDecoder();
-		webcamData = additionalWebcamsDec.decode(additionalWebcamsTxt, false);
+		webcamData = additionalWebcamsDec.decode(additionalWebcamsTxt);
 		return webcamData;
 	}
 
@@ -519,8 +566,6 @@ MeasureOverlayChangeListener
 	{
 		Toast.makeText(this.getActivity().getApplicationContext(), getResources().getString(stringId), Toast.LENGTH_LONG).show();
 	}
-{
-		// TODO Auto-generated method stub
-		
-	}
+
+
 }

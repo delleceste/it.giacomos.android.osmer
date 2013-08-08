@@ -26,12 +26,12 @@ public class ObservationDrawableIdPicker {
 		
 		case TEMP:
 		case MAX_TEMP:
-		case MEAN_TEMP:
+		case AVERAGE_TEMP:
 		case MIN_TEMP:
 			id = R.drawable.temp_map;
 			break;
 		case HUMIDITY:
-		case MEAN_HUMIDITY:
+		case AVERAGE_HUMIDITY:
 			id = R.drawable.drop_map;
 			break;
 		case RAIN:
@@ -47,7 +47,7 @@ public class ObservationDrawableIdPicker {
 			id = R.drawable.sea_temp_map;
 			break;
 		case WIND:
-		case MEAN_WIND:
+		case AVERAGE_WIND:
 		case MAX_WIND:
 			id = R.drawable.wind_map;
 			break;

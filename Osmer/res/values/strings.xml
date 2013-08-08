@@ -34,10 +34,12 @@
     <string name="radarUpdatedOn">Radar image updated at</string>
     <string name="radarImageOld">Radar image is older than one hour</string>
     <string name="radarImageBlackWhiteHint">(So radar image is black and white)</string>
+    <string name="radarDownloadError">Error getting radar image</string>
     <string name="webcam_lists_downloaded">webcam list updated</string>
     <string name="webcam_downloading"> downloading webcam image&#8230;</string>
     <string name="webcam_download_task_canceled">canceling image download</string>
     <string name="webcam_wait_for_image">please wait for image to load</string>
+    <string name="webcam_list_error">Error downloading webcam list</string>
     <string name="min_temp">Minimum Temperature</string>
     <string name="max_temp">Maximum Temperature</string>
     <string name="min_temp_abbr">Min.T</string>

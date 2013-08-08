@@ -2,7 +2,7 @@ package it.giacomos.android.osmer.instanceSnapshotManager;
 
 
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.downloadManager.DownloadStatus;
+import it.giacomos.android.osmer.network.DownloadStatus;
 import android.app.ActionBar;
 import android.os.Bundle;
 

@@ -6,8 +6,8 @@ import java.util.regex.Pattern;
 
 import android.util.Log;
 
-import it.giacomos.android.osmer.Regexps;
-import it.giacomos.android.osmer.ViewType;
+import it.giacomos.android.osmer.network.state.ViewType;
+import it.giacomos.android.osmer.regexps.Regexps;
 
 public class TableToMap {
 	public HashMap <String, ObservationData> convert(String table, final ViewType t)

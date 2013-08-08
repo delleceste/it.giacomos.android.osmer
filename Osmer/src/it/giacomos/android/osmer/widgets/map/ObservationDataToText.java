@@ -31,7 +31,7 @@ public class ObservationDataToText
 			if(mObservationType == ObservationType.SKY || 
 					mObservationType == ObservationType.MIN_TEMP ||  
 					mObservationType == ObservationType.MAX_TEMP ||  
-					mObservationType == ObservationType.MEAN_TEMP)
+					mObservationType == ObservationType.AVERAGE_TEMP)
 			{
 				boolean hasTMin, hasTMax;
 				hasTMin = od.has(ObservationType.MIN_TEMP);
@@ -43,7 +43,7 @@ public class ObservationDataToText
 					txt += mResources.getString(R.string.max_temp_abbr) + ": " + od.tMax;
 				if(hasTMin || hasTMax) /* newline if necessary */
 					txt += "\n";
-				if(od.has(ObservationType.MEAN_TEMP))
+				if(od.has(ObservationType.AVERAGE_TEMP))
 					txt += mResources.getString(R.string.mean_temp) + ": " + od.tMed + "\n";
 			}
 			else if(mObservationType == ObservationType.RAIN)
@@ -51,16 +51,16 @@ public class ObservationDataToText
 				if(od.has(ObservationType.RAIN))
 					txt += mResources.getString(R.string.rain) + ": " + od.rain + "\n";	
 			}
-			else if(mObservationType == ObservationType.MAX_WIND || mObservationType == ObservationType.MEAN_WIND)
+			else if(mObservationType == ObservationType.MAX_WIND || mObservationType == ObservationType.AVERAGE_WIND)
 			{
-				if(od.has(ObservationType.MEAN_WIND))
+				if(od.has(ObservationType.AVERAGE_WIND))
 					txt += mResources.getString(R.string.mean_wind) + ": " + od.vMed + "\n";
 				if(od.has(ObservationType.MAX_WIND))
 					txt += mResources.getString(R.string.max_wind) + ": " + od.vMax + "\n";
 			}
-			else if(mObservationType == ObservationType.MEAN_HUMIDITY)
+			else if(mObservationType == ObservationType.AVERAGE_HUMIDITY)
 			{
-				if(od.has(ObservationType.MEAN_HUMIDITY))
+				if(od.has(ObservationType.AVERAGE_HUMIDITY))
 					txt += mResources.getString(R.string.mean_humidity) + ": " + od.uMed + "\n";
 			}
 		}

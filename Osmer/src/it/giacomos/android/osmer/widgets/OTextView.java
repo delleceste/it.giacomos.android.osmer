@@ -1,7 +1,7 @@
 package it.giacomos.android.osmer.widgets;
 
-import it.giacomos.android.osmer.ViewType;
-import it.giacomos.android.osmer.downloadManager.Data.DataPoolTextListener;
+import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
+import it.giacomos.android.osmer.network.state.ViewType;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

@@ -2,11 +2,11 @@ package it.giacomos.android.osmer.instanceSnapshotManager;
 
 import android.os.Bundle;
 
-import it.giacomos.android.osmer.BitmapType;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.ViewType;
-import it.giacomos.android.osmer.downloadManager.DownloadStatus;
-import it.giacomos.android.osmer.downloadManager.Data.DataPool;
+import it.giacomos.android.osmer.network.DownloadStatus;
+import it.giacomos.android.osmer.network.Data.DataPool;
+import it.giacomos.android.osmer.network.state.BitmapType;
+import it.giacomos.android.osmer.network.state.ViewType;
 
 public class DownloadStatusRestorer {
 	protected DownloadStatusRestorer(Bundle b)

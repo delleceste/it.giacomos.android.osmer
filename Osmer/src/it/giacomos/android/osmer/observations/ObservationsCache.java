@@ -2,8 +2,8 @@ package it.giacomos.android.osmer.observations;
 import java.util.HashMap;
 
 import android.util.Log;
-import it.giacomos.android.osmer.ViewType;
-import it.giacomos.android.osmer.downloadManager.Data.DataPoolTextListener;
+import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
+import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.widgets.LatestObservationCacheChangeListener;
 
 public class ObservationsCache implements TableToMapUpdateListener, DataPoolTextListener 

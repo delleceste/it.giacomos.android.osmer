@@ -1,12 +1,15 @@
 package it.giacomos.android.osmer.widgets.map;
 
-import it.giacomos.android.osmer.BitmapType;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.downloadManager.state.BitmapListener;
-import it.giacomos.android.osmer.downloadManager.state.BitmapTask;
+import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
+import it.giacomos.android.osmer.network.state.BitmapTask;
+import it.giacomos.android.osmer.network.state.BitmapTaskListener;
+import it.giacomos.android.osmer.network.state.BitmapType;
+import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.webcams.ExternalImageViewerLauncher;
 import it.giacomos.android.osmer.webcams.WebcamData;
+import it.giacomos.android.osmer.webcams.WebcamDataHelper;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,7 +32,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class WebcamOverlay implements 
-	BitmapListener, 
+	BitmapTaskListener, 
 	OOverlayInterface,
 	OnMarkerClickListener,
 	OnInfoWindowClickListener,
@@ -93,7 +96,7 @@ public class WebcamOverlay implements
 		mSettings.setMapWebcamMarkerFontSize(mCustomMarkerBitmapFactory.getCachedFontSize());
 		return needsRedraw;
 	}
-
+	
 	@Override
 	public boolean onMarkerClick(Marker marker) 
 	{
@@ -110,7 +113,7 @@ public class WebcamOverlay implements
 		}
 		catch (MalformedURLException e) 
 		{
-			mWebcamOverlayChangeListener.onErrorMessageChanged(e.getLocalizedMessage());
+			mWebcamOverlayChangeListener.onWebcamErrorMessageChanged(e.getLocalizedMessage());
 			mCurrentlySelectedMarker = null;
 		}
 		/* do not show info window until the image has been retrieved */
@@ -122,12 +125,12 @@ public class WebcamOverlay implements
 	{
 		if(bmp == null && !errorMessage.isEmpty())
 		{
-			mWebcamOverlayChangeListener.onErrorMessageChanged(errorMessage);
+			mWebcamOverlayChangeListener.onWebcamErrorMessageChanged(errorMessage);
 		}
 		else if(bt == BitmapType.WEBCAM && bmp != null)
 		{
 			if(!errorMessage.isEmpty())
-				mWebcamOverlayChangeListener.onErrorMessageChanged(errorMessage);
+				mWebcamOverlayChangeListener.onWebcamErrorMessageChanged(errorMessage);
 			if(mCurrentlySelectedMarker != null)
 			{
 				if(!errorMessage.isEmpty())
@@ -136,7 +139,7 @@ public class WebcamOverlay implements
 				{
 					mInfoWindowAdapter.setData(mMarkerWebcamHash.get(mCurrentlySelectedMarker).text, bmp, true);
 					/* notify map fragment that the image has changed */
-					mWebcamOverlayChangeListener.onBitmapChanged(bmp);
+					mWebcamOverlayChangeListener.onWebcamBitmapChanged(bmp);
 						
 				}
 				mCurrentlySelectedMarker.showInfoWindow();
@@ -144,16 +147,14 @@ public class WebcamOverlay implements
 		}
 	}
 
-
 	@Override
 	public void onInfoWindowClick(Marker marker) 
 	{
 		if(mInfoWindowAdapter.isImageValid())
-			mWebcamOverlayChangeListener.onInfoWindowImageClicked();
+			mWebcamOverlayChangeListener.onWebcamInfoWindowImageClicked();
 		else
-			mWebcamOverlayChangeListener.onMessageChanged(R.string.webcam_wait_for_image);
+			mWebcamOverlayChangeListener.onWebcamMessageChanged(R.string.webcam_wait_for_image);
 	}
-
 
 	@Override
 	public void onMapClick(LatLng arg0) 
@@ -178,7 +179,7 @@ public class WebcamOverlay implements
 		if(mCurrentBitmapTask != null  && mCurrentBitmapTask.getStatus() == AsyncTask.Status.RUNNING)
 		{
 			Log.e("cancelCurrentWebcamTask", "cancelling task");
-			mWebcamOverlayChangeListener.onBitmapTaskCanceled(mCurrentBitmapTask.getUrl());
+			mWebcamOverlayChangeListener.onWebcamBitmapTaskCanceled(mCurrentBitmapTask.getUrl());
 			mCurrentBitmapTask.cancel(false);
 		}
 		else

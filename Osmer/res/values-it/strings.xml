@@ -29,10 +29,12 @@
     <string name="radarUpdatedOn">Immagine radar scaricata alle </string>
     <string name="radarImageOld">L\'immagine radar scaricata più di un\'ora fa</string>    
     <string name="radarImageBlackWhiteHint">(Per questo è in bianco e nero)</string>
+    <string name="radarDownloadError">Errore scaricamento immagine radar</string>
     <string name="webcam_lists_downloaded">lista webcam aggiornata</string>
     <string name="webcam_downloading">download immagine webcam&#8230;</string>
     <string name="webcam_download_task_canceled">annullo il download di </string>
     <string name="webcam_wait_for_image">aspetta che si carichi l\'immagine&#8230;</string>
+    <string name="webcam_list_error">Errore scaricamento lista webcam</string>
     <string name="min_temp">Temperatura Minima</string>
     <string name="max_temp">Temperatura Massima</string>
     <string name="min_temp_abbr">Min.T</string>

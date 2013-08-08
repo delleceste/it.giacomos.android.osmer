@@ -4,13 +4,13 @@ import android.graphics.Bitmap;
 
 public interface WebcamOverlayChangeListener 
 {
-	public abstract void onBitmapChanged(Bitmap bmp);
+	public abstract void onWebcamBitmapChanged(Bitmap bmp);
 	
-	public abstract void onInfoWindowImageClicked();
+	public abstract void onWebcamInfoWindowImageClicked();
 	
-	public abstract void onErrorMessageChanged(String message);
+	public abstract void onWebcamErrorMessageChanged(String message);
 	
-	public abstract void onBitmapTaskCanceled(String url);
+	public abstract void onWebcamBitmapTaskCanceled(String url);
 	
-	public abstract void onMessageChanged(int resId);
+	public abstract void onWebcamMessageChanged(int resId);
 }

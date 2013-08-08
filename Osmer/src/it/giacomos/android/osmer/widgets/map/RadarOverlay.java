@@ -161,36 +161,6 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 		mBitmap = bmp;
 	}
 	
-	public void restoreFromInternalStorage(Context ctx)
-	{
-		File filesDir = ctx.getApplicationContext().getFilesDir();
-		Bitmap bmp = BitmapFactory.decodeFile(filesDir.getAbsolutePath() + "/lastRadarImage.bmp");
-		if(bmp != null)
-			updateBitmap(bmp);
-	}
-	
-	public boolean saveOnInternalStorage(Context ctx) 
-	{	
-		if(mBitmap != null)
-		{
-			FileOutputStream fos;
-			try 
-			{
-				fos = ctx.openFileOutput("lastRadarImage.bmp", Context.MODE_PRIVATE);
-				mBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);	
-				fos.close();
-				return true; /* success */
-			} 
-			catch (FileNotFoundException e) {
-					/* nada que hacer */
-			}
-			catch (IOException e) {
-
-			}
-		}
-		return false; /* bitmap null or impossible to save on file */
-	}	
-	
 	public void finalize()
 	{
 		if(mBitmap != null)

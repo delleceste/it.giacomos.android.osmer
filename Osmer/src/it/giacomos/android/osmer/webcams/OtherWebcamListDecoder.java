@@ -1,26 +1,18 @@
 package it.giacomos.android.osmer.webcams;
 
-
-import it.giacomos.android.osmer.ViewType;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.maps.GeoPoint;
-
 import android.text.Html;
 import android.util.Log;
 
@@ -28,7 +20,7 @@ public class OtherWebcamListDecoder implements WebcamListDecoder
 {
 
 	@Override
-	public ArrayList<WebcamData> decode(String rawData, boolean saveOnCache) 
+	public ArrayList<WebcamData> decode(String rawData) 
 	{
 		ArrayList<WebcamData> wcData = new ArrayList<WebcamData>();
 		Document dom;
@@ -96,11 +88,7 @@ public class OtherWebcamListDecoder implements WebcamListDecoder
 		catch (ParserConfigurationException e1) 
 		{
 			Log.e("OtherWebcamListDecoder: decode()", e1.getLocalizedMessage());
-		}
-		
-		if(saveOnCache && wcData.size() > 0) /* cache cleaned file */
-			WebcamDataCache.getInstance().saveToCache(rawData, ViewType.WEBCAMLIST_OTHER);
-		
+		}		
 		return wcData;
 	}
 

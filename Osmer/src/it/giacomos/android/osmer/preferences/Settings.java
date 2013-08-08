@@ -130,6 +130,18 @@ public class Settings
 		e.commit();
 	}
 
+	public long getWebcamLastUpdateTimestampMillis()
+	{
+		return mSharedPreferences.getLong("WEBCAM_LAST_UPDATE_TIMESTAMP_MILLIS", 0);
+	}
+	
+	public void setWebcamLastUpdateTimestampMillis(long timestampMillis)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putLong("WEBCAM_LAST_UPDATE_TIMESTAMP_MILLIS", timestampMillis);
+		e.commit();
+	}
+	
 	public boolean hasObservationsMarkerFontSize()
 	{
 		return mSharedPreferences.contains("MAP_OBSERVATIONS_MARKER_FONT_SIZE");

@@ -3,9 +3,9 @@ package it.giacomos.android.osmer.locationUtils;
 import java.util.ArrayList;
 
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.downloadManager.DownloadStatus;
-import it.giacomos.android.osmer.downloadManager.state.StateName;
-import it.giacomos.android.osmer.guiHelpers.ErrorDialogFragment;
+import it.giacomos.android.osmer.interfaceHelpers.ErrorDialogFragment;
+import it.giacomos.android.osmer.network.DownloadStatus;
+import it.giacomos.android.osmer.network.state.StateName;
 import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
 import android.app.Dialog;
 import android.content.IntentSender;
@@ -35,6 +35,8 @@ GeocodeAddressUpdateListener
 	private LocationRequest mLocationRequest;
 	private Location mCurrentLocation;
 	private LocationInfo mCurrentLocationInfo;
+	/* store location services available flag if servicesAvailable returns true */
+	private boolean mServicesAvailable;
 	
 	/* Define a request code to send to Google Play services
 	 * This code is returned in Activity.onActivityResult
@@ -60,6 +62,7 @@ GeocodeAddressUpdateListener
 	
 	private LocationService()
 	{
+		mServicesAvailable = false;
 		mActivity = null;
 		mLocationClient = null;
 		mCurrentLocation = null;
@@ -117,8 +120,10 @@ GeocodeAddressUpdateListener
 		}
 	}
 
-	private boolean servicesAvailable() 
+	public boolean servicesAvailable() 
 	{
+		if(mServicesAvailable)
+			return true;
 		// Check that Google Play services is available
 		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
 		// If Google Play services is available
@@ -126,14 +131,15 @@ GeocodeAddressUpdateListener
 		{
 			// In debug mode, log the status
 			Log.e("Location Updates", "Google Play services is available.");
-			return true;	
+			mServicesAvailable = true;	
 		} 
 		else // Google Play services was not available for some reason
 		{
 			Log.e("Location Updates", "Google Play services is NOT available.");
 			showErrorDialog(resultCode);
-			return false;
+			mServicesAvailable = false;
 		}
+		return mServicesAvailable;
 	}
 
 	@Override
