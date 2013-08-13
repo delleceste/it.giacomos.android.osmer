@@ -140,8 +140,12 @@ MeasureOverlayChangeListener
 
 	public void onDestroy ()
 	{
-		CameraPosition cameraPos = mMap.getCameraPosition();
-		mSettings.saveMapCameraPosition(cameraPos);
+		/* save camera position only if valid (gone at least through one onCameraUpdate */
+		if(mMapReady) 
+		{
+			CameraPosition cameraPos = mMap.getCameraPosition();
+			mSettings.saveMapCameraPosition(cameraPos);
+		}
 		/* The bitmap stored into the mRadarOverlay has to be saved */
 		mRadarOverlay.saveOnInternalStorage(getActivity().getApplicationContext());
 		mRadarOverlay.finalize(); /* recycles bitmap for GC */
