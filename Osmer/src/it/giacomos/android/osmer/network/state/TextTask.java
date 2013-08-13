@@ -1,22 +1,12 @@
 package it.giacomos.android.osmer.network.state;
-
-import it.giacomos.android.osmer.network.DownloadManagerUpdateListener;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
-
 import android.annotation.TargetApi;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.util.Log;
 
 public class TextTask extends AsyncTask<URL, Integer, String> {
 
@@ -48,9 +38,16 @@ public class TextTask extends AsyncTask<URL, Integer, String> {
 			return this.execute(urls);
 	}
 	
+	/** Invokes the onTextUpdate method of TextUpdateListener.
+	 * The text passed inside onTextUpdate is the downloaded text or an empty string
+	 * if the download was not successful.
+	 * Error message is passed if an error occurred.
+	 */
 	public void onPostExecute(String doc)
 	{
 		m_textUpdateListener.onTextUpdate(doc, m_type, m_errorMessage, this);
+		if(mTextBytes != null)
+			m_textUpdateListener.onTextBytesUpdate(mTextBytes, m_type);
 	}
 
 	public void onCancelled(String doc)
@@ -65,6 +62,15 @@ public class TextTask extends AsyncTask<URL, Integer, String> {
 	{
 		String doc = "";
 		m_errorMessage = "";
+		mTextBytes = null;
+		byte [] bytes = null;
+		int nRead;
+		InputStream inputStream;
+		String charset;
+		if(m_type == ViewType.WEBCAMLIST_OTHER)
+			charset = "UTF-8";
+		else
+			charset = "ISO-8859-1";
 		if(urls.length == 1)
 		{
 			URLConnection urlConnection = null;
@@ -73,20 +79,20 @@ public class TextTask extends AsyncTask<URL, Integer, String> {
 				/* need http referer */
 				if(mReferer != null)
 					urlConnection.setRequestProperty("Referer", mReferer);
-
-				BufferedReader in = new BufferedReader(
-						new InputStreamReader(
-								urlConnection.getInputStream(), Charset.forName("ISO-8859-1")));
-				String inputLine;
-
-				while ((inputLine = in.readLine()) != null) 
-					doc += inputLine + "\n";
-				in.close();
+				inputStream = urlConnection.getInputStream();
+        		/* get bytes from input stream */
+        		ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        		bytes = new byte[1024];
+				while ((nRead = inputStream.read(bytes, 0, bytes.length)) != -1) {
+        			byteBuffer.write(bytes, 0, nRead);
+        		}
+        		byteBuffer.flush();
+        		mTextBytes = byteBuffer.toByteArray();
+				doc = new String(mTextBytes, charset);
 				publishProgress(100);
 			} 
 			catch (IOException e) {
-				// TODO Auto-generated catch block
-				m_errorMessage = "Error downloading text document: "  + e.toString();
+				m_errorMessage = "IOException: URL: \"" + urls[0].toString() + "\":\n\"" + e.getLocalizedMessage() + "\"";
 			}
 		}
 		return doc;
@@ -96,4 +102,5 @@ public class TextTask extends AsyncTask<URL, Integer, String> {
 	private TextTaskListener m_textUpdateListener;
 	private String m_errorMessage;
 	private String mReferer;
+	private byte[] mTextBytes;
 }

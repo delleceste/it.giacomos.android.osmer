@@ -9,7 +9,7 @@ import android.os.Bundle;
 public class InstanceSaver {
 	protected void save(Bundle b, OsmerActivity a)
 	{		
-		DownloadStatus ds = DownloadStatus.Instance();
+		DownloadStatus ds = a.getDownloadStatus();
 		/* a couple of timestamps to mark bundle save time and
 		 * state machine last completed download time.
 		 */

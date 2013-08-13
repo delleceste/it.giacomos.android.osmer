@@ -16,12 +16,13 @@ import it.giacomos.android.osmer.network.DownloadReason;
 import it.giacomos.android.osmer.network.DownloadStateListener;
 import it.giacomos.android.osmer.network.DownloadStatus;
 import it.giacomos.android.osmer.network.Data.DataPool;
+import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
 import it.giacomos.android.osmer.network.Data.DataPoolErrorListener;
 import it.giacomos.android.osmer.network.state.BitmapType;
 import it.giacomos.android.osmer.network.state.StateName;
 import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.network.state.ViewType;
-import it.giacomos.android.osmer.observations.ObservationTime;
+import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCache;
 import it.giacomos.android.osmer.webcams.WebcamDataHelper;
@@ -32,6 +33,7 @@ import it.giacomos.android.osmer.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.widgets.map.RadarOverlayUpdateListener;
 import it.giacomos.android.osmer.pager.ActionBarManager;
 import it.giacomos.android.osmer.pager.DrawerItemClickListener;
+import it.giacomos.android.osmer.pager.MyActionBarDrawerToggle;
 import it.giacomos.android.osmer.pager.TabsAdapter;
 import it.giacomos.android.osmer.pager.ViewPagerPages;
 import it.giacomos.android.osmer.preferences.*;
@@ -45,7 +47,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
@@ -86,6 +87,18 @@ MapFragmentListener,
 RadarOverlayUpdateListener,
 DataPoolErrorListener
 {
+	private final DownloadManager m_downloadManager;
+	private final DownloadStatus mDownloadStatus;
+	
+	public OsmerActivity()
+	{
+		super();
+		/* these are final */
+		/* Create a download status in INIT state */
+		mDownloadStatus = new DownloadStatus();
+		m_downloadManager = new DownloadManager(this, mDownloadStatus);
+	}
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -116,9 +129,7 @@ DataPoolErrorListener
 		super.onResume();
 		if(!mGoogleServicesAvailable)
 			return;
-		/* registers network status monitor broadcast receiver (for this it needs `this')
-		 * Must be called _after_ instance restorer's onResume!
-		 */
+
 		m_downloadManager.onResume(this);
 	}
 
@@ -130,7 +141,7 @@ DataPoolErrorListener
 		/* unregisters network status monitor broadcast receiver (for this it needs `this')
 		 */
 		m_downloadManager.onPause(this);
-		LocationService.Instance().disconnect();
+		mLocationService.disconnect();
 	}
 
 	/**
@@ -178,8 +189,7 @@ DataPoolErrorListener
 				mRefreshAnimatedImageView.hide();
 			/* cancel async tasks that may be running when the application is destroyed */
 			m_downloadManager.stopPendingTasks();
-			/* save downloaded data to storage */
-			DataPool.Instance().store(getApplicationContext());
+			mDataPool.clear();
 		}
 		super.onDestroy();
 	}
@@ -196,17 +206,97 @@ DataPoolErrorListener
 		super.onStart();
 		if(!mGoogleServicesAvailable)
 			return;
-		/* create the location update client and connect it to the location service */
-		LocationService locationService = LocationService.Instance();
-		locationService.init(this);
-		locationService.connect();
 	}
 
+	public void init()
+	{
+		mCurrentViewType = ViewType.HOME;
+		mViewPager = new ViewPager(this);
+		mViewPager.setId(R.id.pager);
+		
+		/* Create DataPool.  */
+		mDataPool = new DataPool(this);
+		mDataPool.registerErrorListener(this); /* listen for network errors */
+		/* register observations cache on DataPool. Data initialization with DataPoolCacheUtils
+		 * is done afterwards, inside onStart.
+		 */
+		mDataPool.registerTextListener(ViewType.DAILY_TABLE, m_observationsCache);
+		mDataPool.registerTextListener(ViewType.LATEST_TABLE, m_observationsCache);
+		
+		mLocationService = new LocationService(getApplicationContext(), mDownloadStatus);
+		/* Set the number of pages that should be retained to either side of 
+		 * the current page in the view hierarchy in an idle state
+		 */
+		//		mViewPager.setOffscreenPageLimit(3);
+		mMainLayout = (LinearLayout) findViewById(R.id.mainLayout);
+		mMainLayout.addView(mViewPager);
+
+		mSettings = new Settings(this);
+		mTapOnMarkerHintCount = 0;
+		mRefreshAnimatedImageView = null;
+
+		mDrawerItems = getResources().getStringArray(R.array.drawer_text_items);
+		mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+		/* Action bar stuff.  */
+		mActionBarManager = new ActionBarManager(this);
+		/* Set the adapter for the list view */
+		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+				R.layout.drawer_list_item, mDrawerItems));
+
+		/* Set the list's click listener */
+		mDrawerList.setOnItemClickListener(new DrawerItemClickListener(this));
+		mTitle = getTitle();
+		mDrawerTitleOpen = getResources().getString(R.string.drawer_open);
+
+		DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+		mDrawerToggle = new MyActionBarDrawerToggle(this, drawerLayout,
+				R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close);
+		/*Set the drawer toggle as the DrawerListener */
+		drawerLayout.setDrawerListener(mDrawerToggle);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setHomeButtonEnabled(true);
+
+		mActionBarManager.drawerItemChanged(0);
+
+		mMenuActionsManager = null;
+		mCurrentLocation = null;
+
+		/* set html text on Radar info text view */
+		TextView radarInfoTextView = (TextView)findViewById(R.id.radarInfoTextView);
+		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
+		radarInfoTextView.setVisibility(View.GONE);
+
+		/* download manager. Instantiated in the constructor because it's final */
+		m_downloadManager.setDownloadListener(mDataPool);
+
+		m_observationsCache = new ObservationsCache();
+		/* map updates the observation data in ItemizedOverlay when new observations are available
+		 *
+		 */
+		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+		m_observationsCache.installObservationsCacheUpdateListener(map);
+		
+		DataPoolCacheUtils dataPoolCacheUtils = new DataPoolCacheUtils();
+		
+		/* load cached tables at startup. map is updated because installed as a listener
+		 * above. Situation image will register as LatestObservationCacheChangeListener
+		 * in SituationFragment.onActivityCreated. It will be immediately notified
+		 * inside ObservationsCache.setLatestObservationCacheChangeListener.
+		 */
+		m_observationsCache.onTextChanged(dataPoolCacheUtils.loadFromStorage(ViewType.DAILY_TABLE, getApplicationContext()),
+				ViewType.DAILY_TABLE, true);
+		m_observationsCache.onTextChanged(dataPoolCacheUtils.loadFromStorage(ViewType.LATEST_TABLE, getApplicationContext()),
+				ViewType.LATEST_TABLE, true);
+		/* create the location update client and connect it to the location service */
+		mLocationService.connect();
+	}
+	
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) 
 	{
-		Log.e("onPrepareOptionsMenu", " action bar navigation mode " + getActionBar().getNavigationMode());
 		/* save refresh state of the refresh animated circular scrollbar in order to 
 		 * restore its state and visibility right after the menu is recreated.
 		 */
@@ -256,7 +346,9 @@ DataPoolErrorListener
 			int displayedChild = ((ViewFlipper) findViewById(R.id.viewFlipper)).getDisplayedChild();
 			OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
 			if(displayedChild == 1  &&  map.isInfoWindowVisible()) /* map view visible */
+			{
 				map.hideInfoWindow();
+			}
 			else if(displayedChild == 1)
 			{
 				mDrawerList.setItemChecked(0, true);
@@ -316,95 +408,7 @@ DataPoolErrorListener
 	{
 
 	}
-
-	public void init()
-	{
-		mCurrentViewType = ViewType.HOME;
-		mViewPager = new ViewPager(this);
-		mViewPager.setId(R.id.pager);
-		/* Set the number of pages that should be retained to either side of 
-		 * the current page in the view hierarchy in an idle state
-		 */
-		//		mViewPager.setOffscreenPageLimit(3);
-		mMainLayout = (LinearLayout) findViewById(R.id.mainLayout);
-		mMainLayout.addView(mViewPager);
-
-		mSettings = new Settings(this);
-		mTapOnMarkerHintCount = 0;
-		mRefreshAnimatedImageView = null;
-
-		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
-
-		/* DataPool. Obtain the instance and load data from storage */
-		DataPool dataPool = DataPool.Instance();
-		dataPool.registerErrorListener(this); /* listen for network errors */
-		dataPool.load(getApplicationContext());
-
-		/* download manager */
-		m_downloadManager = new DownloadManager(this);
-		m_downloadManager.setDownloadListener(dataPool);
-
-		m_observationsCache = new ObservationsCache();
-
-		/* map updates the observation data in ItemizedOverlay when new observations are available
-		 *
-		 */
-		m_observationsCache.installObservationsCacheUpdateListener(map);
-		/* observations are updated by the DataPool data center */
-		dataPool.registerTextListener(ViewType.DAILY_TABLE, m_observationsCache);
-		dataPool.registerTextListener(ViewType.LATEST_TABLE, m_observationsCache);
-
-		mDrawerItems = getResources().getStringArray(R.array.drawer_text_items);
-		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-		/* Action bar stuff.  */
-		mActionBarManager = new ActionBarManager(this);
-		// Set the adapter for the list view
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, mDrawerItems));
-
-		// Set the list's click listener
-		mDrawerList.setOnItemClickListener(new DrawerItemClickListener(this));
-		mTitle = getTitle();
-		mDrawerTitle = getResources().getString(R.string.drawer_open);
-
-		DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-		mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-				R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) 
-		{
-
-			/** Called when a drawer has settled in a completely closed state. */
-			public void onDrawerClosed(View view) 
-			{
-				getActionBar().setTitle(mTitle);
-				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-			}
-
-			/** Called when a drawer has settled in a completely open state. */
-			public void onDrawerOpened(View drawerView) 
-			{
-				getActionBar().setTitle(mDrawerTitle);
-				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-			}
-		};
-
-		// Set the drawer toggle as the DrawerListener
-		drawerLayout.setDrawerListener(mDrawerToggle);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
-
-		mActionBarManager.drawerItemChanged(0);
-
-		mMenuActionsManager = null;
-		mCurrentLocation = null;
-
-		/* set html text on Radar info text view */
-		TextView radarInfoTextView = (TextView)findViewById(R.id.radarInfoTextView);
-		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
-		radarInfoTextView.setVisibility(View.GONE);
-	}	
-
+	
 	@Override
 	public void setTitle(CharSequence title) {
 		mTitle = title;
@@ -429,9 +433,8 @@ DataPoolErrorListener
 			currenvViewUpdater = null;
 
 			/* trigger an update of the locality if Location is available */
-			LocationService locationService = LocationService.Instance();
-			if(locationService.getCurrentLocation() != null)
-				LocationService.Instance().updateGeocodeAddress();
+			if(mLocationService.getCurrentLocation() != null)
+				mLocationService.updateGeocodeAddress();
 		}
 	}
 
@@ -551,20 +554,20 @@ DataPoolErrorListener
 			Toast.makeText(getApplicationContext(), R.string.webcam_lists_downloaded, Toast.LENGTH_SHORT).show();
 	}
 
-	void executeObservationTypeSelectionDialog(ObservationTime oTime)
+	void executeObservationTypeSelectionDialog(MapMode mapMode)
 	{
 		ObservationTypeGetter oTypeGetter = new ObservationTypeGetter();
-		oTypeGetter.get(this, oTime, -1);
+		oTypeGetter.get(this, mapMode, -1);
 		oTypeGetter = null;
 	}
 
-	public void onSelectionDone(ObservationType type, ObservationTime oTime) 
+	public void onSelectionDone(ObservationType observationType, MapMode mapMode) 
 	{
 		/* switch the working mode of the map view. Already in PAGE_MAP view flipper page */
 		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
-		map.setMode(new MapViewMode(type, oTime));
-		if(type != ObservationType.WEBCAM)
-			map.updateObservations(m_observationsCache.getObservationData(oTime));
+		map.setMode(new MapViewMode(observationType, mapMode));
+		if(mapMode == MapMode.DAILY_OBSERVATIONS || mapMode == MapMode.LATEST_OBSERVATIONS)
+			map.updateObservations(m_observationsCache.getObservationData(mapMode));
 	}
 
 	@Override
@@ -697,7 +700,6 @@ DataPoolErrorListener
 
 	public void switchView(ViewType id) 
 	{
-		Log.e("switchView", "view type " + id);
 		mCurrentViewType = id;
 		ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 
@@ -718,14 +720,14 @@ DataPoolErrorListener
 		} 
 		else if (id == ViewType.TWODAYS) 
 		{
-			mActionBarManager.drawerItemChanged(0);
+			viewFlipper.setDisplayedChild(0);
 			mViewPager.setCurrentItem(ViewPagerPages.TWODAYS);
 		} 
-		else if (id == ViewType.MAP || id == ViewType.RADAR) 
+		else if (id == ViewType.RADAR) 
 		{
 			viewFlipper.setDisplayedChild(1);
 			/* remove itemized overlays (observations), if present, and restore radar view */
-			((OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview)).setMode(new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY));
+			((OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview)).setMode(new MapViewMode(ObservationType.NONE, MapMode.RADAR));
 		} 
 		else if (id == ViewType.ACTION_CENTER_MAP) 
 		{
@@ -737,7 +739,7 @@ DataPoolErrorListener
 		}
 
 		if (id == ViewType.DAILY_SKY) {
-			onSelectionDone(ObservationType.SKY, ObservationTime.DAILY);
+			onSelectionDone(ObservationType.SKY, MapMode.DAILY_OBSERVATIONS);
 			if(mSettings.isMapMarkerHintEnabled() && mTapOnMarkerHintCount == 0)
 			{
 				Toast.makeText(getApplicationContext(), R.string.hint_tap_on_map_markers, Toast.LENGTH_LONG).show();
@@ -745,41 +747,41 @@ DataPoolErrorListener
 			}
 		} 
 		else if (id == ViewType.DAILY_HUMIDITY) 
-			onSelectionDone(ObservationType.AVERAGE_HUMIDITY, ObservationTime.DAILY);
+			onSelectionDone(ObservationType.AVERAGE_HUMIDITY, MapMode.DAILY_OBSERVATIONS);
 		else if (id == ViewType.DAILY_WIND_MAX) 
-			onSelectionDone(ObservationType.MAX_WIND, ObservationTime.DAILY);
+			onSelectionDone(ObservationType.MAX_WIND, MapMode.DAILY_OBSERVATIONS);
 		else if (id == ViewType.DAILY_WIND) 
-			onSelectionDone(ObservationType.AVERAGE_WIND, ObservationTime.DAILY);
+			onSelectionDone(ObservationType.AVERAGE_WIND, MapMode.DAILY_OBSERVATIONS);
 		else if (id == ViewType.DAILY_RAIN) 
-			onSelectionDone(ObservationType.RAIN, ObservationTime.DAILY);
+			onSelectionDone(ObservationType.RAIN, MapMode.DAILY_OBSERVATIONS);
 		else if (id == ViewType.DAILY_MIN_TEMP) 
-			onSelectionDone(ObservationType.MIN_TEMP, ObservationTime.DAILY);
+			onSelectionDone(ObservationType.MIN_TEMP, MapMode.DAILY_OBSERVATIONS);
 		else if (id == ViewType.DAILY_MEAN_TEMP) 
-			onSelectionDone(ObservationType.AVERAGE_TEMP, ObservationTime.DAILY);
+			onSelectionDone(ObservationType.AVERAGE_TEMP, MapMode.DAILY_OBSERVATIONS);
 		else if (id == ViewType.DAILY_MAX_TEMP) 
-			onSelectionDone(ObservationType.MAX_TEMP, ObservationTime.DAILY);
+			onSelectionDone(ObservationType.MAX_TEMP, MapMode.DAILY_OBSERVATIONS);
 		else if (id == ViewType.LATEST_SKY) 
-			onSelectionDone(ObservationType.SKY, ObservationTime.LATEST);
+			onSelectionDone(ObservationType.SKY, MapMode.LATEST_OBSERVATIONS);
 		else if (id == ViewType.LATEST_HUMIDITY) 
-			onSelectionDone(ObservationType.HUMIDITY, ObservationTime.LATEST);
+			onSelectionDone(ObservationType.HUMIDITY, MapMode.LATEST_OBSERVATIONS);
 		else if (id == ViewType.LATEST_WIND) 
-			onSelectionDone(ObservationType.WIND, ObservationTime.LATEST);
+			onSelectionDone(ObservationType.WIND, MapMode.LATEST_OBSERVATIONS);
 		else if (id == ViewType.LATEST_PRESSURE) 
-			onSelectionDone(ObservationType.PRESSURE, ObservationTime.LATEST);
+			onSelectionDone(ObservationType.PRESSURE, MapMode.LATEST_OBSERVATIONS);
 		else if (id == ViewType.LATEST_RAIN) 
-			onSelectionDone(ObservationType.RAIN, ObservationTime.LATEST);
+			onSelectionDone(ObservationType.RAIN, MapMode.LATEST_OBSERVATIONS);
 		else if (id == ViewType.LATEST_SEA) 
-			onSelectionDone(ObservationType.SEA, ObservationTime.LATEST);
+			onSelectionDone(ObservationType.SEA, MapMode.LATEST_OBSERVATIONS);
 		else if (id == ViewType.LATEST_SNOW) 
-			onSelectionDone(ObservationType.SNOW, ObservationTime.LATEST);
+			onSelectionDone(ObservationType.SNOW, MapMode.LATEST_OBSERVATIONS);
 		else if (id == ViewType.LATEST_TEMP) 
-			onSelectionDone(ObservationType.TEMP, ObservationTime.LATEST);
+			onSelectionDone(ObservationType.TEMP, MapMode.LATEST_OBSERVATIONS);
 		else if (id == ViewType.WEBCAM) 
-			onSelectionDone(ObservationType.WEBCAM, ObservationTime.WEBCAM);
+			onSelectionDone(ObservationType.NONE, MapMode.WEBCAM);
 		/* try to download only if online */
 		if(m_downloadManager.state().name() == StateName.Online)
 		{
-			if(id == ViewType.RADAR || id == ViewType.MAP)
+			if(id == ViewType.RADAR)
 				radar(); /* map mode has already been set if type is MAP or RADAR */
 			else if(id == ViewType.TODAY)
 				getTodayForecast();
@@ -838,6 +840,21 @@ DataPoolErrorListener
 		return mRefreshAnimatedImageView;
 	}
 
+	public DataPool getDataPool()
+	{
+		return mDataPool;
+	}
+	
+	public DownloadStatus getDownloadStatus()
+	{
+		return mDownloadStatus;
+	}
+	
+	public LocationService getLocationService()
+	{
+		return mLocationService;
+	}
+	
 	@Override
 	public void onRadarImageUpdated() 
 	{
@@ -854,7 +871,6 @@ DataPoolErrorListener
 
 	/* private members */
 	int mTapOnMarkerHintCount;
-	private DownloadManager m_downloadManager;
 	private Location mCurrentLocation;
 	private ObservationsCache m_observationsCache;
 	private MenuActionsManager mMenuActionsManager;
@@ -863,7 +879,7 @@ DataPoolErrorListener
 	private ListView mDrawerList;
 	private String[] mDrawerItems;
 	private ActionBarDrawerToggle mDrawerToggle;
-	private CharSequence mTitle, mDrawerTitle;
+	private CharSequence mTitle, mDrawerTitleOpen;
 	private ActionBarManager mActionBarManager;
 	private AnimatedImageView mRefreshAnimatedImageView;
 	private ViewType mCurrentViewType;
@@ -872,10 +888,8 @@ DataPoolErrorListener
 	private boolean mGoogleServicesAvailable;
 	Urls m_urls;
 
-	private FragmentTabHost mTabHost;
-
-
-
+	private DataPool mDataPool;
+	private LocationService mLocationService;
 
 	ViewPager mViewPager;
 	TabsAdapter mTabsAdapter;

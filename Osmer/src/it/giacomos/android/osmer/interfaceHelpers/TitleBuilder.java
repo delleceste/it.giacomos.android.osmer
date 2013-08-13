@@ -1,12 +1,9 @@
 package it.giacomos.android.osmer.interfaceHelpers;
-import android.app.ActionBar;
 import android.content.res.Resources;
-import android.util.Log;
-
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.network.DownloadStatus;
-import it.giacomos.android.osmer.observations.ObservationTime;
+import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.widgets.CurrentScreen;
 import it.giacomos.android.osmer.widgets.map.MapViewMode;
@@ -20,14 +17,12 @@ public class TitleBuilder
 	{
 		OMapFragment map = (OMapFragment) a.getSupportFragmentManager().findFragmentById(R.id.mapview);
 		MapViewMode mapMode = null;
-		DownloadStatus ds = DownloadStatus.Instance();
+		DownloadStatus ds = a.getDownloadStatus();
 		boolean networkAvailable = ds.isOnline;
 		int scr = a.getViewPager().getCurrentItem();
 		Resources res = a.getResources();
 		String t = "";
 		
-		Log.e("makeTitle", "selectedItemPos" + a.getDrawerListView().getSelectedItemPosition()
-				+ " scr " + scr);
 		if (a.getDrawerListView().getCheckedItemPosition() == 0
 				&& (scr == CurrentScreen.HOME_SCREEN || 
 				scr == CurrentScreen.TODAY_SCREEN
@@ -40,13 +35,13 @@ public class TitleBuilder
 		else
 		{
 			mapMode = map.getMode();
-			if(mapMode.currentType == ObservationType.RADAR)
+			if(mapMode.currentMode == MapMode.RADAR)
 				t += res.getString(R.string.radar_title);
-			else if(mapMode.currentType == ObservationType.WEBCAM)
+			else if(mapMode.currentMode == MapMode.WEBCAM)
 				t += res.getString(R.string.title_webcam);
-			else if(mapMode.currentMode == ObservationTime.DAILY)
+			else if(mapMode.currentMode == MapMode.DAILY_OBSERVATIONS)
 				t += res.getString(R.string.observations_title_daily);
-			else if(mapMode.currentMode == ObservationTime.LATEST)
+			else if(mapMode.currentMode == MapMode.LATEST_OBSERVATIONS)
 				t += res.getString(R.string.observations_title_latest);
 		}
 		

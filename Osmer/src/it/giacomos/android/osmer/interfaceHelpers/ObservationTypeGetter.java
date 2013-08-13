@@ -2,10 +2,8 @@ package it.giacomos.android.osmer.interfaceHelpers;
 
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.observations.ObservationTime;
+import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.ObservationType;
-import it.giacomos.android.osmer.widgets.map.MapViewMode;
-import android.util.Log;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -20,13 +18,13 @@ SAT,
 RADAR;
  */
 public class ObservationTypeGetter {
-	public void get(OsmerActivity a, ObservationTime oTime, int currentSelection)
+	public void get(OsmerActivity a, MapMode oTime, int currentSelection)
 	{
-		mObservationTime = oTime;
+		mMapMode = oTime;
 		mActivity = a;
 		Resources res = a.getResources();
 		final CharSequence[] items;
-		if(oTime == ObservationTime.DAILY)
+		if(oTime == MapMode.DAILY_OBSERVATIONS)
 		{
 			/* 
 			 * Riepilogo giornaliero
@@ -63,7 +61,7 @@ public class ObservationTypeGetter {
 		}
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(a);
-		if(mObservationTime == mObservationTime.DAILY)
+		if(mMapMode == MapMode.DAILY_OBSERVATIONS)
 			builder.setTitle(R.string.select_obs_type_daily);
 		else
 			builder.setTitle(R.string.select_obs_type_latest);
@@ -73,71 +71,49 @@ public class ObservationTypeGetter {
 			{
 				ObservationType t = ObservationType.SKY;
 				
-				if(mObservationTime == ObservationTime.DAILY)
+				if(mMapMode == MapMode.DAILY_OBSERVATIONS)
 				{
-					switch(item)
-					{
-					case 0:
+					if (item == 0) {
 						t = ObservationType.SKY;
-						break;
-					case 1:
+					} else if (item == 1) {
 						t = ObservationType.MIN_TEMP;
-						break;
-					case 2:
+					} else if (item == 2) {
 						t = ObservationType.AVERAGE_TEMP;
-						break;
-					case 3:
+					} else if (item == 3) {
 						t = ObservationType.MAX_TEMP;
-						break;
-					case 4:
+					} else if (item == 4) {
 						t = ObservationType.AVERAGE_HUMIDITY;
-						break;
-					case 5:
+					} else if (item == 5) {
 						t = ObservationType.AVERAGE_WIND;
-						break;
-					case 6:
+					} else if (item == 6) {
 						t = ObservationType.MAX_WIND;
-						break;
-					case 7:
+					} else if (item == 7) {
 						t = ObservationType.RAIN;
-						break;
-					default:
-						break;
+					} else {
 					}
 				}
-				else
+				else if(mMapMode == MapMode.LATEST_OBSERVATIONS)
 				{
-					switch(item)
-					{
-					case 0:
+					if (item == 0) {
 						t = ObservationType.SKY;
-						break;
-					case 1:
+					} else if (item == 1) {
 						t = ObservationType.TEMP;
-						break;
-					case 2:
+					} else if (item == 2) {
 						t = ObservationType.HUMIDITY;
-						break;
-					case 3:
+					} else if (item == 3) {
 						t = ObservationType.PRESSURE;
-						break;
-					case 4:
+					} else if (item == 4) {
 						t = ObservationType.WIND;
-						break;
-					case 5:
+					} else if (item == 5) {
 						t = ObservationType.RAIN;
-						break;
-					case 6:
+					} else if (item == 6) {
 						t = ObservationType.SEA;
-						break;
-					case 7:
+					} else if (item == 7) {
 						t = ObservationType.SNOW;
-						break;
-					default:
-						break;
+					} else {
 					}
 				}
-				mActivity.onSelectionDone(t, mObservationTime);
+				mActivity.onSelectionDone(t, mMapMode);
 				dialog.cancel();
 			}
 		});
@@ -146,5 +122,5 @@ public class ObservationTypeGetter {
 	}
 
 	private OsmerActivity mActivity;
-	private ObservationTime mObservationTime;
+	private MapMode mMapMode;
 }

@@ -35,13 +35,8 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 		mLocationPoint = null;
 		mPaint = new Paint();
 		mPaint.setAntiAlias(true);
-		mLayerDrawableAvailable = false;
 		mFvgBackgroundDrawable = new BitmapDrawable(getResources(), 
 				BitmapFactory.decodeResource(getResources(), R.drawable.fvg_background2));
-		/* register for location updates */
-		LocationService locationService = LocationService.Instance();
-		locationService.registerLocationServiceAddressUpdateListener(this);
-		locationService.registerLocationServiceUpdateListener(this);
 	}
 
 	public void setBitmapType(BitmapType bt)
@@ -54,6 +49,12 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 		return mBitmapType;
 	}
 	
+	/** sets the bitmap as layer 1 of the layer drawable used to place the 
+	 * transparent image over the region image.
+	 * 
+	 * @param bitmap the forecast transparent bitmap obtained from the web site
+	 * 
+	 */
 	public void setBitmap(Bitmap bitmap) 
 	{
 		Drawable layers[] = new Drawable[2];
@@ -61,33 +62,45 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 		Resources res = appContext.getResources();
 		layers[0] =  mFvgBackgroundDrawable;
 		layers[1] = new BitmapDrawable(res, bitmap);
+		/* NOTE: layers[1].getBitmap would return the bitmap at the same address
+		 * as bmp.
+		 */
 		LayerDrawable layerDrawable = new LayerDrawable(layers);
 		setImageDrawable(layerDrawable);
-		mLayerDrawableAvailable = true;
 	}
 
-
-	public String makeFileName()
-	{
-		return "image_" + this.getId() + ".bmp";
-	}
-
+	/** sets a null callback on the drawables.
+	 * recycles bitmaps.
+	 * Checks for null in case setBitmap was called with a null parameter (and
+	 * so the bitmap drawable is null).
+	 */
 	public void unbindDrawables()
 	{
-		if(mLayerDrawableAvailable)
-		{
+		Log.e("unbindDrawables", "entering mLAyerDrawAvail" + mLayerDrawableAvailable);
+		
 			LayerDrawable lDrawable = (LayerDrawable) getDrawable();
 			if(lDrawable != null)
 			{	
+				Log.e("unbindDrawable", "recycling for " + mBitmapType);
+				Bitmap bmp;
 				BitmapDrawable bmpD = (BitmapDrawable) lDrawable.getDrawable(0);
-//				bmpD.getBitmap().recycle();
+				if(bmpD != null)
+				{
+					bmpD.setCallback(null);
+					bmp = bmpD.getBitmap();
+					if(bmp != null)
+						bmp.recycle();
+				}
 				bmpD = (BitmapDrawable) lDrawable.getDrawable(1);
-//				bmpD.getBitmap().recycle();
-				lDrawable.getDrawable(1).setCallback(null);
-				lDrawable.getDrawable(0).setCallback(null);
-				lDrawable.setCallback(null);
+				if(bmpD != null) 
+				{
+					bmp = bmpD.getBitmap();
+					if(bmp != null)
+						bmp.recycle();
+					bmpD.setCallback(null);
+				}
 			}
-		}
+			lDrawable.setCallback(null);		
 	}
 
 	public void onLocalityChanged(String locality, String subLocality, String address)

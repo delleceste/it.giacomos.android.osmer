@@ -2,21 +2,11 @@ package it.giacomos.android.osmer.widgets;
 
 import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
 import it.giacomos.android.osmer.network.state.ViewType;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.TextView;
 
 /** Text change listener is installed here because this class restores from internal storage on her own
@@ -46,7 +36,6 @@ public class OTextView extends TextView implements DataPoolTextListener
 	{
 		if(mHtml == null || !html.equals(mHtml))
 		{
-			Log.e("OTextView:setHtml", "updating html cause differs");
 			Spanned fromHtml = Html.fromHtml(html);
 			mHtml = html;
 			setText(fromHtml);

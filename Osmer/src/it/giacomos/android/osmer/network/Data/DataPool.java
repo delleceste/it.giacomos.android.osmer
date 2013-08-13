@@ -3,18 +3,19 @@ package it.giacomos.android.osmer.network.Data;
 import it.giacomos.android.osmer.network.state.BitmapType;
 import it.giacomos.android.osmer.network.state.ViewType;
 
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-
 public class DataPool implements DownloadListener 
 {
-
-	private static DataPool m_instance = null;
 	
-	private HashMap<BitmapType, BitmapData> mBitmapData;
+	private HashMap<BitmapType, Boolean> mForceUpdateOnSameBitmapHash;
+	
+	private HashMap<BitmapType, BitmapData> mBitmapDataHash;
 	
 	private HashMap<ViewType, StringData> mStringData;
 	
@@ -22,11 +23,13 @@ public class DataPool implements DownloadListener
 	
 	private HashMap<ViewType, DataPoolTextListener> mTextListeners;
 	
-	private DataPoolErrorListener mDataPoolErrorListener;
+	private ArrayList<DataPoolErrorListener> mDataPoolErrorListeners;
+	
+	private Context mContext;
 
 	public HashMap<BitmapType, BitmapData> getBitmapData()
 	{
-		return mBitmapData;
+		return mBitmapDataHash;
 	}
 	
 	public HashMap<ViewType, StringData>  getStringData()
@@ -34,31 +37,41 @@ public class DataPool implements DownloadListener
 		return mStringData;
 	}
 	
-	private DataPool()
+	public DataPool(Context ctx)
 	{
-		mBitmapData = new HashMap<BitmapType, BitmapData>();
+		mBitmapDataHash = new HashMap<BitmapType, BitmapData>();
 		mStringData = new HashMap<ViewType, StringData>();
 		mBitmapListeners = new HashMap<BitmapType, DataPoolBitmapListener>();
 		mTextListeners = new HashMap<ViewType, DataPoolTextListener>();
+		mForceUpdateOnSameBitmapHash = new HashMap<BitmapType, Boolean>();
+		mDataPoolErrorListeners = new ArrayList<DataPoolErrorListener>();
+		mContext = ctx;
 	}
 	
-	public void load(Context ctx)
+	public void setForceUpdateEvenOnSameBitmap(BitmapType bt, boolean force)
 	{
-		DataPoolCacheUtils dpcu = new DataPoolCacheUtils();
-		dpcu.loadFromStorage(this, ctx);
+		mForceUpdateOnSameBitmapHash.put(bt, force);
 	}
-	
-	public void store(Context ctx)
+
+	public void clear()
 	{
-		DataPoolCacheUtils dpcu = new DataPoolCacheUtils();
-		dpcu.saveToStorage(this, ctx);
-	}
-	
-	public static DataPool Instance()
-	{
-		if(m_instance == null)
-			m_instance = new DataPool();
-		return m_instance;
+		/* recycle all bitmaps */
+		for(BitmapData bmpd : mBitmapDataHash.values())
+		{
+			if(bmpd.bitmap != null)
+			{
+				bmpd.bitmap.recycle();
+				bmpd.bitmap = null;
+				bmpd = null;
+			}
+		}
+		/* clear data hashes */
+		mBitmapDataHash.clear();
+		mStringData.clear();
+		mBitmapListeners.clear();
+		mTextListeners.clear();
+		mForceUpdateOnSameBitmapHash.clear();
+		mDataPoolErrorListeners.clear();
 	}
 	
 	public boolean isTextValid(ViewType vt)
@@ -68,12 +81,12 @@ public class DataPool implements DownloadListener
 	
 	public boolean isBitmapValid(BitmapType bt)
 	{
-		return mBitmapData.containsKey(bt) && mBitmapData.get(bt).bitmap != null;
+		return mBitmapDataHash.containsKey(bt) && mBitmapDataHash.get(bt).bitmap != null;
 	}
 	
 	public void registerErrorListener(DataPoolErrorListener l)
 	{
-		mDataPoolErrorListener = l;
+		mDataPoolErrorListeners.add(l);
 	}
 	
 	public void unregisterTextListener(ViewType vt)
@@ -105,9 +118,9 @@ public class DataPool implements DownloadListener
 	public void registerBitmapListener(BitmapType bt, DataPoolBitmapListener bmpL)
 	{
 		mBitmapListeners.put(bt, bmpL);
-		if(mBitmapData.containsKey(bt))
+		if(mBitmapDataHash.containsKey(bt))
 		{
-			BitmapData bd = mBitmapData.get(bt);
+			BitmapData bd = mBitmapDataHash.get(bt);
 			if(bd.isValid())
 				bmpL.onBitmapChanged(bd.bitmap, bt, bd.fromCache);
 			else
@@ -115,24 +128,110 @@ public class DataPool implements DownloadListener
 		}
 	}
 
+
+	@Override
+	public void onTextBytesUpdate(byte[] bytes, ViewType vt) 
+	{
+		DataPoolCacheUtils dataPoolCUtils = new DataPoolCacheUtils();
+		dataPoolCUtils.saveToStorage(bytes, vt, mContext);
+	}
+	
+	/** This method is used to store the image on the cache before it is converted to Bitmap.
+	 * The BitmapTask invokes the callback with the InputString as argument before the 
+	 * one with the decoded bitmap.
+	 * Directly saving the bitmap from the input stream saves space on disk and avoids the 
+	 * Bitmap.compress() call upon saving.
+	 * If there was a download error and the bitmap is not valid, then this method is not
+	 * called by BitmapTask.onPostExecute
+	 */
+	@Override
+	public void onBitmapBytesUpdate(byte[] bytes, BitmapType bt) 
+	{
+		Log.e("DataPool.onBitmapBytesUpdate ", "type" + bt + "bitmap siz "  + 
+				"byte count: " + bytes.length);
+		DataPoolCacheUtils dataPoolCUtils = new DataPoolCacheUtils();
+		dataPoolCUtils.saveToStorage(bytes, bt, mContext);
+	}
+	
+	/** Implements onBitmapUpdate
+	 * This method is invoked when a BitmapTask has completed.
+	 * This method is called after a network download has been completed successfully.
+	 * 
+	 * @param bmp the new downloaded bitmap
+	 * @param t the BitmapType associated to the bitmap.
+	 * 
+	 * If the new bitmap is not already contained in the internal data hash storing the
+	 * previous bitmap associated to the BitmapType t, the new bitmap is inserted into the 
+	 * data hash.
+	 * Already registered listeners are notified of the bitmap update by calling the
+	 * onBitmapChanged method with a false parameter indicating a network update.
+	 * <br/>
+	 * If the new bitmap is the same as the already stored bitmap for that BitmapType,
+	 * then nothing is done and the previous bitmap is maintained in memory. In this case,
+	 * the new bitmap is recycled.
+	 * <br/>
+	 * If the new bitmap differs from the old bitmap associated to the BitmapType t,
+	 * or the BitmapType has been inserted among the set of bitmap types whose update
+	 * notification is always required (even in the case the new bitmap is equal to the
+	 * previous one), the new bitmap substitutes the old one in the hash, with key 
+	 * t. In this case, the old bitmap is recycled.
+	 * 
+	 */
 	@Override
 	public void onBitmapUpdate(Bitmap bmp, BitmapType t) 
 	{
-		mBitmapData.put(t, new BitmapData(bmp)); /* put in hash */
-		if(mBitmapListeners.containsKey(t))
-			mBitmapListeners.get(t).onBitmapChanged(bmp, t, false);
+		BitmapData cachedBitmapData = mBitmapDataHash.get(t);
+		BitmapData bitmapData = new BitmapData(bmp);
+		/* force update even if the bitmap is the same */
+		boolean forceUpdate = (mForceUpdateOnSameBitmapHash.containsKey(t) &&
+				mForceUpdateOnSameBitmapHash.get(t) == true);
+		
+		if(forceUpdate || cachedBitmapData == null || !bitmapData.equals(cachedBitmapData))
+		{
+			/* new bitmap replaces cached bitmap: after notifying the listeners,
+			 * which will start to use the new bitmap, we can recycle the old one.
+			 */
+			mBitmapDataHash.put(t, new BitmapData(bmp)); /* put in hash */
+			if(mBitmapListeners.containsKey(t))
+				mBitmapListeners.get(t).onBitmapChanged(bmp, t, false);
+			
+			/* recycle the old bitmap */
+			if(cachedBitmapData != null && cachedBitmapData.bitmap != null)
+				cachedBitmapData.bitmap.recycle();
+		}
+		else /* nothing updated */
+		{
+			bmp.recycle(); /* immediately recycle new unused bitmap */
+			bitmapData = null;
+		}
 	}
 
 	@Override
 	public void onBitmapUpdateError(BitmapType t, String error) 
 	{
-		mBitmapData.put(t, new BitmapData(null, error)); /* put in hash */
+		/* do not put null elements in cache */
 		if(mBitmapListeners.containsKey(t))
 			mBitmapListeners.get(t).onBitmapError(error, t);
-		mDataPoolErrorListener.onBitmapUpdateError(t, error);
+		
+		for(DataPoolErrorListener l : mDataPoolErrorListeners)
+			l.onBitmapUpdateError(t, error);
 	}
 	
 	@Override
+	/**
+	 * This method is invoked when a TextTask has completed.
+	 * This method is called after a network download has been completed successfully.
+	 * 
+	 * @param text the new downloaded text
+	 * @param t the ViewType associated to the text.
+	 * 
+	 * If the new text is not already contained in the internal data hash storing the
+	 * previous string associated to the ViewType t, the new text is inserted into the 
+	 * data hash.
+	 * Already registered listeners are notified of the text update by calling the
+	 * onTextChanged method with a false parameter indicating a network update.
+	 * 
+	 */
 	public void onTextUpdate(String text, ViewType t) 
 	{
 		StringData sd = mStringData.get(t);
@@ -143,41 +242,17 @@ public class DataPool implements DownloadListener
 			if(mTextListeners.containsKey(t))
 				mTextListeners.get(t).onTextChanged(text, t, false);
 		}
-		else
-			Log.e("DataPool.onTextUpdate", "not updated: data not changed!");
-	}
-
-	public void onCacheTextUpdate(String text, ViewType t)
-	{
-		StringData sd = mStringData.get(t);
-		StringData newSd = new StringData(text);
-		newSd.fromCache = true; /* mark as coming from cache */
-		if(!newSd.equals(sd))
-		{
-			mStringData.put(t, newSd); /* put in hash */
-			if(mTextListeners.containsKey(t))
-				mTextListeners.get(t).onTextChanged(text, t, true);
-		}
-		else
-			Log.e("DataPool.onCacheTextUpdate", "not updated: data not changed!");
-	}
-	
-	public void onCacheBitmapUpdate(Bitmap bmp, BitmapType t) 
-	{
-		BitmapData bd = new BitmapData(bmp);
-		bd.fromCache = true; /* mark as coming from cache */
-		mBitmapData.put(t, bd); /* put in hash */
-		if(mBitmapListeners.containsKey(t))
-			mBitmapListeners.get(t).onBitmapChanged(bmp, t, true);
 	}
 
 	@Override
 	public void onTextUpdateError(ViewType t, String error) 
 	{
-		mStringData.put(t, new StringData(null, error));
+		/* do not put null text in mStringData map */
 		if(mTextListeners.containsKey(t))
 			mTextListeners.get(t).onTextError(error, t);
-		mDataPoolErrorListener.onTextUpdateError(t, error);
+		
+		for(DataPoolErrorListener l : mDataPoolErrorListeners)
+				l.onTextUpdateError(t, error);
 	}
- 
+
 }

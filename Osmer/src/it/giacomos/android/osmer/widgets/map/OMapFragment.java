@@ -10,27 +10,26 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 
+import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
-import it.giacomos.android.osmer.network.Data.DataPool;
 import it.giacomos.android.osmer.network.Data.DataPoolBitmapListener;
-import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
+import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
+import it.giacomos.android.osmer.network.Data.DataPoolErrorListener;
 import it.giacomos.android.osmer.network.state.BitmapType;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.observations.ObservationData;
 import it.giacomos.android.osmer.observations.ObservationDrawableIdPicker;
-import it.giacomos.android.osmer.observations.ObservationTime;
+import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCacheUpdateListener;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.webcams.AdditionalWebcams;
 import it.giacomos.android.osmer.webcams.ExternalImageViewerLauncher;
 import it.giacomos.android.osmer.webcams.LastImageCache;
-import it.giacomos.android.osmer.webcams.OsmerWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.OtherWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;
-import it.giacomos.android.osmer.webcams.WebcamDataHelper;
 import it.giacomos.android.osmer.widgets.OAnimatedTextView;
 
 import android.app.Activity;
@@ -49,7 +48,7 @@ GoogleMap.OnCameraChangeListener,
 WebcamOverlayChangeListener,
 MeasureOverlayChangeListener,
 DataPoolBitmapListener,
-DataPoolTextListener
+DataPoolErrorListener
 {
 	public final int minLatitude = GeoCoordinates.bottomRight.getLatitudeE6();
 	public final int maxLatitude = GeoCoordinates.topLeft.getLatitudeE6();
@@ -86,29 +85,16 @@ DataPoolTextListener
 		mSavedCameraPosition = null;
 		mMapFragmentListener = null;
 		mOverlays = new ArrayList<OOverlayInterface>();
-		mMode = new MapViewMode(ObservationType.RADAR, ObservationTime.DAILY);
+		mMode = new MapViewMode(ObservationType.NONE, MapMode.RADAR);
 		mMode.isExplicit = false; /* setMode is not called */
-	}
-
-	@Override
-	public void onAttach(Activity activity)
-	{
-		super.onAttach(activity);
-		try 
-		{
-			mMapFragmentListener = (MapFragmentListener) activity;
-			mRadarOverlayUpdateListener = (RadarOverlayUpdateListener) activity;
-		} 
-		catch (ClassCastException e) 
-		{
-			throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener and " +
-					"RadarOverlayUpdateListener");
-		}
 	}
 
 	@Override
 	public void onCameraChange(CameraPosition cameraPosition) 
 	{
+		/* mCenterOnUpdate is true if mSettings.getCameraPosition() returns null.
+		 * This happens when the application is launched for the first time.
+		 */
 		if(mCenterOnUpdate)
 		{
 			/* center just once */
@@ -149,11 +135,18 @@ DataPoolTextListener
 
 	public void onDestroy ()
 	{
-		CameraPosition cameraPos = mMap.getCameraPosition();
-		mSettings.saveMapCameraPosition(cameraPos);
+		/* mMapReady is true if onCameraChanged has been called at least one time.
+		 * This ensures that the map camera has been initialized and is not centered
+		 * in lat/lang (0.0, 0.0). If mMapReady is true we correctly save an initialized
+		 * camera position.
+		 */
+		if(mMapReady)
+		{
+			mSettings.saveMapCameraPosition(mMap.getCameraPosition());
+			/* save the map type */
+			mSettings.setMapType(mMap.getMapType());
+		}
 		mRadarOverlay.finalize(); /* recycles bitmap for GC */
-		/* save the map mode */
-		mSettings.setMapType(mMap.getMapType());
 		super.onDestroy();
 	}
 
@@ -189,10 +182,11 @@ DataPoolTextListener
 		 */
 		mMap = getMap();
 		UiSettings uiS = mMap.getUiSettings();
-		uiS.setRotateGesturesEnabled(false);
+	//	uiS.setRotateGesturesEnabled(false);
 		uiS.setZoomControlsEnabled(false);
+		OsmerActivity oActivity = (OsmerActivity) getActivity();
 
-		mSettings = new Settings(getActivity().getApplicationContext());
+		mSettings = new Settings(oActivity.getApplicationContext());
 		/* restore last used map type */
 		mMap.setMapType(mSettings.getMapType());
 		/* restore last camera position */
@@ -200,16 +194,29 @@ DataPoolTextListener
 		if(mSavedCameraPosition == null) /* never saved */
 			mCenterOnUpdate = true;
 		mMap.setOnCameraChangeListener(this);
+		
+		/* create a radar overlay */
 		mRadarOverlay = new RadarOverlay(mMap);
+		/* add to overlays because when refreshed by mRefreshRadarImage 
+		 * a GroundOverlay is attached to the map and when switching the mode
+		 * it must be in the list of overlays in order to be cleared.
+		 */
+		mOverlays.add(mRadarOverlay);
 
 		mMapFragmentListener.onGoogleMapReady();
 		mMapClickOnBaloonImageHintEnabled = mSettings.isMapClickOnBaloonImageHintEnabled();
-		
-		/* register for radar image bitmap updates */
-		DataPool.Instance().registerBitmapListener(BitmapType.RADAR, this);
-		/* register for webcam list text update */
-		DataPool.Instance().registerTextListener(ViewType.WEBCAMLIST_OSMER, this);
-		DataPool.Instance().registerTextListener(ViewType.WEBCAMLIST_OTHER, this);
+
+		/* register for radar image bitmap updates, and get updates even if the
+		 * bitmap hasn't changed between subsequent updates. We want to receive
+		 * all updates in order to save the time when the image was last 
+		 * downloaded.
+		 */
+		oActivity.getDataPool().setForceUpdateEvenOnSameBitmap(BitmapType.RADAR, true);
+		oActivity.getDataPool().registerBitmapListener(BitmapType.RADAR, this);
+		DataPoolCacheUtils dpcu = new DataPoolCacheUtils();
+		/* initialize radar bitmap */
+		onBitmapChanged(dpcu.loadFromStorage(BitmapType.RADAR, 
+				oActivity.getApplicationContext()), BitmapType.RADAR, true);
 	}
 
 	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -219,13 +226,27 @@ DataPoolTextListener
 	}
 	
 	@Override
+	public void onAttach(Activity activity)
+	{
+		super.onAttach(activity);
+		try 
+		{
+			mMapFragmentListener = (MapFragmentListener) activity;
+			mRadarOverlayUpdateListener = (RadarOverlayUpdateListener) activity;
+		} 
+		catch (ClassCastException e) 
+		{
+			throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener and " +
+					"RadarOverlayUpdateListener");
+		}
+	}
+	
+	@Override
 	public void onBitmapChanged(Bitmap bmp, BitmapType t, boolean fromCache) 
 	{
-		if(!fromCache) /* up to date */
-		{
-			long currentTimestampMillis = System.currentTimeMillis();
-			mSettings.setRadarImageTimestamp(currentTimestampMillis);
-		}
+		if(!fromCache) /* up to date */ 
+			mSettings.setRadarImageTimestamp(System.currentTimeMillis());
+		
 		mRadarOverlay.updateBitmap(bmp);
 		mRefreshRadarImage();	
 	}
@@ -233,27 +254,29 @@ DataPoolTextListener
 	@Override
 	public void onBitmapError(String error, BitmapType t) 
 	{
-		Toast.makeText(getActivity().getApplicationContext(), getResources().getString(R.string.radarDownloadError) 
-				+ "\n" + error, Toast.LENGTH_LONG).show();
+		Toast.makeText(getActivity().getApplicationContext(), getActivity().getResources().getString(R.string.radarDownloadError) 
+				+ ":\n" + error, Toast.LENGTH_LONG).show();
 	}
 	
+	/** This method refreshes the image of the radar on the map.
+	 *  NOTE: The map will have a GroundOverlay attached after this call is made.
+	 */
 	private void mRefreshRadarImage() 
 	{
-		if(mMode.currentType == ObservationType.RADAR) /* after first camera update */
+		if(mMode.currentMode == MapMode.RADAR) /* after first camera update */
 		{
 			long radarTimestampMillis = mSettings.getRadarImageTimestamp();
 			long currentTimestampMillis = System.currentTimeMillis();
 			
 			if(currentTimestampMillis - radarTimestampMillis < RadarOverlay.ACCEPTABLE_RADAR_DIFF_TIMESTAMP_MILLIS)
 			{
-				mRadarOverlay.update();
+ 				mRadarOverlay.updateColour();
 			}
 			else
 			{
 				mRadarOverlay.updateBlackAndWhite();
 			}
-			mRadarOverlayUpdateListener.onRadarImageUpdated();
-				
+			mRadarOverlayUpdateListener.onRadarImageUpdated();				
 		}
 	}
 
@@ -266,23 +289,13 @@ DataPoolTextListener
 		}
 	}
 
-	public void updateWebcamList(ArrayList<WebcamData> webcams)
-	{
-		if(mMode.currentMode == ObservationTime.WEBCAM && 
-				mMode.currentType == ObservationType.WEBCAM &&
-				mWebcamOverlay != null)
-		{
-			mWebcamOverlay.update(webcams, this.getResources());
-		}
-	}
-
 	@Override
 	public void onObservationsCacheUpdate(HashMap<String, ObservationData> map, ViewType t) 
 	{
 		if(mMode == null)
 			return;
-		if((t == ViewType.DAILY_TABLE && mMode.currentMode == ObservationTime.DAILY ) ||
-				(t == ViewType.LATEST_TABLE && mMode.currentMode == ObservationTime.LATEST))
+		if((t == ViewType.DAILY_TABLE && mMode.currentMode == MapMode.DAILY_OBSERVATIONS ) ||
+				(t == ViewType.LATEST_TABLE && mMode.currentMode == MapMode.LATEST_OBSERVATIONS))
 		{
 			this.updateObservations(map);
 		}
@@ -296,55 +309,69 @@ DataPoolTextListener
 	{
 		if(mObservationsOverlay != null)
 		{
-			mObservationsOverlay.setData(map); /* update data */
+			mObservationsOverlay.setData(map); /* update data but do not refresh */
 			/* if the map mode is LATEST or DAILY, update the overlay */
-			if(mMode != null && (mMode.currentMode == ObservationTime.LATEST || mMode.currentMode == ObservationTime.DAILY ) )
+			if(mMode != null && (mMode.currentMode == MapMode.LATEST_OBSERVATIONS || mMode.currentMode == MapMode.DAILY_OBSERVATIONS ) )
+			{
 				mObservationsOverlay.update(Math.round(mMap.getCameraPosition().zoom));
+			}
 		}
 	}
 
 	public void setMode(MapViewMode m)
 	{
 		OAnimatedTextView radarTimestampText = (OAnimatedTextView) getActivity().findViewById(R.id.radarTimestampTextView);		
-		Log.e("--->OMapFragment: setMode invoked", "setMode invoked with mode: " + m.currentMode + ", time (type): " + m.currentType);
+//		Log.e("--->OMapFragment: setMode invoked", "setMode invoked with mode: " + m.currentMode + ", time (type): " + m.currentType);
 		
 		/* show the radar timestamp text anytime the mode is set to RADAR
 		 * if (!m.equals(mMode)) then the radar timestamp text is scheduled to be shown
-		 * inside if (m.currentType == ObservationType.RADAR) branch below.
+		 * inside if (m.mapMode == MapMode.RADAR) branch below.
 		 * Two modes also differ when the isExplicit flag is different.
 		 * All MapViewModes are constructed with isExplicit = true. The OMapFragment 
 		 * constructor sets isExplicit to false in order to allocate a non null map mode
 		 * and not to call setMode.
+		 * Secondly, update the radar image in order to draw it black and white if old.
 		 */
-		if (m.equals(mMode) && m.currentType == ObservationType.RADAR)
+		if (m.equals(mMode) && m.currentMode == MapMode.RADAR)
+		{
 			radarTimestampText.scheduleShow();
+			mRefreshRadarImage();
+//			Log.e("OMapFragment.setMode", "returning after refresh radar image");
+		}
 		
 		if(m.equals(mMode))
 			return;
 
 		/* mMode is still null the first time this method is invoked */
-		if(mMode != null && mMode.currentType == ObservationType.RADAR)
+		if(mMode != null && mMode.currentMode == MapMode.RADAR)
 			setMeasureEnabled(false);
+		
+		if(mMode.currentMode == MapMode.WEBCAM) /* disconnect webcam overlay from data pool */
+			mWebcamOverlay.disconnectFromDataPool((OsmerActivity) getActivity());
 		
 		mMode = m;
 
 		mUninstallAdaptersAndListeners();
 		
-		if (m.currentType == ObservationType.RADAR) 
+		if (m.currentMode == MapMode.RADAR) 
 		{
 			/* update the overlay with a previously set bitmap */
-			Log.e("OMapFtagment: setMode:", "calling update on radar overlay");
+			mRemoveOverlays(); /* this removes any previous overlays... */
 			mRefreshRadarImage();
-			mUpdateOverlays(mRadarOverlay);
+			mOverlays.add(mRadarOverlay);
 			radarTimestampText.scheduleShow();
 		} 
-		else if (m.currentType == ObservationType.WEBCAM) 
+		else if (m.currentMode == MapMode.WEBCAM) 
 		{
 			ArrayList<WebcamData> webcamData = mGetAdditionalWebcamsData();
-			/// if(mWebcamOverlay == null)  /* first time we enter webcam mode */
-			mWebcamOverlay = new WebcamOverlay(R.drawable.camera_web_map, this);
-			this.updateWebcamList(webcamData);
-			mUpdateOverlays(mWebcamOverlay);
+			mRemoveOverlays();
+			/* create the overlay passing the additional (fixed) webcams. 
+			 * The overlay immediately registers for text updates on DataPool.
+			 */
+			mWebcamOverlay = new WebcamOverlay(R.drawable.camera_web_map, 
+					this, webcamData);
+			mWebcamOverlay.connectToDataPool((OsmerActivity) getActivity());
+			mOverlays.add(mWebcamOverlay);
 			radarTimestampText.hide();
 		} 
 		else 
@@ -354,53 +381,15 @@ DataPoolTextListener
 			observationDrawableIdPicker = null;
 			if(resId > -1)
 			{
-				/* no need for clear(). It is called in mObservationsOverlay.update() */
-				mObservationsOverlay = null;
+				mRemoveOverlays();
 				mObservationsOverlay = new ObservationsOverlay(resId, m.currentType, 
 						m.currentMode, this);
 				setOnZoomChangeListener(mObservationsOverlay);
-				mUpdateOverlays(mObservationsOverlay);
+				mOverlays.add(mObservationsOverlay);
 				mObservationsOverlay.update(Math.round(mMap.getCameraPosition().zoom));
 			}
 			radarTimestampText.hide();
 		}
-	}
-
-	/** Implements DataPoolTextListener onTextChanged  (for webcam list) */
-	@Override
-	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
-	{
-		Log.e("OMapFragment", "onTextChanged, viewType " + t + " from cache " + fromCache);
-		
-		if(!fromCache)
-		{
-			WebcamDataHelper webcamDataHelper = new WebcamDataHelper();
-			webcamDataHelper.setDataUpdatedNow(getActivity().getApplicationContext());
-			webcamDataHelper = null;
-		}
-		
-		ArrayList<WebcamData> wcData = null;
-		if (t == ViewType.WEBCAMLIST_OSMER) 
-		{
-			OsmerWebcamListDecoder osmerDec = new OsmerWebcamListDecoder();
-			wcData = osmerDec.decode(txt);
-			updateWebcamList(wcData);
-		} 
-		else if (t == ViewType.WEBCAMLIST_OTHER) 
-		{
-			OtherWebcamListDecoder otherDec = new OtherWebcamListDecoder();
-			wcData = otherDec.decode(txt);
-			updateWebcamList(wcData);
-		}
-	}
-
-	/** Implements DataPoolTextListener onTextError (for webcam list) */
-	@Override
-	public void onTextError(String error, ViewType t) 
-	{
-		Toast.makeText(getActivity().getApplicationContext(),
-				getResources().getString(R.string.webcam_list_error) +
-				"\n" + error, Toast.LENGTH_LONG).show();
 	}
 	
 	public void setOnZoomChangeListener(ZoomChangeListener l)
@@ -450,12 +439,12 @@ DataPoolTextListener
 
 	public void setMeasureEnabled(boolean en)
 	{
-		if(en && mMode.currentType == ObservationType.RADAR)
+		if(en && mMode.currentMode == MapMode.RADAR)
 		{
 			mMeasureOverlay = new MeasureOverlay(this);
 			mMeasureOverlay.show();
 		}
-		else if(mMeasureOverlay != null && mMode.currentType == ObservationType.RADAR)
+		else if(mMeasureOverlay != null && mMode.currentMode == MapMode.RADAR)
 		{
 			/* removes markers, line (if drawn) and saves settings */
 			mMeasureOverlay.clear(); 
@@ -506,20 +495,20 @@ DataPoolTextListener
 	@Override
 	public void onWebcamErrorMessageChanged(String message) 
 	{
-		message = getResources().getString(R.string.error_message) + ": " + message;
+		message = getActivity().getResources().getString(R.string.error_message) + ": " + message;
 		Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_LONG).show();
 	}
 	
 	@Override
 	public void onWebcamMessageChanged(int stringId) 
 	{
-		Toast.makeText(getActivity().getApplicationContext(), getResources().getString(stringId), Toast.LENGTH_SHORT).show();
+		Toast.makeText(getActivity().getApplicationContext(), getActivity().getResources().getString(stringId), Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
 	public void onWebcamBitmapTaskCanceled(String url) 
 	{
-		String message = getResources().getString(R.string.webcam_download_task_canceled)  + url;
+		String message = getActivity().getResources().getString(R.string.webcam_download_task_canceled)  + url;
 		Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 	}
 	
@@ -533,12 +522,6 @@ DataPoolTextListener
 		OtherWebcamListDecoder additionalWebcamsDec = new OtherWebcamListDecoder();
 		webcamData = additionalWebcamsDec.decode(additionalWebcamsTxt);
 		return webcamData;
-	}
-
-	private void mUpdateOverlays(OOverlayInterface newOverlay)
-	{
-		mRemoveOverlays();
-		mOverlays.add(newOverlay);
 	}
 	
 	private void mRemoveOverlays()
@@ -564,7 +547,23 @@ DataPoolTextListener
 	@Override
 	public void onMeasureOverlayErrorMessage(int stringId) 
 	{
-		Toast.makeText(this.getActivity().getApplicationContext(), getResources().getString(stringId), Toast.LENGTH_LONG).show();
+		Toast.makeText(this.getActivity().getApplicationContext(), 
+				getActivity().getResources().getString(stringId), Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	public void onBitmapUpdateError(BitmapType t, String error) 
+	{
+		
+	}
+
+	@Override
+	public void onTextUpdateError(ViewType t, String error) 
+	{
+		if(t== ViewType.WEBCAMLIST_OSMER || t == ViewType.WEBCAMLIST_OTHER)
+			Toast.makeText(getActivity().getApplicationContext(),
+				getActivity().getResources().getString(R.string.webcam_list_error) +
+				"\n" + error, Toast.LENGTH_LONG).show();
 	}
 
 

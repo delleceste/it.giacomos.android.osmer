@@ -3,20 +3,20 @@ package it.giacomos.android.osmer.widgets.map;
 import android.content.res.Resources;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.observations.ObservationData;
-import it.giacomos.android.osmer.observations.ObservationTime;
+import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.ObservationType;
 
 public class ObservationDataToText 
 {
-	private ObservationTime mObservationTime;
+	private MapMode mMapMode;
 	private ObservationType mObservationType;
 	private Resources mResources;
 	
-	public ObservationDataToText(ObservationTime observationTime, 
+	public ObservationDataToText(MapMode mapMode, 
 			ObservationType observationType, 
 			Resources resources)
 	{
-		mObservationTime = observationTime;
+		mMapMode = mapMode;
 		mObservationType = observationType;
 		mResources = resources;
 	}
@@ -26,7 +26,7 @@ public class ObservationDataToText
 		String txt;
 		txt = od.time + " - " + mResources.getString(R.string.sky) + ": " + od.sky + "\n";
 		
-		if(mObservationTime == ObservationTime.DAILY)
+		if(mMapMode == MapMode.DAILY_OBSERVATIONS)
 		{
 			if(mObservationType == ObservationType.SKY || 
 					mObservationType == ObservationType.MIN_TEMP ||  

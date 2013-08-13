@@ -73,7 +73,7 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 	public Fragment getItem(int position) 
 	{    
         TabInfo info = mTabs.get(position);
-		Log.e("getItem", "position is " + position);
+//		Log.e("getItem", "position is " + position);
         return Fragment.instantiate(mActivity.getApplicationContext(), info.clss.getName(), info.args);     
 	}
 

@@ -2,6 +2,7 @@ package it.giacomos.android.osmer.observations;
 import java.util.HashMap;
 
 import android.util.Log;
+import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
 import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.widgets.LatestObservationCacheChangeListener;
@@ -21,6 +22,10 @@ public class ObservationsCache implements TableToMapUpdateListener, DataPoolText
 	public void installObservationsCacheUpdateListener(ObservationsCacheUpdateListener l)
 	{
 		mObservationsCacheUpdateListener = l;
+		if(mLatestMap != null)
+			l.onObservationsCacheUpdate(mLatestMap, ViewType.LATEST_TABLE);
+		if(mDailyMap != null)
+			l.onObservationsCacheUpdate(mDailyMap, ViewType.DAILY_TABLE);
 	}
 	
 	/* register a cache update listener. 
@@ -54,7 +59,7 @@ public class ObservationsCache implements TableToMapUpdateListener, DataPoolText
 
 	public void onTableUpdate(HashMap <String, ObservationData> map, ViewType t)
 	{
-		Log.e("ObservationsCache.onTableUpdate", "got update type " + t);
+//		Log.e("ObservationsCache.onTableUpdate", "got update type " + t);
 		switch(t)
 		{
 		case DAILY_TABLE:
@@ -95,10 +100,10 @@ public class ObservationsCache implements TableToMapUpdateListener, DataPoolText
 		
 	}
 
-	public HashMap<String, ObservationData> getObservationData(ObservationTime oTime) {
-		switch(oTime)
+	public HashMap<String, ObservationData> getObservationData(MapMode mapMode) {
+		switch(mapMode)
 		{
-		case DAILY:
+		case DAILY_OBSERVATIONS:
 			return getDailyObservationData();
 		default:
 			return getLatestObservationData();

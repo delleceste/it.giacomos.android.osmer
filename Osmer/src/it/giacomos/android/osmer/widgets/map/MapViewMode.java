@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.widgets.map;
 
-import it.giacomos.android.osmer.observations.ObservationTime;
+import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.ObservationType;
 
 public class MapViewMode 
@@ -16,15 +16,15 @@ public class MapViewMode
 				other.currentType == this.currentType && this.isExplicit == other.isExplicit;
 	}
 	
-	public MapViewMode(ObservationType type, ObservationTime oTime)
+	public MapViewMode(ObservationType type, MapMode oTime)
 	{
 		currentType = type;
 		currentMode = oTime;
 		isExplicit = true;
 	}
 	
-	public ObservationType currentType = ObservationType.RADAR;
-	public ObservationTime currentMode = ObservationTime.LATEST;
+	public ObservationType currentType = ObservationType.NONE;
+	public MapMode currentMode = MapMode.RADAR;
 	
 	/* is explicit means that the map mode has been explicitly set. 
 	 * In the map fragment constructor a MapViewMode is initialized in order not 

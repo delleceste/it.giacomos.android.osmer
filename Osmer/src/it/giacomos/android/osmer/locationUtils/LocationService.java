@@ -1,34 +1,25 @@
 package it.giacomos.android.osmer.locationUtils;
 
 import java.util.ArrayList;
-
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.interfaceHelpers.ErrorDialogFragment;
-import it.giacomos.android.osmer.network.DownloadStatus;
-import it.giacomos.android.osmer.network.state.StateName;
-import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
-import android.app.Dialog;
-import android.content.IntentSender;
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+
+import it.giacomos.android.osmer.network.DownloadStatus;
 
 public class LocationService implements   GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener, LocationListener,
 GeocodeAddressUpdateListener
 {
-
-	
-	private FragmentActivity mActivity;
-	private static LocationService mLocationService = null;
+	private final Context mContext;
+	private final DownloadStatus mDownloadStatus;
 	private LocationClient mLocationClient;
 	private ArrayList<LocationServiceUpdateListener> mLocationServiceUpdateListeners;
 	private ArrayList<LocationServiceAddressUpdateListener> mLocationServiceAddressUpdateListeners;
@@ -36,7 +27,6 @@ GeocodeAddressUpdateListener
 	private Location mCurrentLocation;
 	private LocationInfo mCurrentLocationInfo;
 	/* store location services available flag if servicesAvailable returns true */
-	private boolean mServicesAvailable;
 	
 	/* Define a request code to send to Google Play services
 	 * This code is returned in Activity.onActivityResult
@@ -44,26 +34,10 @@ GeocodeAddressUpdateListener
 	public final static int
 	CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 	
-
-	
-	public static LocationService Instance()
+	public LocationService(Context ctx, DownloadStatus dows)
 	{
-		if(mLocationService == null)
-			mLocationService = new LocationService();
-		return mLocationService;
-	}
-	
-	/* call right after calling Instance(), first time */
-	public void init(FragmentActivity activity)
-	{
-		if(mActivity == null)
-			mActivity = activity;
-	}
-	
-	private LocationService()
-	{
-		mServicesAvailable = false;
-		mActivity = null;
+		mContext = ctx;
+		mDownloadStatus = dows;
 		mLocationClient = null;
 		mCurrentLocation = null;
 		mCurrentLocationInfo = null;
@@ -81,9 +55,11 @@ GeocodeAddressUpdateListener
 	 */
 	public boolean connect()
 	{
-		boolean result;
-		Log.e("LocationService", "checking if services are available...");
-		result = servicesAvailable();
+		/* servicesAvailable has an empty implementation.
+		 * GooglePlay services check is done in OsmerActivity.
+		 */
+		boolean result = true;
+//		result = servicesAvailable();
 		
 		/* Constructor:
 		 * LocationClient(Context context, GooglePlayServicesClient.ConnectionCallbacks, 
@@ -92,12 +68,12 @@ GeocodeAddressUpdateListener
 		 */
 		if(result)
 		{
-			Log.e("LocationService.connect()", "connecting location client");
+//			Log.e("LocationService.connect()", "connecting location client");
 			mLocationRequest = LocationRequest.create();
 			mLocationRequest.setInterval(Constants.LOCATION_UPDATE_INTERVAL);
 			mLocationRequest.setFastestInterval(Constants.LOCATION_FASTEST_UPDATE_INTERVAL);
 			mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-			mLocationClient = new LocationClient(mActivity, this,  this);
+			mLocationClient = new LocationClient(mContext, this,  this);
 			mLocationClient.connect();
 		}
 		return result;
@@ -112,34 +88,18 @@ GeocodeAddressUpdateListener
 		{
 			if(mLocationClient.isConnected())
 			{
-				Log.e("LocationService.disconnect()", "removing location updates");
+//				Log.e("LocationService.disconnect()", "removing location updates");
 				mLocationClient.removeLocationUpdates(this);
 			}
-			Log.e("LocationService.disconnect()", "disconnecting location client");
+//			Log.e("LocationService.disconnect()", "disconnecting location client");
 			mLocationClient.disconnect();
 		}
 	}
 
 	public boolean servicesAvailable() 
 	{
-		if(mServicesAvailable)
-			return true;
-		// Check that Google Play services is available
-		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
-		// If Google Play services is available
-		if (ConnectionResult.SUCCESS == resultCode) 
-		{
-			// In debug mode, log the status
-			Log.e("Location Updates", "Google Play services is available.");
-			mServicesAvailable = true;	
-		} 
-		else // Google Play services was not available for some reason
-		{
-			Log.e("Location Updates", "Google Play services is NOT available.");
-			showErrorDialog(resultCode);
-			mServicesAvailable = false;
-		}
-		return mServicesAvailable;
+		/* checks have been made inside Activity */
+		return true;
 	}
 
 	@Override
@@ -153,22 +113,7 @@ GeocodeAddressUpdateListener
          */
         if (connectionResult.hasResolution()) 
         {
-        	Log.e("LocationService.onConnectionFailed", "has resoulution");
-            try {
-                // Start an Activity that tries to resolve the error
-                connectionResult.startResolutionForResult(
-                        mActivity, CONNECTION_FAILURE_RESOLUTION_REQUEST);
-                /*
-                 * Thrown if Google Play services canceled the original
-                 * PendingIntent
-                 */
-            } 
-            catch (IntentSender.SendIntentException e) 
-            {
-            	Log.e("LocationService.onConnectionFailed", "IntentSender.SendIntentException");
-                // Log the error
-                e.printStackTrace();
-            }
+        	
         } 
         else 
         {
@@ -177,27 +122,9 @@ GeocodeAddressUpdateListener
              * If no resolution is available, display a dialog to the
              * user with the error.
              */
-        	showErrorDialog(connectionResult.getErrorCode());
         }
     }
 
-	private void showErrorDialog(int errorCode)
-	{
-		Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
-    			errorCode,
-				mActivity, CONNECTION_FAILURE_RESOLUTION_REQUEST);
-		if (errorDialog != null) 
-		{
-			// Create a new DialogFragment for the error dialog
-			ErrorDialogFragment errorFragment =
-					new ErrorDialogFragment();
-			// Set the dialog in the DialogFragment
-			errorFragment.setDialog(errorDialog);
-			// Show the error dialog in the DialogFragment
-			errorFragment.show(mActivity.getSupportFragmentManager(),
-					"Location Services");
-		}
-	}
 	
 	public void registerLocationServiceUpdateListener(LocationServiceUpdateListener l)
 	{
@@ -247,15 +174,15 @@ GeocodeAddressUpdateListener
 
 	public void updateGeocodeAddress()
 	{
-		GeocodeAddressTask geocodeAddressTask = new GeocodeAddressTask(mActivity, this);
+		GeocodeAddressTask geocodeAddressTask = new GeocodeAddressTask(mContext, this);
 		geocodeAddressTask.parallelExecute(mCurrentLocation);
 	}
 	
 	@Override
 	public void onLocationChanged(Location location) 
 	{
-		Log.e("LocationService.onLocationChanged", "notifying location changes to listeners no. " 
-				+ mLocationServiceUpdateListeners.size());
+//		Log.e("LocationService.onLocationChanged", "notifying location changes to listeners no. " 
+//				+ mLocationServiceUpdateListeners.size());
 		for(LocationServiceUpdateListener l : mLocationServiceUpdateListeners)
 			l.onLocationChanged(location);
 		
@@ -265,14 +192,14 @@ GeocodeAddressUpdateListener
 		if(locationComparer.isBetterLocation(location, mCurrentLocation))
 		{	
 			mCurrentLocation = location; /* save current location */
-			if(DownloadStatus.Instance().isOnline)
+			if(mDownloadStatus.isOnline)
 			{
-				Log.e("LocationService.onLocationChanged", "we are online, starting geocode task");
+//				Log.e("LocationService.onLocationChanged", "we are online, starting geocode task");
 				updateGeocodeAddress();
 			}
 		}
-		else
-			Log.e("LocationService.onLocationChanged", " !!!! new location is not better than old");
+//		else
+//			Log.e("LocationService.onLocationChanged", " !!!! new location is not better than old");
 		locationComparer = null;
 	}
 

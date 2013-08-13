@@ -1,15 +1,24 @@
 package it.giacomos.android.osmer.network.state;
 
 import it.giacomos.android.osmer.network.DownloadManagerUpdateListener;
-import it.giacomos.android.osmer.observations.ObservationTime;
-import it.giacomos.android.osmer.observations.ObservationType;
+import it.giacomos.android.osmer.network.DownloadStatus;
+import it.giacomos.android.osmer.observations.MapMode;
 
-public abstract class State{
-	public State(DownloadManagerUpdateListener l)
+public abstract class State
+{
+	protected final DownloadStatus dDownloadStatus;
+	
+	public State(DownloadManagerUpdateListener l, DownloadStatus downloadStatus)
 	{
 		m_stateUpdateListener = l;
+		dDownloadStatus = downloadStatus;
 	}	
 
+	public DownloadStatus getDownloadStatus()
+	{
+		return dDownloadStatus;
+	}
+	
 	public void getSituation()
 	{
 		
@@ -30,9 +39,8 @@ public abstract class State{
 		
 	}
 
-	public void getObservationsTable(ObservationTime oTime) 
+	public void getObservationsTable(MapMode mapMode) 
 	{
-		// TODO Auto-generated method stub
 		
 	}
 	

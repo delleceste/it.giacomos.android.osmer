@@ -5,7 +5,7 @@ import android.util.Log;
 
 public class WebcamDataHelper 
 {
-	private static final int UPTODATE_INTERVAL_MILLIS = 2000;
+	private static final int UPTODATE_INTERVAL_MILLIS =  10 * 1000;
 	
 	public WebcamDataHelper()
 	{

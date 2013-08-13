@@ -19,26 +19,9 @@ public class OAnimatedTextView extends TextView implements AnimationListener
 		super(context, set);
 	}
 	
-	private class MyRunnable implements Runnable
-	{
-		private View mView;
-		
-		public MyRunnable(View view)
-		{
-			mView = view;
-			
-		}
-		
-		@Override
-		public void run() 
-		{
-			mView.setVisibility(View.VISIBLE);
-		}	
-	}
-	
 	public void scheduleShow()
 	{
-		postDelayed(new MyRunnable(this), TIMEOUT);
+		postDelayed(new ShowDelayedAnimatedTextViewRunnable(this), TIMEOUT);
 	}
 	
 	public void hide()

@@ -1,25 +1,33 @@
 package it.giacomos.android.osmer.widgets.map;
 
+import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.network.Data.DataPool;
+import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
 import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
 import it.giacomos.android.osmer.network.state.BitmapTask;
 import it.giacomos.android.osmer.network.state.BitmapTaskListener;
 import it.giacomos.android.osmer.network.state.BitmapType;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.preferences.Settings;
-import it.giacomos.android.osmer.webcams.ExternalImageViewerLauncher;
+import it.giacomos.android.osmer.webcams.OsmerWebcamListDecoder;
+import it.giacomos.android.osmer.webcams.OtherWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;
 import it.giacomos.android.osmer.webcams.WebcamDataHelper;
 
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -32,26 +40,29 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class WebcamOverlay implements 
-	BitmapTaskListener, 
-	OOverlayInterface,
-	OnMarkerClickListener,
-	OnInfoWindowClickListener,
-	OnMapClickListener
-{
-
-	public WebcamOverlay(int markerResId, OMapFragment mapFrag) 
+BitmapTaskListener, 
+OOverlayInterface,
+OnMarkerClickListener,
+OnInfoWindowClickListener,
+OnMapClickListener,
+DataPoolTextListener
+{	
+	public WebcamOverlay(int markerResId, 
+			OMapFragment mapFrag, 
+			ArrayList<WebcamData> additionalWebcamData) 
 	{
 		mMarkerResId = markerResId;
 		mMap = mapFrag.getMap();
+		mContext = mapFrag.getActivity().getApplicationContext();
 		mMarkerWebcamHash = new HashMap<Marker, WebcamData>();
-		
+
 		mSettings = new Settings(mapFrag.getActivity().getApplicationContext());
 		mCurrentBitmapTask = null;
 		mCustomMarkerBitmapFactory = new CustomMarkerBitmapFactory(mapFrag.getResources());
 		mCustomMarkerBitmapFactory.setTextWidthScaleFactor(2.5f);
 		mCustomMarkerBitmapFactory.setAlphaTextContainer(100);
 		mCustomMarkerBitmapFactory.setInitialFontSize(mSettings.mapWebcamMarkerFontSize());
-		Log.e("WebcamOverlay", "initial font size of marker " + mSettings.mapWebcamMarkerFontSize());
+//		Log.e("WebcamOverlay", "initial font size of marker " + mSettings.mapWebcamMarkerFontSize());
 		mWebcamOverlayChangeListener = mapFrag;
 		mInfoWindowAdapter = new WebcamBaloonInfoWindowAdapter(mapFrag.getActivity());
 		/* adapter and listeners */
@@ -62,18 +73,95 @@ public class WebcamOverlay implements
 		mCurrentlySelectedMarker = null;
 		mWaitBitmap = BitmapFactory.decodeResource(mapFrag.getResources(), R.drawable.webcam_download);
 		mWaitString = mapFrag.getResources().getString(R.string.webcam_downloading);
+		mWebcamIcon = BitmapFactory.decodeResource(mapFrag.getResources(), mMarkerResId);
+		mAdditionalWebcamData = additionalWebcamData;
+	}
+
+	public void disconnectFromDataPool(OsmerActivity oa)
+	{
+		DataPool dataPool = oa.getDataPool();
+		/* unregister from data pool updates */
+		dataPool.unregisterTextListener(ViewType.WEBCAMLIST_OSMER);
+		dataPool.unregisterTextListener(ViewType.WEBCAMLIST_OTHER);
+	}
+
+	/** Registers the webcam overlay as a text listener of DataPool.
+	 * Then, if the data pool does not contain up to date values, the webcam list 
+	 * is obtained by means of the DataPoolCacheUtils. In this case, a Runnable is
+	 * scheduled in order to initialize the overlay with a certain delay, so that
+	 * the interface preserves smoothness while switching to the webcam overlay.
+	 * 
+	 * @param oa reference to the OsmerActivity
+	 */
+	public void connectToDataPool(OsmerActivity oa)
+	{
+		DataPool dataPool = oa.getDataPool();
+		/* initialization */
+		DelayedWebcamOverlayInitializer wodpi = 
+				new DelayedWebcamOverlayInitializer(this, dataPool, mContext);
+		wodpi.start();
+	}
+
+	/** Implements DataPoolTextListener onTextChanged  (for webcam list) */
+	@Override
+	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
+	{		
+		if(!fromCache)
+		{
+			WebcamDataHelper helper = new WebcamDataHelper();
+			helper.setDataUpdatedNow(mContext);
+			helper = null;
+		}
+
+		ArrayList<WebcamData> wcData = null;
+		if (t == ViewType.WEBCAMLIST_OSMER) 
+		{
+			OsmerWebcamListDecoder osmerDec = new OsmerWebcamListDecoder();
+			wcData = osmerDec.decode(txt);
+			mWebcamData = wcData;
+		} 
+		else if (t == ViewType.WEBCAMLIST_OTHER) 
+		{
+			OtherWebcamListDecoder otherDec = new OtherWebcamListDecoder();
+			wcData = otherDec.decode(txt);
+			mWebcamData = wcData;
+		}
+
+		/* add to the list the fixed additional webcam data initialized in the 
+		 * class constructor and passed by OMapFragment.
+		 */
+		mWebcamData.addAll(mAdditionalWebcamData);
+
+		scheduleUpdate(); /* place markers on map */
+	}
+
+	@Override
+	public void onTextError(String error, ViewType t) 
+	{
+
+	}	
+
+	/** executes update after a bunch of milliseconds not to block the 
+	 * user interface while parsing xml file and generating all the markers.
+	 * In this way the user immediately switches to the webcam map mode and 
+	 * has the impression that the markers appear immediately after the mode 
+	 * switch
+	 */
+	public void scheduleUpdate()
+	{
+		new Handler().postDelayed(new WebcamOverlayUpdateRunnable(this), 350);
 	}
 
 	/**
-	 * updates the overlay with the new values in the map
-	 * @param map a map containing the City and the 
+	 * Uses the webcam data list previously saved by onTextChanged to create a marker for each
+	 * WebcamData stored in the list. Then adds each marker to the map.
+	 * @param res a reference to the Resources to use in order to create the webcam icons.
 	 */
-	public boolean update(ArrayList<WebcamData> webcams, Resources res)
+	public boolean update()
 	{
 		/* fixes a bug in maps */
 		boolean needsRedraw = false;
-		Bitmap icon = BitmapFactory.decodeResource(res, mMarkerResId);
-		for(WebcamData wd : webcams)
+		for(WebcamData wd : mWebcamData)
 		{
 			if(!webcamInList(wd))
 			{
@@ -82,7 +170,7 @@ public class WebcamOverlay implements
 				{ 
 					MarkerOptions mo = new MarkerOptions();
 					mo.title(wd.location).snippet(wd.text).position(wd.latLng);
-					BitmapDescriptor bmpDescriptor = mCustomMarkerBitmapFactory.getIcon(icon, wd.location);
+					BitmapDescriptor bmpDescriptor = mCustomMarkerBitmapFactory.getIcon(mWebcamIcon, wd.location);
 					mo.icon(bmpDescriptor);
 					Marker m = mMap.addMarker(mo);
 					needsRedraw = true;
@@ -96,7 +184,7 @@ public class WebcamOverlay implements
 		mSettings.setMapWebcamMarkerFontSize(mCustomMarkerBitmapFactory.getCachedFontSize());
 		return needsRedraw;
 	}
-	
+
 	@Override
 	public boolean onMarkerClick(Marker marker) 
 	{
@@ -104,7 +192,7 @@ public class WebcamOverlay implements
 		WebcamData wd = mMarkerWebcamHash.get(marker);
 		cancelCurrentWebcamTask();
 		mCurrentBitmapTask = new BitmapTask(this, BitmapType.WEBCAM);
-		Log.e("onMarkerClick", "getting image for" + wd.location);
+//		Log.e("onMarkerClick", "getting image for" + wd.location);
 		try 
 		{
 			URL webcamUrl = new URL(wd.url);
@@ -118,6 +206,12 @@ public class WebcamOverlay implements
 		}
 		/* do not show info window until the image has been retrieved */
 		return false;
+	}
+
+	@Override
+	public void onBitmapBytesUpdate(byte[] bytes, BitmapType bt) 
+	{
+
 	}
 
 	@Override
@@ -139,8 +233,7 @@ public class WebcamOverlay implements
 				{
 					mInfoWindowAdapter.setData(mMarkerWebcamHash.get(mCurrentlySelectedMarker).text, bmp, true);
 					/* notify map fragment that the image has changed */
-					mWebcamOverlayChangeListener.onWebcamBitmapChanged(bmp);
-						
+					mWebcamOverlayChangeListener.onWebcamBitmapChanged(bmp);						
 				}
 				mCurrentlySelectedMarker.showInfoWindow();
 			}
@@ -159,10 +252,10 @@ public class WebcamOverlay implements
 	@Override
 	public void onMapClick(LatLng arg0) 
 	{
-		Log.e("onMapClick", " cancelling task ");
+//		Log.e("onMapClick", " cancelling task ");
 		cancelCurrentWebcamTask();
 	}
-	
+
 	/* Attempts to cancel execution of this task. This attempt will fail if the task 
 	 * has already completed, already been cancelled, or could not be cancelled for 
 	 * some other reason. If successful, and this task has not started when cancel 
@@ -171,30 +264,30 @@ public class WebcamOverlay implements
 	 * whether the thread executing this task should be interrupted in an attempt to
 	 *  stop the task.
 	 *  Returns
-     * false if the task could not be cancelled, typically because it has already completed normally; 
+	 * false if the task could not be cancelled, typically because it has already completed normally; 
 	 * true otherwise
 	 */
 	public void cancelCurrentWebcamTask()
 	{
 		if(mCurrentBitmapTask != null  && mCurrentBitmapTask.getStatus() == AsyncTask.Status.RUNNING)
 		{
-			Log.e("cancelCurrentWebcamTask", "cancelling task");
+//			Log.e("cancelCurrentWebcamTask", "cancelling task");
 			mWebcamOverlayChangeListener.onWebcamBitmapTaskCanceled(mCurrentBitmapTask.getUrl());
 			mCurrentBitmapTask.cancel(false);
 		}
-		else
-			Log.e("cancelCurrentWebcamTask", "NOT cancelling task (not runnig)");
+//		else
+//			Log.e("cancelCurrentWebcamTask", "NOT cancelling task (not runnig)");
 	}
 
 	@Override
 	public void clear() 
 	{
-		Log.e("WebcamOverlay: clear", "clearing webcam data, cancelling current task, finalizing info window adapter");
 		/* important! cancel bitmap task if running */
 		cancelCurrentWebcamTask();
 		for(Map.Entry<Marker, WebcamData> entrySet : mMarkerWebcamHash.entrySet())
 			entrySet.getKey().remove();
 		mMarkerWebcamHash.clear();
+		mWaitBitmap.recycle();
 		/* recycle bitmap and unbind drawable */
 		mInfoWindowAdapter.finalize();
 	}
@@ -220,7 +313,7 @@ public class WebcamOverlay implements
 	@Override
 	public int type() 
 	{
-		
+
 		return 0;
 	}
 
@@ -253,4 +346,8 @@ public class WebcamOverlay implements
 	private Bitmap mWaitBitmap;
 	private String mWaitString;
 	private Settings mSettings;
+	private ArrayList<WebcamData> mWebcamData;
+	private ArrayList<WebcamData> mAdditionalWebcamData;
+	private Context mContext;
+	private Bitmap mWebcamIcon;
 }

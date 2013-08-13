@@ -1,5 +1,7 @@
 package it.giacomos.android.osmer.network;
 
+import java.io.InputStream;
+
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.network.Data.DownloadListener;
 import it.giacomos.android.osmer.network.state.BitmapType;
@@ -8,7 +10,7 @@ import it.giacomos.android.osmer.network.state.Online;
 import it.giacomos.android.osmer.network.state.State;
 import it.giacomos.android.osmer.network.state.StateName;
 import it.giacomos.android.osmer.network.state.ViewType;
-import it.giacomos.android.osmer.observations.ObservationTime;
+import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.ObservationType;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -23,14 +25,10 @@ import android.util.Log;
 public class DownloadManager  implements NetworkStatusMonitorListener, 
 	DownloadManagerUpdateListener
 {
-	public DownloadManager(DownloadStateListener l)
+	public DownloadManager(DownloadStateListener l, DownloadStatus downloadStatus)
 	{
 		m_downloadUpdateListener = l;
-//		ConnectivityManager cm = (ConnectivityManager) activity.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-//		if(cm.getActiveNetworkInfo().isAvailable())
-//			setState(new Online());
-//		else
-		setState(new Offline(this));
+		setState(new Offline(this, downloadStatus));
 	}
 	
 	public void setDownloadListener(DownloadListener dl)
@@ -59,14 +57,18 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 	}
 
 	@Override
-	public void onNetworkBecomesAvailable() {
-		setState(new Online(this));
+	public void onNetworkBecomesAvailable() 
+	{
+		/* get the current download status and pass it to the new state
+		 * The download status is a final field created in the activity constructor.
+		 */
+		setState(new Online(this, m_state.getDownloadStatus()));
 		m_downloadUpdateListener.networkStatusChanged(true);
 	}
 
 	@Override
 	public void onNetworkBecomesUnavailable() {
-		setState(new Offline(this));
+		setState(new Offline(this, m_state.getDownloadStatus()));
 		m_downloadUpdateListener.networkStatusChanged(false);
 	}
 	
@@ -100,9 +102,9 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 		m_state.getWebcamList();
 	}
 	
-	public void getObservationsTable(ObservationTime oTime) {
-		// TODO Auto-generated method stub
-		m_state.getObservationsTable(oTime);
+	public void getObservationsTable(MapMode mapMode) 
+	{
+		m_state.getObservationsTable(mapMode);
 	}
 	
 	public void setState(State s)
@@ -115,8 +117,22 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 		return m_state;
 	}
 	
+
+	@Override
+	public void onBitmapBytesUpdate(byte [] bytes, BitmapType bt) 
+	{
+		mDownloadListener.onBitmapBytesUpdate(bytes, bt);
+	}
+
+	@Override
+	public void onTextBytesUpdate(byte[] bytes, ViewType vt) 
+	{
+		mDownloadListener.onTextBytesUpdate(bytes, vt);
+	}
+	
 	@Override
 	public void onBitmapUpdate(Bitmap bmp, BitmapType t, String errorMessage) {
+
 		if(bmp != null)
 			mDownloadListener.onBitmapUpdate(bmp, t);
 		else
@@ -124,8 +140,9 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 	}
 
 	@Override
-	public void onTextUpdate(String txt, ViewType t, String errorMessage) {
-		if(txt != null)
+	public void onTextUpdate(String txt, ViewType t, String errorMessage) 
+	{
+		if(!txt.isEmpty())
 			mDownloadListener.onTextUpdate(txt, t);
 		else
 			mDownloadListener.onTextUpdateError(t, errorMessage);

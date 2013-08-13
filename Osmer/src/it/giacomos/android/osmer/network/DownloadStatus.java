@@ -6,21 +6,12 @@ import java.util.Date;
 import android.util.Log;
 import it.giacomos.android.osmer.network.state.BitmapType;
 import it.giacomos.android.osmer.network.state.ViewType;
-import it.giacomos.android.osmer.webcams.WebcamDataHelper;
 import it.giacomos.android.osmer.widgets.CurrentScreen;
 
 public class DownloadStatus {
 
 	public static final int DOWNLOAD_OLD_TIMEOUT = 60000;
 	public static final int DOWNLOAD_OBSERVATIONS_OLD_TIMEOUT = 60;
-	
-	
-	public static DownloadStatus Instance()
-	{
-		if(m_instance == null)
-			m_instance = new DownloadStatus();
-		return m_instance;
-	}
 	
 	public boolean homeDownloaded() { return (state & HOME_DOWNLOADED) != 0; }
 	public boolean todayDownloaded() { return (state & TODAY_DOWNLOADED) != 0; }
@@ -30,7 +21,17 @@ public class DownloadStatus {
 	public boolean tomorrowBmpDownloaded() { return (state & TOMORROW_IMAGE_DOWNLOADED) != 0; }
 	public boolean twoDaysBmpDownloaded() { return (state & TWODAYS_IMAGE_DOWNLOADED) != 0; }
 	public boolean downloadErrorCondition() { return (state & DOWNLOAD_ERROR_CONDITION) != 0; }
+	
+	public DownloadStatus()
+	{
+		init();
+	}
 
+	public void init() {
+		state = INIT;
+		m_lastUpdateCompletedOn = 0;
+	}
+	
 	/* suppose it is always necessary to refresh radar image.
 	 * 
 	 */
@@ -219,21 +220,5 @@ public class DownloadStatus {
 	
 	public static final long DOWNLOAD_ERROR_CONDITION = 0x10000000;
 	
-	
-	private DownloadStatus()
-	{
-		init();
-	}
-	
-	private static DownloadStatus m_instance = null;
-
 	private Date m_observationsSavedOn;
-
-
-	public void init() {
-		state = INIT;
-		m_lastUpdateCompletedOn = 0;
-		// TODO Auto-generated method stub
-		
-	}
 }

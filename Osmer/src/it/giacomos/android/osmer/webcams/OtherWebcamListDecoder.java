@@ -73,7 +73,7 @@ public class OtherWebcamListDecoder implements WebcamListDecoder
 				} 
 				catch (SAXException e) 
 				{
-					Log.e("OtherWebcamListDecoder: decode()", e.getLocalizedMessage());
+					Log.e("OtherWebcamListDecoder SAXException: decode()", e.getLocalizedMessage());
 				} 
 				catch (IOException e) 
 				{	

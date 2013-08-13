@@ -37,9 +37,9 @@ public class DownloadStatusRestorer {
 
 	public void updateDownloadStatus(OsmerActivity a)
 	{
-		DownloadStatus ds = DownloadStatus.Instance();
+		DownloadStatus ds = a.getDownloadStatus();
 		ds.state = DownloadStatus.INIT;
-		DataPool dataPool = DataPool.Instance();
+		DataPool dataPool = a.getDataPool();
 		/* ask each interesting view whether it succeeded in restoring the state */
 		
 		ds.updateState(ViewType.HOME, dataPool.isTextValid(ViewType.HOME));

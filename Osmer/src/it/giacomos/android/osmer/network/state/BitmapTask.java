@@ -6,9 +6,8 @@ package it.giacomos.android.osmer.network.state;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
-// import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -52,19 +51,36 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
 	
 	protected Bitmap doInBackground(URL... urls) 
 	{
+		InputStream inputStream;
 		Bitmap bitmap = null;
+		int nRead;
+		byte [] bytes = null;
+		/* reset mBitmapBytes to avoid updating an old bitmap if try below fails */
+		mBitmapBytes = null;
 		m_errorMessage = "";
         if(urls.length == 1)
         {
         	mUrl = urls[0];
         	try
         	{
-        		InputStream inputStream = (InputStream) mUrl.getContent();
-        		bitmap = BitmapFactory.decodeStream(inputStream);
+        		inputStream = (InputStream) mUrl.getContent();
+        		/* get bytes from input stream */
+        		ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        		bytes = new byte[1024];
+        		while ((nRead = inputStream.read(bytes, 0, bytes.length)) != -1) {
+        			byteBuffer.write(bytes, 0, nRead);
+        		}
+        		byteBuffer.flush();
+
+        		mBitmapBytes = byteBuffer.toByteArray();
+        		bitmap = BitmapFactory.decodeByteArray(mBitmapBytes, 0, mBitmapBytes.length);
+        		Log.e("BitmapTask: do in bg ", "bitmap siz " + m_bitmapType + ", " + bitmap.getByteCount() + 
+        				", bytes " + mBitmapBytes.length);
         	}
         	catch(IOException e)
         	{
         		m_errorMessage = "IOException: URL: \"" + mUrl.toString() + "\":\n\"" + e.getLocalizedMessage() + "\"";
+        		Log.e("doInBackground (Bitmaptask)", m_errorMessage);
         	}
         	publishProgress(100);
         }    
@@ -84,6 +100,8 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
 	public void onPostExecute(Bitmap bmp)
 	{
 		m_bitmap = bmp;
+		if(mBitmapBytes != null)
+			m_stateUpdateListener.onBitmapBytesUpdate(mBitmapBytes, m_bitmapType);
 		m_stateUpdateListener.onBitmapUpdate(bmp, m_bitmapType, m_errorMessage, this);
 	}
 
@@ -114,5 +132,6 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
 	private BitmapTaskListener m_stateUpdateListener;
 	private String m_errorMessage;
 	private URL mUrl;
+	private byte[] mBitmapBytes;
 
 }

@@ -4,16 +4,16 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.network.state.BitmapType;
 import it.giacomos.android.osmer.network.state.ViewType;
 
-import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -34,137 +34,124 @@ public class DataPoolCacheUtils
 		bitmapIdMap.put(BitmapType.TOMORROW, R.id.tomorrowImageView);
 		bitmapIdMap.put(BitmapType.TWODAYS, R.id.twoDaysImageView);
 
+		/* bitmapIdMap must contain entries also for bitmap types that are treated in
+		 * a special way, such as the radar image, whose file name must be 
+		 * lastRadarImage.bmp in order to stay compatible with previous versions of the
+		 * app. The value -1 is not actually used (see makeFileName
+		 */
+		bitmapIdMap.put(BitmapType.RADAR, -1);
+
 		textIdMap.put(ViewType.HOME, R.id.homeTextView);
 		textIdMap.put(ViewType.TODAY, R.id.todayTextView);
 		textIdMap.put(ViewType.TOMORROW, R.id.tomorrowTextView);
 		textIdMap.put(ViewType.TWODAYS, R.id.twoDaysTextView);
+		/* As stated above for the radar bitmap, let's put two fictitious entries for
+		 * the observations (daily and latest) and for the webcams (osmer and other)
+		 */
+		textIdMap.put(ViewType.DAILY_TABLE, -1);
+		textIdMap.put(ViewType.LATEST_TABLE, -1);
+		textIdMap.put(ViewType.WEBCAMLIST_OSMER, -1);
+		textIdMap.put(ViewType.WEBCAMLIST_OTHER, -1);
 	}
 
 	/* restore all data from the storage */
-	public void loadFromStorage(DataPool dp, Context ctx) 
+	public String loadFromStorage(ViewType viewType, Context ctx) 
 	{
+//		long startT = System.currentTimeMillis();
+		String txt = "";
+		int nRead;
 		/* text items */
-		Iterator<Entry<ViewType, Integer>> it = textIdMap.entrySet().iterator();
-		while(it.hasNext())
+		String charset;
+		if(viewType == ViewType.WEBCAMLIST_OTHER)
+			charset = "UTF-8";
+		else
+			charset = "ISO-8859-1";
+		ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+		try
 		{
-			String txt = null;
-			String line;
-			Map.Entry<ViewType, Integer> e = (Entry<ViewType, Integer>) it.next();
+			byte [] buf = new byte[128];
+			InputStream is = new FileInputStream(ctx.getFilesDir().getAbsolutePath() 
+					+ "/" + makeFileName(viewType));
+			while((nRead = is.read(buf)) != -1)
+				byteBuffer.write(buf, 0, nRead);
+			byteBuffer.flush();
+			buf = byteBuffer.toByteArray();
+			txt = new String(buf, charset);
+		}
+		catch (IOException ex) {
+
+		}		
+//		Log.e("DataPoolCacheUtils.loadFromStorage", "loading string for " + viewType + " took " + (System.currentTimeMillis() - startT));
+		return txt;
+	}
+
+	public Bitmap loadFromStorage(BitmapType bitmapType, Context ctx) 
+	{
+//		long startT = System.currentTimeMillis();
+//		Log.e("DataPoolCacheUtils.loadFromStorage", "loading bitmap for " + bitmapType);
+		Bitmap bmp = null;
+		/* Decode a file path into a bitmap. If the specified file name is null, 
+		 * or cannot be decoded into a bitmap, the function returns null. 
+		 */
+		File filesDir = ctx.getFilesDir();
+		bmp = BitmapFactory.decodeFile(filesDir.getAbsolutePath() + "/" + makeFileName(bitmapType));
+//		Log.e("DataPoolCacheUtils.loadFromStorage", "loading bitmap for  " + bitmapType + " took " + (System.currentTimeMillis() - startT));
+		return bmp;
+	}
+
+	/* save all data to storage */
+	public void saveToStorage(byte[] bytes, BitmapType bitmapType, Context ctx)
+	{
+//		long startT = System.currentTimeMillis();
+		try
+		{
+			FileOutputStream fos;
+			fos = ctx.openFileOutput(makeFileName(bitmapType), Context.MODE_PRIVATE);
+			fos.write(bytes);
+			fos.close();
+		} 
+		catch (FileNotFoundException e) {
+			/* nada que hacer */
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+//		Log.e("DataPoolCacheUtils.saveToStorage", "saving bitmap for " + bitmapType + " took " + (System.currentTimeMillis() - startT));
+	}
+
+	public void saveToStorage(byte[] bytes, ViewType viewType, Context ctx)
+	{
+//		long startT = System.currentTimeMillis();
+		String charset;
+		if(viewType == ViewType.WEBCAMLIST_OTHER)
+			charset = "UTF-8";
+		else
+			charset = "ISO-8859-1";
+		if(bytes != null)
+		{
 			try
 			{
-				BufferedReader in = new BufferedReader(new FileReader(ctx.getFilesDir().getAbsolutePath() 
-					+ "/" + makeFileName(e.getKey())));
-				try {
-					line = in.readLine();
-					while(line != null)
-					{
-						txt += line + "\n";
-						line = in.readLine();
-					}
-					if(txt.length() > 0)
-						txt = txt.substring(0, txt.length() - 1);
-					/* save text on DataPool */
-					if(txt != null)
-						dp.onCacheTextUpdate(txt, e.getKey());
+				String filename = ctx.getFilesDir().getAbsolutePath() 
+						+ "/" + makeFileName(viewType);
+				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), charset)); 
+//				Log.e("saveToStorage", "writing " + filename + " type " + viewType);
+				out.write(new String(bytes, charset));
+				if(viewType == ViewType.WEBCAMLIST_OTHER)
+					System.out.println("SaveToStorage " + new String(bytes, charset));
+				out.close();
+//				FileOutputStream fos = ctx.openFileOutput(makeFileName(viewType), Context.MODE_PRIVATE);
+//				fos.write(bytes);
+//				fos.close();
 			}
-				catch (IOException ex) {
-					
-				}		
-			} 
-			catch (FileNotFoundException exc) {}
-		}
-
-		/* 2. Bitmaps */
-		Iterator<Entry<BitmapType, Integer>> bit = bitmapIdMap.entrySet().iterator();
-		while(bit.hasNext())
-		{
-			Bitmap bmp = null;
-			Map.Entry<BitmapType, Integer> be = (Entry<BitmapType, Integer>) bit.next();
-			/* Decode a file path into a bitmap. If the specified file name is null, 
-			 * or cannot be decoded into a bitmap, the function returns null. 
-			 */
-			File filesDir = ctx.getFilesDir();
-			bmp = BitmapFactory.decodeFile(filesDir.getAbsolutePath() + "/" + makeFileName(be.getKey()));
-			if(bmp != null)
-				dp.onCacheBitmapUpdate(bmp, be.getKey());
-		}
-		
-		/* observations */
-		String data = "";
-		final String[] filenames = { "latest_observations.txt", "daily_observations.txt" };
-		for(String filename : filenames)
-		{
-			data = ""; /* clear! */
-			try {
-				String line;
-				BufferedReader in = new BufferedReader(
-						new FileReader(ctx.getFilesDir().getAbsolutePath() + "/" + filename));
-				try {
-					line = in.readLine();
-					while(line != null)
-					{
-						data += line + "\n";
-						line = in.readLine();
-					}
-				} 
-				catch (IOException e) {}		
-			} 
-			catch (FileNotFoundException e) {}
-
-			/* store the read file or the empty string */
-			ViewType observationsStringType;
-			if(filename == "latest_observations.txt")
-				observationsStringType = ViewType.LATEST_TABLE;
-			else
-				observationsStringType = ViewType.DAILY_TABLE;
-
-			dp.onCacheTextUpdate(data, observationsStringType);
-		}
-	}
-	
-	/* save all data to storage */
-	public void saveToStorage(DataPool dp, Context ctx)
-	{
-		/* save all bitmaps to storage */
-		Iterator<Entry<BitmapType, BitmapData>> it = dp.getBitmapData().entrySet().iterator();
-		while(it.hasNext())
-		{
-			Map.Entry<BitmapType, BitmapData> pairs = (Entry<BitmapType, BitmapData>) it.next();
-			Bitmap bmp = pairs.getValue().bitmap;
-			if(bmp != null)
+			catch (FileNotFoundException e) {
+				Log.e("DataPoolCacheUtils.saveToStorage", e.getLocalizedMessage());
+				/* nada que hacer */
+			}
+			catch (IOException e) 
 			{
-				try
-				{
-					FileOutputStream fos;
-					Log.e("mSaveOnInternalStorage", makeFileName(pairs.getKey()));
-					fos = ctx.openFileOutput(makeFileName(pairs.getKey()), Context.MODE_PRIVATE);
-					bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);	
-				} 
-				catch (FileNotFoundException e) {
-					/* nada que hacer */
-				}
+				Log.e("DataPoolCacheUtils.saveToStorage", e.getLocalizedMessage());
 			}
-		}
-
-		/* save text to storage (observations are included) */
-		Iterator<Entry<ViewType, StringData>> sit = dp.getStringData().entrySet().iterator();
-		while(sit.hasNext())
-		{
-			Map.Entry<ViewType, StringData> stringpairs = (Entry<ViewType, StringData>) sit.next();
-			String txt = stringpairs.getValue().text;
-			if(txt != null)
-			{
-				try
-				{
-					FileOutputStream fos = ctx.openFileOutput(makeFileName(stringpairs.getKey()), Context.MODE_PRIVATE);
-					fos.write(txt.getBytes());
-					fos.close();
-				}
-				catch (IOException e) 
-				{
-				}
-
-			}
+//			Log.e("DataPoolCacheUtils.saveToStorage", "saving string for " + viewType + " took " + (System.currentTimeMillis() - startT));
 		}
 	}
 

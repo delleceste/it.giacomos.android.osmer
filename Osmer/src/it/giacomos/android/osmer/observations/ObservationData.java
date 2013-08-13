@@ -4,38 +4,34 @@ public class ObservationData {
 	
 	public String get(ObservationType t)
 	{
-		switch(t)
-		{
-		case MIN_TEMP:
+		if (t == ObservationType.MIN_TEMP) {
 			return tMin;
-		case MAX_TEMP:
+		} else if (t == ObservationType.MAX_TEMP) {
 			return tMax;
-		case HUMIDITY:
+		} else if (t == ObservationType.HUMIDITY) {
 			return humidity;
-		case RAIN:
+		} else if (t == ObservationType.RAIN) {
 			return rain;
-		case WIND:
+		} else if (t == ObservationType.WIND) {
 			return wind;
-		case SNOW:
+		} else if (t == ObservationType.SNOW) {
 			return snow;
-		case PRESSURE:
+		} else if (t == ObservationType.PRESSURE) {
 			return pressure;
-		case SEA:
+		} else if (t == ObservationType.SEA) {
 			return sea;
-		case AVERAGE_TEMP:
+		} else if (t == ObservationType.AVERAGE_TEMP) {
 			return tMed;
-		case SKY:
+		} else if (t == ObservationType.SKY) {
 			return sky;
-		case TEMP:
+		} else if (t == ObservationType.TEMP) {
 			return temp;
-		case AVERAGE_WIND:
+		} else if (t == ObservationType.AVERAGE_WIND) {
 			return vMed;
-		case MAX_WIND:
+		} else if (t == ObservationType.MAX_WIND) {
 			return vMax;
-		case AVERAGE_HUMIDITY:
+		} else if (t == ObservationType.AVERAGE_HUMIDITY) {
 			return uMed;
-		case WEBCAM:
-			return "webcam";
 		}
 		return null;
 	}

@@ -188,13 +188,13 @@ public class Settings
 	public void setRadarImageTimestamp(long currentTimeMillis) 
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
-		e.putFloat("RADAR_IMAGE_TIMESTAMP", currentTimeMillis);
+		e.putLong("RADAR_IMAGE_TIMESTAMP", currentTimeMillis);
 		e.commit();
 	}
 	
 	public long getRadarImageTimestamp()
 	{
-		return (long) mSharedPreferences.getFloat("RADAR_IMAGE_TIMESTAMP", 0);
+		return mSharedPreferences.getLong("RADAR_IMAGE_TIMESTAMP", 0L);
 	}
 	
 	/** returns true if this is the first execution. Then sets the first execution flag to 

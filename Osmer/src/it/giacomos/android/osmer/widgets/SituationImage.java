@@ -22,6 +22,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -347,6 +348,12 @@ implements LatestObservationCacheChangeListener
 			}
 		}
 		mObsRects.clear();
+		BitmapDrawable bDra = (BitmapDrawable) this.getDrawable();
+		if(bDra != null)
+		{
+//			Log.e("situationImage.cleanup", "recicling bitmap");
+//			bDra.getBitmap().recycle();
+		}
 	}
 
 	public Parcelable onSaveInstanceState()

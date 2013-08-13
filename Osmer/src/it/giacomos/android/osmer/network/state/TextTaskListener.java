@@ -10,5 +10,6 @@ public interface TextTaskListener
 	 * current task, it is possible to allow the listener to remove the completed task
 	 * from its list.
 	 */
-	public void onTextUpdate(String bmp, ViewType st, String errorMessage, AsyncTask<URL, Integer, String> task);
+	public void onTextUpdate(String text, ViewType st, String errorMessage, AsyncTask<URL, Integer, String> task);
+	public void onTextBytesUpdate(byte [] bytes, ViewType vt);
 }

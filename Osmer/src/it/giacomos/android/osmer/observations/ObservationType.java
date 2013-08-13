@@ -2,7 +2,7 @@ package it.giacomos.android.osmer.observations;
 
 public enum ObservationType 
 {
-	NONE,
+	NONE, /* not in observation mode: may be in RADAR or WEBCAM map mode */
 	MIN_TEMP,
 	MAX_TEMP,
 	RAIN,
@@ -10,8 +10,12 @@ public enum ObservationType
 	WIND,
 	PRESSURE,
 	SEA,
-	SAT,
-	RADAR, 
-	SNOW, AVERAGE_TEMP, SKY, TEMP, AVERAGE_WIND, MAX_WIND, AVERAGE_HUMIDITY,
-	WEBCAM;
+	SAT, 
+	SNOW, 
+	AVERAGE_TEMP, 
+	SKY, 
+	TEMP, 
+	AVERAGE_WIND,
+	MAX_WIND, 
+	AVERAGE_HUMIDITY
 }

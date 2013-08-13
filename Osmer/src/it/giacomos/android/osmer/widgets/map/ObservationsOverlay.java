@@ -6,7 +6,7 @@ package it.giacomos.android.osmer.widgets.map;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
 import it.giacomos.android.osmer.observations.ObservationData;
-import it.giacomos.android.osmer.observations.ObservationTime;
+import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.SkyDrawableIdPicker;
 import it.giacomos.android.osmer.preferences.Settings;
@@ -40,7 +40,7 @@ OOverlayInterface,
 OnMarkerClickListener
 {
 	private ObservationType mObservationType;
-	private ObservationTime mObservationTime;	
+	private MapMode mMapMode;	
 	private ArrayList<Marker> mMarkers;
 	private HashMap<String, ObservationData> mDataMap;
 	private GoogleMap mMap;	
@@ -51,11 +51,11 @@ OnMarkerClickListener
 
 	public ObservationsOverlay(int defaultMarkerIconResId, 
 			ObservationType oType, 
-			ObservationTime oTime,
+			MapMode mapMode,
 			OMapFragment mapFragment) 
 	{
 		setObservationType(oType);
-		setObservationTime(oTime);
+		setObservationTime(mapMode);
 
 		mMarkers = new ArrayList<Marker>();
 		mDataMap = new HashMap<String, ObservationData>();
@@ -73,14 +73,33 @@ OnMarkerClickListener
 
 	}
 
+	/** Update the internal HashMap<String, ObservationData> that associates a location name
+	 * to its observation data
+	 * 
+	 * This method does not create/update the map markers.
+	 * 
+	 * @see update
+	 * 
+	 * @param map HashMap containing couples location name/observation data.
+	 */
 	public void setData(HashMap<String, ObservationData> map)
 	{
 		mDataMap = map;
 	}
 
-	/**
-	 * updates the overlay with the new values in the map
-	 * @param map a map containing the City and the 
+	/** Creates the markers associated to each location in the internal HashMap storing
+	 * the couples location name/observation data. Every hash map key contains a location.
+	 * On each location a marker is placed. Its icon represents the observation data associated
+	 * to the location.
+	 * 
+	 * <h3>Note</h3><p>The hash map has to be initialized with a previous call to setData.
+	 * </p>
+	 * @see setData
+	 * 
+	 * 
+	 * @param level the current zoom level that applies to the map. The zoom level value indicates
+	 * how many markers can be placed on the map: high zoom level: many markers, small zoom level,
+	 * a few markers. 
 	 */
 	public void update(int level)
 	{
@@ -90,7 +109,7 @@ OnMarkerClickListener
 		LocationNamesMap locMap = new LocationNamesMap();
 		Vector<String> locationsForLevel = locMap.locationsForLevel(level);
 		CustomMarkerBitmapFactory obsBmpFactory = new CustomMarkerBitmapFactory(mResources);
-		ObservationDataToText observationDataToText = new ObservationDataToText(mObservationTime, mObservationType, mResources);
+		ObservationDataToText observationDataToText = new ObservationDataToText(mMapMode, mObservationType, mResources);
 		float calculatedFontSize = -1;
 		if(mSettings.hasObservationsMarkerFontSize())
 			obsBmpFactory.setInitialFontSize(mSettings.observationsMarkerFontSize());
@@ -239,12 +258,12 @@ OnMarkerClickListener
 		this.mObservationType = mObservationType;
 	}
 
-	public ObservationTime getObservationTime() {
-		return mObservationTime;
+	public MapMode getMapMode() {
+		return mMapMode;
 	}
 
-	public void setObservationTime(ObservationTime mObservationTime) {
-		this.mObservationTime = mObservationTime;
+	public void setObservationTime(MapMode mMapMode) {
+		this.mMapMode = mMapMode;
 	}
 
 	@Override
