@@ -1,7 +1,5 @@
 package it.giacomos.android.osmer.network.Data;
 
-import java.io.InputStream;
-
 import it.giacomos.android.osmer.network.state.BitmapType;
 import it.giacomos.android.osmer.network.state.ViewType;
 import android.graphics.Bitmap;

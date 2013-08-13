@@ -214,15 +214,6 @@ DataPoolErrorListener
 		mViewPager = new ViewPager(this);
 		mViewPager.setId(R.id.pager);
 		
-		/* Create DataPool.  */
-		mDataPool = new DataPool(this);
-		mDataPool.registerErrorListener(this); /* listen for network errors */
-		/* register observations cache on DataPool. Data initialization with DataPoolCacheUtils
-		 * is done afterwards, inside onStart.
-		 */
-		mDataPool.registerTextListener(ViewType.DAILY_TABLE, m_observationsCache);
-		mDataPool.registerTextListener(ViewType.LATEST_TABLE, m_observationsCache);
-		
 		mLocationService = new LocationService(getApplicationContext(), mDownloadStatus);
 		/* Set the number of pages that should be retained to either side of 
 		 * the current page in the view hierarchy in an idle state
@@ -268,15 +259,24 @@ DataPoolErrorListener
 		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
 		radarInfoTextView.setVisibility(View.GONE);
 
-		/* download manager. Instantiated in the constructor because it's final */
-		m_downloadManager.setDownloadListener(mDataPool);
-
 		m_observationsCache = new ObservationsCache();
 		/* map updates the observation data in ItemizedOverlay when new observations are available
 		 *
 		 */
 		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
 		m_observationsCache.installObservationsCacheUpdateListener(map);
+
+		/* Create DataPool.  */
+		mDataPool = new DataPool(this);
+		mDataPool.registerErrorListener(this); /* listen for network errors */
+		/* register observations cache on DataPool. Data initialization with DataPoolCacheUtils
+		 * is done afterwards, inside onStart.
+		 */
+		mDataPool.registerTextListener(ViewType.DAILY_TABLE, m_observationsCache);
+		mDataPool.registerTextListener(ViewType.LATEST_TABLE, m_observationsCache);
+		
+		/* download manager. Instantiated in the constructor because it's final */
+		m_downloadManager.setDownloadListener(mDataPool);
 		
 		DataPoolCacheUtils dataPoolCacheUtils = new DataPoolCacheUtils();
 		
