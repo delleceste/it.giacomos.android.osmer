@@ -66,7 +66,10 @@ OnMapClickListener
 		try
 		{
 			l0 = map.getMyLocation();
-			ll0 = new LatLng(l0.getLatitude(), l0.getLongitude());
+			if(l0 != null)
+				ll0 = new LatLng(l0.getLatitude(), l0.getLongitude());
+			else
+				ll0 = GeoCoordinates.radarImageCenter;
 		}
 		catch(IllegalArgumentException e)
 		{

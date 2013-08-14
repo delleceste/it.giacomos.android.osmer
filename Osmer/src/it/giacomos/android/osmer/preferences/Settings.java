@@ -6,6 +6,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class Settings 
 {
@@ -176,13 +177,25 @@ public class Settings
 	public void setRadarImageTimestamp(long currentTimeMillis) 
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
-		e.putFloat("RADAR_IMAGE_TIMESTAMP", currentTimeMillis);
+		e.putLong("RADAR_IMAGE_TIMESTAMP", currentTimeMillis);
 		e.commit();
 	}
 	
 	public long getRadarImageTimestamp()
 	{
-		return (long) mSharedPreferences.getFloat("RADAR_IMAGE_TIMESTAMP", 0);
+		/* at a certain release confuson arose about getFloat/getLong.
+		 * If a previous version used to save the timestamp as long, if we
+		 * omit try/catch the application crashes as soon as we try to getFloat
+		 * from a long.
+		 */
+		try{
+			mSharedPreferences.getFloat("RADAR_IMAGE_TIMESTAMP", 0);
+			return 0L; /* discard an invalid float. Will reckon radar image old */
+		}
+		catch(ClassCastException e)
+		{
+			return mSharedPreferences.getLong("RADAR_IMAGE_TIMESTAMP", 0);
+		}
 	}
 	
 	/** returns true if this is the first execution. Then sets the first execution flag to 

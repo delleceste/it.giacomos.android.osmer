@@ -295,7 +295,7 @@ MeasureOverlayChangeListener
 	public void setMode(MapViewMode m)
 	{
 		OAnimatedTextView radarTimestampText = (OAnimatedTextView) getActivity().findViewById(R.id.radarTimestampTextView);		
-		Log.e("--->OMapFragment: setMode invoked", "setMode invoked with mode: " + m.currentMode + ", time (type): " + m.currentType);
+//		Log.e("--->OMapFragment: setMode invoked", "setMode invoked with mode: " + m.currentMode + ", time (type): " + m.currentType);
 		
 		/* show the radar timestamp text anytime the mode is set to RADAR
 		 * if (!m.equals(mMode)) then the radar timestamp text is scheduled to be shown
@@ -322,7 +322,6 @@ MeasureOverlayChangeListener
 		if (m.currentType == ObservationType.RADAR) 
 		{
 			/* update the overlay with a previously set bitmap */
-			Log.e("OMapFtagment: setMode:", "calling update on radar overlay");
 			mRefreshRadarImage();
 			mUpdateOverlays(mRadarOverlay);
 			radarTimestampText.scheduleShow();

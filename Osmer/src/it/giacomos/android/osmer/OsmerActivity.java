@@ -259,6 +259,7 @@ RadarOverlayUpdateListener
 			{
 			case 4:
 				mActionBarStateManager.backToForecast(mActionBarPersonalizer);
+				mDrawerList.setItemChecked(0, true);
 				break;
 			default:
 				super.onBackPressed();
