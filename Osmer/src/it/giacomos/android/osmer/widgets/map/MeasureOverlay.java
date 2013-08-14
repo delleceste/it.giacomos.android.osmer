@@ -2,6 +2,8 @@ package it.giacomos.android.osmer.widgets.map;
 
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
+import it.giacomos.android.osmer.locationUtils.LocationServiceAddressUpdateListener;
+import it.giacomos.android.osmer.locationUtils.LocationServiceUpdateListener;
 import it.giacomos.android.osmer.preferences.Settings;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -36,7 +38,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
  */
 public class MeasureOverlay implements OOverlayInterface ,
 OnMarkerDragListener,
-OnMapClickListener
+OnMapClickListener,
+LocationServiceUpdateListener
 {
 	private OMapFragment mMapFragment;
 	private Marker mp0;
@@ -45,7 +48,8 @@ OnMapClickListener
 	private MeasureOverlayChangeListener mMeasureOverlayChangeListener;
 	private boolean markerDragHintEnabled;
 	private Settings mSettings;
-
+	private Location mLocation;
+	
 	MeasureOverlay(OMapFragment mapFragment)
 	{
 		mp0 = null;
@@ -55,6 +59,7 @@ OnMapClickListener
 		mMeasureOverlayChangeListener = mapFragment;
 		mSettings = new Settings(mapFragment.getActivity().getApplicationContext());
 		markerDragHintEnabled = mSettings.isMapMoveToMeasureHintEnabled();
+		mLocation = null;
 	}
 
 	public void show()
@@ -62,17 +67,15 @@ OnMapClickListener
 		GoogleMap map = mMapFragment.getMap();
 		Resources res = mMapFragment.getResources();
 		LatLng ll0 = null, ll1;
-		Location l0 = null;
-		try
-		{
-			l0 = map.getMyLocation();
-			ll0 = new LatLng(l0.getLatitude(), l0.getLongitude());
-		}
-		catch(IllegalArgumentException e)
-		{
-			mMeasureOverlayChangeListener.onMeasureOverlayErrorMessage(R.string.my_location_layer_not_enabled);
-			ll0 = GeoCoordinates.fvgNorthEast;
-		}
+
+		/* if my location is available, put marker 0 in my location.
+		 * Otherwise, put marker 0 at the center of the radar image.
+		 */
+		if(mLocation != null)
+			ll0 = new LatLng(mLocation.getLatitude(), mLocation.getLongitude()); /* if available, put marker 0 on my location */
+		else
+			ll0 = GeoCoordinates.radarImageCenter;
+		
 		float [] results = new float[1];
 
 		Settings settings = new Settings(mMapFragment.getActivity().getApplicationContext());
@@ -114,6 +117,18 @@ OnMapClickListener
 		map.setOnMapClickListener(this);
 	}
 
+	@Override
+	public void onLocationChanged(Location location) 
+	{
+		mLocation = location;
+	}
+
+	@Override
+	public void onLocationServiceError(String message) 
+	{
+		
+	}
+	
 	@Override
 	public void clear() 
 	{
@@ -221,7 +236,6 @@ OnMapClickListener
 		}
 		
 	}
-
 }
 
 

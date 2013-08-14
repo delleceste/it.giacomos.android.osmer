@@ -2,9 +2,7 @@ package it.giacomos.android.osmer.fragments;
 
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.R.id;
-import it.giacomos.android.osmer.R.layout;
-import it.giacomos.android.osmer.R.string;
+import it.giacomos.android.osmer.locationUtils.LocationService;
 import it.giacomos.android.osmer.network.Data.DataPool;
 import it.giacomos.android.osmer.network.Data.DataPoolBitmapListener;
 import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
@@ -13,7 +11,6 @@ import it.giacomos.android.osmer.network.state.BitmapType;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.observations.ObservationsCache;
 import it.giacomos.android.osmer.widgets.HomeTextView;
-import it.giacomos.android.osmer.widgets.ODoubleLayerImageView;
 import it.giacomos.android.osmer.widgets.OTextView;
 import it.giacomos.android.osmer.widgets.SituationImage;
 import android.support.v4.app.Fragment;
@@ -41,10 +38,10 @@ public class SituationFragment extends Fragment implements DataPoolTextListener,
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-
+		OsmerActivity oActivity = (OsmerActivity) getActivity();
 		DataPoolCacheUtils dataCacheUtils = new DataPoolCacheUtils();
 		/* register as a listener of DataPool */
-		DataPool dataPool = ((OsmerActivity) getActivity()).getDataPool();
+		DataPool dataPool = oActivity.getDataPool();
 		dataPool.registerTextListener(ViewType.HOME, this);
 		String text = dataCacheUtils.loadFromStorage(ViewType.HOME, getActivity().getApplicationContext());
 		mHomeTextView.setHtml(mHomeTextView.formatText(text));
@@ -57,6 +54,9 @@ public class SituationFragment extends Fragment implements DataPoolTextListener,
 		 * change and so it will initialize with the cached observations.
 		 */
 		observationsCache.setLatestObservationCacheChangeListener(mSituationImage);
+		/* register image view for location updates */
+		LocationService locationService = oActivity.getLocationService();
+		locationService.registerLocationServiceAddressUpdateListener(mSituationImage);
 	}
 	
 	@Override
