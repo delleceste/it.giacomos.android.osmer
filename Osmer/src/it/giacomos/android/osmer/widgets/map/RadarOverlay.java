@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.maps.Overlay;
 
+import it.giacomos.android.osmer.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,17 +24,16 @@ import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.util.Log;
 
 public class RadarOverlay extends Overlay implements OOverlayInterface
 {
 	private GoogleMap mMap;
 	private GroundOverlay mGroundOverlay;
+	private GroundOverlay mScaleImageOverlay;
 	private Circle mGroundOverlayCircle;
 	private CircleOptions mCircleOptions;
-	private GroundOverlayOptions mGroundOverlayOptions;
+	private GroundOverlayOptions mGroundOverlayOptions, mScaleImageOverlayOptions;
 	
 
 	public static final long ACCEPTABLE_RADAR_DIFF_TIMESTAMP_MILLIS = 1000 * 60 * 60;
@@ -54,6 +54,12 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 		mCircleOptions.center(GeoCoordinates.radarImageCenter);
 		mCircleOptions.strokeColor(color);
 		mCircleOptions.strokeWidth(1);
+		/* scale image */
+		mScaleImageOverlay = null;
+		mScaleImageOverlayOptions = new GroundOverlayOptions();
+		mScaleImageOverlayOptions.position(GeoCoordinates.radarScaleTopLeft, 20000);
+		mScaleImageOverlayOptions.transparency(0.45f);
+		mScaleImageOverlayOptions.image(BitmapDescriptorFactory.fromResource(R.drawable.scala_vmi_4));
 	}
 
 	
@@ -95,6 +101,11 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 		{
 			mGroundOverlayCircle.remove();
 			mGroundOverlayCircle = null;
+		}
+		if(mScaleImageOverlay != null)
+		{
+			mScaleImageOverlay.remove();
+			mScaleImageOverlay = null;
 		}
 	}
 	
@@ -141,6 +152,8 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 		}
 		if(mGroundOverlayCircle == null)
 			mGroundOverlayCircle = mMap.addCircle(mCircleOptions);
+		if(mScaleImageOverlay == null)
+			mScaleImageOverlay = mMap.addGroundOverlay(mScaleImageOverlayOptions);
 		
 		/* specify the image before the ovelay is added */
 		BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(mBitmap);
