@@ -21,7 +21,7 @@
     <string name="downloadingToast">Aggiornamento dati&#8230;</string>
     <string name="netUnavailableToast">La rete non è disponibile.\nI dati saranno aggiornati non appena vi sarà connessione.</string>
     <string name="completingDownloadToast">Completo il download dei dati&#8230;</string>
-    <string name="netTextErrorToast">Errore nello scaricamento del testo.</string>
+    <string name="netErrorToast">Si è verificato un errore durante lo scaricamento</string>
     <string name="situation">Situazione</string>
     <string name="network_error">Errore di rete</string>
     <string name="dataExpiredToast">aggiornamento dei dati&#8230;</string>
@@ -35,6 +35,7 @@
     <string name="webcam_download_task_canceled">annullo il download di </string>
     <string name="webcam_wait_for_image">aspetta che si carichi l\'immagine&#8230;</string>
     <string name="webcam_list_error">Errore scaricamento lista webcam</string>
+    <string name="lcation_service_error">Errore nel sistema di localizzazione</string>
     <string name="min_temp">Temperatura Minima</string>
     <string name="max_temp">Temperatura Massima</string>
     <string name="min_temp_abbr">Min.T</string>

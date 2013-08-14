@@ -1,7 +1,5 @@
 package it.giacomos.android.osmer.network;
 
-import android.graphics.Bitmap;
-
 public interface DownloadStateListener {
 	
 	public void onDownloadProgressUpdate(int step, int total);

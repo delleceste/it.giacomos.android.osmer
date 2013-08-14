@@ -10,7 +10,7 @@ import android.widget.Toast;
 public class NetworkGuiErrorManager {
 	public void onError(OsmerActivity a, String message)
 	{
-		Toast.makeText(a.getApplicationContext(), a.getResources().getString(R.string.netTextErrorToast) + message, Toast.LENGTH_LONG).show();
+		Toast.makeText(a.getApplicationContext(), a.getResources().getString(R.string.netErrorToast) + "\n" + message, Toast.LENGTH_LONG).show();
 		/* error may arrive before onPrepareOptionsMenu and so check for null */
 		AnimatedImageView raiv = a.getRefreshAnimatedImageView();
 		if(raiv != null)

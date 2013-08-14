@@ -1,5 +1,6 @@
 package it.giacomos.android.osmer.widgets.map;
 
+import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.locationUtils.LocationServiceAddressUpdateListener;
@@ -126,7 +127,7 @@ LocationServiceUpdateListener
 	@Override
 	public void onLocationServiceError(String message) 
 	{
-		
+		mMeasureOverlayChangeListener.onMeasureOverlayErrorMessage(R.string.lcation_service_error);
 	}
 	
 	@Override

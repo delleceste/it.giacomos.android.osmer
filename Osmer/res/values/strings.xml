@@ -26,7 +26,7 @@
     <string name="downloadingToast">Downloading data&#8230;</string>
     <string name="netUnavailableToast">Network is unavailable.\nData will be updated as\nsoon as network goes up</string>
     <string name="completingDownloadToast">Completing data download&#8230;</string>
-    <string name="netTextErrorToast">There was an error downloading text.</string>
+    <string name="netErrorToast">There was a download error</string>
     <string name="situation">Situation</string>
     <string name="network_error">Network error</string>
     <string name="dataExpiredToast">data is old&#8230; updating contents</string>
@@ -40,6 +40,7 @@
     <string name="webcam_download_task_canceled">canceling image download</string>
     <string name="webcam_wait_for_image">please wait for image to load</string>
     <string name="webcam_list_error">Error downloading webcam list</string>
+    <string name="lcation_service_error">There was an error obtaining the location service</string>
     <string name="min_temp">Minimum Temperature</string>
     <string name="max_temp">Maximum Temperature</string>
     <string name="min_temp_abbr">Min.T</string>

@@ -105,6 +105,7 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 
 	public void onLocalityChanged(String locality, String subLocality, String address)
 	{
+		Log.e("ODoubleLayer.onLocalityChanged", "object " + this.mBitmapType + ", locality " + locality);
 		mLocality = locality;
 		mSubLocality = subLocality;
 		mAddress = address;
@@ -113,6 +114,7 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 
 	@Override
 	public void onLocationChanged(Location location) {
+		Log.e("ODoubleLayer.onLocationChanged", "type" + mBitmapType + ", loc " + location);
 		mLocation = location;
 		mLocationPoint = new LocationToImgPixelMapper().mapToPoint(this, location);
 		this.invalidate();

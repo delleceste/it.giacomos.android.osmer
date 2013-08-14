@@ -55,8 +55,10 @@ public class SituationFragment extends Fragment implements DataPoolTextListener,
 		 */
 		observationsCache.setLatestObservationCacheChangeListener(mSituationImage);
 		/* register image view for location updates */
+		Log.e("SituationFragmen", "registering " + mSituationImage + " on locationserviceAddress");
 		LocationService locationService = oActivity.getLocationService();
 		locationService.registerLocationServiceAddressUpdateListener(mSituationImage);
+		locationService.registerLocationServiceUpdateListener(mSituationImage);
 	}
 	
 	@Override
@@ -78,12 +80,16 @@ public class SituationFragment extends Fragment implements DataPoolTextListener,
 		super.onDestroy();
 		if(mSituationImage != null)
 		{
-			DataPool dataPool = ((OsmerActivity) getActivity()).getDataPool();
+			OsmerActivity oActivity = ((OsmerActivity) getActivity());
+			DataPool dataPool = oActivity.getDataPool();
 			dataPool.unregisterBitmapListener(mSituationImage.getBitmapType());
 			Log.e("SituationImage.onDestroy", "cleaning up image");
 			mSituationImage.cleanup();
 			/* unregister text listener */
 			dataPool.unregisterTextListener(mHomeTextView.getViewType());
+			LocationService locationService = oActivity.getLocationService();
+			locationService.removeLocationServiceAddressUpdateListener(mSituationImage);
+			locationService.removeLocationServiceUpdateListener(mSituationImage);
 		}
 	}
 

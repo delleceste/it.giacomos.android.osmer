@@ -442,11 +442,16 @@ DataPoolErrorListener
 		if(en && mMode.currentMode == MapMode.RADAR)
 		{
 			mMeasureOverlay = new MeasureOverlay(this);
+			/* register before show, so that the LocationService immediately invokes the callback
+			 * onLocationChange if my location is available.
+			 */
+			((OsmerActivity)getActivity()).getLocationService().registerLocationServiceUpdateListener(mMeasureOverlay);
 			mMeasureOverlay.show();
 		}
 		else if(mMeasureOverlay != null && mMode.currentMode == MapMode.RADAR)
 		{
 			/* removes markers, line (if drawn) and saves settings */
+			((OsmerActivity)getActivity()).getLocationService().removeLocationServiceUpdateListener(mMeasureOverlay);
 			mMeasureOverlay.clear(); 
 			mMeasureOverlay = null;
 			/* no markers in radar mode if measure overlay is disabled */
@@ -547,8 +552,7 @@ DataPoolErrorListener
 	@Override
 	public void onMeasureOverlayErrorMessage(int stringId) 
 	{
-		Toast.makeText(this.getActivity().getApplicationContext(), 
-				getActivity().getResources().getString(stringId), Toast.LENGTH_LONG).show();
+		Toast.makeText(this.getActivity().getApplicationContext(), stringId, Toast.LENGTH_LONG).show();
 	}
 
 	@Override
