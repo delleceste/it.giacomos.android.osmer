@@ -1,5 +1,6 @@
 package it.giacomos.android.osmer.widgets.map;
 
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -24,7 +25,8 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 	private GroundOverlay mGroundOverlay;
 	private Circle mGroundOverlayCircle;
 	private CircleOptions mCircleOptions;
-	private GroundOverlayOptions mGroundOverlayOptions;
+	private GroundOverlayOptions mGroundOverlayOptions, mScaleImageOverlayOptions;
+	private GroundOverlay mScaleImageOverlay;
 	private Bitmap mBitmap;
 	private Bitmap mBlackAndWhiteBitmap;
 	
@@ -49,6 +51,14 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 		mCircleOptions.center(GeoCoordinates.radarImageCenter);
 		mCircleOptions.strokeColor(color);
 		mCircleOptions.strokeWidth(1);
+		
+		/* VMI scale image */
+		mScaleImageOverlay = null;
+		mScaleImageOverlayOptions = new GroundOverlayOptions();
+		mScaleImageOverlayOptions.position(GeoCoordinates.radarScaleTopLeft, 20000);
+		mScaleImageOverlayOptions.transparency(0.45f);
+		mScaleImageOverlayOptions.image(BitmapDescriptorFactory.fromResource(R.drawable.scala_vmi_4));
+		
 		mBlackAndWhiteBitmap = null;
 		mBitmap = null;
 	}
@@ -92,6 +102,11 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 		{
 			mGroundOverlayCircle.remove();
 			mGroundOverlayCircle = null;
+		}
+		if(mScaleImageOverlay != null)
+		{
+			mScaleImageOverlay.remove();
+			mScaleImageOverlay = null;
 		}
 	}
 	
@@ -163,6 +178,9 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 		
 		if(mGroundOverlayCircle == null)
 			mGroundOverlayCircle = mMap.addCircle(mCircleOptions);
+		
+		if(mScaleImageOverlay == null)
+			mScaleImageOverlay = mMap.addGroundOverlay(mScaleImageOverlayOptions);
 		
 		/* specify the image before the ovelay is added */
 		BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bmp);
