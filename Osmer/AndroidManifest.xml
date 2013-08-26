@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="it.giacomos.android.osmer"
+    package="it.giacomos.android.osmer.pro"
     android:installLocation="auto"
     android:versionCode="248"
     android:versionName="2.1.0" >
@@ -33,12 +33,12 @@
     <!-- android:label="@string/app_name" before releasing!!! -->
 
     <application
-        android:debuggable="false"
+        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
-        android:label="Meteo.FVG" >
+        android:label="Meteo.FVG Pro" >
 
         <activity
-            android:name=".OsmerActivity"
+            android:name="it.giacomos.android.osmer.pro.OsmerActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,7 +52,7 @@
         <!--  starting from versionCode > 231 I created a map key with release and debug SHA1 together.
         	  This way, the key below applies both to release and debug builds.
          -->
-        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyBhRcwqzgppnwzQApAHcV7-Rer1JhXiDQs"/>
+        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCO_r5ZYrWaqA5ExtIxAVHwRn6KiGAJ_Ps"/>
 
     </application>
 
