@@ -8,6 +8,8 @@ import it.giacomos.android.osmer.regexps.Regexps;
 
 import java.util.regex.*;
 
+import android.util.Log;
+
 public class OsmerWebcamListDecoder implements WebcamListDecoder 
 {
 

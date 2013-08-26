@@ -30,7 +30,7 @@ public class LocationNamesMap {
 		mMap.put("Zoncolan (1750 m)", new LatLng(46.500000, 12.916670));
 		mMap.put("M.Zoncolan", new LatLng(46.500000	,12.916670));
 		mMap.put("Zoncolan", new LatLng(46.500000	,12.916670));
-		mMap.put("Forni di Sopra", new LatLng(46.423140,	12.583460));
+		mMap.put("Forni di Sopra", new LatLng(46.423140, 12.583460));
 		mMap.put("Barcis", new LatLng(46.190718,12.559284));
 		mMap.put("Talmassons", new LatLng(45.930543,13.119952));
 		mMap.put("Monfalcone", new LatLng(45.805047,13.533173));
@@ -48,8 +48,8 @@ public class LocationNamesMap {
 		mMap.put("Sauris", new LatLng(46.466675, 12.697044));
 		mMap.put("Capriva d.F.", new LatLng(45.9423, 13.5145));
 		mMap.put("Gorizia", new LatLng(45.9413046, 13.6215457));
-		mMap.put("Borgo Grotta Gigante", new LatLng(45.942132,13.51439));
-		mMap.put("Gradisca d'Is.", new LatLng(45.942132,13.51439));
+		mMap.put("Borgo Grotta Gigante", new LatLng(45.705993, 13.763003));
+		mMap.put("Gradisca d'Is.", new LatLng(45.892425, 13.500194));
 	}
 	
 	public Vector<String> locationsForLevel(int level)
@@ -64,6 +64,8 @@ public class LocationNamesMap {
 			locations.add("Chievolis");
 			locations.add("M.Matajur");
 			locations.add("Brugnera");
+			locations.add("Claut");
+			locations.add("Ligosullo");
 		case 10:
 			locations.add("Talmassons");
 			locations.add("Monfalcone");
@@ -71,6 +73,8 @@ public class LocationNamesMap {
 			locations.add("Piancavallo");
 			locations.add("Faedis");
 			locations.add("Gradisca d'Is.");
+			locations.add("Fagagna");
+			locations.add("Forni di Sopra");
 		case 9:
 			locations.add("S.Vito al Tgl.");
 			locations.add("Barcis");

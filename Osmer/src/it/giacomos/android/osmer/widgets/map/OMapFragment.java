@@ -246,9 +246,8 @@ DataPoolErrorListener
 	{
 		if(!fromCache) /* up to date */ 
 			mSettings.setRadarImageTimestamp(System.currentTimeMillis());
-		
-		mRadarOverlay.updateBitmap(bmp);
-		mRefreshRadarImage();	
+			mRadarOverlay.updateBitmap(bmp);
+			mRefreshRadarImage();
 	}
 
 	@Override
@@ -353,7 +352,7 @@ DataPoolErrorListener
 
 		mUninstallAdaptersAndListeners();
 		
-		if (m.currentMode == MapMode.RADAR) 
+		if(m.currentMode == MapMode.RADAR) 
 		{
 			/* update the overlay with a previously set bitmap */
 			mRemoveOverlays(); /* this removes any previous overlays... */
@@ -361,7 +360,7 @@ DataPoolErrorListener
 			mOverlays.add(mRadarOverlay);
 			radarTimestampText.scheduleShow();
 		} 
-		else if (m.currentMode == MapMode.WEBCAM) 
+		else if(m.currentMode == MapMode.WEBCAM) 
 		{
 			ArrayList<WebcamData> webcamData = mGetAdditionalWebcamsData();
 			mRemoveOverlays();

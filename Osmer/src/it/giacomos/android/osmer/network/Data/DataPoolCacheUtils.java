@@ -77,6 +77,8 @@ public class DataPoolCacheUtils
 			byteBuffer.flush();
 			buf = byteBuffer.toByteArray();
 			txt = new String(buf, charset);
+			if(viewType == ViewType.WEBCAMLIST_OSMER)
+				System.out.println("DataPoolCacheUtils.loadFromStorage: " + txt);
 		}
 		catch (IOException ex) {
 
@@ -136,12 +138,9 @@ public class DataPoolCacheUtils
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), charset)); 
 //				Log.e("saveToStorage", "writing " + filename + " type " + viewType);
 				out.write(new String(bytes, charset));
-				if(viewType == ViewType.WEBCAMLIST_OTHER)
+				if(viewType == ViewType.WEBCAMLIST_OSMER)
 					System.out.println("SaveToStorage " + new String(bytes, charset));
 				out.close();
-//				FileOutputStream fos = ctx.openFileOutput(makeFileName(viewType), Context.MODE_PRIVATE);
-//				fos.write(bytes);
-//				fos.close();
 			}
 			catch (FileNotFoundException e) {
 				Log.e("DataPoolCacheUtils.saveToStorage", e.getLocalizedMessage());

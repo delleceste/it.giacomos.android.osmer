@@ -29,9 +29,10 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 	private GroundOverlay mScaleImageOverlay;
 	private Bitmap mBitmap;
 	private Bitmap mBlackAndWhiteBitmap;
+	private boolean mBitmapChanged;
 	
 
-	public static final long ACCEPTABLE_RADAR_DIFF_TIMESTAMP_MILLIS = 1000 * 20 ;
+	public static final long ACCEPTABLE_RADAR_DIFF_TIMESTAMP_MILLIS = 1000 * 1 / 2/* 60 * 60 * 4 */;
 	
 // test	public static final long ACCEPTABLE_RADAR_DIFF_TIMESTAMP_MILLIS = 1000 * 5;
 	
@@ -44,6 +45,7 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 		mGroundOverlayOptions = new GroundOverlayOptions();
 		mGroundOverlayOptions.positionFromBounds(GeoCoordinates.radarImageBounds);
 		mGroundOverlayOptions.transparency(0.65f);
+		
 		/* circle: delimits the radar area */
 		int color = Color.argb(120, 150, 160, 245);
 		mCircleOptions = new CircleOptions();
@@ -61,6 +63,7 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 		
 		mBlackAndWhiteBitmap = null;
 		mBitmap = null;
+		mBitmapChanged = true;
 	}
 
 	
@@ -140,19 +143,14 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 		int width, height;
 	    height = mBitmap.getHeight();
 	    width = mBitmap.getWidth();
+	    
 	    /* being a class member, only one black and white bitmap will be
 	     * used, and the old one is recycled.
 	     */
 	    if(mBlackAndWhiteBitmap != null)
 	    	mBlackAndWhiteBitmap.recycle();
-	    
-	    /// DEBUG
-//	    Log.e("RadarOverlay.updateBlackAndWhite", "Black and White recycled " + mBlackAndWhiteBitmap );
-	    
+	    	    
 	    mBlackAndWhiteBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-	   
-	    /// DEBUG
-//	    Log.e("RadarOverlay.updateBlackAndWhite", "Black and White created " + mBlackAndWhiteBitmap);
 	    
 	    Canvas c = new Canvas(mBlackAndWhiteBitmap);
 	    Paint paint = new Paint();
@@ -162,19 +160,16 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 	    paint.setColorFilter(f);
 	    c.drawBitmap(mBitmap, 0, 0, paint);
 	    
+	    mBitmapChanged = true; /* forces bitmap update */
 	    mRefreshBitmap(mBlackAndWhiteBitmap);
 	}
 	
 	private void mRefreshBitmap(Bitmap bmp)
 	{
-		if(bmp == null)
-		{
-//			Log.e("mRadarOverlay.RefreshBitmap", "bitmap is null");
+		if(bmp == null /* || !mBitmapChanged */)
 			return;
-		}
 		
-		if(mGroundOverlay != null)
-			mGroundOverlay.remove();
+		GroundOverlay previousGndOverlay = mGroundOverlay;
 		
 		if(mGroundOverlayCircle == null)
 			mGroundOverlayCircle = mMap.addCircle(mCircleOptions);
@@ -186,6 +181,10 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 		BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bmp);
 		mGroundOverlayOptions.image(bitmapDescriptor);
 		mGroundOverlay = mMap.addGroundOverlay(mGroundOverlayOptions);
+		
+		/* remove previous overlay after adding the new one in order to prevent flickering */
+		if(previousGndOverlay != null)
+			previousGndOverlay.remove();
 	}
 	
 	public boolean bitmapValid()
@@ -195,9 +194,15 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 	
 	public void updateBitmap(Bitmap bmp)
 	{
-//		Log.e("RadarOverlay.updateBitmap", "old bmp " + mBitmap + ", new " + bmp);
-		mBitmap = null;
-		mBitmap = bmp;
+//		if(mBitmap == null || !bmp.sameAs(mBitmap) || mBlackAndWhiteBitmap != null)
+		{
+			mBitmapChanged = true;
+//			Log.e("RadarOverlay.updateBitmap", "old bmp " + mBitmap + ", new " + bmp);
+			mBitmap = null;
+			mBitmap = bmp;
+		}
+//		else
+//			mBitmapChanged = false;
 	}
 	
 	public void finalize()

@@ -27,7 +27,7 @@
     <string name="dataExpiredToast">aggiornamento dei dati&#8230;</string>
     <string name="radarUpdateToast">aggiorno l\'immagine del radar&#8230;</string>
     <string name="radarUpdatedOn">Immagine radar scaricata alle </string>
-    <string name="radarImageOld">L\'immagine radar scaricata più di un\'ora fa</string>    
+    <string name="radarImageOld">L\'immagine radar scaricata più di quattro ore fa</string>    
     <string name="radarImageBlackWhiteHint">(Per questo è in bianco e nero)</string>
     <string name="radarDownloadError">Errore scaricamento immagine radar</string>
     <string name="webcam_lists_downloaded">lista webcam aggiornata</string>

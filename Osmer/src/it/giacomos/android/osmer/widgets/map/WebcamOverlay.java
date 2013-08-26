@@ -3,7 +3,6 @@ package it.giacomos.android.osmer.widgets.map;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.network.Data.DataPool;
-import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
 import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
 import it.giacomos.android.osmer.network.state.BitmapTask;
 import it.giacomos.android.osmer.network.state.BitmapTaskListener;
@@ -15,7 +14,6 @@ import it.giacomos.android.osmer.webcams.OtherWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;
 import it.giacomos.android.osmer.webcams.WebcamDataHelper;
 
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -62,7 +59,7 @@ DataPoolTextListener
 		mCustomMarkerBitmapFactory.setTextWidthScaleFactor(2.5f);
 		mCustomMarkerBitmapFactory.setAlphaTextContainer(100);
 		mCustomMarkerBitmapFactory.setInitialFontSize(mSettings.mapWebcamMarkerFontSize());
-//		Log.e("WebcamOverlay", "initial font size of marker " + mSettings.mapWebcamMarkerFontSize());
+		//		Log.e("WebcamOverlay", "initial font size of marker " + mSettings.mapWebcamMarkerFontSize());
 		mWebcamOverlayChangeListener = mapFrag;
 		mInfoWindowAdapter = new WebcamBaloonInfoWindowAdapter(mapFrag.getActivity());
 		/* adapter and listeners */
@@ -75,6 +72,7 @@ DataPoolTextListener
 		mWaitString = mapFrag.getResources().getString(R.string.webcam_downloading);
 		mWebcamIcon = BitmapFactory.decodeResource(mapFrag.getResources(), mMarkerResId);
 		mAdditionalWebcamData = additionalWebcamData;
+		mIsActive = true;
 	}
 
 	public void disconnectFromDataPool(OsmerActivity oa)
@@ -106,33 +104,34 @@ DataPoolTextListener
 	@Override
 	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
 	{		
-		if(!fromCache)
+		if(mIsActive)
 		{
-			WebcamDataHelper helper = new WebcamDataHelper();
-			helper.setDataUpdatedNow(mContext);
-			helper = null;
+			if(!fromCache)
+			{
+				WebcamDataHelper helper = new WebcamDataHelper();
+				helper.setDataUpdatedNow(mContext);
+				helper = null;
+			}
+
+			ArrayList<WebcamData> wcData = null;
+			if (t == ViewType.WEBCAMLIST_OSMER) 
+			{
+				OsmerWebcamListDecoder osmerDec = new OsmerWebcamListDecoder();
+				wcData = osmerDec.decode(txt);
+			} 
+			else if (t == ViewType.WEBCAMLIST_OTHER) 
+			{
+				OtherWebcamListDecoder otherDec = new OtherWebcamListDecoder();
+				wcData = otherDec.decode(txt);
+			}
+
+			/* add to the list the fixed additional webcam data initialized in the 
+			 * class constructor and passed by OMapFragment.
+			 */
+			wcData.addAll(mAdditionalWebcamData);
+
+			scheduleUpdate(wcData); /* place markers on map */
 		}
-
-		ArrayList<WebcamData> wcData = null;
-		if (t == ViewType.WEBCAMLIST_OSMER) 
-		{
-			OsmerWebcamListDecoder osmerDec = new OsmerWebcamListDecoder();
-			wcData = osmerDec.decode(txt);
-			mWebcamData = wcData;
-		} 
-		else if (t == ViewType.WEBCAMLIST_OTHER) 
-		{
-			OtherWebcamListDecoder otherDec = new OtherWebcamListDecoder();
-			wcData = otherDec.decode(txt);
-			mWebcamData = wcData;
-		}
-
-		/* add to the list the fixed additional webcam data initialized in the 
-		 * class constructor and passed by OMapFragment.
-		 */
-		mWebcamData.addAll(mAdditionalWebcamData);
-
-		scheduleUpdate(); /* place markers on map */
 	}
 
 	@Override
@@ -147,9 +146,10 @@ DataPoolTextListener
 	 * has the impression that the markers appear immediately after the mode 
 	 * switch
 	 */
-	public void scheduleUpdate()
+	public void scheduleUpdate(ArrayList<WebcamData> wcData)
 	{
-		new Handler().postDelayed(new WebcamOverlayUpdateRunnable(this), 350);
+		if(mIsActive)
+			new Handler().postDelayed(new WebcamOverlayUpdateRunnable(this, wcData), 450);
 	}
 
 	/**
@@ -157,32 +157,34 @@ DataPoolTextListener
 	 * WebcamData stored in the list. Then adds each marker to the map.
 	 * @param res a reference to the Resources to use in order to create the webcam icons.
 	 */
-	public boolean update()
+	public void update(ArrayList<WebcamData> wcData)
 	{
-		/* fixes a bug in maps */
-		boolean needsRedraw = false;
-		for(WebcamData wd : mWebcamData)
+		/* update is called by a runnable. The user may have switched to another map mode in the meantime.
+		 * Look for mIsActive to prevent unwanted webcam marker updates inside a map mode .
+		 */
+		if(mIsActive)
 		{
-			if(!webcamInList(wd))
+			for(WebcamData wd : wcData)
 			{
-				LatLng ll = wd.latLng;
-				if(ll != null)
-				{ 
-					MarkerOptions mo = new MarkerOptions();
-					mo.title(wd.location).snippet(wd.text).position(wd.latLng);
-					BitmapDescriptor bmpDescriptor = mCustomMarkerBitmapFactory.getIcon(mWebcamIcon, wd.location);
-					mo.icon(bmpDescriptor);
-					Marker m = mMap.addMarker(mo);
-					needsRedraw = true;
-					mMarkerWebcamHash.put(m, wd);
+				if(!webcamInList(wd))
+				{
+					LatLng ll = wd.latLng;
+					if(ll != null)
+					{ 
+						MarkerOptions mo = new MarkerOptions();
+						mo.title(wd.location).snippet(wd.text).position(wd.latLng);
+						BitmapDescriptor bmpDescriptor = mCustomMarkerBitmapFactory.getIcon(mWebcamIcon, wd.location);
+						mo.icon(bmpDescriptor);
+						Marker m = mMap.addMarker(mo);
+						mMarkerWebcamHash.put(m, wd);
+					}
 				}
 			}
+			/* save in settings the optimal font size in order for CustomMarkerBitmapFactory to quickly 
+			 * obtain it without calculating it again.
+			 */
+			mSettings.setMapWebcamMarkerFontSize(mCustomMarkerBitmapFactory.getCachedFontSize());
 		}
-		/* save in settings the optimal font size in order for CustomMarkerBitmapFactory to quickly 
-		 * obtain it without calculating it again.
-		 */
-		mSettings.setMapWebcamMarkerFontSize(mCustomMarkerBitmapFactory.getCachedFontSize());
-		return needsRedraw;
 	}
 
 	@Override
@@ -192,7 +194,7 @@ DataPoolTextListener
 		WebcamData wd = mMarkerWebcamHash.get(marker);
 		cancelCurrentWebcamTask();
 		mCurrentBitmapTask = new BitmapTask(this, BitmapType.WEBCAM);
-//		Log.e("onMarkerClick", "getting image for" + wd.location);
+		//		Log.e("onMarkerClick", "getting image for" + wd.location);
 		try 
 		{
 			URL webcamUrl = new URL(wd.url);
@@ -217,6 +219,9 @@ DataPoolTextListener
 	@Override
 	public void onBitmapUpdate(Bitmap bmp, BitmapType bt, String errorMessage, AsyncTask<URL, Integer, Bitmap> unusedTaskParameter) 
 	{
+		/* no need to check the mIsActive flag because the bitmap task is 
+		 * cancelled by clear().
+		 */
 		if(bmp == null && !errorMessage.isEmpty())
 		{
 			mWebcamOverlayChangeListener.onWebcamErrorMessageChanged(errorMessage);
@@ -252,7 +257,7 @@ DataPoolTextListener
 	@Override
 	public void onMapClick(LatLng arg0) 
 	{
-//		Log.e("onMapClick", " cancelling task ");
+		//		Log.e("onMapClick", " cancelling task ");
 		cancelCurrentWebcamTask();
 	}
 
@@ -271,12 +276,12 @@ DataPoolTextListener
 	{
 		if(mCurrentBitmapTask != null  && mCurrentBitmapTask.getStatus() == AsyncTask.Status.RUNNING)
 		{
-//			Log.e("cancelCurrentWebcamTask", "cancelling task");
+			//			Log.e("cancelCurrentWebcamTask", "cancelling task");
 			mWebcamOverlayChangeListener.onWebcamBitmapTaskCanceled(mCurrentBitmapTask.getUrl());
 			mCurrentBitmapTask.cancel(false);
 		}
-//		else
-//			Log.e("cancelCurrentWebcamTask", "NOT cancelling task (not runnig)");
+		//		else
+		//			Log.e("cancelCurrentWebcamTask", "NOT cancelling task (not runnig)");
 	}
 
 	@Override
@@ -290,6 +295,8 @@ DataPoolTextListener
 		mWaitBitmap.recycle();
 		/* recycle bitmap and unbind drawable */
 		mInfoWindowAdapter.finalize();
+		/* Marks the overlay as finalized, disabling all updates from async tasks */
+		mIsActive = false;
 	}
 
 	protected WebcamData getDataByLatLng(LatLng ll)
@@ -346,8 +353,8 @@ DataPoolTextListener
 	private Bitmap mWaitBitmap;
 	private String mWaitString;
 	private Settings mSettings;
-	private ArrayList<WebcamData> mWebcamData;
 	private ArrayList<WebcamData> mAdditionalWebcamData;
 	private Context mContext;
 	private Bitmap mWebcamIcon;
+	private boolean mIsActive;
 }

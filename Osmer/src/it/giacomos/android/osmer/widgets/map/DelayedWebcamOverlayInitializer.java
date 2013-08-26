@@ -58,6 +58,7 @@ public class DelayedWebcamOverlayInitializer implements Runnable {
 		if(!mDataPool.isTextValid(ViewType.WEBCAMLIST_OSMER))
 		{
 			/* load from cache */
+			Log.e("loading webcamlist osmer from sziraj", "loading");
 			webcamStr = dpcu.loadFromStorage(ViewType.WEBCAMLIST_OSMER, mContext);
 			mWebcamOverlay.onTextChanged(webcamStr, ViewType.WEBCAMLIST_OSMER, true);
 		}
