@@ -48,8 +48,6 @@ public class LocationNamesMap {
 		mMap.put("Sauris", new LatLng(46.466675, 12.697044));
 		mMap.put("Capriva d.F.", new LatLng(45.9423, 13.5145));
 		mMap.put("Gorizia", new LatLng(45.9413046, 13.6215457));
-		mMap.put("Borgo Grotta Gigante", new LatLng(45.942132,13.51439));
-		mMap.put("Gradisca d'Is.", new LatLng(45.942132,13.51439));
 	}
 	
 	public Vector<String> locationsForLevel(int level)
