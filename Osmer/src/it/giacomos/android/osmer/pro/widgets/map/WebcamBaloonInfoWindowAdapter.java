@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.pro.widgets.map;
 
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
