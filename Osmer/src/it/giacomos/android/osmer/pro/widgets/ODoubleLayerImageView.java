@@ -62,7 +62,6 @@ implements StateRestorer
 
 	public boolean restoreFromInternalStorage()
 	{
-		Log.e("restoreFromInternalStorage", "bitmap : " + this.getId());
 		/* Decode a file path into a bitmap. If the specified file name is null, 
 		 * or cannot be decoded into a bitmap, the function returns null. 
 		 */

@@ -103,7 +103,6 @@ RadarOverlayUpdateListener
 
 	public void onResume()
 	{	
-		Log.e("onResume ", "application resumed");
 		super.onResume();
 
 		/* registers network status monitor broadcast receiver (for this it needs `this')

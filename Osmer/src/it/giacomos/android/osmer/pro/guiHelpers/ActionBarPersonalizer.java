@@ -55,7 +55,7 @@ public class ActionBarPersonalizer {
 	
 	public void drawerItemChanged(int id)
 	{
-		Log.e("drawerItemChaneged in ActionBarPersonalizer", "drawerOtemChanged to " + id);
+//		Log.e("drawerItemChaneged in ActionBarPersonalizer", "drawerOtemChanged to " + id);
 		mSpinnerAdapter = null;
 		mOnNavigationListener = null;
 		ActionBar actionBar = mActivity.getActionBar();
