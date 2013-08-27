@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.widget.ImageView;
 
 
@@ -44,7 +43,6 @@ implements StateRestorer
 
 	private boolean mSaveOnInternalStorage(Bitmap bitmap) 
 	{	
-		Log.e("mSaveOnInternalStorage", "bitmap : " + this.getId());
 		FileOutputStream fos;
 		try {
 			fos = getContext().openFileOutput(makeFileName(), Context.MODE_PRIVATE);

@@ -15,7 +15,6 @@ import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.TextView;
 
 /** Text change listener is installed here because this class restores from internal storage on her own
@@ -42,7 +41,7 @@ public class OTextView extends TextView implements StateRestorer
 			return false;
 		
 
-		Log.e("mSaveOnInternalStorage", this.getId() +", string type " + this.mStringType);
+//		Log.e("mSaveOnInternalStorage", this.getId() +", string type " + this.mStringType);
 		FileOutputStream fos;
 		try {
 			fos = getContext().getApplicationContext().openFileOutput(makeFileName(), Context.MODE_PRIVATE);
@@ -63,7 +62,7 @@ public class OTextView extends TextView implements StateRestorer
 
 	public boolean restoreFromInternalStorage()
 	{
-		Log.e("restoreFromInternalStorage", this.getId() +", string type " + this.mStringType);
+//		Log.e("restoreFromInternalStorage", this.getId() +", string type " + this.mStringType);
 		String html = "";
 		/* Open a private file associated with this Context's application package for reading. */
 		try {
