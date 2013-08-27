@@ -33,7 +33,7 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 	private boolean mBitmapChanged;
 	
 
-	public static final long ACCEPTABLE_RADAR_DIFF_TIMESTAMP_MILLIS = 1000 * 1 / 2/* 60 * 60 * 4 */;
+	public static final long ACCEPTABLE_RADAR_DIFF_TIMESTAMP_MILLIS = 1000 * 60 * 60 * 4;
 	
 // test	public static final long ACCEPTABLE_RADAR_DIFF_TIMESTAMP_MILLIS = 1000 * 5;
 	

@@ -1,11 +1,10 @@
 package it.giacomos.android.osmer.pro.webcams;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 import android.content.Context;
-import android.util.Log;
 
 public class WebcamDataHelper 
 {
-	private static final int UPTODATE_INTERVAL_MILLIS =  10 * 1000;
+	private static final int UPTODATE_INTERVAL_MILLIS =  1000 * 60 * 60 * 24;
 	
 	public WebcamDataHelper()
 	{
@@ -26,14 +25,14 @@ public class WebcamDataHelper
 		long currentTimestampMillis = System.currentTimeMillis();
 		if(currentTimestampMillis - lastSavedTimestampMillis > UPTODATE_INTERVAL_MILLIS)
 		{
-			Log.e("WebcamDataHelper", "data is too old: current " +
-					currentTimestampMillis + " last " + lastSavedTimestampMillis);
+//			Log.e("WebcamDataHelper", "data is too old: current " +
+//					currentTimestampMillis + " last " + lastSavedTimestampMillis);
 			return true;
 		}
 		else
 		{
-			Log.e("WebcamDataHelper", "data is NOT too old: current " +
-					currentTimestampMillis + " last " + lastSavedTimestampMillis);
+//			Log.e("WebcamDataHelper", "data is NOT too old: current " +
+//					currentTimestampMillis + " last " + lastSavedTimestampMillis);
 			return false;
 		}
 	}
