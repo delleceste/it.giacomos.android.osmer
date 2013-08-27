@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mapview"
-    android:name="it.giacomos.android.osmer.widgets.map.OMapFragment"
+    android:name="it.giacomos.android.osmer.pro.widgets.map.OMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -24,7 +24,7 @@
             android:textSize="12sp"
             android:visibility="visible" />
 
-        <it.giacomos.android.osmer.widgets.OAnimatedTextView
+        <it.giacomos.android.osmer.pro.widgets.OAnimatedTextView
             android:id="@+id/radarTimestampTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

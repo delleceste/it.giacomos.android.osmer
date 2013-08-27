@@ -5,7 +5,7 @@
     android:layout_gravity="center_horizontal|center_vertical"
     android:orientation="horizontal" >
 
-    <it.giacomos.android.osmer.widgets.AnimatedImageView 
+    <it.giacomos.android.osmer.pro.widgets.AnimatedImageView 
     
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/refresh_animation"
@@ -14,7 +14,7 @@
     android:layout_gravity="center_horizontal|center_vertical"
      >
     
-</it.giacomos.android.osmer.widgets.AnimatedImageView >
+</it.giacomos.android.osmer.pro.widgets.AnimatedImageView >
 
     <ToggleButton 
          	    android:layout_width="32dp"
