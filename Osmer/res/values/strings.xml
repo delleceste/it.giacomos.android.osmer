@@ -323,51 +323,48 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
 </string>
 	
 	<string name="menu_upgrade">
-	    Upgrade to version 2
+	    Upgrade to version Pro
 	</string>
 	
-	<string name="to_show_upgrade_message_again_toast">Click on menu -> Upgrade to version 2
+	<string name="to_show_upgrade_message_again_toast">Click on menu -> Upgrade to version Pro
 	    to show this message again</string>
 	
 	<string name="dontshow_upgrade_popup_again">Don\'t show this message again</string>
 	
 	<string name="upgrade"><![CDATA[
-		<h6>In arrivo la versione 2 per Android 4!</h6>
-		
-		<p><strong>Note</strong>: this message is available only in italian.</p>
-		
+		<h4>Acquista la versione Pro per Android 4!</h4>
 		<p>
-	    Lo sviluppo dell\'applicazione <em>Meteo.FVG</em> ha richiesto mesi di sviluppo 
-	    a tempo pieno. La manutenzione e l\'aggiornamento periodico della stessa richiedono
-	    molto tempo libero per lo sviluppatore!
-	    Può essere che, a partire dalla prossima versione, la <em>2.0</em>,
-	    o da una delle successive l\'aggiornamento abbia un costo
-	    di circa 2,50 euro.<br/>
-	    La nuova versione 2 presenta una nuova interfaccia grafica più chiara e meglio integrata
-	    con l\'ambiente Android 4.
-	    L\'aggiornamento riguarderà solamente gli utenti di <em>Android versione 4.0 o
-	    superiore</em>. Gli utenti di Android con una versione inferiore continueranno ad
-	    usufruire della app gratuita della serie 1.x.y. Le versioni della serie 1.x.y saranno
-	    sviluppate unicamente per la correzione di errori.<br/>
-	    L\'<em>eventuale</em> sviluppo di nuove caratteristiche sarà effettuato sulle versioni della
-	    serie 2 e successive.
-	    Le versioni della serie 1.x.y continueranno ad essere gratuite anche per gli utenti
-	    di Android versione 4 o successiva che non desiderano acquistare le versioni 
-	    2.0 e successive.
+	    Lo sviluppo dell\'applicazione <em>Meteo.FVG</em>, la sua manutenzione
+	    e l\'aggiornamento periodico hanno richiesto al programmatore mesi di sviluppo 
+	    a tempo pieno.
+		
+		<br/>Gli utenti Android 4 possono da oggi acquistare la versione <em>Pro</em>
+		di <cite>Meteo.FVG</cite> 
+		dal <a href="https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro">play store di Google</a>,
+		supportando così eventuali sviluppi futuri, aggiornamenti e correzioni della app.
+	    
 	    </p>
 	    
-	    <h6>Scaricamento gratuito della versione 2.0 e successive.</h6>
+	    <h5>Scaricamento gratuito della versione di Meteo.FVG Pro (versioni 2.0 e successive.)</h5>
 	    <p>
-	    Chi non desiderasse acquistare la versione 2.0 e successive, potrà
-	    scaricare <em>gratuitamente</em> una versione "<em>beta</em>" dal 
-	    <a href="https://play.google.com/store/search?q=Meteo.FVG%20giacomo">google play store</a>,
-	    dopo essersi iscritto alla <em>community Google +</em> denominata <strong>
-	    <a href="https://plus.google.com/u/0/communities/104494499218507670829">Android.Meteo.FVG</a></strong>.
-	    La versione <em>beta</em> gratuita sarà del tutto identica a quella a pagamento 
-	    identificata dal medesimo numero di versione.
-	    Una versione di test 2.0 è già disponibile per lo scaricamento (Android versione 4.0 o
+	    Se trovi utile e ti piace l\'app Meteo.FVG, considera di supportarla acquistando
+	    la versione Pro (versioni 2.1.0 e successive.)
+	    </p>
+	    <p>
+	    Se invece non desideri comperare la versione Pro di Meteo.FVG (che dà diritto a 
+	    tutti i successivi aggiornamenti, se previsti) potrai
+	    scaricare <em>gratuitamente</em> dal play store di Google la versione Pro "<em>beta</em>" di ogni
+	    rilascio ufficiale,
+	    dopo esserti iscritto alla <em>community Google +</em> denominata <strong>
+	     <a href="https://plus.google.com/u/0/communities/104494499218507670829">Android.Meteo.FVG</a></strong>.
+	     <br/>
+	    All\'interno della community <cite>Android.Meteo.FVG</cite> troverai un link
+	    per l\'installazione della versione pro <cite>beta gratuita</cite>.
+	    <br/>Ogni versione <em>beta</em> gratuita sarà del tutto identica a quella corrispondente a pagamento 
+	    avente il medesimo numero di versione.
+	    Una versione beta/test è già disponibile per lo scaricamento (Android versione 4.0 o
 	    successive) tramite un link condiviso nella community sopra citata. Se desideri provarla 
-	    e segnalare problemi o suggerire miglioramenti sei il benvenuto!
+	    e segnalare problemi o suggerire miglioramenti iscriviti alla community, sei il benvenuto!
 	    </p>
 	    
 	    <h6>Android.Meteo.FVG Google+ community</h6>
@@ -375,14 +372,13 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
 	    per fare domande, ottenere risposte e suggerire miglioramenti per la app Meteo.FVG.<br/>
 	    Entra nel tuo profilo Google+, seleziona <cite>community</cite> dal menù sulla sinistra,
 	    cerca la community <em>Android.Meteo.FVG</em> e richiedi di diventare membro.
+	    Sono già oltre 3000 gli utilizzatori di Meteo.FVG!
 	    </p>
 	    
 	    
 	    <h6>Visualizza di nuovo questo messaggio</h6>
 	    <p>Per visualizzare di nuovo questo messaggio in futuro, tocca il tasto <em>Menu</em> e
 	    seleziona la voce <em>Upgrade alla versione 2</em> dal menù a tendina.</p>
-	    <p>Per non visualizzare più questo messaggio, abilita il check box 
-	    <cite>Non mostrare più questo messaggio</cite> qui sotto</p>.
 	    
 	    <p>Grazie.</p>
 	    

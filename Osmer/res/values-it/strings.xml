@@ -243,8 +243,9 @@
 	    </p>
 	      
 	    <p>
-	    Grazie a Nicola Sodomaco e Gabriele Persi per le immagini delle webcam di Elettra e Padriciano,
-	    Area Science Park.
+	    Grazie a Gabriele Persi per le immagini delle webcam di Padriciano,
+	    Area Science Park. Grazie a Andrea Macor e Osteria Sul Ronc per l\'immagine webcam omonima 
+	    situata a Tarcento.
 	    </p>
 	    
 	    <p>
@@ -318,46 +319,44 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 	<string name="dontshow_upgrade_popup_again">Non mostrare più questo messaggio all\'avvio dell\'applicazione</string>
 	
 	<string name="menu_upgrade">
-	    Upgrade alla versione 2
+	    Upgrade alla versione Pro
 	</string>
 	
-	<string name="to_show_upgrade_message_again_toast">Clicca menu -> Upgrade alla versione 2
+	<string name="to_show_upgrade_message_again_toast">Clicca menu -> Upgrade alla versione Pro
 	    per visualizzare ancora il messaggio di upgrade alla versione 2</string>
 	
 	<string name="upgrade"><![CDATA[
-		<h4>In arrivo la versione 2 per Android 4!</h4>
+		<h4>Acquista la versione Pro per Android 4!</h4>
 		<p>
 	    Lo sviluppo dell\'applicazione <em>Meteo.FVG</em>, la sua manutenzione
 	    e l\'aggiornamento periodico hanno richiesto al programmatore mesi di sviluppo 
 	    a tempo pieno.
-	    Può essere che, a partire dalla prossima versione di Meteo.FVG, la <em>2.0</em>,
-	    o da una delle successive l\'aggiornamento abbia un costo
-	    di circa 2,50 euro.
-	    L\'aggiornamento riguarderà solamente gli utenti di <em>Android versione 4.0 o
-	    superiore</em>. Gli utenti di Android con versione inferiore continueranno ad
-	    usufruire della app gratuita Meteo.FVG della serie 1.x.y.<br/>
-	    Le versioni di Meteo.FVG appartenenti serie 1.x.y saranno
-	    sviluppate unicamente per la correzione di errori.<br/>
-	    Le versioni della serie 1.x.y continueranno ad essere gratuite anche per gli utenti
-	    di Android versione 4 o successive che non desiderano acquistare la versione 2
-	    di Meteo.FVG.
+		
+		<br/>Gli utenti Android 4 possono da oggi acquistare la versione <em>Pro</em>
+		di <cite>Meteo.FVG</cite> 
+		dal <a href="https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro">play store di Google</a>,
+		supportando così eventuali sviluppi futuri, aggiornamenti e correzioni della app.
+	    
 	    </p>
 	    
-	    <h5>Scaricamento gratuito della versione di Meteo.FVG 2.0 e successive.</h5>
+	    <h5>Scaricamento gratuito della versione di Meteo.FVG Pro (versioni 2.0 e successive.)</h5>
 	    <p>
 	    Se trovi utile e ti piace l\'app Meteo.FVG, considera di supportarla acquistando
-	    la versione 2.
-	    Chi non desiderasse comperare la versione 2 di Meteo.FVG (che dà diritto a 
-	    tutti i successivi aggiornamenti, se previsti) potrà
-	    scaricare <em>gratuitamente</em> dal play store di Google la versione "<em>beta</em>" di ogni
+	    la versione Pro (versioni 2.1.0 e successive.)
+	    </p>
+	    <p>
+	    Se invece non desideri comperare la versione Pro di Meteo.FVG (che dà diritto a 
+	    tutti i successivi aggiornamenti, se previsti) potrai
+	    scaricare <em>gratuitamente</em> dal play store di Google la versione Pro "<em>beta</em>" di ogni
 	    rilascio ufficiale,
-	    dopo essersi iscritto alla <em>community Google +</em> denominata <strong>
-	    <a href="https://plus.google.com/u/0/communities/104494499218507670829">Android.Meteo.FVG</a></strong>.
-	    All\'interno della community <cite>Android.Meteo.FVG</cite> sarà possibile trovare un link
-	    per l\'installazione della versione <cite>beta gratuita</cite>.
+	    dopo esserti iscritto alla <em>community Google +</em> denominata <strong>
+	     <a href="https://plus.google.com/u/0/communities/104494499218507670829">Android.Meteo.FVG</a></strong>.
+	     <br/>
+	    All\'interno della community <cite>Android.Meteo.FVG</cite> troverai un link
+	    per l\'installazione della versione pro <cite>beta gratuita</cite>.
 	    <br/>Ogni versione <em>beta</em> gratuita sarà del tutto identica a quella corrispondente a pagamento 
 	    avente il medesimo numero di versione.
-	    Una versione di test 2.0 è già disponibile per lo scaricamento (Android versione 4.0 o
+	    Una versione beta/test è già disponibile per lo scaricamento (Android versione 4.0 o
 	    successive) tramite un link condiviso nella community sopra citata. Se desideri provarla 
 	    e segnalare problemi o suggerire miglioramenti iscriviti alla community, sei il benvenuto!
 	    </p>

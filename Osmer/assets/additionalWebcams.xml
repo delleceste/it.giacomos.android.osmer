@@ -1,8 +1,8 @@
 <markers>
-<marker nome="Basovizza"
-id="100" lat="45.646429" lng="13.848186" 
-testo="Webcam installata presso Basovizza, Elettra - Sincrotrone Trieste." category="additional"
-link="http://sincroliveweather.superweb.ws/HQcam000M.jpg" />
+<marker nome="Osteria Sul Ronc"
+id="100" lat="46.215048" lng="13.212941" 
+testo="Tarcento, webcam Osteria Sul Ronc, su una piccola collina nella zona dei campi vicino alla stazione dei treni. Punta a Ovest-Nord-Ovest." category="additional"
+link="http://79.38.107.56/cgi-bin/guestimage.html" />
 
 <marker nome="Area Science Park"
 id="101" lat="45.657877" lng="13.828611" 

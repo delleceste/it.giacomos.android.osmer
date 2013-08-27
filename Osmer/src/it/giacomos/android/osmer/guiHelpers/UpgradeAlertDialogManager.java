@@ -31,7 +31,9 @@ public class UpgradeAlertDialogManager implements OnCheckedChangeListener,
 	{
 		Settings s = new Settings(mActivity);
 		boolean isUpgradeDialogEnabled = s.isUpgradeDialogEnabled();
-		if(isUpgradeDialogEnabled)
+		/* >= android 4.0.1? */
+		boolean isAndroid4 = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1;
+		if(isUpgradeDialogEnabled && isAndroid4)
 			return getDialog(titleStringId, messageStringId, true);
 		return null;
 	}
