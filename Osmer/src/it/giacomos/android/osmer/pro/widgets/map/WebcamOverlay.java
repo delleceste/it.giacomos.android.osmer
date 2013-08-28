@@ -57,7 +57,7 @@ public class WebcamOverlay implements
 		mMap.setOnMapClickListener(this);
 		mMap.setOnInfoWindowClickListener(this);
 		mCurrentlySelectedMarker = null;
-		mWaitBitmap = BitmapFactory.decodeResource(mapFrag.getResources(), R.drawable.webcam_download);
+//		mWaitBitmap = BitmapFactory.decodeResource(mapFrag.getResources(), R.drawable.webcam_download);
 		mWaitString = mapFrag.getResources().getString(R.string.webcam_downloading);
 	}
 
@@ -100,13 +100,14 @@ public class WebcamOverlay implements
 		mCurrentlySelectedMarker = marker;
 		WebcamData wd = mMarkerWebcamHash.get(marker);
 		cancelCurrentWebcamTask();
+		mInfoWindowAdapter.finalize();
 		mCurrentBitmapTask = new BitmapTask(this, BitmapType.WEBCAM);
 		Log.e("onMarkerClick", "getting image for" + wd.location);
 		try 
 		{
 			URL webcamUrl = new URL(wd.url);
 			mCurrentBitmapTask.parallelExecute(webcamUrl);
-			mInfoWindowAdapter.setData(wd.location + " - " + mWaitString, mWaitBitmap, false);
+			mInfoWindowAdapter.setData(wd.location + " - " + mWaitString, null, false);
 		}
 		catch (MalformedURLException e) 
 		{
@@ -160,6 +161,7 @@ public class WebcamOverlay implements
 	{
 		Log.e("onMapClick", " cancelling task ");
 		cancelCurrentWebcamTask();
+		mInfoWindowAdapter.finalize();
 	}
 	
 	/* Attempts to cancel execution of this task. This attempt will fail if the task 
@@ -249,7 +251,7 @@ public class WebcamOverlay implements
 	private WebcamOverlayChangeListener mWebcamOverlayChangeListener;
 	private WebcamBaloonInfoWindowAdapter mInfoWindowAdapter;
 	private Marker mCurrentlySelectedMarker;
-	private Bitmap mWaitBitmap;
+//	private Bitmap mWaitBitmap;
 	private String mWaitString;
 	private Settings mSettings;
 }

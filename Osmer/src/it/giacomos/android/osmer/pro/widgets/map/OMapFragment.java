@@ -152,6 +152,9 @@ MeasureOverlayChangeListener
 		mRadarOverlay.finalize(); /* recycles bitmap for GC */
 		/* save the map mode */
 		mSettings.setMapType(mMap.getMapType());
+		/* clear webcam data, cancel current task, finalize info window adapter */
+		if(mWebcamOverlay != null)
+			mWebcamOverlay.clear();
 		super.onDestroy();
 	}
 
