@@ -194,7 +194,24 @@ public class Settings
 	
 	public long getRadarImageTimestamp()
 	{
-		return mSharedPreferences.getLong("RADAR_IMAGE_TIMESTAMP", 0L);
+		long radarImageTs;
+		/* try/catch to correct a previous release which used to put a float 
+		 * instead of a long.
+		 */
+		try
+		{
+			radarImageTs = mSharedPreferences.getLong("RADAR_IMAGE_TIMESTAMP", 0L);
+		}
+		catch(ClassCastException cce)
+		{
+			/* put a long for next time */
+			SharedPreferences.Editor e = mSharedPreferences.edit();
+			e.putLong("RADAR_IMAGE_TIMESTAMP", 0L);
+			e.commit();
+			/* and return a 0 timestamp. This will force an update of the radar image */
+			radarImageTs = 0;
+		}
+		return radarImageTs;
 	}
 	
 	/** returns true if this is the first execution. Then sets the first execution flag to 
