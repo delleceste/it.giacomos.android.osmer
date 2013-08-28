@@ -183,19 +183,26 @@ public class Settings
 	
 	public long getRadarImageTimestamp()
 	{
-		/* at a certain release confuson arose about getFloat/getLong.
-		 * If a previous version used to save the timestamp as long, if we
+		long radarImageTs;
+		/* at a certain release confusion arose about getFloat/getLong.
+		 * If a previous version used to save the time stamp as long, if we
 		 * omit try/catch the application crashes as soon as we try to getFloat
 		 * from a long.
 		 */
 		try{
-			mSharedPreferences.getFloat("RADAR_IMAGE_TIMESTAMP", 0);
-			return 0L; /* discard an invalid float. Will reckon radar image old */
+			radarImageTs = mSharedPreferences.getLong("RADAR_IMAGE_TIMESTAMP", 0);
 		}
-		catch(ClassCastException e)
+		catch(ClassCastException cce)
 		{
-			return mSharedPreferences.getLong("RADAR_IMAGE_TIMESTAMP", 0);
+			/* if an exception is caught, then put a long for the next time
+			 * (a previous version set a float instead of a long)
+			 */
+			SharedPreferences.Editor e = mSharedPreferences.edit();
+			e.putLong("RADAR_IMAGE_TIMESTAMP", 0L);
+			e.commit();
+			radarImageTs = 0; /* this will force an update */
 		}
+		return radarImageTs;
 	}
 	
 	/** returns true if this is the first execution. Then sets the first execution flag to 
