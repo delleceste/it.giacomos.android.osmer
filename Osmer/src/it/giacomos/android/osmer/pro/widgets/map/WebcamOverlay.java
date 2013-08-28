@@ -68,7 +68,6 @@ DataPoolTextListener
 		mMap.setOnMapClickListener(this);
 		mMap.setOnInfoWindowClickListener(this);
 		mCurrentlySelectedMarker = null;
-		mWaitBitmap = BitmapFactory.decodeResource(mapFrag.getResources(), R.drawable.webcam_download);
 		mWaitString = mapFrag.getResources().getString(R.string.webcam_downloading);
 		mWebcamIcon = BitmapFactory.decodeResource(mapFrag.getResources(), mMarkerResId);
 		mAdditionalWebcamData = additionalWebcamData;
@@ -193,13 +192,14 @@ DataPoolTextListener
 		mCurrentlySelectedMarker = marker;
 		WebcamData wd = mMarkerWebcamHash.get(marker);
 		cancelCurrentWebcamTask();
+		mInfoWindowAdapter.finalize();
 		mCurrentBitmapTask = new BitmapTask(this, BitmapType.WEBCAM);
 		//		Log.e("onMarkerClick", "getting image for" + wd.location);
 		try 
 		{
 			URL webcamUrl = new URL(wd.url);
 			mCurrentBitmapTask.parallelExecute(webcamUrl);
-			mInfoWindowAdapter.setData(wd.location + " - " + mWaitString, mWaitBitmap, false);
+			mInfoWindowAdapter.setData(wd.location + " - " + mWaitString, null, false);
 		}
 		catch (MalformedURLException e) 
 		{
@@ -259,6 +259,7 @@ DataPoolTextListener
 	{
 		//		Log.e("onMapClick", " cancelling task ");
 		cancelCurrentWebcamTask();
+		mInfoWindowAdapter.finalize();
 	}
 
 	/* Attempts to cancel execution of this task. This attempt will fail if the task 
@@ -292,7 +293,6 @@ DataPoolTextListener
 		for(Map.Entry<Marker, WebcamData> entrySet : mMarkerWebcamHash.entrySet())
 			entrySet.getKey().remove();
 		mMarkerWebcamHash.clear();
-		mWaitBitmap.recycle();
 		/* recycle bitmap and unbind drawable */
 		mInfoWindowAdapter.finalize();
 		/* Marks the overlay as finalized, disabling all updates from async tasks */
@@ -350,7 +350,6 @@ DataPoolTextListener
 	private WebcamOverlayChangeListener mWebcamOverlayChangeListener;
 	private WebcamBaloonInfoWindowAdapter mInfoWindowAdapter;
 	private Marker mCurrentlySelectedMarker;
-	private Bitmap mWaitBitmap;
 	private String mWaitString;
 	private Settings mSettings;
 	private ArrayList<WebcamData> mAdditionalWebcamData;

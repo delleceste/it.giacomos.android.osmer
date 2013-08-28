@@ -147,6 +147,9 @@ DataPoolErrorListener
 			mSettings.setMapType(mMap.getMapType());
 		}
 		mRadarOverlay.finalize(); /* recycles bitmap for GC */
+		/* clear webcam data, cancel current task, finalize info window adapter */
+		if(mWebcamOverlay != null)
+			mWebcamOverlay.clear();
 		super.onDestroy();
 	}
 
