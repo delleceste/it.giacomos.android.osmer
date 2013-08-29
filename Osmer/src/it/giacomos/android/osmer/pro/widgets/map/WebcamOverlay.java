@@ -4,9 +4,8 @@ import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.network.Data.DataPool;
 import it.giacomos.android.osmer.pro.network.Data.DataPoolTextListener;
-import it.giacomos.android.osmer.pro.network.state.BitmapTask;
-import it.giacomos.android.osmer.pro.network.state.BitmapTaskListener;
-import it.giacomos.android.osmer.pro.network.state.BitmapType;
+import it.giacomos.android.osmer.pro.network.state.WebcamBitmapTask;
+import it.giacomos.android.osmer.pro.network.state.WebcamBitmapTaskListener;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 import it.giacomos.android.osmer.pro.webcams.OsmerWebcamListDecoder;
@@ -23,10 +22,13 @@ import java.util.Map;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Display;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -37,7 +39,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class WebcamOverlay implements 
-BitmapTaskListener, 
+WebcamBitmapTaskListener, 
 OOverlayInterface,
 OnMarkerClickListener,
 OnInfoWindowClickListener,
@@ -72,6 +74,11 @@ DataPoolTextListener
 		mWebcamIcon = BitmapFactory.decodeResource(mapFrag.getResources(), mMarkerResId);
 		mAdditionalWebcamData = additionalWebcamData;
 		mIsActive = true;
+		/* get screen width for baloon size optimization */
+		Display display = mapFrag.getActivity().getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		mWebcamImageSize = Math.min(size.x, size.y) / 2;
 	}
 
 	public void disconnectFromDataPool(OsmerActivity oa)
@@ -193,8 +200,7 @@ DataPoolTextListener
 		WebcamData wd = mMarkerWebcamHash.get(marker);
 		cancelCurrentWebcamTask();
 		mInfoWindowAdapter.finalize();
-		mCurrentBitmapTask = new BitmapTask(this, BitmapType.WEBCAM);
-		//		Log.e("onMarkerClick", "getting image for" + wd.location);
+		mCurrentBitmapTask = new WebcamBitmapTask(this, mWebcamImageSize, mWebcamImageSize);
 		try 
 		{
 			URL webcamUrl = new URL(wd.url);
@@ -211,13 +217,14 @@ DataPoolTextListener
 	}
 
 	@Override
-	public void onBitmapBytesUpdate(byte[] bytes, BitmapType bt) 
+	public void onWebcamBitmapBytesUpdate(byte[] bytes) 
 	{
-
+		/* notify map fragment that the image has changed */
+		mWebcamOverlayChangeListener.onWebcamBitmapBytesChanged(bytes);	
 	}
 
 	@Override
-	public void onBitmapUpdate(Bitmap bmp, BitmapType bt, String errorMessage, AsyncTask<URL, Integer, Bitmap> unusedTaskParameter) 
+	public void onWebcamBitmapUpdate(Bitmap bmp, String errorMessage) 
 	{
 		/* no need to check the mIsActive flag because the bitmap task is 
 		 * cancelled by clear().
@@ -226,7 +233,7 @@ DataPoolTextListener
 		{
 			mWebcamOverlayChangeListener.onWebcamErrorMessageChanged(errorMessage);
 		}
-		else if(bt == BitmapType.WEBCAM && bmp != null)
+		else if(bmp != null)
 		{
 			if(!errorMessage.isEmpty())
 				mWebcamOverlayChangeListener.onWebcamErrorMessageChanged(errorMessage);
@@ -237,9 +244,9 @@ DataPoolTextListener
 				else
 				{
 					mInfoWindowAdapter.setData(mMarkerWebcamHash.get(mCurrentlySelectedMarker).text, bmp, true);
-					/* notify map fragment that the image has changed */
-					mWebcamOverlayChangeListener.onWebcamBitmapChanged(bmp);						
+										
 				}
+				mMap.moveCamera(CameraUpdateFactory.scrollBy(0, -bmp.getHeight() / 2));
 				mCurrentlySelectedMarker.showInfoWindow();
 			}
 		}
@@ -345,7 +352,7 @@ DataPoolTextListener
 	private int mMarkerResId;
 	private GoogleMap mMap;
 	private HashMap<Marker, WebcamData> mMarkerWebcamHash;
-	private BitmapTask mCurrentBitmapTask;
+	private WebcamBitmapTask mCurrentBitmapTask;
 	private CustomMarkerBitmapFactory mCustomMarkerBitmapFactory;
 	private WebcamOverlayChangeListener mWebcamOverlayChangeListener;
 	private WebcamBaloonInfoWindowAdapter mInfoWindowAdapter;
@@ -356,4 +363,5 @@ DataPoolTextListener
 	private Context mContext;
 	private Bitmap mWebcamIcon;
 	private boolean mIsActive;
+	private int mWebcamImageSize; /* pixels */
 }

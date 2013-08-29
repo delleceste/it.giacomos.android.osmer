@@ -55,7 +55,6 @@ public class SituationFragment extends Fragment implements DataPoolTextListener,
 		 */
 		observationsCache.setLatestObservationCacheChangeListener(mSituationImage);
 		/* register image view for location updates */
-		Log.e("SituationFragmen", "registering " + mSituationImage + " on locationserviceAddress");
 		LocationService locationService = oActivity.getLocationService();
 		locationService.registerLocationServiceAddressUpdateListener(mSituationImage);
 		locationService.registerLocationServiceUpdateListener(mSituationImage);
@@ -69,7 +68,6 @@ public class SituationFragment extends Fragment implements DataPoolTextListener,
 		/* Get the reference to the data pool in order to register for events */
 		view = inflater.inflate(R.layout.home, null);
 		mHomeTextView  = (HomeTextView)view.findViewById(R.id.homeTextView);
-		Log.e("SituationImage.onCreateView", "creating situation image");
 		mSituationImage = (SituationImage) view.findViewById(R.id.homeImageView);
 		mSituationImage.setBitmapType(BitmapType.HOME);mType = R.string.home_title;
 		return view;

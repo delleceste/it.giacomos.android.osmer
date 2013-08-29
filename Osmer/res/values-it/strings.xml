@@ -35,6 +35,7 @@
     <string name="webcam_download_task_canceled">annullo il download di </string>
     <string name="webcam_wait_for_image">aspetta che si carichi l\'immagine&#8230;</string>
     <string name="webcam_list_error">Errore scaricamento lista webcam</string>
+    <string name="webcam_updating">Scarico la lista delle webcam&#8230;</string>
     <string name="lcation_service_error">Errore nel sistema di localizzazione</string>
     <string name="min_temp">Temperatura Minima</string>
     <string name="max_temp">Temperatura Massima</string>

@@ -39,6 +39,7 @@
     <string name="webcam_downloading"> downloading webcam image&#8230;</string>
     <string name="webcam_download_task_canceled">canceling image download</string>
     <string name="webcam_wait_for_image">please wait for image to load</string>
+    <string name="webcam_updating">Downloading webcams list</string>
     <string name="webcam_list_error">Error downloading webcam list</string>
     <string name="lcation_service_error">There was an error obtaining the location service</string>
     <string name="min_temp">Minimum Temperature</string>

@@ -160,7 +160,6 @@ GeocodeAddressUpdateListener
 	{
 		if(mLocationClient != null)
 		{
-			Log.e("LocationService.onConnected", "requesting location updates");
 			mLocationClient.requestLocationUpdates(mLocationRequest, this);
 		}
 	}

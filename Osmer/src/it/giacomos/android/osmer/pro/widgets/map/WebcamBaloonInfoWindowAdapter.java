@@ -29,12 +29,12 @@ public class WebcamBaloonInfoWindowAdapter implements InfoWindowAdapter {
 		Bitmap currentBitmap = ((BitmapDrawable) drawable).getBitmap();
 		if(currentBitmap != null)
 		{
-			currentBitmap.recycle();
+			if(!currentBitmap.isRecycled())
+				currentBitmap.recycle();	
 			currentBitmap = null;
 		}
 		if(drawable != null)
 		{
-			Log.e("finalize(): drawable is not null", "after bitmap recycled, drawable is not null");
 			drawable.setCallback(null);
 		}
 	}

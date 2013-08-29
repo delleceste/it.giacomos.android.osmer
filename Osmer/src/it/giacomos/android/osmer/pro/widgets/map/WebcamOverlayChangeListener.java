@@ -6,6 +6,8 @@ public interface WebcamOverlayChangeListener
 {
 	public abstract void onWebcamBitmapChanged(Bitmap bmp);
 	
+	public abstract void onWebcamBitmapBytesChanged(byte [] bmpBytes);
+	
 	public abstract void onWebcamInfoWindowImageClicked();
 	
 	public abstract void onWebcamErrorMessageChanged(String message);

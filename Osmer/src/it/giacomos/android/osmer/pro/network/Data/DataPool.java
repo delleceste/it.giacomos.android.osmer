@@ -147,8 +147,6 @@ public class DataPool implements DownloadListener
 	@Override
 	public void onBitmapBytesUpdate(byte[] bytes, BitmapType bt) 
 	{
-		Log.e("DataPool.onBitmapBytesUpdate ", "type" + bt + "bitmap siz "  + 
-				"byte count: " + bytes.length);
 		DataPoolCacheUtils dataPoolCUtils = new DataPoolCacheUtils();
 		dataPoolCUtils.saveToStorage(bytes, bt, mContext);
 	}

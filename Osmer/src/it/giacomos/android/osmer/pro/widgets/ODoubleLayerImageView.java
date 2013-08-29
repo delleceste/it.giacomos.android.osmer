@@ -1,7 +1,6 @@
 package it.giacomos.android.osmer.pro.widgets;
 
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.pro.locationUtils.LocationService;
 import it.giacomos.android.osmer.pro.locationUtils.LocationServiceAddressUpdateListener;
 import it.giacomos.android.osmer.pro.locationUtils.LocationServiceUpdateListener;
 import it.giacomos.android.osmer.pro.network.state.BitmapType;
@@ -19,7 +18,6 @@ import android.graphics.drawable.LayerDrawable;
 import android.location.Location;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -75,13 +73,10 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 	 * so the bitmap drawable is null).
 	 */
 	public void unbindDrawables()
-	{
-		Log.e("unbindDrawables", "entering mLAyerDrawAvail" + mLayerDrawableAvailable);
-		
+	{		
 			LayerDrawable lDrawable = (LayerDrawable) getDrawable();
 			if(lDrawable != null)
 			{	
-				Log.e("unbindDrawable", "recycling for " + mBitmapType);
 				Bitmap bmp;
 				BitmapDrawable bmpD = (BitmapDrawable) lDrawable.getDrawable(0);
 				if(bmpD != null)
@@ -105,7 +100,6 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 
 	public void onLocalityChanged(String locality, String subLocality, String address)
 	{
-		Log.e("ODoubleLayer.onLocalityChanged", "object " + this.mBitmapType + ", locality " + locality);
 		mLocality = locality;
 		mSubLocality = subLocality;
 		mAddress = address;
@@ -114,7 +108,6 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 
 	@Override
 	public void onLocationChanged(Location location) {
-		Log.e("ODoubleLayer.onLocationChanged", "type" + mBitmapType + ", loc " + location);
 		mLocation = location;
 		mLocationPoint = new LocationToImgPixelMapper().mapToPoint(this, location);
 		this.invalidate();

@@ -477,17 +477,23 @@ DataPoolErrorListener
 	}
 	
 	@Override
-	public void onWebcamBitmapChanged(Bitmap bmp) 
+	public void onWebcamBitmapBytesChanged(byte [] bmpBytes)
 	{
 		Context ctx = getActivity().getApplicationContext();
 		/* save image on cache in order to display it in external viewer */
 		LastImageCache saver = new LastImageCache();
-		boolean success = saver.save(bmp, ctx);
+		boolean success = saver.save(bmpBytes, ctx);
 		if(success)
 		{
 			if(mMapClickOnBaloonImageHintEnabled)
 				Toast.makeText(ctx, R.string.hint_click_on_map_baloon_webcam_image, Toast.LENGTH_LONG).show();
 		}
+	}
+	
+	@Override
+	public void onWebcamBitmapChanged(Bitmap bmp) 
+	{
+		
 	}
 	
 	@Override

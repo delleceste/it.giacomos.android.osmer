@@ -493,11 +493,9 @@ DataPoolErrorListener
 		WebcamDataHelper webcamDataHelper = new WebcamDataHelper();
 		if(webcamDataHelper.dataIsOld(getApplicationContext()))
 		{
-			Log.e("OsmerActivity.webcams()", "updating webcam list");
+			Toast.makeText(getApplicationContext(), R.string.webcam_updating, Toast.LENGTH_SHORT).show();
 			m_downloadManager.getWebcamList();
 		}
-		else
-			Log.e("OsmerActivity.webcams()", "not updating webcam list");
 	}
 
 	@Override
