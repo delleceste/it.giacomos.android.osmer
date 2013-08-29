@@ -72,7 +72,8 @@ GeocodeAddressUpdateListener
 			mLocationRequest = LocationRequest.create();
 			mLocationRequest.setInterval(Constants.LOCATION_UPDATE_INTERVAL);
 			mLocationRequest.setFastestInterval(Constants.LOCATION_FASTEST_UPDATE_INTERVAL);
-			mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+			/* google maps requests location updates. Make this service a passive listener */
+			mLocationRequest.setPriority(LocationRequest.PRIORITY_NO_POWER);
 			mLocationClient = new LocationClient(mContext, this,  this);
 			mLocationClient.connect();
 		}
