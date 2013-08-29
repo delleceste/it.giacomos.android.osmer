@@ -36,15 +36,18 @@ public class TitleBuilder
 			break;
 			
 		case CurrentScreen.MAPVIEW_SCREEN:
-			mapMode = map.getMode();
-			if(mapMode.currentType == ObservationType.RADAR)
-				t += res.getString(R.string.radar_title);
-			else if(mapMode.currentType == ObservationType.WEBCAM)
-				t += res.getString(R.string.title_webcam);
-			else if(mapMode.currentMode == ObservationTime.DAILY)
-				t += res.getString(R.string.observations_title_daily);
-			else if(mapMode.currentMode == ObservationTime.LATEST)
-				t += res.getString(R.string.observations_title_latest);
+			if(map != null)
+			{
+				mapMode = map.getMode();
+				if(mapMode.currentType == ObservationType.RADAR)
+					t += res.getString(R.string.radar_title);
+				else if(mapMode.currentType == ObservationType.WEBCAM)
+					t += res.getString(R.string.title_webcam);
+				else if(mapMode.currentMode == ObservationTime.DAILY)
+					t += res.getString(R.string.observations_title_daily);
+				else if(mapMode.currentMode == ObservationTime.LATEST)
+					t += res.getString(R.string.observations_title_latest);
+			}
 			break;
 			
 		default:
