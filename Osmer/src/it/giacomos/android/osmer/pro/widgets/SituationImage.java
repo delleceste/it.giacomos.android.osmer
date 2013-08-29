@@ -25,6 +25,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.Toast;
@@ -67,9 +68,6 @@ implements LatestObservationCacheChangeListener
 				"Tolmezzo", "Tarvisio", "Grado",
 				"Lignano", "Chievolis"
 		};
-		
-		/* save show icons hint enabled on settings */
-		mSettings.setHomeIconsHintEnabled(mShowIconsHint);
 		
 		LocationNamesMap locMap = new LocationNamesMap();
 		for(int i = 0; i < locations.length; i++)
@@ -354,10 +352,14 @@ implements LatestObservationCacheChangeListener
 //			Log.e("situationImage.cleanup", "recicling bitmap");
 //			bDra.getBitmap().recycle();
 		}
+
+		/* save show icons hint enabled on settings */
+		mSettings.setHomeIconsHintEnabled(mShowIconsHint);
 	}
 
 	public Parcelable onSaveInstanceState()
 	{
+		Log.e("SituationImage", "onSaveInstanceState");
 		Parcelable p = super.onSaveInstanceState();
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("OSituationImageState", p);
