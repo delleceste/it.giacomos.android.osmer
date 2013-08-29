@@ -60,12 +60,9 @@ public class LocationNamesMap {
 		case 11: case 12: case 13: case 14: case 15: case 16:
 		case 17: case 18: case 19: case 20:
 		case 21: case 22: case 23: case 24: case 25:
-			locations.add("Enemonzo");
 			locations.add("Chievolis");
 			locations.add("M.Matajur");
 			locations.add("Brugnera");
-			locations.add("Claut");
-			locations.add("Ligosullo");
 		case 10:
 			locations.add("Talmassons");
 			locations.add("Monfalcone");
@@ -74,21 +71,24 @@ public class LocationNamesMap {
 			locations.add("Faedis");
 			locations.add("Gradisca d'Is.");
 			locations.add("Fagagna");
-			locations.add("Forni di Sopra");
-		case 9:
+			locations.add("Enemonzo");
+			locations.add("Claut");
+			locations.add("Ligosullo");
 			locations.add("S.Vito al Tgl.");
-			locations.add("Barcis");
+			locations.add("Vivaro");
+		case 9:
 			locations.add("Paluzza");
 			locations.add("Pontebba");
-			locations.add("Vivaro");
 			locations.add("Borgo Grotta Gigante");
 			locations.add("Cividale d.F.");
+			locations.add("M.Zoncolan");
 		case 8:
 			locations.add("Grado");
+			locations.add("Barcis");
+			locations.add("Forni di Sopra");
 			locations.add("Gemona d.F.");
 			locations.add("Lignano");
 			locations.add("Tolmezzo");
-			locations.add("M.Zoncolan");
 			
 			/* do not put break here: add also level 1 locations */
 
