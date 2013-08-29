@@ -32,7 +32,7 @@ public class TitleBuilder
 			t += res.getString(R.string.forecast_title);
 			
 		} 
-		else
+		else if(map != null)
 		{
 			mapMode = map.getMode();
 			if(mapMode.currentMode == MapMode.RADAR)
