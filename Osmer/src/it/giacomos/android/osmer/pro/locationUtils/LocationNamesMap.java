@@ -50,6 +50,14 @@ public class LocationNamesMap {
 		mMap.put("Gorizia", new LatLng(45.9413046, 13.6215457));
 		mMap.put("Borgo Grotta Gigante", new LatLng(45.705993, 13.763003));
 		mMap.put("Gradisca d'Is.", new LatLng(45.892425, 13.500194));
+		mMap.put("Sappada", new LatLng(46.568321,12.685434));
+		
+		mMap.put("Prealpi Giulie", new LatLng(46.294972,13.334999));
+		mMap.put("Monti", new LatLng(46.50111,13.160248));
+		mMap.put("Alta Pianura", new LatLng(46.083174,13.141708));
+		mMap.put("Bassa Pianura", new LatLng(45.847396,13.259811));
+		mMap.put("Costa", new LatLng(45.751654,13.279037));
+		mMap.put("Carso", new LatLng(45.644498,13.880882));
 	}
 	
 	public Vector<String> locationsForLevel(int level)

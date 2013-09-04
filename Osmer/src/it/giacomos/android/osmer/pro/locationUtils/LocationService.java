@@ -68,12 +68,12 @@ GeocodeAddressUpdateListener
 		 */
 		if(result)
 		{
-//			Log.e("LocationService.connect()", "connecting location client");
+			Log.e("LocationService.connect()", "connecting location client");
 			mLocationRequest = LocationRequest.create();
 			mLocationRequest.setInterval(Constants.LOCATION_UPDATE_INTERVAL);
 			mLocationRequest.setFastestInterval(Constants.LOCATION_FASTEST_UPDATE_INTERVAL);
 			/* google maps requests location updates. Make this service a passive listener */
-			mLocationRequest.setPriority(LocationRequest.PRIORITY_NO_POWER);
+			mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 			mLocationClient = new LocationClient(mContext, this,  this);
 			mLocationClient.connect();
 		}
@@ -89,7 +89,7 @@ GeocodeAddressUpdateListener
 		{
 			if(mLocationClient.isConnected())
 			{
-//				Log.e("LocationService.disconnect()", "removing location updates");
+				Log.e("LocationService.disconnect()", "removing location updates");
 				mLocationClient.removeLocationUpdates(this);
 			}
 //			Log.e("LocationService.disconnect()", "disconnecting location client");
@@ -161,6 +161,7 @@ GeocodeAddressUpdateListener
 	{
 		if(mLocationClient != null)
 		{
+			Log.e("LocationService.onConnected", "requesting location updates");
 			mLocationClient.requestLocationUpdates(mLocationRequest, this);
 		}
 	}
@@ -181,8 +182,8 @@ GeocodeAddressUpdateListener
 	@Override
 	public void onLocationChanged(Location location) 
 	{
-//		Log.e("LocationService.onLocationChanged", "notifying location changes to listeners no. " 
-//				+ mLocationServiceUpdateListeners.size());
+		Log.e("----->>> LocationService.onLocationChanged", "notifying location changes to listeners no. " 
+				+ mLocationServiceUpdateListeners.size());
 		for(LocationServiceUpdateListener l : mLocationServiceUpdateListeners)
 			l.onLocationChanged(location);
 		

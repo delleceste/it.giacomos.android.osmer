@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-    <it.giacomos.android.osmer.pro.widgets.ODoubleLayerImageView
+    <it.giacomos.android.osmer.pro.widgets.ORegionImage
         android:id="@+id/tomorrowImageView"
         android:layout_width="0dip"
         android:layout_height="fill_parent"

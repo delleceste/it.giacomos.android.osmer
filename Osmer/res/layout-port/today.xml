@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <it.giacomos.android.osmer.pro.widgets.ODoubleLayerImageView
+        <it.giacomos.android.osmer.pro.widgets.ORegionImage
             android:id="@+id/todayImageView"
             style="@style/ImageView"
             android:layout_width="match_parent"

@@ -10,7 +10,7 @@ import it.giacomos.android.osmer.pro.network.Data.DataPoolTextListener;
 import it.giacomos.android.osmer.pro.network.state.BitmapType;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
 import it.giacomos.android.osmer.pro.widgets.ForecastTextView;
-import it.giacomos.android.osmer.pro.widgets.ODoubleLayerImageView;
+import it.giacomos.android.osmer.pro.widgets.ORegionImage;
 import android.support.v4.app.Fragment;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 public class ForecastFragment extends Fragment implements DataPoolTextListener, DataPoolBitmapListener 
 {
 	private int mType;
-	private ODoubleLayerImageView mImageView;
+	private ORegionImage mImageView;
 	private ForecastTextView mTextView;
 	
 	public ForecastFragment() 
@@ -88,7 +88,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			view = inflater.inflate(R.layout.today, null);
 			mTextView = (ForecastTextView)view.findViewById(R.id.todayTextView);
 			mTextView.setViewType(ViewType.TODAY);
-			mImageView = (ODoubleLayerImageView) view.findViewById(R.id.todayImageView);
+			mImageView = (ORegionImage) view.findViewById(R.id.todayImageView);
 			mImageView.setBitmapType(BitmapType.TODAY);
 		}
 		else if(mType == R.string.tomorrow_title)
@@ -96,7 +96,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			view = inflater.inflate(R.layout.tomorrow, null);
 			mTextView = (ForecastTextView)view.findViewById(R.id.tomorrowTextView);
 			mTextView.setViewType(ViewType.TOMORROW);
-			mImageView = (ODoubleLayerImageView) view.findViewById(R.id.tomorrowImageView);
+			mImageView = (ORegionImage) view.findViewById(R.id.tomorrowImageView);
 			mImageView.setBitmapType(BitmapType.TOMORROW);
 			}
 		else if(mType == R.string.two_days_title)
@@ -104,7 +104,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			view = inflater.inflate(R.layout.twodays, null);
 			mTextView = (ForecastTextView)view.findViewById(R.id.twoDaysTextView);
 			mTextView.setViewType(ViewType.TWODAYS);
-			mImageView = (ODoubleLayerImageView) view.findViewById(R.id.twoDaysImageView);
+			mImageView = (ORegionImage) view.findViewById(R.id.twoDaysImageView);
 			mImageView.setBitmapType(BitmapType.TWODAYS);}
 
 		return view;

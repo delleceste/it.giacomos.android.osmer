@@ -34,7 +34,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import com.google.android.gms.maps.model.LatLng;
 
-public class SituationImage extends ODoubleLayerImageView 
+public class SituationImage extends ORegionImage 
 implements LatestObservationCacheChangeListener
 {
 	public SituationImage(Context context, AttributeSet attrs) 
@@ -359,7 +359,6 @@ implements LatestObservationCacheChangeListener
 
 	public Parcelable onSaveInstanceState()
 	{
-		Log.e("SituationImage", "onSaveInstanceState");
 		Parcelable p = super.onSaveInstanceState();
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("OSituationImageState", p);
