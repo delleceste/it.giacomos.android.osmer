@@ -2,29 +2,19 @@ package it.giacomos.android.osmer.pro.network.Data;
 
 import it.giacomos.android.osmer.pro.network.state.BitmapType;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
-
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 public class DataPool implements DownloadListener 
-{
-	
-	private HashMap<BitmapType, Boolean> mForceUpdateOnSameBitmapHash;
-	
-	private HashMap<BitmapType, BitmapData> mBitmapDataHash;
-	
-	private HashMap<ViewType, StringData> mStringData;
-	
-	private HashMap<BitmapType, DataPoolBitmapListener> mBitmapListeners;
-	
-	private HashMap<ViewType, DataPoolTextListener> mTextListeners;
-	
-	private ArrayList<DataPoolErrorListener> mDataPoolErrorListeners;
-	
+{	
+	private HashMap<BitmapType, Boolean> mForceUpdateOnSameBitmapHash;	
+	private HashMap<BitmapType, BitmapData> mBitmapDataHash;	
+	private HashMap<ViewType, StringData> mStringData;	
+	private HashMap<BitmapType, DataPoolBitmapListener> mBitmapListeners;	
+	private HashMap<ViewType, DataPoolTextListener> mTextListeners;	
+	private ArrayList<DataPoolErrorListener> mDataPoolErrorListeners;	
 	private Context mContext;
 
 	public HashMap<BitmapType, BitmapData> getBitmapData()

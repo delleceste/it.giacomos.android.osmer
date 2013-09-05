@@ -1,7 +1,12 @@
 package it.giacomos.android.osmer.pro.forecastRepr;
 
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.text.Spanned;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -16,23 +21,27 @@ public class Area implements ForecastDataInterface {
 	
 	public int sky, rain, snow, storm, mist, wind;
 	
-	private Drawable mDrawable;
+	private Bitmap mBitmap;
 	
 	public Area(String name)
 	{
 		mName = name;
 		sky = -1; 
-		rain = -1; 
-		snow = -1; 
-		storm = -1; 
-		mist = -1; 
-		wind = -1;
+		rain = 100; 
+		snow = 100; 
+		storm = 100; 
+		mist = 100; 
+		wind = 100;
 		mLatLng = null;
+		mBitmap = null;
 	}
 	
-	public void setDrawable(Drawable d)
+	public void setSymbol(LayerDrawable d)
 	{
-		mDrawable = d;
+		mBitmap = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Config.ARGB_8888);
+	    Canvas canvas = new Canvas(mBitmap); 
+	    d.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+	    d.draw(canvas);
 	}
 	
 	@Override
@@ -43,13 +52,12 @@ public class Area implements ForecastDataInterface {
 	@Override
 	public boolean isEmpty()
 	{
-		return mDrawable == null || mLatLng == null;
+		return mBitmap == null || mLatLng == null;
 	}
-
-	@Override
-	public Drawable getDrawable() 
+	
+	public Bitmap getSymbol()
 	{
-		return null;
+		return mBitmap;
 	}
 
 	@Override

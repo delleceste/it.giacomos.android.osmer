@@ -26,11 +26,6 @@ public class OTextView extends TextView implements DataPoolTextListener
 		mHtml  = null;
 	}
 	
-	public String formatText(String s)
-	{
-		return s;
-	}
-	
 	/* invoked after that the TextTask has completed */
 	public final void setHtml(String html)
 	{

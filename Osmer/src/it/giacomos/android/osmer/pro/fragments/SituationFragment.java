@@ -4,27 +4,22 @@ import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.locationUtils.LocationService;
 import it.giacomos.android.osmer.pro.network.Data.DataPool;
-import it.giacomos.android.osmer.pro.network.Data.DataPoolBitmapListener;
 import it.giacomos.android.osmer.pro.network.Data.DataPoolCacheUtils;
 import it.giacomos.android.osmer.pro.network.Data.DataPoolTextListener;
-import it.giacomos.android.osmer.pro.network.state.BitmapType;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
 import it.giacomos.android.osmer.pro.observations.ObservationsCache;
 import it.giacomos.android.osmer.pro.widgets.HomeTextView;
 import it.giacomos.android.osmer.pro.widgets.OTextView;
 import it.giacomos.android.osmer.pro.widgets.SituationImage;
 import android.support.v4.app.Fragment;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class SituationFragment extends Fragment implements DataPoolTextListener, DataPoolBitmapListener 
+public class SituationFragment extends Fragment implements DataPoolTextListener 
 {
-
-	private int mType;
 	private SituationImage mSituationImage;
 	private OTextView mHomeTextView;
 	
@@ -44,7 +39,7 @@ public class SituationFragment extends Fragment implements DataPoolTextListener,
 		DataPool dataPool = oActivity.getDataPool();
 		dataPool.registerTextListener(ViewType.HOME, this);
 		String text = dataCacheUtils.loadFromStorage(ViewType.HOME, getActivity().getApplicationContext());
-		mHomeTextView.setHtml(mHomeTextView.formatText(text));
+		mHomeTextView.setHtml(text);
 		
 		/* Get the reference to the observations cache */
 		ObservationsCache observationsCache = ((OsmerActivity) getActivity()).getObservationsCache();
@@ -69,7 +64,7 @@ public class SituationFragment extends Fragment implements DataPoolTextListener,
 		view = inflater.inflate(R.layout.home, null);
 		mHomeTextView  = (HomeTextView)view.findViewById(R.id.homeTextView);
 		mSituationImage = (SituationImage) view.findViewById(R.id.homeImageView);
-		mSituationImage.setBitmapType(BitmapType.HOME);mType = R.string.home_title;
+		mSituationImage.setViewType(ViewType.HOME);
 		return view;
 	}
 	
@@ -80,7 +75,6 @@ public class SituationFragment extends Fragment implements DataPoolTextListener,
 		{
 			OsmerActivity oActivity = ((OsmerActivity) getActivity());
 			DataPool dataPool = oActivity.getDataPool();
-			dataPool.unregisterBitmapListener(mSituationImage.getBitmapType());
 			Log.e("SituationImage.onDestroy", "cleaning up image");
 			mSituationImage.cleanup();
 			/* unregister text listener */
@@ -92,26 +86,14 @@ public class SituationFragment extends Fragment implements DataPoolTextListener,
 	}
 
 	@Override
-	public void onBitmapChanged(Bitmap bmp, BitmapType t, boolean fromCache) 
-	{
-		mSituationImage.setBitmap(bmp);
-	}
-
-	@Override
-	public void onBitmapError(String error, BitmapType t)
-	{
-
-	}
-
-	@Override
 	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
 	{
-		mHomeTextView.setHtml(mHomeTextView.formatText(txt));
+		mHomeTextView.setHtml(txt);
 	}
 
 	@Override
 	public void onTextError(String error, ViewType t) 
 	{
-		mHomeTextView.setHtml(mHomeTextView.formatText(error));
+		mHomeTextView.setHtml(error);
 	}
 }

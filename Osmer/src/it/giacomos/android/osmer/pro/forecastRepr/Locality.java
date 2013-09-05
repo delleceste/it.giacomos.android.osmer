@@ -14,7 +14,7 @@ public class Locality implements ForecastDataInterface {
 	
 	public Locality(String name)
 	{
-		particularSnow = particularStorm = -1;
+		particularSnow = particularStorm = 100;
 		mName  = name;
 		mLatLng = null;
 	}
@@ -30,18 +30,13 @@ public class Locality implements ForecastDataInterface {
 	}
 
 	@Override
-	public Drawable getDrawable() {
-		return null;
-	}
-
-	@Override
 	public LatLng getLatLng() {
 		return mLatLng;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return mDrawable == null || mLatLng == null;
+		return mLatLng == null;
 	}
 
 	@Override

@@ -47,9 +47,9 @@ public class DownloadStatusRestorer {
 		ds.updateState(ViewType.TOMORROW, dataPool.isTextValid(ViewType.TOMORROW));
 		ds.updateState(ViewType.TWODAYS, dataPool.isTextValid(ViewType.TWODAYS));
 		
-		ds.updateState(BitmapType.TODAY, dataPool.isBitmapValid(BitmapType.TODAY));
-		ds.updateState(BitmapType.TOMORROW, dataPool.isBitmapValid(BitmapType.TOMORROW));
-		ds.updateState(BitmapType.TWODAYS, dataPool.isBitmapValid(BitmapType.TWODAYS));
+		ds.updateState(ViewType.TODAY_SYMTABLE, dataPool.isTextValid(ViewType.TODAY_SYMTABLE));
+		ds.updateState(ViewType.TOMORROW_SYMTABLE, dataPool.isTextValid(ViewType.TOMORROW_SYMTABLE));
+		ds.updateState(ViewType.TWODAYS_SYMTABLE, dataPool.isTextValid(ViewType.TWODAYS_SYMTABLE));
 
 		/* download marked complete/uncomplete */
 		ds.setDownloadErrorCondition(ds.downloadErrorCondition());

@@ -9,9 +9,7 @@ public interface ForecastDataInterface
 	public ForecastDataType getType();
 	
 	public String getName();
-	
-	public Drawable getDrawable();
-	
+		
 	public LatLng getLatLng();
 	
 	public void setLatLng(LatLng ll);

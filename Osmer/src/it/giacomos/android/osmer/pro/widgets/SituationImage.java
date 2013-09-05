@@ -188,7 +188,7 @@ implements LatestObservationCacheChangeListener
 				xMin = iconPt.x;
 				nextY = yMax;
 				/* nextX remains the same, p.x */
-				canvas.drawBitmap(d.getIcon(), iconPt.x, iconPt.y, null);
+				canvas.drawBitmap(icon, iconPt.x, iconPt.y, null);
 			}
 			else /* just draw a circle around the location */
 			{

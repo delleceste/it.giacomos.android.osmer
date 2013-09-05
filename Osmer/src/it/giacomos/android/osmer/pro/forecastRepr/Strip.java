@@ -24,12 +24,7 @@ public class Strip implements ForecastDataInterface {
 
 	@Override
 	public boolean isEmpty() {
-		return mDrawable == null || mLatLng == null;
-	}
-
-	@Override
-	public Drawable getDrawable() {
-		return null;
+		return mLatLng == null;
 	}
 
 	@Override

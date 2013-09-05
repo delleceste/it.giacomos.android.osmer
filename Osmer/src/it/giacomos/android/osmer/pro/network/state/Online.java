@@ -28,17 +28,17 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 		if(downloadStatus.downloadIncomplete() || downloadStatus.lastCompleteDownloadIsOld())
 		{
 			if(downloadStatus.state == DownloadStatus.INIT)
-				m_stateUpdateListener.onDownloadStart(DownloadReason.Init);
+				m_downloadManagerUpdateListener.onDownloadStart(DownloadReason.Init);
 			else if(downloadStatus.downloadIncomplete())
-				m_stateUpdateListener.onDownloadStart(DownloadReason.Incomplete);
+				m_downloadManagerUpdateListener.onDownloadStart(DownloadReason.Incomplete);
 			else if(downloadStatus.lastCompleteDownloadIsOld())
-				m_stateUpdateListener.onDownloadStart(DownloadReason.DataExpired);
+				m_downloadManagerUpdateListener.onDownloadStart(DownloadReason.DataExpired);
 			
 			downloadStatus.state = DownloadStatus.INIT;		
 			/* starts bitmap task for today bmp and text task for situation */
 			//
 			mTotSteps = 9; /* manually set 9 steps */
-			mStartBitmapTask(m_urls.todayImageUrl(), BitmapType.TODAY);
+			mStartTextTask(m_urls.todaySymtableUrl(), ViewType.TODAY_SYMTABLE);
 			mStartTextTask(m_urls.situationUrl(), ViewType.HOME);
 			mGetObservationsTable(MapMode.LATEST_OBSERVATIONS);
 		}
@@ -50,9 +50,9 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	
 	public void getSituation()
 	{
-		if(!dDownloadStatus.todayBmpDownloaded())
+		if(!dDownloadStatus.todaySymtableDownloaded())
 		{
-			startBitmapTask(m_urls.todayImageUrl(), BitmapType.TODAY);
+			startTextTask(m_urls.todaySymtableUrl(), ViewType.TODAY_SYMTABLE);
 		}
 		if(!dDownloadStatus.homeDownloaded())
 		{
@@ -62,9 +62,9 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	
 	public void getTodayForecast()
 	{
-		if(!dDownloadStatus.todayBmpDownloaded())
+		if(!dDownloadStatus.todaySymtableDownloaded())
 		{
-			startBitmapTask(m_urls.todayImageUrl(), BitmapType.TODAY);
+			startTextTask(m_urls.todaySymtableUrl(), ViewType.TODAY_SYMTABLE);
 		}
 		if(!dDownloadStatus.todayDownloaded())
 		{
@@ -74,9 +74,9 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 
 	public void getTomorrowForecast()
 	{
-		if(!dDownloadStatus.tomorrowBmpDownloaded())
+		if(!dDownloadStatus.tomorrowSymtableDownloaded())
 		{
-			startBitmapTask(m_urls.tomorrowImageUrl(), BitmapType.TOMORROW);
+			startTextTask(m_urls.tomorrowSymtableUrl(), ViewType.TOMORROW_SYMTABLE);
 		}
 		if(!dDownloadStatus.tomorrowDownloaded())
 		{
@@ -86,9 +86,9 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	
 	public void getTwoDaysForecast()
 	{
-		if(!dDownloadStatus.twoDaysBmpDownloaded())
+		if(!dDownloadStatus.twoDaysSymtableDownloaded())
 		{
-			startBitmapTask(m_urls.twoDaysImageUrl(), BitmapType.TWODAYS);
+			startTextTask(m_urls.twoDaysSymtableUrl(), ViewType.TWODAYS_SYMTABLE);
 		}
 		if(!dDownloadStatus.twoDaysDownloaded())
 		{
@@ -136,20 +136,36 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	public void getObservationsTable(MapMode mapMode) 
 	{
 		mTotSteps++;
-		m_stateUpdateListener.onDownloadStart(DownloadReason.PartialDownload);
+		m_downloadManagerUpdateListener.onDownloadStart(DownloadReason.PartialDownload);
 		mGetObservationsTable(mapMode);
 	}
 	
 	@Override
-	public void onTextUpdate(String s, ViewType st, String errorMessage, AsyncTask<URL, Integer, String> task) 
+	public void onTextUpdate(String s, ViewType vt, String errorMessage, AsyncTask<URL, Integer, String> task) 
 	{
 		long oldState = dDownloadStatus.state;
-		dDownloadStatus.updateState(st, errorMessage.isEmpty());
-		m_stateUpdateListener.onTextUpdate(s, st, errorMessage);
+		
+		/* in version < 2.3, we used to complete download in onBitmapUpdate after BitmapType.TODAY was
+		 * downloaded. Following the same logic, after TODAY_SYMTABLE has been downloaded we complete
+		 * the data download.
+		 */
+		if(vt == ViewType.TODAY_SYMTABLE && !dDownloadStatus.fullForecastDownloadRequested())
+		{
+			dDownloadStatus.setFullForecastDownloadRequested(true);
+			mStartTextTask(m_urls.todayUrl(), ViewType.TODAY);
+			mStartTextTask(m_urls.tomorrowSymtableUrl(), ViewType.TOMORROW_SYMTABLE);
+			mStartTextTask(m_urls.tomorrowUrl(), ViewType.TOMORROW);
+			mStartTextTask(m_urls.twoDaysSymtableUrl(), ViewType.TWODAYS_SYMTABLE);
+			mStartTextTask(m_urls.twoDaysUrl(), ViewType.TWODAYS);
+			mGetObservationsTable(MapMode.DAILY_OBSERVATIONS);
+		}
+		
+		dDownloadStatus.updateState(vt, errorMessage.isEmpty());
+		m_downloadManagerUpdateListener.onTextUpdate(s, vt, errorMessage);
 		/* publish progress , after DownloadStatus state has been updated */
 		mCurrentStep++;
-		m_stateUpdateListener.onProgressUpdate(mCurrentStep, mTotSteps);
-		m_stateUpdateListener.onStateChanged(oldState, dDownloadStatus.state);
+		m_downloadManagerUpdateListener.onProgressUpdate(mCurrentStep, mTotSteps);
+		m_downloadManagerUpdateListener.onStateChanged(oldState, dDownloadStatus.state);
 		mProgressNeedsReset();
 		mMyTasks.remove(task);
 	}
@@ -157,35 +173,24 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	public void onTextBytesUpdate(byte [] bytes, ViewType vt)
 	{
 		if(bytes != null)
-			m_stateUpdateListener.onTextBytesUpdate(bytes, vt);
+			m_downloadManagerUpdateListener.onTextBytesUpdate(bytes, vt);
 	}
 	
 	@Override
 	public void onBitmapBytesUpdate(byte [] bytes, BitmapType bt)
 	{
-		m_stateUpdateListener.onBitmapBytesUpdate(bytes, bt);
+		m_downloadManagerUpdateListener.onBitmapBytesUpdate(bytes, bt);
 	}
 	
 	@Override
 	public void onBitmapUpdate(Bitmap bmp, BitmapType bt, String errorMessage, AsyncTask<URL, Integer, Bitmap> task) 
-	{	
-		// TODO Auto-generated method stub
-		if(bt == BitmapType.TODAY && !dDownloadStatus.fullForecastDownloadRequested())
-		{
-			dDownloadStatus.setFullForecastDownloadRequested(true);
-			mStartTextTask(m_urls.todayUrl(), ViewType.TODAY);
-			mStartBitmapTask(m_urls.tomorrowImageUrl(), BitmapType.TOMORROW);
-			mStartTextTask(m_urls.tomorrowUrl(), ViewType.TOMORROW);
-			mStartBitmapTask(m_urls.twoDaysImageUrl(), BitmapType.TWODAYS);
-			mStartTextTask(m_urls.twoDaysUrl(), ViewType.TWODAYS);
-			mGetObservationsTable(MapMode.DAILY_OBSERVATIONS);
-		}
+	{			
 		dDownloadStatus.updateState(bt, bmp != null);
-		m_stateUpdateListener.onBitmapUpdate(bmp, bt, errorMessage);
+		m_downloadManagerUpdateListener.onBitmapUpdate(bmp, bt, errorMessage);
 
 		/* publish progress, after DownloadStatus state has been updated */
 		mCurrentStep++;
-		m_stateUpdateListener.onProgressUpdate(mCurrentStep, mTotSteps);
+		m_downloadManagerUpdateListener.onProgressUpdate(mCurrentStep, mTotSteps);
 		mProgressNeedsReset();
 		mMyTasks.remove(task);
 	}
@@ -205,14 +210,14 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	protected void startBitmapTask(String urlStr, BitmapType t)
 	{
 		mTotSteps++;
-		m_stateUpdateListener.onDownloadStart(DownloadReason.PartialDownload);
+		m_downloadManagerUpdateListener.onDownloadStart(DownloadReason.PartialDownload);
 		mStartBitmapTask(urlStr, t);
 	}
 	
 	protected void startTextTask(String urlStr, ViewType t)
 	{
 		mTotSteps++;
-		m_stateUpdateListener.onDownloadStart(DownloadReason.PartialDownload);
+		m_downloadManagerUpdateListener.onDownloadStart(DownloadReason.PartialDownload);
 		mStartTextTask(urlStr, t);
 	}
 	

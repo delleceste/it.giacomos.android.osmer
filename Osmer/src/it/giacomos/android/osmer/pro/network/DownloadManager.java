@@ -116,7 +116,6 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 	{
 		return m_state;
 	}
-	
 
 	@Override
 	public void onBitmapBytesUpdate(byte [] bytes, BitmapType bt) 

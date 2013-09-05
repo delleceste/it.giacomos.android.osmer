@@ -30,9 +30,9 @@ public class DataPoolCacheUtils
 		/* to be compatible with the past versions who used to save on the internal storage
 		 * the images and text with the id of the associated views
 		 */
-		bitmapIdMap.put(BitmapType.TODAY, R.id.todayImageView);
-		bitmapIdMap.put(BitmapType.TOMORROW, R.id.tomorrowImageView);
-		bitmapIdMap.put(BitmapType.TWODAYS, R.id.twoDaysImageView);
+		textIdMap.put(ViewType.TODAY_SYMTABLE, R.id.todayImageView);
+		textIdMap.put(ViewType.TOMORROW_SYMTABLE, R.id.tomorrowImageView);
+		textIdMap.put(ViewType.TWODAYS_SYMTABLE, R.id.twoDaysImageView);
 
 		/* bitmapIdMap must contain entries also for bitmap types that are treated in
 		 * a special way, such as the radar image, whose file name must be 

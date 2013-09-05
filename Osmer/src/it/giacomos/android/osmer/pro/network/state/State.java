@@ -10,7 +10,7 @@ public abstract class State
 	
 	public State(DownloadManagerUpdateListener l, DownloadStatus downloadStatus)
 	{
-		m_stateUpdateListener = l;
+		m_downloadManagerUpdateListener = l;
 		dDownloadStatus = downloadStatus;
 	}	
 
@@ -46,7 +46,7 @@ public abstract class State
 	
 	public abstract StateName name();
 
-	protected DownloadManagerUpdateListener m_stateUpdateListener;
+	protected DownloadManagerUpdateListener m_downloadManagerUpdateListener;
 
 	public void getRadarImage() {
 		

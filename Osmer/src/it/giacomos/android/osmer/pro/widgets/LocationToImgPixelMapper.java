@@ -14,22 +14,10 @@ public class LocationToImgPixelMapper
 
 	}
 
-	/**
-	 * Given an image view and a Location with a latitude and longitude, this method
-	 * translates the Location into pixel coordinates, taking into account the original
-	 * width and height of the background image as defined in the GifParamsDesc class.
-	 * 
-	 * @param v the ImageView on which you want the position in pixel coordinates to be calculated
-	 * @param l the Location
-	 * 
-	 * @return point in pixel coordinates that maps the Location into local coordinates.
-	 *         The returned point is allocated by this method.
-	 * 
-	 */
-	public PointF mapToPoint(ImageView v, Location l)
+	public PointF mapToPoint(ImageView v, double latitude, double longitude)
 	{
 		LocationUtils locationUtils = new LocationUtils();
-		boolean insideRegion = locationUtils.locationInsideRegion(l);
+		boolean insideRegion = locationUtils.locationInsideRegion(latitude, longitude);
 		locationUtils = null;
 		
 		if(!insideRegion)
@@ -69,8 +57,8 @@ public class LocationToImgPixelMapper
 		double bottomLatitude  = GeoCoordinates.fvgBottomRight.getLatitudeE6();
 		double rightLongitude = GeoCoordinates.fvgBottomRight.getLongitudeE6();
 		
-		double latitude = l.getLatitude() * 1E6;
-		double longitude = l.getLongitude() * 1E6;
+		latitude = latitude * 1E6;
+		longitude = longitude * 1E6;
 		
 		float viewRatio = vW / vH;
 		float imgRatio = GifParamsDesc.width / GifParamsDesc.height;
@@ -121,5 +109,24 @@ public class LocationToImgPixelMapper
 //				leftLongitude + ", topLat " + topLatitude + ", botLat" + bottomLatitude);
 //		Log.e("LocationToImgPixelMapper: ", "mappedPoint: " + mappedPoint.x + ", " + mappedPoint.y);
 		return mappedPoint;
+	}
+	
+	/**
+	 * Given an image view and a Location with a latitude and longitude, this method
+	 * translates the Location into pixel coordinates, taking into account the original
+	 * width and height of the background image as defined in the GifParamsDesc class.
+	 * 
+	 * @param v the ImageView on which you want the position in pixel coordinates to be calculated
+	 * @param l the Location
+	 * 
+	 * @return point in pixel coordinates that maps the Location into local coordinates.
+	 *         The returned point is allocated by this method.
+	 * 
+	 */
+	public PointF mapToPoint(ImageView v, Location l)
+	{
+		double latitude = l.getLatitude();
+		double longitude = l.getLongitude();
+		return mapToPoint(v, latitude, longitude);
 	}
 }

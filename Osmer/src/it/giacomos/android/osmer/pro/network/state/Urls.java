@@ -8,35 +8,40 @@ public class Urls {
 	
 	public String situationUrl()
 	{
-		return "http://www.meteo.fvg.it/IT/HOME/SituazioneGenerale.txt";
+		return "http://www.giacomos.it/meteo.fvg/data/situazione.html";
 	}
 	
 
 	public String todayUrl()
 	{
-		return "http://www.meteo.fvg.it/IT/HOME/Oggi.info";
+		return "http://www.giacomos.it/meteo.fvg/data/oggi.html";
 	}
 
 	public String tomorrowUrl()
 	{
-		return "http://www.meteo.fvg.it/IT/HOME/Domani.info";
+		return "http://www.giacomos.it/meteo.fvg/data/domani.html";
 	}
 
 	public String twoDaysUrl()
 	{
-		return "http://www.meteo.fvg.it/IT/HOME/Dopodomani.info";
+		return "http://www.giacomos.it/meteo.fvg/data/dopodomani.html";
 	}
 
-	public String todayImageUrl()
+	public String todaySymtableUrl()
 	{
-		return "http://www.osmer.fvg.it/IT/HOME/IMAGES/Oggi.gif";
+		return "http://www.giacomos.it/meteo.fvg/data/today_symtable.txt";
 	}
-
-	public String tomorrowImageUrl()
+	
+	public String tomorrowSymtableUrl()
 	{
-		return "http://www.osmer.fvg.it/IT/HOME/IMAGES/Domani.gif";
+		return "http://www.giacomos.it/meteo.fvg/data/tomorrow_symtable.txt";
 	}
 
+	public String twoDaysSymtableUrl()
+	{
+		return "http://www.giacomos.it/meteo.fvg/data/twodays_symtable.txt";
+	}
+	
 	public String dailyTableUrl()
 	{
 		return "http://www.osmer.fvg.it/IT/SYN/TabellaStazioniDallaMezzanotte.php?save=1";
@@ -55,11 +60,6 @@ public class Urls {
 	public String dailyTableReferer()
 	{
 		return "http://www.osmer.fvg.it/IT/SYN/TabellaStazioniDallaMezzanotte.php";
-	}
-
-	public String twoDaysImageUrl()
-	{
-		return "http://www.osmer.fvg.it/IT/HOME/IMAGES/Dopodomani.gif";
 	}
 
 	public String radarImageUrl() 

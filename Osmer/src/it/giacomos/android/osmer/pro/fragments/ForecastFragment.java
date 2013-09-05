@@ -4,22 +4,19 @@ import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.locationUtils.LocationService;
 import it.giacomos.android.osmer.pro.network.Data.DataPool;
-import it.giacomos.android.osmer.pro.network.Data.DataPoolBitmapListener;
 import it.giacomos.android.osmer.pro.network.Data.DataPoolCacheUtils;
 import it.giacomos.android.osmer.pro.network.Data.DataPoolTextListener;
-import it.giacomos.android.osmer.pro.network.state.BitmapType;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
 import it.giacomos.android.osmer.pro.widgets.ForecastTextView;
 import it.giacomos.android.osmer.pro.widgets.ORegionImage;
 import android.support.v4.app.Fragment;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ForecastFragment extends Fragment implements DataPoolTextListener, DataPoolBitmapListener 
+public class ForecastFragment extends Fragment implements DataPoolTextListener
 {
 	private int mType;
 	private ORegionImage mImageView;
@@ -38,34 +35,46 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 	{
 		super.onActivityCreated(savedInstanceState);
 		String text = "";
-		Bitmap bitmap = null;
+		String symtab = "";
 		OsmerActivity activity = (OsmerActivity) getActivity();
 		/* register as a listener of DataPool */
 		DataPool dataPool = activity.getDataPool();
 		DataPoolCacheUtils dataCacheUtils = new DataPoolCacheUtils();
 		if(mType == R.string.today_title)
 		{
-			text = dataCacheUtils.loadFromStorage(ViewType.TODAY, getActivity().getApplicationContext());
-			bitmap = dataCacheUtils.loadFromStorage(BitmapType.TODAY, getActivity().getApplicationContext());
-			dataPool.registerBitmapListener(BitmapType.TODAY, this);
+			if(!dataPool.isTextValid(ViewType.TODAY_SYMTABLE))
+				symtab = dataCacheUtils.loadFromStorage(ViewType.TODAY_SYMTABLE, getActivity().getApplicationContext());
+			if(!dataPool.isTextValid(ViewType.TODAY))
+				text = dataCacheUtils.loadFromStorage(ViewType.TODAY, getActivity().getApplicationContext());
+			/* if there already is data for the given ViewType, the listener is immediately called */
+			dataPool.registerTextListener(ViewType.TODAY_SYMTABLE, this);
 			dataPool.registerTextListener(ViewType.TODAY, this);
 		}
 		else if(mType == R.string.tomorrow_title)
 		{
-			dataPool.registerBitmapListener(BitmapType.TOMORROW, this);
+			dataPool.registerTextListener(ViewType.TOMORROW_SYMTABLE, this);
 			dataPool.registerTextListener(ViewType.TOMORROW, this);
-			text = dataCacheUtils.loadFromStorage(ViewType.TOMORROW, getActivity().getApplicationContext());
-			bitmap = dataCacheUtils.loadFromStorage(BitmapType.TOMORROW, getActivity().getApplicationContext());
+			if(!dataPool.isTextValid(ViewType.TOMORROW_SYMTABLE))			
+				symtab = dataCacheUtils.loadFromStorage(ViewType.TOMORROW_SYMTABLE, getActivity().getApplicationContext());
+			if(!dataPool.isTextValid(ViewType.TOMORROW))
+					text = dataCacheUtils.loadFromStorage(ViewType.TOMORROW, getActivity().getApplicationContext());
 		}
 		else if(mType == R.string.two_days_title)
 		{
-			dataPool.registerBitmapListener(BitmapType.TWODAYS, this);
+			dataPool.registerTextListener(ViewType.TWODAYS_SYMTABLE, this);
 			dataPool.registerTextListener(ViewType.TWODAYS, this);
-			text = dataCacheUtils.loadFromStorage(ViewType.TWODAYS, getActivity().getApplicationContext());
-			bitmap = dataCacheUtils.loadFromStorage(BitmapType.TWODAYS, getActivity().getApplicationContext());
+			if(!dataPool.isTextValid(ViewType.TWODAYS))
+				text = dataCacheUtils.loadFromStorage(ViewType.TWODAYS, getActivity().getApplicationContext());
+			if(!dataPool.isTextValid(ViewType.TWODAYS_SYMTABLE))		
+				symtab = dataCacheUtils.loadFromStorage(ViewType.TWODAYS_SYMTABLE, getActivity().getApplicationContext());
 		}
-		mTextView.setHtml(mTextView.formatText(text));
-		mImageView.setBitmap(bitmap);
+		if(!text.isEmpty())
+			mTextView.setHtml(text);
+		if(!symtab.isEmpty())
+		{
+			Log.e("ForecastFragment.onActivityCreated", "setting symtable from cache, type " + mImageView.getViewType());
+			mImageView.setSymTable(symtab);
+		}
 		dataCacheUtils = null;
 		
 		/* register image view for location updates */
@@ -89,7 +98,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			mTextView = (ForecastTextView)view.findViewById(R.id.todayTextView);
 			mTextView.setViewType(ViewType.TODAY);
 			mImageView = (ORegionImage) view.findViewById(R.id.todayImageView);
-			mImageView.setBitmapType(BitmapType.TODAY);
+			mImageView.setViewType(ViewType.TODAY_SYMTABLE);
 		}
 		else if(mType == R.string.tomorrow_title)
 		{
@@ -97,7 +106,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			mTextView = (ForecastTextView)view.findViewById(R.id.tomorrowTextView);
 			mTextView.setViewType(ViewType.TOMORROW);
 			mImageView = (ORegionImage) view.findViewById(R.id.tomorrowImageView);
-			mImageView.setBitmapType(BitmapType.TOMORROW);
+			mImageView.setViewType(ViewType.TOMORROW_SYMTABLE);
 			}
 		else if(mType == R.string.two_days_title)
 		{
@@ -105,7 +114,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			mTextView = (ForecastTextView)view.findViewById(R.id.twoDaysTextView);
 			mTextView.setViewType(ViewType.TWODAYS);
 			mImageView = (ORegionImage) view.findViewById(R.id.twoDaysImageView);
-			mImageView.setBitmapType(BitmapType.TWODAYS);}
+			mImageView.setViewType(ViewType.TWODAYS_SYMTABLE);}
 
 		return view;
 	}
@@ -116,7 +125,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 		if(mImageView != null)
 		{
 			OsmerActivity activity = (OsmerActivity) getActivity();
-			activity.getDataPool().unregisterBitmapListener(mImageView.getBitmapType());
+			activity.getDataPool().unregisterTextListener(mImageView.getViewType());
 			mImageView.unbindDrawables();
 			/* if mImageView is not null, then also mTextView is not null */
 			activity.getDataPool().unregisterTextListener(mTextView.getViewType());
@@ -126,29 +135,21 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			locationService.removeLocationServiceUpdateListener(mImageView);
 		}
 	}
-
-	@Override
-	public void onBitmapChanged(Bitmap bmp, BitmapType t, boolean fromCache) 
-	{
-//		Log.e("onBitmapChanged", "bitmap null? " + (bmp == null) + " fromCache" + fromCache);
-		mImageView.setBitmap(bmp);
-	}
-
-	@Override
-	public void onBitmapError(String error, BitmapType t) 
-	{
-
-	}
-
+	
 	@Override
 	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
 	{
-		mTextView.setHtml(mTextView.formatText(txt));
+		Log.e("ForecastFragment.onTextChanged", "viewType " + t + " fromCache " + fromCache);
+		if(t == ViewType.TODAY || t == ViewType.TOMORROW || t == ViewType.TWODAYS)
+			mTextView.setHtml(txt);
+		else if(t == ViewType.TODAY_SYMTABLE || t == ViewType.TOMORROW_SYMTABLE || t == ViewType.TWODAYS_SYMTABLE)
+			mImageView.setSymTable(txt);
+			
 	}
 
 	@Override
 	public void onTextError(String error, ViewType t) 
 	{
-		mTextView.setHtml(mTextView.formatText(error));
+		mTextView.setHtml(error);
 	}
 }

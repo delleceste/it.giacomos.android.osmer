@@ -6,8 +6,15 @@ public class LocationUtils {
 	
 	public boolean locationInsideRegion(Location location)
 	{
-		double lat = location.getLatitude() * 1000000;
-		double lon = location.getLongitude() * 1000000;
+		double latitude = location.getLatitude();
+		double longitude = location.getLongitude();
+		return locationInsideRegion(latitude, longitude);
+	}
+	
+	public boolean locationInsideRegion(double latitude, double longitude)
+	{
+		double lat = latitude * 1000000;
+		double lon = longitude * 1000000;
 	
 		if(lat > GeoCoordinates.bottomRight.getLatitudeE6() && 
 				lat < GeoCoordinates.topLeft.getLatitudeE6() && 

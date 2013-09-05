@@ -1,23 +1,29 @@
 package it.giacomos.android.osmer.pro.widgets;
 
+import java.util.ArrayList;
+
+import com.google.android.gms.maps.model.LatLng;
+
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.forecastRepr.Area;
+import it.giacomos.android.osmer.pro.forecastRepr.ForecastDataFactory;
+import it.giacomos.android.osmer.pro.forecastRepr.ForecastDataInterface;
+import it.giacomos.android.osmer.pro.forecastRepr.ForecastDataType;
 import it.giacomos.android.osmer.pro.locationUtils.LocationServiceAddressUpdateListener;
 import it.giacomos.android.osmer.pro.locationUtils.LocationServiceUpdateListener;
-import it.giacomos.android.osmer.pro.network.state.BitmapType;
+import it.giacomos.android.osmer.pro.network.state.ViewType;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.location.Location;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -27,46 +33,33 @@ public class ORegionImage extends ImageView
 implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 {
 
-	public ORegionImage(Context context, AttributeSet attrs) {
+	public ORegionImage(Context context, AttributeSet attrs) 
+	{
 		super(context, attrs);
 		mLocation = null;
 		mLocationPoint = null;
 		mPaint = new Paint();
 		mPaint.setAntiAlias(true);
-		mFvgBackgroundDrawable = new BitmapDrawable(getResources(), 
-				BitmapFactory.decodeResource(getResources(), R.drawable.fvg_background2));
 	}
 
-	public void setBitmapType(BitmapType bt)
+	public void setViewType(ViewType vt)
 	{
-		mBitmapType = bt;
+		mViewType = vt;
 	}
 	
-	public BitmapType getBitmapType()
+	public ViewType getViewType()
 	{
-		return mBitmapType;
+		return mViewType;
 	}
 	
-	/** sets the bitmap as layer 1 of the layer drawable used to place the 
-	 * transparent image over the region image.
-	 * 
-	 * @param bitmap the forecast transparent bitmap obtained from the web site
-	 * 
-	 */
-	public void setBitmap(Bitmap bitmap) 
+	public void setSymTable(String symtab)
 	{
-		Drawable layers[] = new Drawable[2];
-		Context appContext = this.getContext().getApplicationContext();
-		Resources res = appContext.getResources();
-		layers[0] =  mFvgBackgroundDrawable;
-		layers[1] = new BitmapDrawable(res, bitmap);
-		/* NOTE: layers[1].getBitmap would return the bitmap at the same address
-		 * as bmp.
-		 */
-		LayerDrawable layerDrawable = new LayerDrawable(layers);
-		setImageDrawable(layerDrawable);
+		Log.e("ORegionImage.setSymTable", "building symbols for " + mViewType);
+		ForecastDataFactory forecastDataFactory = new ForecastDataFactory(getResources());
+		mForecastData = forecastDataFactory.getForecastData(symtab);
+		this.invalidate();
 	}
-
+	
 	/** sets a null callback on the drawables.
 	 * recycles bitmaps.
 	 * Checks for null in case setBitmap was called with a null parameter (and
@@ -74,28 +67,19 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 	 */
 	public void unbindDrawables()
 	{		
-			LayerDrawable lDrawable = (LayerDrawable) getDrawable();
-			if(lDrawable != null)
-			{	
-				Bitmap bmp;
-				BitmapDrawable bmpD = (BitmapDrawable) lDrawable.getDrawable(0);
-				if(bmpD != null)
+		for(ForecastDataInterface fdi : mForecastData)
+		{
+			if(fdi.getType() == ForecastDataType.AREA)
+			{
+				Area a = (Area) fdi;
+				Bitmap bmp = a.getSymbol();
+				if(bmp != null)
 				{
-					bmpD.setCallback(null);
-					bmp = bmpD.getBitmap();
-					if(bmp != null)
-						bmp.recycle();
-				}
-				bmpD = (BitmapDrawable) lDrawable.getDrawable(1);
-				if(bmpD != null) 
-				{
-					bmp = bmpD.getBitmap();
-					if(bmp != null)
-						bmp.recycle();
-					bmpD.setCallback(null);
+					Log.e("ORegionImage.umbindDrawables", "recycling bitmap " + bmp + ": " + a.getName() + ", " + mViewType);
+					bmp.recycle();
 				}
 			}
-			lDrawable.setCallback(null);		
+		}
 	}
 
 	public void onLocalityChanged(String locality, String subLocality, String address)
@@ -203,35 +187,52 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 		super.onDraw(canvas);
 		if(mDrawLocationEnabled)
 			drawLocation(canvas);
-		if(mBitmapType == BitmapType.TODAY || mBitmapType == BitmapType.TOMORROW || mBitmapType == BitmapType.TWODAYS)
-			drawForecast();
+		if(mViewType == ViewType.TODAY_SYMTABLE || 
+				mViewType == ViewType.TOMORROW_SYMTABLE || 
+				mViewType == ViewType.TWODAYS_SYMTABLE)
+			drawSymbols(canvas);
 	}
 	
-	public void drawForecast()
+	public void drawSymbols(Canvas canvas)
 	{
-		
+		Log.e("drawSymbols", "entering, there are " + mForecastData.size() + " forecast datas");
+		Paint paint = new Paint();
+		int iconW, iconH;
+		LocationToImgPixelMapper locationMapper = new LocationToImgPixelMapper();
+		for(ForecastDataInterface fdi : mForecastData)
+		{
+			if(fdi.getType() == ForecastDataType.AREA)
+			{
+				Area a = (Area) fdi;
+				if(!a.isEmpty())
+				{
+					Log.e("drawSymbols", "a is not empty, should draw!");
+					LatLng llng = a.getLatLng();
+					PointF p = locationMapper.mapToPoint(this, llng.latitude, llng.longitude);
+					Bitmap symbol = a.getSymbol();
+					if(symbol != null)
+					{
+						iconW = symbol.getWidth();
+						iconH = symbol.getHeight();
+						Log.e("drawSymbols", "bitmap " + symbol + " drawa " + symbol + ": " + a.getName());
+						canvas.drawBitmap(symbol, p.x - iconW/2, p.y - iconH/2, paint);
+					}
+				}
+			}
+		}
 	}
 
 	public Location getLocation()
 	{
 		return mLocation;
 	}
-
-	private Drawable mFvgBackgroundDrawable;
 	
 	private String mLocality = "...", mSubLocality = "", mAddress = "";
-
 	private Location mLocation;
-
 	private final int mLocationPointRadius1 = 8, mLocationPointRadius2 = 14, mLocationCircleRadius = 6;
-
 	private PointF mLocationPoint;
-
 	private boolean mDrawLocationEnabled = true;
-
 	protected Paint mPaint;
-
-	private boolean mLayerDrawableAvailable;
-	
-	private BitmapType mBitmapType;
+	private ViewType mViewType;
+	private ArrayList<ForecastDataInterface> mForecastData;
 }
