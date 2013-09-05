@@ -54,7 +54,6 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 	
 	public void setSymTable(String symtab)
 	{
-		Log.e("ORegionImage.setSymTable", "building symbols for " + mViewType);
 		ForecastDataFactory forecastDataFactory = new ForecastDataFactory(getResources());
 		mForecastData = forecastDataFactory.getForecastData(symtab);
 		this.invalidate();
@@ -195,7 +194,6 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 	
 	public void drawSymbols(Canvas canvas)
 	{
-		Log.e("drawSymbols", "entering, there are " + mForecastData.size() + " forecast datas");
 		Paint paint = new Paint();
 		int iconW, iconH;
 		LocationToImgPixelMapper locationMapper = new LocationToImgPixelMapper();
@@ -206,7 +204,6 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 				Area a = (Area) fdi;
 				if(!a.isEmpty())
 				{
-					Log.e("drawSymbols", "a is not empty, should draw!");
 					LatLng llng = a.getLatLng();
 					PointF p = locationMapper.mapToPoint(this, llng.latitude, llng.longitude);
 					Bitmap symbol = a.getSymbol();
@@ -214,7 +211,6 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 					{
 						iconW = symbol.getWidth();
 						iconH = symbol.getHeight();
-						Log.e("drawSymbols", "bitmap " + symbol + " drawa " + symbol + ": " + a.getName());
 						canvas.drawBitmap(symbol, p.x - iconW/2, p.y - iconH/2, paint);
 					}
 				}
