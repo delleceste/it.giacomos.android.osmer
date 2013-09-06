@@ -34,7 +34,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import com.google.android.gms.maps.model.LatLng;
 
-public class SituationImage extends ORegionImage 
+public class SituationImage extends MapWithLocationImage
 implements LatestObservationCacheChangeListener
 {
 	public SituationImage(Context context, AttributeSet attrs) 
@@ -56,10 +56,29 @@ implements LatestObservationCacheChangeListener
 		else
 			mShowIconsHint = mSettings.isHomeIconsHintEnabled();
 		mShowIconsHintToastCount = 0;
-		mDensityDpi = this.getResources().getDisplayMetrics().densityDpi;
+		int densityDpi = this.getResources().getDisplayMetrics().densityDpi;
+		/* adjust font according to density... */
+		if(densityDpi == DisplayMetrics.DENSITY_MEDIUM ||
+				densityDpi == DisplayMetrics.DENSITY_LOW)
+			mFontSize = 10;
+		else if(densityDpi == DisplayMetrics.DENSITY_HIGH)
+			mFontSize = 20;
+		else if(densityDpi == DisplayMetrics.DENSITY_XHIGH)
+			mFontSize = 24;
 		/* in this class we use mPaint which is allocated in superclass */
+		mViewType = ViewType.HOME;
 	}
 
+	public void setViewType(ViewType vt)
+	{
+		mViewType = vt;
+	}
+
+	public ViewType getViewType()
+	{
+		return mViewType;
+	}
+	
 	public void onCacheUpdate(ObservationsCache oCache) 
 	{
 		mMap.clear();
@@ -136,16 +155,8 @@ implements LatestObservationCacheChangeListener
 			/* data source drawing on home screen has been disabled.
 			 * In low resolution devices it does not fit into the image.
 			 */
-			
 			mPaint.setARGB(255, 0, 0, 0);
-			
-			if(mDensityDpi == DisplayMetrics.DENSITY_XHIGH)
-				mPaint.setTextSize(19);
-			else if(mDensityDpi == DisplayMetrics.DENSITY_HIGH)
-				mPaint.setTextSize(12);
-			else
-				mPaint.setTextSize(8);
-			
+			mPaint.setTextSize(mFontSize);			
 			/* Copyright below */
 			/* (C) 2013 Giacomo Strangolino */
 			startOfXText = 4;
@@ -155,14 +166,7 @@ implements LatestObservationCacheChangeListener
 			yCopyrightText -= mTxtRect.height();
 		}
 		
-		/* adjust font according to density... */
-		if(mDensityDpi == DisplayMetrics.DENSITY_MEDIUM ||
-				mDensityDpi == DisplayMetrics.DENSITY_LOW)
-			mPaint.setTextSize(10);
-		else if(mDensityDpi == DisplayMetrics.DENSITY_HIGH)
-			mPaint.setTextSize(20);
-		else if(mDensityDpi == DisplayMetrics.DENSITY_XHIGH)
-			mPaint.setTextSize(23);
+		
 		
 		/* draw observation icons and text ! */
 		for(Location l : mMap.keySet())
@@ -378,6 +382,7 @@ implements LatestObservationCacheChangeListener
 
 	private Rect mTxtRect;
 	private RectF mSensibleArea;
+	private ViewType mViewType;
 	LocationToImgPixelMapper mLocationToImgPixelMapper;
 	
 	private HashMap<Location, SituationImageObservationData> mMap;
@@ -390,5 +395,5 @@ implements LatestObservationCacheChangeListener
 	private Settings mSettings;
 	private boolean mShowIconsHint; /* used and modified in draw, commited at the end */
 	private int mShowIconsHintToastCount;
-	private int mDensityDpi;
+	private int mFontSize;
 }

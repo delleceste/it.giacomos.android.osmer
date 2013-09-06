@@ -7,16 +7,41 @@ import com.google.android.gms.maps.model.LatLng;
 public class Locality implements ForecastDataInterface {
 	
 	private LatLng mLatLng;
-	private String mName;
+	private String mId, mName;
 	public int particularSnow, particularStorm;
 	public String tMin, tMax;
 	private Drawable mDrawable;
 	
-	public Locality(String name)
+	public Locality(String id)
 	{
 		particularSnow = particularStorm = 100;
-		mName  = name;
+		mId  = id;
 		mLatLng = null;
+
+		if(id.compareTo("L1") == 0)
+			mName = "Gemona";
+		else if(id.compareTo("L2") == 0)
+			mName = "Carso";
+		else if(id.compareTo("L3") == 0)
+			mName = "Claut";
+		else if(id.compareTo("L4") == 0)
+			mName = "Cividale";
+		else if(id.compareTo("L5") == 0)
+			mName = "Sappada";
+		else if(id.compareTo("L6") == 0)
+			mName = "Piancavallo";
+		else if(id.compareTo("L7") == 0)
+			mName = "Tarvisio";
+		else if(id.compareTo("L8") == 0)
+			mName = "Lussari";
+		else if(id.compareTo("L9") == 0)
+			mName = "Zoncolan";
+		else if(id.compareTo("L10") == 0)
+			mName = "Sella Nevea";
+		else if(id.compareTo("L11") == 0)
+			mName = "Canin";
+		else if(id.compareTo("L12") == 0)
+			mName = "Forni Avoltri";
 	}
 	
 	@Override
@@ -25,8 +50,8 @@ public class Locality implements ForecastDataInterface {
 	}
 
 	@Override
-	public String getName() {
-		return mName;
+	public String getId() {
+		return mId;
 	}
 
 	@Override
@@ -43,5 +68,11 @@ public class Locality implements ForecastDataInterface {
 	public void setLatLng(LatLng ll) {
 		mLatLng = ll;
 		
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return mName;
 	}
 }

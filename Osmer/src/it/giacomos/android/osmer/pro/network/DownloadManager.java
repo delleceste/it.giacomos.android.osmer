@@ -141,7 +141,7 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 	@Override
 	public void onTextUpdate(String txt, ViewType t, String errorMessage) 
 	{
-		if(!txt.isEmpty())
+		if(txt != null)
 			mDownloadListener.onTextUpdate(txt, t);
 		else
 			mDownloadListener.onTextUpdateError(t, errorMessage);

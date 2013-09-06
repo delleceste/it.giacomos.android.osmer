@@ -247,6 +247,17 @@ public class Settings
 		return null;
 	}
 
+	public void setMapWithForecastImageTextFontSize(float fontSize)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putFloat("MAP_WITH_FOREACAST_IMAGE_TEXT_FONT_SIZE", fontSize);
+		e.commit();
+	}
+	
+	public float getMapWithForecastImageTextFontSize() 
+	{
+		return mSharedPreferences.getFloat("MAP_WITH_FOREACAST_IMAGE_TEXT_FONT_SIZE", 100.0f);
+	}
 
 	private final String PREFERENCES_NAME = "Osmer.conf";
 	private SharedPreferences mSharedPreferences;

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-    <it.giacomos.android.osmer.pro.widgets.ORegionImage
+    <it.giacomos.android.osmer.pro.widgets.MapWithForecastImage
         android:id="@+id/todayImageView"
         android:layout_width="0dp"
         android:layout_height="fill_parent"

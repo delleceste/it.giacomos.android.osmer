@@ -77,6 +77,7 @@ public class DataPoolCacheUtils
 			byteBuffer.flush();
 			buf = byteBuffer.toByteArray();
 			txt = new String(buf, charset);
+			Log.e("loadFromStorage datapoolcacheutils", "type " + viewType + " bytes " + txt.length());
 		}
 		catch (IOException ex) {
 

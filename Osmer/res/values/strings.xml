@@ -19,10 +19,12 @@
     <string name="observations_title_latest">Latest Observations</string>
     <string name="title_webcam">Webcam</string>
     
-    <string name="reliability">Affidabilit&amp;agrave;</string>
-    <string name="emission_date">Emessa il: </string>
+    <string name="reliability">Reliability</string>
+    <string name="emission_date">Emission date: </string>
     <string name="hours">ore</string>
     <string name="offline">Offline</string>  
+    <string name="forecast_map_avail_afternoon">Map available\nin the afternoon</string> 
+    <string name="forecast_map_error">Data download error</string> 
     <string name="downloadingToast">Downloading data&#8230;</string>
     <string name="netUnavailableToast">Network is unavailable.\nData will be updated as\nsoon as network goes up</string>
     <string name="completingDownloadToast">Completing data download&#8230;</string>
@@ -46,6 +48,9 @@
     <string name="max_temp">Maximum Temperature</string>
     <string name="min_temp_abbr">Min.T</string>
     <string name="max_temp_abbr">Max.T</string>
+    <string name="t1000">T.1000m</string>
+    <string name="t2000">T.2000m</string>
+    <string name="celsius">&#8451;</string>
     <string name="humidity">Humidity</string>
     <string name="wind">Wind</string>
     <string name="mean_wind">Average Wind</string>
@@ -105,10 +110,10 @@
 	 
 	<!--  Drawer -->
     <string-array name="drawer_text_items">
-        <item>Previsioni</item>
+        <item>Forecast</item>
         <item>Radar</item>
-        <item>Osservazioni giornaliere</item>
-        <item>Osservazioni ultim\'ora</item>
+        <item>Daily observations</item>
+        <item>Latest observations</item>
         <item>Webcam</item>
     </string-array>
 
@@ -148,6 +153,55 @@
     <string name="meters">mt</string>
     <string name="km">km</string>
 	<string name="my_location_layer_not_enabled">il livello my-location non è abilitato</string>
+	
+	<!--  xml symbol map -->
+	<string name="sky">sky</string>
+	<string name="sky0">clear</string>
+	<string name="sky1">few clouds</string>
+	<string name="sky2">variable</string>
+	<string name="sky3">cloudy</string>
+	<string name="sky4">covered</string>
+	<string name="sky5">misty</string>
+	
+	<string name="rain">rain</string>
+	<string name="rain6">weak</string>
+	<string name="rain7">moderate</string>
+	<string name="rain8">abundant</string>
+	<string name="rain9">intense</string>
+	<string name="rain36">very intense</string>
+	
+	<string name="snow">snow</string>
+	<string name="snow10">moderate</string>
+	<string name="snow11">abundant</string>
+	<string name="snow12">intense</string>
+	
+	<string name="storm">storm</string>
+	
+	<string name="mist">mist</string>
+	<string name="mist14">fog</string>
+	<string name="mist15">mist</string>
+	
+	<string name="wind">wind</string>
+	<string name="wind16">N moderate</string>
+	<string name="wind17">NE moderate</string>
+	<string name="wind18">ENE moderate</string>
+	<string name="wind19">E moderate</string>
+	<string name="wind20">SE moderate</string>
+	<string name="wind21">S moderate</string>
+	<string name="wind22">SW moderate</string>
+	<string name="wind23">W moderate</string>
+	<string name="wind24">NW moderate</string>
+	<string name="wind25">N strong</string>
+	<string name="wind26">NE strong</string>
+	<string name="wind27">ENE strong</string>
+	<string name="wind28">E strong</string>
+	<string name="wind29">SE strong</string>
+	<string name="wind30">S strong</string>
+	<string name="wind31">SW strong</string>
+	<string name="wind32">W strong</string>
+	<string name="wind33">NW strong</string>
+	<string name="wind34">ENE very strong</string>
+	<string name="wind35">breeze</string>
 	
     <string name="popup_data_update_info">
        <![CDATA[

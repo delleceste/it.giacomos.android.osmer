@@ -27,7 +27,7 @@ public class ForecastDataFactory
 		LatLngCalculator llcalc = new LatLngCalculator();
 		for(ForecastDataInterface fdi : data)
 		{
-			LatLng ll = llcalc.get(fdi.getName());
+			LatLng ll = llcalc.get(fdi.getId());
 			if(ll != null) /* name of the location is taken into account */
 			{
 				/* all ForecastDataInterface objects must have a LatLng */
@@ -49,7 +49,7 @@ public class ForecastDataFactory
 
 					Log.e("ForecastDataFactory.buildDrawables", "There are layers " + numLayers +
 							"rain " + a.rain + " snow " + a.snow + " storm " + a.storm + 
-							" mist " + a.mist + " AREA " + a.getName());
+							" mist " + a.mist + " AREA " + a.getId());
 					Drawable layers[] = new Drawable[numLayers];
 					/* first layer: sky */
 					if(a.sky == 0)
@@ -173,92 +173,96 @@ public class ForecastDataFactory
 		Locality loc = null;
 		ForecastDataInterface fdi = null;
 		ArrayList<ForecastDataInterface> ret = new ArrayList<ForecastDataInterface>();
-		String [] lines = data.split("\n");
-		for(String line : lines)
+		if(data.length() > 10) /* may be enough > 0, let's say 10 */
 		{
-			if(line.matches("A\\d+")) /* area */
+			String [] lines = data.split("\n");
+			for(String line : lines)
 			{
-				/* create an Area with the name provided in the matching line
-				 * (A1, A2...., A9)
-				 */
-				fdi = new Area(line);
-				ret.add(fdi);
-			}
-			else if(line.matches("F\\d+"))
-			{
-				fdi = new Strip(line);
-				ret.add(fdi);
-			}
-			else if(line.matches("L\\d+"))
-			{
-				fdi = new Locality(line);
-				ret.add(fdi);
-			}
-			else if(fdi.getType() == ForecastDataType.AREA)
-			{
-				try{
-					area = (Area) fdi;
-					if(line.startsWith("pp"))
-						area.rainProb = Html.fromHtml(line.replace("pp", ""));
-					else if(line.startsWith("pt") && line.length() > 2)
-						area.stormProb = Html.fromHtml(line.replace("pt", ""));
-					else if(line.startsWith("t1") && line.length() > 2)
-						area.t1000 = line.replace("t1", "");
+				if(line.matches("A\\d+")) /* area */
+				{
+					/* create an Area with the name provided in the matching line
+					 * (A1, A2...., A9)
+					 */
+					fdi = new Area(line);
+					ret.add(fdi);
+				}
+				else if(line.matches("F\\d+"))
+				{
+					fdi = new Strip(line);
+					ret.add(fdi);
+				}
+				else if(line.matches("L\\d+"))
+				{
+					fdi = new Locality(line);
+					ret.add(fdi);
+				}
+				else if(fdi.getType() == ForecastDataType.AREA)
+				{
+					try{
+						area = (Area) fdi;
+						if(line.startsWith("pp"))
+							area.rainProb = Html.fromHtml(line.replace("pp", ""));
+						else if(line.startsWith("pt") && line.length() > 2)
+							area.stormProb = Html.fromHtml(line.replace("pt", ""));
+						else if(line.startsWith("t1") && line.length() > 2)
+							area.t1000 = line.replace("t1", "");
+						else if(line.startsWith("t2") && line.length() > 2)
+							area.t1000 = line.replace("t2", "");
+						else if(line.startsWith("zt") && line.length() > 2)
+							area.t1000 = line.replace("zt", "");
+
+						else if(line.startsWith("C") && line.length() > 1) /* Cielo */
+							area.sky = Integer.parseInt(line.replace("C", ""));
+						else if(line.startsWith("P") && line.length() > 1)
+							area.rain = Integer.parseInt(line.replace("P", ""));
+						else if(line.startsWith("T") && line.length() > 1) /* Temporale */
+							area.storm = Integer.parseInt(line.replace("T", ""));
+						else if(line.startsWith("B") && line.length() > 1) /* neBbia */
+							area.mist = Integer.parseInt(line.replace("B", ""));
+						else if(line.startsWith("V") && line.length() > 1) /* vento */
+							area.wind = Integer.parseInt(line.replace("V", ""));
+					}
+					catch(NumberFormatException nfe)
+					{
+
+					}
+				}
+				else if(fdi.getType() == ForecastDataType.STRIP)
+				{	
+					strip = (Strip) fdi;
+					if(line.startsWith("t1") && line.length() > 2)
+						strip.t1000 = line.replace("t1", "");
 					else if(line.startsWith("t2") && line.length() > 2)
-						area.t1000 = line.replace("t2", "");
-					else if(line.startsWith("zt") && line.length() > 2)
-						area.t1000 = line.replace("zt", "");
-					
-					else if(line.startsWith("C") && line.length() > 1) /* Cielo */
-						area.sky = Integer.parseInt(line.replace("C", ""));
-					else if(line.startsWith("P") && line.length() > 1)
-						area.rain = Integer.parseInt(line.replace("P", ""));
-					else if(line.startsWith("T") && line.length() > 1) /* Temporale */
-						area.storm = Integer.parseInt(line.replace("T", ""));
-					else if(line.startsWith("B") && line.length() > 1) /* neBbia */
-						area.mist = Integer.parseInt(line.replace("B", ""));
-					else if(line.startsWith("V") && line.length() > 1) /* vento */
-						area.wind = Integer.parseInt(line.replace("V", ""));
-				}
-				catch(NumberFormatException nfe)
-				{
-
-				}
-			}
-			else if(fdi.getType() == ForecastDataType.STRIP)
-			{	
-				strip = (Strip) fdi;
-				if(line.startsWith("t1") && line.length() > 2)
-					strip.t1000 = line.replace("t1", "");
-				else if(line.startsWith("t2") && line.length() > 2)
-					strip.t1000 = line.replace("t2", "");
-				else if(line.startsWith("tm") && line.length() > 2)
-					strip.tMin = line.replace("tm", "");
-				else if(line.startsWith("tM") && line.length() > 2)
-					strip.tMax = line.replace("tM", "");
-			}
-			else if(fdi.getType() == ForecastDataType.LOCALITY)
-			{
-				try{
-					loc = (Locality ) fdi;
-					if(line.startsWith("N") && line.length() > 1) /* neve */
-						loc.particularSnow = Integer.parseInt(line.replace("N", ""));
-					else if(line.startsWith("T") && line.length() > 1) /* temporali particolari */
-						loc.particularStorm = Integer.parseInt(line.replace("T", ""));
+						strip.t2000 = line.replace("t2", "");
 					else if(line.startsWith("tm") && line.length() > 2)
-						loc.tMin = line.replace("tm", "");
-					else if(line.startsWith("tm") && line.length() > 2)
-						loc.tMax = line.replace("tm", "");
+						strip.tMin = line.replace("tm", "");
+					else if(line.startsWith("tM") && line.length() > 2)
+						strip.tMax = line.replace("tM", "");
 				}
-				catch(NumberFormatException nfe)
+				else if(fdi.getType() == ForecastDataType.LOCALITY)
 				{
+					try{
+						loc = (Locality ) fdi;
+						if(line.startsWith("N") && line.length() > 1) /* neve */
+							loc.particularSnow = Integer.parseInt(line.replace("N", ""));
+						else if(line.startsWith("T") && line.length() > 1) /* temporali particolari */
+							loc.particularStorm = Integer.parseInt(line.replace("T", ""));
+						else if(line.startsWith("tm") && line.length() > 2)
+							loc.tMin = line.replace("tm", "");
+						else if(line.startsWith("tm") && line.length() > 2)
+							loc.tMax = line.replace("tm", "");
+					}
+					catch(NumberFormatException nfe)
+					{
 
+					}
 				}
+
 			}
 
-		}
-
-		buildDrawables(ret);
+			buildDrawables(ret);
+			
+		} /* data length is nonzero (supposed > 10). Otherwise ret will be not null but zero sized */
 
 		return ret;
 	}

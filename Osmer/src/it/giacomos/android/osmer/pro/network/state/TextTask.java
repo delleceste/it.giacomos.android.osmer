@@ -91,7 +91,9 @@ public class TextTask extends AsyncTask<URL, Integer, String> {
 				doc = new String(mTextBytes, charset);
 				publishProgress(100);
 			} 
-			catch (IOException e) {
+			catch (IOException e) 
+			{
+				doc = null;
 				m_errorMessage = "IOException: URL: \"" + urls[0].toString() + "\":\n\"" + e.getLocalizedMessage() + "\"";
 			}
 		}

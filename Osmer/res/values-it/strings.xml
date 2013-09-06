@@ -18,6 +18,8 @@
     <string name="emission_date">Emessa il: </string>
     <string name="hours">ore</string>
     <string name="offline">Offline</string>  
+    <string name="forecast_map_avail_afternoon">Carta disponibile\ndal pomeriggio</string>
+    <string name="forecast_map_error">Errore scaricamento dati</string>
     <string name="downloadingToast">Aggiornamento dati&#8230;</string>
     <string name="netUnavailableToast">La rete non è disponibile.\nI dati saranno aggiornati non appena vi sarà connessione.</string>
     <string name="completingDownloadToast">Completo il download dei dati&#8230;</string>
@@ -41,6 +43,9 @@
     <string name="max_temp">Temperatura Massima</string>
     <string name="min_temp_abbr">Min.T</string>
     <string name="max_temp_abbr">Max.T</string>
+    <string name="t1000">T.1000m</string>
+    <string name="t2000">T.2000m</string>
+    <string name="celsius">&#8451;</string>
     <string name="humidity">Umidità</string>
     <string name="wind">Vento</string>
     <string name="mean_wind">Vento V.Media</string>
@@ -141,6 +146,57 @@
     <string name="meters">m</string>
     <string name="km">km</string>
     <string name="my_location_layer_not_enabled">my-location layer is not enabled</string>
+    
+    
+	<!--  xml symbol map -->
+	<string name="sky">cielo</string>
+	<string name="sky0">sereno</string>
+	<string name="sky1">poco nuvoloso</string>
+	<string name="sky2">variabile</string>
+	<string name="sky3">nuvoloso</string>
+	<string name="sky4">coperto</string>
+	<string name="sky5">sole/nebbia</string>
+	
+	<string name="rain">pioggia</string>
+	<string name="rain6">debole [&lt;5mm]</string>
+	<string name="rain7">moderata [5&#8211;10mm]</string>
+	<string name="rain8">abbondante [10&#8211;30mm]</string>
+	<string name="rain9">intensa [30&#8211;100mm]</string>
+	<string name="rain36">molto intensa [&gt;100mm]</string>
+	
+	<string name="snow">neve</string>
+	<string name="snow10">moderata</string>
+	<string name="snow11">abbondante</string>
+	<string name="snow12">intensa</string>
+	
+	<string name="storm">temporale</string>
+	
+	<string name="mist">nebbia</string>
+	<string name="mist14">foschia</string>
+	<string name="mist15">nebbia</string>
+	
+	
+	<string name="wind">vento</string>
+	<string name="wind16">N moderato</string>
+	<string name="wind17">NE moderato</string>
+	<string name="wind18">ENE moderato</string>
+	<string name="wind19">E moderato</string>
+	<string name="wind20">SE moderato</string>
+	<string name="wind21">S moderato</string>
+	<string name="wind22">SW moderato</string>
+	<string name="wind23">W moderato</string>
+	<string name="wind24">NW moderato</string>
+	<string name="wind25">N forte</string>
+	<string name="wind26">NE forte</string>
+	<string name="wind27">ENE forte</string>
+	<string name="wind28">E forte</string>
+	<string name="wind29">SE forte</string>
+	<string name="wind30">S forte</string>
+	<string name="wind31">SW forte</string>
+	<string name="wind32">W forte</string>
+	<string name="wind33">NW forte</string>
+	<string name="wind34">ENE molto forte</string>
+	<string name="wind35">brezza</string>
     
 	<!--  WEBCAM -->    
 	 <string name="popup_data_update_info">
