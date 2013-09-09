@@ -6,6 +6,8 @@ import com.google.android.gms.maps.model.LatLng;
 
 import it.giacomos.android.osmer.R;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.text.Html;
@@ -140,11 +142,56 @@ public class ForecastDataFactory
 					{
 						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_mist_15);
 						layerIdx++;
-					}
+					}	
 
 					LayerDrawable layeredSymbol = new LayerDrawable(layers);
 					a.setSymbol(layeredSymbol);
 
+					/* generate wind symbol */
+					Bitmap windBmp = null;
+					if(a.wind == 16) /* N moderato */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_16);
+					else if(a.wind == 17) /* NE moderato */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_17);
+					else if(a.wind == 18) /* ENE moderato */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_18);
+					else if(a.wind == 19) /* E moderato */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_19);
+					else if(a.wind == 20) /* SE moderato */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_20);
+					else if(a.wind == 21) /* S moderato */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_21);
+					else if(a.wind == 22) /* SW moderato */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_22);
+					else if(a.wind == 23) /* W moderato */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_23);
+					else if(a.wind == 24) /* NW moderato */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_24);
+					else if(a.wind == 25) /* N forte */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_25);
+					else if(a.wind == 26) /* NE forte */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_26);
+					else if(a.wind == 27) /* ENE forte */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_27);
+					else if(a.wind == 28) /* E forte */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_28);				
+					else if(a.wind == 29) /* SE forte */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_29);
+					else if(a.wind == 30) /* S forte */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_30);
+					else if(a.wind == 31) /* SW forte */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_31);
+					else if(a.wind == 32) /* W forte */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_32);
+					else if(a.wind == 33) /* NW forte */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_33);
+					else if(a.wind == 34) /* ENE molto forte */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_34);
+					else if(a.wind == 35) /* brezza */
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_35);
+					if(windBmp != null)
+						a.setWindSymbol(windBmp);
+					
 				}
 				/* from strips we take temperatures and rain and storms probability (if there is 
 				 * space to represent the last two quantities)
@@ -210,6 +257,15 @@ public class ForecastDataFactory
 							area.t1000 = line.replace("t2", "");
 						else if(line.startsWith("zt") && line.length() > 2)
 							area.t1000 = line.replace("zt", "");
+						/* wind intensity and direction, 2000 and 3000m */
+						else if(line.startsWith("v2i") && line.length() > 4)
+							area.w2i = line.replace("v2i", "");
+						else if(line.startsWith("v3i") && line.length() > 4)
+							area.w3i = line.replace("v3i", "");
+						else if(line.startsWith("v2d") && line.length() > 4)
+							area.w2d = line.replace("v2d", "");
+						else if(line.startsWith("v3d") && line.length() > 4)
+							area.w3d = line.replace("v3d", "");
 
 						else if(line.startsWith("C") && line.length() > 1) /* Cielo */
 							area.sky = Integer.parseInt(line.replace("C", ""));

@@ -102,6 +102,13 @@ public class MapWithForecastImage extends MapWithLocationImage
 						Log.e("MapWithForecastImage.umbindDrawables", "recycling bitmap " + bmp + ": " + a.getId() + ", " + mViewType);
 						bmp.recycle();
 					}
+					/* recycle wind symbols */
+					bmp = a.getWindSymbol();
+					if(bmp != null)
+					{
+						bmp.recycle();
+						Log.e("MapWithForecastImage.umbindDrawables", "recycling WIND bitmap " + bmp + ": " + a.getId() + ", " + mViewType);
+					}
 				}
 			}
 		}

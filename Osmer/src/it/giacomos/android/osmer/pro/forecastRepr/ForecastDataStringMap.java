@@ -12,6 +12,9 @@ public class ForecastDataStringMap {
 	public static final int T2000 = 12000;
 	public static final int TMIN = 15000;
 	public static final int TMAX = 16000;
+	public static final int WIND = 20000;
+	public static final int M_SEC = 21000;
+	public static final int KM_HOUR = 22000;
 	
 	public String get(int key)
 	{
@@ -71,5 +74,9 @@ public class ForecastDataStringMap {
 		mStringMap.put(T2000, res.getString(R.string.t2000));
 		mStringMap.put(TMIN, res.getString(R.string.min_temp_abbr));
 		mStringMap.put(TMAX, res.getString(R.string.max_temp_abbr));
+		
+		mStringMap.put(WIND, res.getString(R.string.wind_lowercase));
+		mStringMap.put(M_SEC, res.getString(R.string.mets_per_sec));
+		mStringMap.put(KM_HOUR, res.getString(R.string.km_per_h));
 	}
 }

@@ -48,6 +48,9 @@
     <string name="max_temp">Maximum Temperature</string>
     <string name="min_temp_abbr">Min.T</string>
     <string name="max_temp_abbr">Max.T</string>
+    <string name="wind_lowercase">wind</string>
+    <string name="mets_per_sec">m/s</string>
+    <string name="km_per_h">km/h</string>
     <string name="t1000">T.1000m</string>
     <string name="t2000">T.2000m</string>
     <string name="celsius">&#8451;</string>
