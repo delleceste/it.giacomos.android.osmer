@@ -51,7 +51,7 @@ public class LatLngCalculator {
 		else if(tag.compareTo("L3") == 0)
 			ll = locMap.get("Claut");
 		else if(tag.compareTo("L4") == 0)
-			ll = locMap.get("Cividale");
+			ll = locMap.get("Cividale d.F.");
 		
 		else if(tag.compareTo("L5") == 0)
 			ll = locMap.get("Sappada");
