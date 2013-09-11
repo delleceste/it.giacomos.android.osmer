@@ -15,6 +15,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+/** Class extending image view that is able to draw the location on demand.
+ * 
+ * @author giacomo
+ * 
+ * The MapWithLocationImage does not draw the location automatically in the onDraw() method.
+ * Instead, you have to explicitly call drawLocation from a subclass.
+ * This is done because you may want the location to be drawn as last element to be drawn.
+ *
+ */
 public class MapWithLocationImage  extends ImageView 
 implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 {
@@ -58,6 +67,11 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 			Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
 	}
 
+	protected boolean getDrawLocationEnabled()
+	{
+		return mDrawLocationEnabled;
+	}
+	
 	protected void setDrawLocationEnabled(boolean ena)
 	{
 		mDrawLocationEnabled = ena;
@@ -133,13 +147,6 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 			y += 3 + txtR.height();
 			canvas.drawText(txtLoc, x, y, mPaint);
 		}
-	}
-	
-	protected void onDraw(Canvas canvas)
-	{
-		super.onDraw(canvas);
-		if(mDrawLocationEnabled)
-			drawLocation(canvas);
 	}
 
 	public Location getLocation()

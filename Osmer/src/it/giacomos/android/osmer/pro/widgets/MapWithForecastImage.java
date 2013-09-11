@@ -119,7 +119,7 @@ public class MapWithForecastImage extends MapWithLocationImage
 	protected void onDraw(Canvas canvas)
 	{
 		super.onDraw(canvas);
-		drawSymbols(canvas);
+		drawForecast(canvas);
 	}
 
 	public void drawTextOnMap(Canvas canvas, String text)
@@ -175,7 +175,7 @@ public class MapWithForecastImage extends MapWithLocationImage
 		}
 	}
 
-	public void drawSymbols(Canvas canvas)
+	public void drawForecast(Canvas canvas)
 	{
 		mRectsMap.clear();
 		/* mForecastData may be null if an error occurred or if o
@@ -309,6 +309,10 @@ public class MapWithForecastImage extends MapWithLocationImage
 				}
 			}
 		}
+		/* draw the location */
+
+		if(getDrawLocationEnabled())
+			drawLocation(canvas);
 	}
 
 	private void drawTMinTMax(Canvas canvas, Strip s, PointF pt) 

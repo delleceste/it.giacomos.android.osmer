@@ -68,7 +68,6 @@ GeocodeAddressUpdateListener
 		 */
 		if(result)
 		{
-			Log.e("LocationService.connect()", "connecting location client");
 			mLocationRequest = LocationRequest.create();
 			mLocationRequest.setInterval(Constants.LOCATION_UPDATE_INTERVAL);
 			mLocationRequest.setFastestInterval(Constants.LOCATION_FASTEST_UPDATE_INTERVAL);
@@ -161,8 +160,10 @@ GeocodeAddressUpdateListener
 	{
 		if(mLocationClient != null)
 		{
-			Log.e("LocationService.onConnected", "requesting location updates");
+			Location lastKnownLocation = mLocationClient.getLastLocation();
 			mLocationClient.requestLocationUpdates(mLocationRequest, this);
+			if(lastKnownLocation != null)
+				onLocationChanged(lastKnownLocation);
 		}
 	}
 
@@ -182,8 +183,6 @@ GeocodeAddressUpdateListener
 	@Override
 	public void onLocationChanged(Location location) 
 	{
-		Log.e("----->>> LocationService.onLocationChanged", "notifying location changes to listeners no. " 
-				+ mLocationServiceUpdateListeners.size());
 		for(LocationServiceUpdateListener l : mLocationServiceUpdateListeners)
 			l.onLocationChanged(location);
 		
