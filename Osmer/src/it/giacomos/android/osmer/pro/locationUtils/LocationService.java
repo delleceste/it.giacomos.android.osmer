@@ -161,7 +161,10 @@ GeocodeAddressUpdateListener
 	{
 		if(mLocationClient != null)
 		{
+			Location lastKnownLocation = mLocationClient.getLastLocation();
 			mLocationClient.requestLocationUpdates(mLocationRequest, this);
+			if(lastKnownLocation != null)
+				onLocationChanged(lastKnownLocation);
 		}
 	}
 
