@@ -7,14 +7,20 @@ import android.util.SparseArray;
 public class ForecastDataStringMap {
 
 	private SparseArray<String> mStringMap;
-	
+
+	public static final int SNOW  = 1010;
+	public static final int STORMS  = 1013;
 	public static final int T1000 = 11000;
 	public static final int T2000 = 12000;
 	public static final int TMIN = 15000;
 	public static final int TMAX = 16000;
 	public static final int WIND = 20000;
+
+	public static final int WIND3000 = 20003;
+	public static final int WIND2000 = 20002;
 	public static final int M_SEC = 21000;
 	public static final int KM_HOUR = 22000;
+	
 	
 	public String get(int key)
 	{
@@ -31,8 +37,8 @@ public class ForecastDataStringMap {
 		mStringMap.put(4, res.getString(R.string.sky4));
 		mStringMap.put(5, res.getString(R.string.sky5));
 		mStringMap.put(6, res.getString(R.string.rain6));
-		mStringMap.put(7, res.getString(R.string.rain7));
-		mStringMap.put(8, res.getString(R.string.rain8));
+		mStringMap.put(7, res.getString(R.string.rain7_abbrev));
+		mStringMap.put(8, res.getString(R.string.rain8_abbrev));
 		mStringMap.put(9, res.getString(R.string.rain9));
 		mStringMap.put(36, res.getString(R.string.rain36));
 		mStringMap.put(10, res.getString(R.string.snow10));
@@ -65,8 +71,8 @@ public class ForecastDataStringMap {
 
 		mStringMap.put(1000, res.getString(R.string.sky));
 		mStringMap.put(1006, res.getString(R.string.rain));
-		mStringMap.put(1010, res.getString(R.string.snow));
-		mStringMap.put(1013, res.getString(R.string.storm));
+		mStringMap.put(SNOW, res.getString(R.string.snow));
+		mStringMap.put(STORMS, res.getString(R.string.storms));
 		mStringMap.put(1014, res.getString(R.string.mist));
 		mStringMap.put(1016, res.getString(R.string.wind));
 		
@@ -76,6 +82,8 @@ public class ForecastDataStringMap {
 		mStringMap.put(TMAX, res.getString(R.string.max_temp_abbr));
 		
 		mStringMap.put(WIND, res.getString(R.string.wind_lowercase));
+		mStringMap.put(WIND3000, res.getString(R.string.wind_3000));
+		mStringMap.put(WIND2000, res.getString(R.string.wind_2000));
 		mStringMap.put(M_SEC, res.getString(R.string.mets_per_sec));
 		mStringMap.put(KM_HOUR, res.getString(R.string.km_per_h));
 	}

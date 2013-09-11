@@ -5,6 +5,7 @@
     <string name="data_source">Fonte dati: http://www.meteo.fvg.it</string>
     <string name="author">&#169; 2013</string>
     <string name="author_web">http://www.giacomos.it</string>
+    <string name="yes">sì</string>
     <string name="home_title">Situazione</string>
     <string name="today_title">Oggi</string>
     <string name="tomorrow_title">Domani</string>
@@ -45,6 +46,8 @@
     <string name="max_temp_abbr">Max.T</string>
     <string name="wind_lowercase">vento</string>
     <string name="mets_per_sec">m/s</string>
+    <string name="wind_3000">Vento 3000m</string>
+    <string name="wind_2000">Vento 2000m</string>
     <string name="km_per_h">km/h</string>
     <string name="t1000">T.1000m</string>
     <string name="t2000">T.2000m</string>
@@ -162,10 +165,10 @@
 	
 	<string name="rain">pioggia</string>
 	<string name="rain6">debole [&lt;5mm]</string>
-	<string name="rain7">moderata [5&#8211;10mm]</string>
-	<string name="rain8">abbondante [10&#8211;30mm]</string>
+	<string name="rain7_abbrev">moder.[5&#8211;10mm]</string>
+	<string name="rain8_abbrev">abbond.[10&#8211;30mm]</string>
 	<string name="rain9">intensa [30&#8211;100mm]</string>
-	<string name="rain36">molto intensa [&gt;100mm]</string>
+	<string name="rain36">molto intensa &gt;100mm</string>
 	
 	<string name="snow">neve</string>
 	<string name="snow10">moderata</string>
@@ -173,6 +176,7 @@
 	<string name="snow12">intensa</string>
 	
 	<string name="storm">temporale</string>
+	<string name="storms">temporali</string>
 	
 	<string name="mist">nebbia</string>
 	<string name="mist14">foschia</string>
@@ -299,6 +303,16 @@
 	     <br/>		
 	    - <a href="http://www.iconfinder.com/icondetails/15233/128/antenna_radar_radio_satelite_icon">www.iconfinder.com</a>, licenza <cite>Free for commercial
 	       use</cite>, realizzata da <a href="http://www.woothemes.com">WooThemes</a>.
+	    
+	     <br/>		
+	    - <a href="http://www.mricons.com/icon/112032/128/lightning-power-weather-icon">www.mricons.com</a>, licenza <cite>GPL</cite>, 
+	    	designer <a href="http://code.google.com/u/newmooon/">Newmoon</a>, 
+	    	icon set <a href="http://code.google.com/p/ultimate-gnome/">Ultimate Gnome</a>.
+	    
+	      	
+	    <br/>		
+	    - <a href="http://en.xn--icne-wqa.com/images/icones/1/4/weather-snow-2.png">weather-snow-icon</a>, 
+	     <a href="http://en.xn--icne-wqa.com/license.php">licenza: public domain</a>.
 	    
 	      <br/>		
 	    - <a 

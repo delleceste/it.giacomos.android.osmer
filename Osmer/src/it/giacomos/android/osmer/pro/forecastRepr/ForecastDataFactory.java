@@ -30,6 +30,7 @@ public class ForecastDataFactory
 		for(ForecastDataInterface fdi : data)
 		{
 			LatLng ll = llcalc.get(fdi.getId());
+			LatLng windLL = llcalc.getWindLatLng(fdi.getId());
 			if(ll != null) /* name of the location is taken into account */
 			{
 				/* all ForecastDataInterface objects must have a LatLng */
@@ -84,32 +85,40 @@ public class ForecastDataFactory
 						layers[0] = mResources.getDrawable(R.drawable.weather_mist);
 						layerIdx = 1;
 					}
-					/* rain */
-					if(a.rain == 6)
-					{
+					/* rain
+					 * 1. If there is no snow and no storm to represent together with rain, we can 
+					 * draw the rain icon that has drops distributed all over the horizontal space
+					 */
+					if(a.rain == 6 && a.snow == 100 && a.storm != 13 ) /* put drops well distantiated from each other */
 						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_rain_6);
-						layerIdx++;
-					}
-					else if(a.rain == 7)
-					{
+					else if(a.rain == 7 && a.snow == 100 && a.storm != 13 )
 						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_rain_7);
-						layerIdx++;
-					}
-					else if(a.rain == 8)
-					{
+					else if(a.rain == 8 && a.snow == 100 && a.storm != 13 )
 						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_rain_8);
-						layerIdx++;
-					}
-					else if(a.rain == 9)
-					{
+					else if(a.rain == 9 && a.snow == 100 && a.storm != 13 )
 						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_rain_9);
-						layerIdx++;
-					}
-					else if(a.rain == 36)
-					{
+					else if(a.rain == 36 && a.snow == 100 && a.storm != 13 )
 						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_rain_36);
+					
+					/* if there is snow or a storm to show together with rain we choose the 
+					 * version of the rain icon with the drops moved to the left, so that the
+					 * drops do not overlap with the lightning and/or the snow.
+					 */
+					else if(a.rain == 6) /* put the drops icon with drops on the left */
+						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_rain2_6);
+					else if(a.rain == 7)
+						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_rain2_7);
+					else if(a.rain == 8)
+						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_rain2_8);
+					else if(a.rain == 9)
+						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_rain2_9);
+					else if(a.rain == 36)
+						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_rain2_36);
+					
+					/* if there is rain, increment the layer counter */
+					if((a.rain >= 6 && a.rain <= 9 ) || a.rain == 36)
 						layerIdx++;
-					}
+					
 					/* snow */
 					if(a.snow == 10)
 					{
@@ -150,56 +159,62 @@ public class ForecastDataFactory
 					/* generate wind symbol */
 					Bitmap windBmp = null;
 					if(a.wind == 16) /* N moderato */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_16);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_16);
 					else if(a.wind == 17) /* NE moderato */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_17);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_17);
 					else if(a.wind == 18) /* ENE moderato */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_18);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_18);
 					else if(a.wind == 19) /* E moderato */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_19);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_19);
 					else if(a.wind == 20) /* SE moderato */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_20);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_20);
 					else if(a.wind == 21) /* S moderato */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_21);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_21);
 					else if(a.wind == 22) /* SW moderato */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_22);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_22);
 					else if(a.wind == 23) /* W moderato */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_23);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_23);
 					else if(a.wind == 24) /* NW moderato */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_24);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_24);
 					else if(a.wind == 25) /* N forte */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_25);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_25);
 					else if(a.wind == 26) /* NE forte */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_26);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_26);
 					else if(a.wind == 27) /* ENE forte */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_27);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_27);
 					else if(a.wind == 28) /* E forte */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_28);				
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_28);				
 					else if(a.wind == 29) /* SE forte */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_29);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_29);
 					else if(a.wind == 30) /* S forte */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_30);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_30);
 					else if(a.wind == 31) /* SW forte */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_31);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_31);
 					else if(a.wind == 32) /* W forte */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_32);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_32);
 					else if(a.wind == 33) /* NW forte */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_33);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_33);
 					else if(a.wind == 34) /* ENE molto forte */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_34);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_red_34);
 					else if(a.wind == 35) /* brezza */
-						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind_35);
+						windBmp = BitmapFactory.decodeResource(mResources, R.drawable.weather_wind2_35);
 					if(windBmp != null)
+					{
 						a.setWindSymbol(windBmp);
+					}
 					
-				}
+					if(windLL != null)
+						a.setWindLocationLatLng(windLL);
+					
+				} /* end if(fdi.getType() == ForecastDataType.AREA) */
+				
 				/* from strips we take temperatures and rain and storms probability (if there is 
 				 * space to represent the last two quantities)
 				 */
 				else if(fdi.getType() == ForecastDataType.STRIP) /* Fascia, F1, F2... */
 				{
 					Strip s = (Strip ) fdi;
-
+					
 				}
 				/* from locality we take into account special snow and storms for now, nothing else 
 				 * 
@@ -207,9 +222,19 @@ public class ForecastDataFactory
 				else if(fdi.getType() == ForecastDataType.LOCALITY) /* localita`... L1, L2... */
 				{
 					Locality l = (Locality) fdi;
+					if(l.particularSnow == 10)
+						l.setSnowBitmap(BitmapFactory.decodeResource(mResources, R.drawable.weather_particular_snow_50x50_10));
+					else if(l.particularSnow == 11)
+						l.setSnowBitmap(BitmapFactory.decodeResource(mResources, R.drawable.weather_particular_snow_50x50_11));
+					else if(l.particularSnow == 12)
+						l.setSnowBitmap(BitmapFactory.decodeResource(mResources, R.drawable.weather_particular_snow_50x50_12));
+					if(l.particularStorm == 13)
+						l.setLightningBitmap(BitmapFactory.decodeResource(mResources, R.drawable.weather_particular_storm_50x50_13));
 
 				}
-			}
+				
+			}  /* end if(ll != null) */
+			
 		}
 	}
 
@@ -258,19 +283,21 @@ public class ForecastDataFactory
 						else if(line.startsWith("zt") && line.length() > 2)
 							area.t1000 = line.replace("zt", "");
 						/* wind intensity and direction, 2000 and 3000m */
-						else if(line.startsWith("v2i") && line.length() > 4)
+						else if(line.startsWith("v2i") && line.length() > 3)
 							area.w2i = line.replace("v2i", "");
-						else if(line.startsWith("v3i") && line.length() > 4)
+						else if(line.startsWith("v3i") && line.length() > 3)
 							area.w3i = line.replace("v3i", "");
-						else if(line.startsWith("v2d") && line.length() > 4)
+						else if(line.startsWith("v2d") && line.length() > 3)
 							area.w2d = line.replace("v2d", "");
-						else if(line.startsWith("v3d") && line.length() > 4)
+						else if(line.startsWith("v3d") && line.length() > 3)
 							area.w3d = line.replace("v3d", "");
 
 						else if(line.startsWith("C") && line.length() > 1) /* Cielo */
 							area.sky = Integer.parseInt(line.replace("C", ""));
 						else if(line.startsWith("P") && line.length() > 1)
 							area.rain = Integer.parseInt(line.replace("P", ""));
+						else if(line.startsWith("N") && line.length() > 1)
+							area.snow = Integer.parseInt(line.replace("N", ""));
 						else if(line.startsWith("T") && line.length() > 1) /* Temporale */
 							area.storm = Integer.parseInt(line.replace("T", ""));
 						else if(line.startsWith("B") && line.length() > 1) /* neBbia */
@@ -299,14 +326,14 @@ public class ForecastDataFactory
 				{
 					try{
 						loc = (Locality ) fdi;
-						if(line.startsWith("N") && line.length() > 1) /* neve */
-							loc.particularSnow = Integer.parseInt(line.replace("N", ""));
-						else if(line.startsWith("T") && line.length() > 1) /* temporali particolari */
-							loc.particularStorm = Integer.parseInt(line.replace("T", ""));
+						if(line.startsWith("np") && line.length() > 2) /* neve particolare */
+							loc.particularSnow = Integer.parseInt(line.replace("np", ""));
+						else if(line.startsWith("tp") && line.length() > 1) /* temporali particolari */
+							loc.particularStorm = Integer.parseInt(line.replace("tp", ""));
 						else if(line.startsWith("tm") && line.length() > 2)
 							loc.tMin = line.replace("tm", "");
-						else if(line.startsWith("tm") && line.length() > 2)
-							loc.tMax = line.replace("tm", "");
+						else if(line.startsWith("tM") && line.length() > 2)
+							loc.tMax = line.replace("tM", "");
 					}
 					catch(NumberFormatException nfe)
 					{

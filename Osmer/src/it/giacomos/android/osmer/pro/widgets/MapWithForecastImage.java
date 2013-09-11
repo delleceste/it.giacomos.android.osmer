@@ -11,12 +11,14 @@ import it.giacomos.android.osmer.pro.forecastRepr.ForecastDataFactory;
 import it.giacomos.android.osmer.pro.forecastRepr.ForecastDataInterface;
 import it.giacomos.android.osmer.pro.forecastRepr.ForecastDataStringMap;
 import it.giacomos.android.osmer.pro.forecastRepr.ForecastDataType;
+import it.giacomos.android.osmer.pro.forecastRepr.Locality;
 import it.giacomos.android.osmer.pro.forecastRepr.Strip;
 import it.giacomos.android.osmer.pro.locationUtils.LocationServiceAddressUpdateListener;
 import it.giacomos.android.osmer.pro.locationUtils.LocationServiceUpdateListener;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -185,10 +187,13 @@ public class MapWithForecastImage extends MapWithLocationImage
 		}
 		else if(mForecastData != null)
 		{
+			/* do not draw a rectangle around more than one symbol (single selection) */
+			boolean selectionIsActive = false;
 			RectF rect;
 			Paint paint = new Paint();
 			int iconW, iconH;
 			float x, y;
+			PointF p = null;
 			LocationToImgPixelMapper locationMapper = new LocationToImgPixelMapper();
 			for(ForecastDataInterface fdi : mForecastData)
 			{
@@ -198,7 +203,7 @@ public class MapWithForecastImage extends MapWithLocationImage
 					if(!a.isEmpty())
 					{
 						LatLng llng = a.getLatLng();
-						PointF p = locationMapper.mapToPoint(this, llng.latitude, llng.longitude);
+						p = locationMapper.mapToPoint(this, llng.latitude, llng.longitude);
 						Bitmap symbol = a.getSymbol();
 						if(symbol != null)
 						{
@@ -215,9 +220,28 @@ public class MapWithForecastImage extends MapWithLocationImage
 								mPaint.setARGB(255, 10, 255, 10);
 								mPaint.setStyle(Paint.Style.STROKE);
 								canvas.drawRoundRect(rect, 6, 6, mPaint);
+								selectionIsActive = true;
 								drawBottomLeftText(canvas, a.getData(mForecastDataStringMap));
+								if(a.hasDetailedWindData())
+									drawTopRightTextIfOrientationPortrait(canvas, a.getDetailedWindData(mForecastDataStringMap));
 							}
-						} 
+						}
+						/* get wind symbol if avail */
+						if(a.hasWindSymbol())
+						{
+							llng = a.getWindLocationLanLng();
+							if(llng != null)
+							{
+								p = locationMapper.mapToPoint(this, llng.latitude, llng.longitude);
+								symbol = a.getWindSymbol();
+								iconW = symbol.getWidth();
+								iconH = symbol.getHeight();
+								x = p.x - iconW/2;
+								y = p.y - iconH/1.45f;
+								canvas.drawBitmap(symbol, x, y, paint);
+							}
+						}
+
 					}
 				}
 				else if(fdi.getType() == ForecastDataType.STRIP)
@@ -232,7 +256,56 @@ public class MapWithForecastImage extends MapWithLocationImage
 						if(!s.tMax.isEmpty() || !s.tMin.isEmpty())
 							drawTMinTMax(canvas, s, pt);
 					}
-					
+
+				}
+				else if(fdi.getType() == ForecastDataType.LOCALITY)
+				{
+					Locality l = (Locality) fdi;
+					if(l.hasSomeBitmap() && !l.isEmpty())
+					{
+						LatLng llng = l.getLatLng();
+						p = locationMapper.mapToPoint(this, llng.latitude, llng.longitude);
+						Bitmap b = l.lightningBitmap();
+						if(b != null)
+						{
+							iconW = b.getWidth();
+							iconH = b.getHeight();
+							x = p.x - iconW/2;
+							y = p.y - iconH/1.45f;
+							canvas.drawBitmap(b, x, y, paint);
+							rect = new RectF(x, y, x + iconW, y + iconH);
+							if(!selectionIsActive && rect.contains(mCurrentTouchedPoint.x, mCurrentTouchedPoint.y))
+							{
+								/* draw a rounded rect around */
+								/* colour for text and circles */
+								mPaint.setARGB(255, 10, 255, 10);
+								mPaint.setStyle(Paint.Style.STROKE);
+								canvas.drawRoundRect(rect, 6, 6, mPaint);
+								selectionIsActive = true;
+								drawBottomLeftText(canvas, l.getData(mForecastDataStringMap));
+							}
+						}
+						b = l.snowBitmap();
+						if(b != null)
+						{
+							iconW = b.getWidth();
+							iconH = b.getHeight();
+							x = p.x - iconW/2;
+							y = p.y - iconH/1.45f;
+							canvas.drawBitmap(b, x, y, paint);
+							rect = new RectF(x, y, x + iconW, y + iconH);
+							if(!selectionIsActive && rect.contains(mCurrentTouchedPoint.x, mCurrentTouchedPoint.y))
+							{
+								/* draw a rounded rect around */
+								/* colour for text and circles */
+								mPaint.setARGB(255, 10, 255, 10);
+								mPaint.setStyle(Paint.Style.STROKE);
+								canvas.drawRoundRect(rect, 6, 6, mPaint);
+								selectionIsActive = true;
+								drawBottomLeftText(canvas, l.getData(mForecastDataStringMap));
+							}
+						}
+					}
 				}
 			}
 		}
@@ -241,7 +314,7 @@ public class MapWithForecastImage extends MapWithLocationImage
 	private void drawTMinTMax(Canvas canvas, Strip s, PointF pt) 
 	{
 		int tMaxXShift = 0;
-		float fontSize = mFontSize;
+		float fontSize = mFontSize * 0.9f;
 		Rect txtRect = new Rect();
 		String text;
 		int margin = 4;
@@ -270,7 +343,7 @@ public class MapWithForecastImage extends MapWithLocationImage
 			mPaint.setColor(Color.WHITE);
 			canvas.drawText(text, x, y, mPaint);
 		}
-		
+
 	}
 
 	private void drawT1000T2000(Canvas canvas, Strip s, PointF pt) 
@@ -289,8 +362,8 @@ public class MapWithForecastImage extends MapWithLocationImage
 			text = getResources().getString(R.string.t1000) + ": " + s.t1000 + getResources().getString(R.string.celsius);
 			mPaint.getTextBounds(text, 0, text.length(), txtRect);
 			canvas.drawText(text, pt.x, y, mPaint);
-//			mPaint.setColor(Color.BLUE);
-//			canvas.drawRoundRect(new RectF(pt.x - 4, y - txtRect.height() - 4, pt.x + 4 + txtRect.right, y+ txtRect.bottom + 4), 6, 6, mPaint);
+			//			mPaint.setColor(Color.BLUE);
+			//			canvas.drawRoundRect(new RectF(pt.x - 4, y - txtRect.height() - 4, pt.x + 4 + txtRect.right, y+ txtRect.bottom + 4), 6, 6, mPaint);
 			y += txtRect.height() + 4;
 			t200XShift = txtRect.width() / 4;
 		}
@@ -298,11 +371,52 @@ public class MapWithForecastImage extends MapWithLocationImage
 		{
 			mPaint.setColor(Color.WHITE);
 			text = getResources().getString(R.string.t2000) + ": " + s.t2000 + getResources().getString(R.string.celsius);
-//			mPaint.getTextBounds(text, 0, text.length(), txtRect);
+			//			mPaint.getTextBounds(text, 0, text.length(), txtRect);
 			x = pt.x + t200XShift;
 			canvas.drawText(text, x, y, mPaint);
-//			mPaint.setColor(Color.LTGRAY);
-//			canvas.drawRoundRect(new RectF(x - 4, y - txtRect.height() - 4, pt.x + txtRect.right + 4, y+ txtRect.bottom + 4), 6, 6, mPaint);
+			//			mPaint.setColor(Color.LTGRAY);
+			//			canvas.drawRoundRect(new RectF(x - 4, y - txtRect.height() - 4, pt.x + txtRect.right + 4, y+ txtRect.bottom + 4), 6, 6, mPaint);
+		}
+	}
+
+	/** draws the text passed in data on the top right of the view, aligning the 
+	 * text on the right.
+	 * The text is drawn if the orientation is portrait, otherwise there is no space.
+	 * 
+	 * @param canvas the canvas to draw onto
+	 * @param data the text to draw
+	 */
+	private void drawTopRightTextIfOrientationPortrait(Canvas canvas, String data) 
+	{
+		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+		{
+			/* make text a bit smaller */
+			float fontSize = mFontSize * 0.78f;
+			String [] lines = data.split("\n");
+			int nLines = lines.length;
+			int margin = 3;
+			int textH;
+			int x = 3, y, i;
+			int w = getWidth();
+			if(nLines > 0)
+			{
+				Rect txtR = new Rect();
+				mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+				mPaint.setARGB(255, 16, 85, 45);
+				mPaint.setTextSize(fontSize);
+				mPaint.getTextBounds(lines[0], 0, lines[0].length(), txtR);
+				margin = txtR.height() / 5;
+				textH = txtR.height() + margin;
+				y = textH;
+				for(i = 0; i < nLines; i++)
+				{
+					if(i > 0) /* txtR already calculated above for lines[0] */
+						mPaint.getTextBounds(lines[i], 0, lines[i].length(), txtR);
+					x = w - txtR.width() - margin;
+					canvas.drawText(lines[i], x, y, mPaint);
+					y += textH;
+				}
+			}
 		}
 	}
 

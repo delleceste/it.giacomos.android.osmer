@@ -20,7 +20,7 @@ public class LocationNamesMap {
 		mMap.put("Grado", new LatLng(45.678462, 13.395962));
 		mMap.put("GradoMare", new LatLng(45.675688, 13.394426));
 		mMap.put("Aurisina", new LatLng(45.740805, 13.669846));
-		mMap.put("Claut", new LatLng(46.217788, 12.472057));
+		mMap.put("Claut", new LatLng(46.217788, 12.492057));
 		mMap.put("Lignano", new LatLng(45.690989, 13.138748));
 		mMap.put("Faedis", new LatLng(46.152939, 13.346416));
 		mMap.put("S.Vito al Tgl.", new LatLng(45.915116, 12.856410));
@@ -36,7 +36,7 @@ public class LocationNamesMap {
 		mMap.put("Monfalcone", new LatLng(45.805047,13.533173));
 		mMap.put("Fagagna", new LatLng(46.117736,13.08185));
 		mMap.put("Enemonzo", new LatLng(46.411656,12.887197));
-		mMap.put("Gemona d.F.", new LatLng(46.289147, 13.145738));
+		mMap.put("Gemona d.F.", new LatLng(46.249147, 13.145738)); /* adjusted a bit southern */
 		mMap.put("Chievolis", new LatLng(46.254552, 12.735398));
 		mMap.put("Vivaro", new LatLng(46.078226, 12.776906));	
 		mMap.put("M.Matajur", new LatLng(46.212500, 13.529722));
@@ -55,9 +55,22 @@ public class LocationNamesMap {
 		mMap.put("Prealpi Giulie", new LatLng(46.294972,13.334999));
 		mMap.put("Monti", new LatLng(46.59621,12.873917));
 		mMap.put("Alta Pianura", new LatLng(46.083174,13.141708));
-		mMap.put("Bassa Pianura", new LatLng(45.954141,12.907562));
-		mMap.put("Costa", new LatLng(45.702887,13.273544));
-		mMap.put("Carso", new LatLng(45.644498,13.880882));
+		mMap.put("Bassa Pianura", new LatLng(46.010857,12.812119));
+		mMap.put("Costa", new LatLng(45.802542,13.268051));
+		mMap.put("Carso", new LatLng(45.644498,13.980882));
+		
+		/* locations for forecast icons */
+		mMap.put("LignanoPrevisioni", new LatLng(45.744184,13.083858));
+		
+		/* locations for the wind symbols */
+		mMap.put("TriesteVento", new LatLng(45.620345,13.561935));
+		mMap.put("LignanoVento", new LatLng(45.609552,13.138748));
+		mMap.put("PordenoneVento", new LatLng(45.835162,12.847574));
+		mMap.put("PrealpiGiulieVento", new LatLng(46.300439,13.537141));
+		mMap.put("GoriziaVento", new LatLng(45.982236,13.788278));
+		mMap.put("UdineVento", new LatLng(46.154711,13.066864)); /* Majano */
+		
+		
 	}
 	
 	public Vector<String> locationsForLevel(int level)

@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.pro.forecastRepr;
 
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -10,13 +10,14 @@ public class Locality implements ForecastDataInterface {
 	private String mId, mName;
 	public int particularSnow, particularStorm;
 	public String tMin, tMax;
-	private Drawable mDrawable;
+	public Bitmap mSnowBitmap, mLightningBitmap;
 	
 	public Locality(String id)
 	{
 		particularSnow = particularStorm = 100;
 		mId  = id;
 		mLatLng = null;
+		mSnowBitmap = mLightningBitmap = null;
 
 		if(id.compareTo("L1") == 0)
 			mName = "Gemona";
@@ -42,6 +43,41 @@ public class Locality implements ForecastDataInterface {
 			mName = "Canin";
 		else if(id.compareTo("L12") == 0)
 			mName = "Forni Avoltri";
+	}
+	
+	public String getData(ForecastDataStringMap dataMap)
+	{
+		String t = mName;
+		if(particularSnow != 100)
+			t += "\n" + dataMap.get(ForecastDataStringMap.SNOW) + ": " + dataMap.get(particularSnow);
+		if(particularStorm != 100)
+			t += "\n" + dataMap.get(ForecastDataStringMap.STORMS);
+		return t;	
+	}
+	
+	public boolean hasSomeBitmap()
+	{
+		return mSnowBitmap != null || mLightningBitmap != null;
+	}
+	
+	public void setSnowBitmap(Bitmap b)
+	{
+		mSnowBitmap = b;
+	}
+	
+	public void setLightningBitmap(Bitmap b)
+	{
+		mLightningBitmap = b;
+	}
+	
+	public Bitmap lightningBitmap()
+	{
+		return mLightningBitmap;
+	}
+	
+	public Bitmap snowBitmap()
+	{
+		return mSnowBitmap;
 	}
 	
 	@Override

@@ -26,8 +26,11 @@ public class LatLngCalculator {
 			ll = locMap.get("Udine");
 		else if(tag.compareTo("A7") == 0)
 			ll = locMap.get("Gorizia");
+		/* position the icon northern with respect to Lignano in order to be able to 
+		 * put the wind icon inside the view and just below Lignano.
+		 */
 		else if(tag.compareTo("A8") == 0)
-			ll = locMap.get("Lignano");
+			ll = locMap.get("LignanoPrevisioni");
 		else if(tag.compareTo("A9") == 0)
 			ll = locMap.get("Trieste");
 		
@@ -42,7 +45,7 @@ public class LatLngCalculator {
 			ll = locMap.get("Costa");
 		
 		else if(tag.compareTo("L1") == 0)
-			ll = locMap.get("Gemona");
+			ll = locMap.get("Gemona d.F.");
 		else if(tag.compareTo("L2") == 0)
 			ll = locMap.get("Carso");
 		else if(tag.compareTo("L3") == 0)
@@ -57,6 +60,30 @@ public class LatLngCalculator {
 		else if(tag.compareTo("L7") == 0)
 			ll = locMap.get("Tarvisio");
 		/* others are discarded for now ... */
+		
+		return ll;
+	}
+	
+	public LatLng getWindLatLng(String tag)
+	{
+		LatLng ll = null;
+		LocationNamesMap locMap = new LocationNamesMap();
+		
+		if(tag.compareTo("A4") == 0)
+			ll = locMap.get("PrealpiGiulieVento");
+		else if(tag.compareTo("A5") == 0)
+			ll = locMap.get("PordenoneVento");
+		else if(tag.compareTo("A6") == 0)
+			ll = locMap.get("UdineVento");
+		else if(tag.compareTo("A7") == 0)
+			ll = locMap.get("GoriziaVento");
+		/*  
+		 * put the wind icon in Lignano.
+		 */
+		else if(tag.compareTo("A8") == 0)
+			ll = locMap.get("LignanoVento");
+		else if(tag.compareTo("A9") == 0)
+			ll = locMap.get("TriesteVento");
 		
 		return ll;
 	}

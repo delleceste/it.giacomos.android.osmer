@@ -25,7 +25,7 @@ public class Area implements ForecastDataInterface {
 	
 	private String mId, mName;
 	
-	private LatLng mLatLng;
+	private LatLng mLatLng, mWindLocationLatLng;
 	
 	public int sky, rain, snow, storm, mist, wind;
 	
@@ -42,6 +42,7 @@ public class Area implements ForecastDataInterface {
 		wind = 100;
 		w2d = w2i = w3d = w3i = "";
 		mLatLng = null;
+		mWindLocationLatLng = null;
 		mBitmap = mWindBitmap = null;
 		/* name is statically set here to keep downloaded data as small as possible */
 		if(id.compareTo("A1") == 0)
@@ -64,37 +65,63 @@ public class Area implements ForecastDataInterface {
 			mName = "Trieste";	
 	}
 	
+	public String getDetailedWindData(ForecastDataStringMap dataMap)
+	{
+		String t = "";
+		if(!w2d.isEmpty() && !w2i.isEmpty())
+		{
+			
+			t += dataMap.get(ForecastDataStringMap.WIND2000) + ": " + w2d + " " + w2i + 
+					dataMap.get(ForecastDataStringMap.M_SEC);
+			try
+			{
+				float kmh = Float.parseFloat(w2i) * 3.6f;
+				t += " [" + String.format("%.1f", kmh) + 
+				dataMap.get(ForecastDataStringMap.KM_HOUR) + "]";
+			}
+			catch (NumberFormatException e)
+			{
+				
+			}
+		}
+
+		/* not enough space */
+//		if(!w3d.isEmpty() && !w3i.isEmpty())
+//		{
+//			if(!t.isEmpty())
+//				t += "\n";
+//			
+//			t += dataMap.get(ForecastDataStringMap.WIND3000) + ": "+ w3d + " "  + w3i + 
+//					dataMap.get(ForecastDataStringMap.M_SEC);
+//			
+//			try{
+//				float kmh = Float.parseFloat(w3i) * 3.6f;
+//				t += " [" + String.format("%.1f", kmh) + 
+//						dataMap.get(ForecastDataStringMap.KM_HOUR) + "]";
+//			}
+//			catch (NumberFormatException e)
+//			{
+//				
+//			}
+//		}
+		return t;
+	}
+	
 	public String getData(ForecastDataStringMap dataMap)
 	{
 		String t = mName;
 		/* sky always present */
 		t += "\n" + dataMap.get(sky);
 		
-		if(rain != 100)
-			t += "\n" + dataMap.get(1006) + ": " + dataMap.get(rain);
 		if(snow != 100)
 			t += "\n" + dataMap.get(1010) + ": " + dataMap.get(snow);
-		if(storm != 100)
-			t += "\n" + dataMap.get(storm);
 		if(mist != 100)
 			t += "\n" + dataMap.get(1014) + ": " + dataMap.get(mist);
 		if(wind != 100)
 			t += "\n" + dataMap.get(1016) + ": " + dataMap.get(wind);
-		if(!w2d.isEmpty() && !w2i.isEmpty())
-		{
-			float kmh = Float.parseFloat(w2i) * 3.6f;
-			t += "\n" + dataMap.get(ForecastDataStringMap.WIND) + ": " + w2d + " " + w2i + 
-					dataMap.get(ForecastDataStringMap.M_SEC) + "[" + kmh + 
-							dataMap.get(ForecastDataStringMap.KM_HOUR) + "]";
-		}
-
-		if(!w3d.isEmpty() && !w3i.isEmpty())
-		{
-			float kmh = Float.parseFloat(w3i) * 3.6f;
-			t += "\n" + dataMap.get(ForecastDataStringMap.WIND) + ": "+ w3d + " "  + w3i + 
-					dataMap.get(ForecastDataStringMap.M_SEC) + "[" + kmh + 
-							dataMap.get(ForecastDataStringMap.KM_HOUR) + "]";
-		}
+		
+		if(rain != 100)
+			t += "\n" + dataMap.get(1006) + ": " + dataMap.get(rain);
 		
 		return t;
 	}
@@ -107,6 +134,16 @@ public class Area implements ForecastDataInterface {
 	    d.draw(canvas);
 	}
 	
+	public boolean hasDetailedWindData()
+	{
+		return  (!w3d.isEmpty() && !w3i.isEmpty()) || (!w2d.isEmpty() && !w2i.isEmpty());
+	}
+	
+	public boolean hasWindSymbol()
+	{
+		return mWindBitmap != null;
+	}
+	
 	public void setWindSymbol(Bitmap bmp)
 	{
 		mWindBitmap = bmp;
@@ -115,6 +152,16 @@ public class Area implements ForecastDataInterface {
 	public Bitmap getWindSymbol()
 	{
 		return mWindBitmap;
+	}
+	
+	public LatLng getWindLocationLanLng()
+	{
+		return mWindLocationLatLng;
+	}
+	
+	public void setWindLocationLatLng(LatLng windLocLatLng)
+	{
+		mWindLocationLatLng = windLocLatLng;
 	}
 	
 	@Override

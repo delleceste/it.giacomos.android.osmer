@@ -19,6 +19,7 @@
     <string name="observations_title_latest">Latest Observations</string>
     <string name="title_webcam">Webcam</string>
     
+    <string name="yes">yes</string>
     <string name="reliability">Reliability</string>
     <string name="emission_date">Emission date: </string>
     <string name="hours">ore</string>
@@ -49,6 +50,8 @@
     <string name="min_temp_abbr">Min.T</string>
     <string name="max_temp_abbr">Max.T</string>
     <string name="wind_lowercase">wind</string>
+    <string name="wind_3000">Wind 3000mt</string>
+    <string name="wind_2000">Wind 2000mt</string>
     <string name="mets_per_sec">m/s</string>
     <string name="km_per_h">km/h</string>
     <string name="t1000">T.1000m</string>
@@ -168,8 +171,8 @@
 	
 	<string name="rain">rain</string>
 	<string name="rain6">weak</string>
-	<string name="rain7">moderate</string>
-	<string name="rain8">abundant</string>
+	<string name="rain7_abbrev">moder.</string>
+	<string name="rain8_abbrev">abund.</string>
 	<string name="rain9">intense</string>
 	<string name="rain36">very intense</string>
 	
@@ -179,6 +182,7 @@
 	<string name="snow12">intense</string>
 	
 	<string name="storm">storm</string>
+	<string name="storms">storms</string>
 	
 	<string name="mist">mist</string>
 	<string name="mist14">fog</string>
@@ -305,7 +309,17 @@
 	     <br/>		
 	    - <a href="http://www.iconfinder.com/icondetails/15233/128/antenna_radar_radio_satelite_icon">www.iconfinder.com</a>, licence: <cite>Free for commercial
 	       use</cite>, designed by <a href="http://www.woothemes.com">WooThemes</a>.
-	          <br/>		
+	          <br/>	
+	          
+	     <br/>		
+	    - <a href="http://www.mricons.com/icon/112032/128/lightning-power-weather-icon">www.mricons.com</a>, license <cite>GPL</cite>, 
+	    	designer <a href="http://code.google.com/u/newmooon/">Newmoon</a>, 
+	    	icon set <a href="http://code.google.com/p/ultimate-gnome/">Ultimate Gnome</a>.
+	    	
+	    <br/>		
+	    - <a href="http://en.xn--icne-wqa.com/images/icones/1/4/weather-snow-2.png">weather-snow-icon</a>, 
+	     <a href="http://en.xn--icne-wqa.com/license.php">license: public domain</a>.
+		     	
 	    - <a 
 	    href="http://icondatabase.net/icons/vanessaem/frosted-miui/frosted-miui-comgoogleandroidappsmaps-icon">www.icondatabase.net</a>, 
 	    	 (<a href="http://icondatabase.net/about/rules">free icons</a>).
