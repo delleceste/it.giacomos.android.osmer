@@ -50,12 +50,7 @@ implements LatestObservationCacheChangeListener
 		mTxtRect = new Rect(); /* used in draw */
 		mSensibleArea = new RectF(); /* used in draw */
 		mLocationToImgPixelMapper = new LocationToImgPixelMapper(); /* used in draw */
-		mSettings = new Settings(context);
-		if(this.isInEditMode())
-			mShowIconsHint = false;
-		else
-			mShowIconsHint = mSettings.isHomeIconsHintEnabled();
-		mShowIconsHintToastCount = 0;
+		
 		int densityDpi = this.getResources().getDisplayMetrics().densityDpi;
 		/* adjust font according to density... */
 		if(densityDpi == DisplayMetrics.DENSITY_MEDIUM ||
@@ -67,6 +62,7 @@ implements LatestObservationCacheChangeListener
 			mFontSize = 24;
 		/* in this class we use mPaint which is allocated in superclass */
 		mViewType = ViewType.HOME;
+		mHintForecastIconEnabled = new Settings(context).isForecastIconsHintEnabled();
 	}
 
 	public void setViewType(ViewType vt)
@@ -126,14 +122,7 @@ implements LatestObservationCacheChangeListener
 			}
 		}
 		if(mMap.size() > 0)
-		{
-			if(this.isShown() && mShowIconsHint && mShowIconsHintToastCount == 0) 
-			{
-				mShowIconsHintToastCount++;
-				Toast toast = Toast.makeText(getContext().getApplicationContext(), R.string.hint_home_icons, Toast.LENGTH_LONG);
-				toast.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, 0, 0);
-				toast.show();
-			}
+		{			
 			this.invalidate();
 		}
 	}
@@ -272,8 +261,6 @@ implements LatestObservationCacheChangeListener
 			
 			if(mSensibleArea.contains(mCurrentTouchedPoint.x, mCurrentTouchedPoint.y))
 			{
-				/* after that the user touches an icon, disable the hint */
-				mShowIconsHint = false;
 				mPaint.setStyle(Paint.Style.STROKE);
 				canvas.drawRoundRect(mSensibleArea, 6, 6, mPaint);
 				mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -310,6 +297,10 @@ implements LatestObservationCacheChangeListener
 					y -= (mTxtRect.height() + 5); 
 				}
 				canvas.drawText(d.getLocation() + " [" + d.getTime() + "]", 4, y, mPaint);
+				
+				/* disable forecast icon hint */
+				if(mHintForecastIconEnabled)
+					this.disableForecastIconsHint();
 			}
 		}
 		/* finally, call drawLocation */
@@ -357,29 +348,16 @@ implements LatestObservationCacheChangeListener
 //			bDra.getBitmap().recycle();
 		}
 
-		/* save show icons hint enabled on settings */
-		mSettings.setHomeIconsHintEnabled(mShowIconsHint);
 	}
 
-	public Parcelable onSaveInstanceState()
+	protected void disableForecastIconsHint()
 	{
-		Parcelable p = super.onSaveInstanceState();
-		Bundle bundle = new Bundle();
-		bundle.putParcelable("OSituationImageState", p);
-		bundle.putBoolean("HINT_HOME_ICONS", mShowIconsHint);
-		bundle.putInt("SHOW_ICONS_HINT_COUNT", mShowIconsHintToastCount);
-		return bundle;
+		mHintForecastIconEnabled = false;
+		Settings s = new Settings(getContext());
+		s.setForecastIconsHintEnabled(false);
+		s = null;
 	}
-
-	public void onRestoreInstanceState (Parcelable state)
-	{
-		Bundle b = (Bundle) state;
-		/* avoid showing hints too much */
-		mShowIconsHint = b.getBoolean("HINT_HOME_ICONS");
-		mShowIconsHintToastCount = b.getInt("SHOW_ICONS_HINT_COUNT");
-		super.onRestoreInstanceState(b.getParcelable("OSituationImageState"));
-	}
-
+	
 	private Rect mTxtRect;
 	private RectF mSensibleArea;
 	private ViewType mViewType;
@@ -391,9 +369,7 @@ implements LatestObservationCacheChangeListener
 	private PointF mCurrentTouchedPoint;
 	private final String mSnowStr = getResources().getString(R.string.snow);
 	private final String mSeaStr = getResources().getString(R.string.sea);
-	private final String mRainStr = getResources().getString(R.string.rain);
-	private Settings mSettings;
-	private boolean mShowIconsHint; /* used and modified in draw, commited at the end */
-	private int mShowIconsHintToastCount;
+	private final String mRainStr = getResources().getString(R.string.rain);	
 	private int mFontSize;
+	private boolean mHintForecastIconEnabled;
 }

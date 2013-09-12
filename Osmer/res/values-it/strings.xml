@@ -78,7 +78,7 @@
     <string name="radar_help">Informazioni radar</string>
     
         <!--  hint toasts -->
-    <string name="hint_home_icons">Suggerimento: tocca un\'icona e leggi i dettagli in basso a sinistra</string>
+    <string name="hint_forecast_icons">Suggerimento: tocca un\'icona e leggi i dettagli in basso a sinistra, da oggi anche sulla cartina delle previsioni!</string>
     <string name="hint_tap_on_map_markers">Tocca un\'icona per ottenere maggiori dettagli</string>
     <string name="hint_move_to_measure_on_map">Tocca un segnaposti a lungo poi inizia a muovere.\n
         Rilascia per completare la misura.</string>

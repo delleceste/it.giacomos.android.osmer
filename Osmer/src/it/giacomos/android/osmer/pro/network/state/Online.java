@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.util.Log;
 import it.giacomos.android.osmer.pro.network.DownloadManagerUpdateListener;
 import it.giacomos.android.osmer.pro.network.DownloadReason;
 import it.giacomos.android.osmer.pro.network.DownloadStatus;
@@ -14,6 +13,18 @@ import it.giacomos.android.osmer.pro.observations.MapMode;
 
 public class Online extends State implements BitmapTaskListener, TextTaskListener {
 
+	/** 
+	 * When the Online state class is instantiated, it checks if the download
+	 * is complete and not too old.
+	 * If it is not complete or it is too old, the download status is put in
+	 * INIT state, as to indicate that the download is not complete and a 
+	 * full download starts.
+	 * Setting status in INIT state (its state is put to 0) means that all
+	 * XXX_DOWNLOADED flags are discarded.
+	 * 
+	 * @param stateUpdateListener
+	 * @param downloadStatus
+	 */
 	public Online(DownloadManagerUpdateListener stateUpdateListener,
 			DownloadStatus downloadStatus) 
 	{

@@ -13,8 +13,6 @@ import it.giacomos.android.osmer.pro.forecastRepr.ForecastDataStringMap;
 import it.giacomos.android.osmer.pro.forecastRepr.ForecastDataType;
 import it.giacomos.android.osmer.pro.forecastRepr.Locality;
 import it.giacomos.android.osmer.pro.forecastRepr.Strip;
-import it.giacomos.android.osmer.pro.locationUtils.LocationServiceAddressUpdateListener;
-import it.giacomos.android.osmer.pro.locationUtils.LocationServiceUpdateListener;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 import android.content.Context;
@@ -23,21 +21,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
-
 
 public class MapWithForecastImage extends MapWithLocationImage
 {
@@ -47,6 +36,7 @@ public class MapWithForecastImage extends MapWithLocationImage
 		super(context, attrs);
 		Settings s = new Settings(context);
 		mCachedTextFontSize = s.getMapWithForecastImageTextFontSize();
+		mHintForecastIconEnabled = s.isForecastIconsHintEnabled();
 		/* will contain the rectangles in the image that are associated to a 
 		 * forecast data interface, area, locality or strip.
 		 */
@@ -61,7 +51,7 @@ public class MapWithForecastImage extends MapWithLocationImage
 		else if(densityDpi == DisplayMetrics.DENSITY_HIGH)
 			mFontSize = 20;
 		else if(densityDpi == DisplayMetrics.DENSITY_XHIGH)
-			mFontSize = 24;
+			mFontSize = 24;	
 	}
 
 	public void setViewType(ViewType vt)
@@ -101,7 +91,7 @@ public class MapWithForecastImage extends MapWithLocationImage
 					Bitmap bmp = a.getSymbol();
 					if(bmp != null)
 					{
-						Log.e("MapWithForecastImage.umbindDrawables", "recycling bitmap " + bmp + ": " + a.getId() + ", " + mViewType);
+//						Log.e("MapWithForecastImage.umbindDrawables", "recycling bitmap " + bmp + ": " + a.getId() + ", " + mViewType);
 						bmp.recycle();
 					}
 					/* recycle wind symbols */
@@ -109,7 +99,23 @@ public class MapWithForecastImage extends MapWithLocationImage
 					if(bmp != null)
 					{
 						bmp.recycle();
-						Log.e("MapWithForecastImage.umbindDrawables", "recycling WIND bitmap " + bmp + ": " + a.getId() + ", " + mViewType);
+//						Log.e("MapWithForecastImage.umbindDrawables", "recycling WIND bitmap " + bmp + ": " + a.getId() + ", " + mViewType);
+					}
+				}
+				else if(fdi.getType() == ForecastDataType.LOCALITY)
+				{
+					Locality l = (Locality) (fdi);
+					Bitmap bmp = l.lightningBitmap();
+					if(bmp != null)
+					{
+//						Log.e("MapWithForecastImage.umbindDrawables", "recycling LIGHTNING bitmap " + bmp + ": " + l.getName() + ", " + mViewType);
+						bmp.recycle();
+					}
+					bmp = l.snowBitmap();
+					if(bmp != null)
+					{
+//						Log.e("MapWithForecastImage.umbindDrawables", "recycling SNOW bitmap " + bmp + ": " + l.getName() + ", " + mViewType);
+						bmp.recycle();
 					}
 				}
 			}
@@ -307,7 +313,9 @@ public class MapWithForecastImage extends MapWithLocationImage
 						}
 					}
 				}
-			}
+			} /* end for(ForecastDataInterface fdi : mForecastData) */
+			if(selectionIsActive && mHintForecastIconEnabled)
+				this.disableForecastIconsHint();
 		}
 		/* draw the location */
 
@@ -454,14 +462,22 @@ public class MapWithForecastImage extends MapWithLocationImage
 		/* save the touched point */
 		if(event.getAction() == MotionEvent.ACTION_DOWN)
 		{
-			Log.e("MapWIthForecast.onTouchEvent", "touched in " + event.getX() + ", " + event.getY());
 			mCurrentTouchedPoint.x = event.getX(); 
 			mCurrentTouchedPoint.y = event.getY();
 			this.invalidate();
 		}
 		return super.onTouchEvent(event);
 	}
-
+	
+	protected void disableForecastIconsHint()
+	{
+		mHintForecastIconEnabled = false;
+		Settings s = new Settings(getContext());
+		s.setForecastIconsHintEnabled(false);
+		s = null;
+	}
+	
+	@SuppressWarnings("unused")
 	private ForecastDataInterface getForecastDataInterface(String id)
 	{
 		for(ForecastDataInterface f : mForecastData)
@@ -477,4 +493,5 @@ public class MapWithForecastImage extends MapWithLocationImage
 	private PointF mCurrentTouchedPoint;
 	private int mFontSize;
 	private ForecastDataStringMap mForecastDataStringMap;
+	private boolean mHintForecastIconEnabled;
 }

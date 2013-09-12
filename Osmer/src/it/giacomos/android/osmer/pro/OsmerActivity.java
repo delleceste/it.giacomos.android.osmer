@@ -4,8 +4,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.fragments.MapFragmentListener;
-import it.giacomos.android.osmer.pro.instanceSnapshotManager.SnapshotManager;
-import it.giacomos.android.osmer.pro.instanceSnapshotManager.SnapshotManagerListener;
 import it.giacomos.android.osmer.pro.interfaceHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.pro.interfaceHelpers.NetworkGuiErrorManager;
 import it.giacomos.android.osmer.pro.interfaceHelpers.ObservationTypeGetter;
@@ -38,6 +36,7 @@ import it.giacomos.android.osmer.pro.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.pro.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.pro.widgets.map.RadarOverlayUpdateListener;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -53,6 +52,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -81,7 +81,6 @@ import android.widget.ViewFlipper;
 public class OsmerActivity extends FragmentActivity 
 implements OnClickListener, 
 DownloadStateListener,
-SnapshotManagerListener,
 OnMenuItemClickListener, 
 OnDismissListener,
 MapFragmentListener,
@@ -96,7 +95,7 @@ DataPoolErrorListener
 		super();
 		/* these are final */
 		/* Create a download status in INIT state */
-		mDownloadStatus = new DownloadStatus();
+		mDownloadStatus = DownloadStatus.Instance();
 		m_downloadManager = new DownloadManager(this, mDownloadStatus);
 	}
 	
@@ -292,6 +291,10 @@ DataPoolErrorListener
 				ViewType.LATEST_TABLE, true);
 		/* create the location update client and connect it to the location service */
 		mLocationService.connect();
+		
+		/* show touch forecast icons hint until a MapWithForecastImage disables this */
+		if(mSettings.isForecastIconsHintEnabled())
+			Toast.makeText(getApplicationContext(), R.string.hint_forecast_icons, Toast.LENGTH_LONG).show();
 	}
 	
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -442,20 +445,31 @@ DataPoolErrorListener
 	protected void onSaveInstanceState(Bundle outState)
 	{
 		super.onSaveInstanceState(outState);
-		SnapshotManager snapManager = new SnapshotManager();
-		snapManager.save(outState, this);
-		snapManager = null;
+		if(getActionBar().getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST)
+			outState.putInt("spinnerPosition", getActionBar().getSelectedNavigationIndex());
+		/* used to save the download status data. Since it's been converted into a singleton,
+		 * data is preserved as long as the process is running.
+		 * The class and file shall be removed.
+		 */
+//		SnapshotManager snapManager = new SnapshotManager();
+//		snapManager.save(outState, this);
+//		snapManager = null;
 	}
 
 	protected void onRestoreInstanceState(Bundle inState)
 	{
 		super.onRestoreInstanceState(inState);
-		/* restores from the bundle if the bundle creation timestamp is reasonably
-		 * close to current timestamp
+		/* This method used to restore the DownloadStatus state.
+		 * Since 2.3.0, the DownloadStatus is a singleton thus preserving
+		 * its state through orientation changes and application put in background,
+		 * generally until the process is running.
 		 */
-		SnapshotManager snapManager = new SnapshotManager();
-		snapManager.restore(inState, this);
-		snapManager = null;
+//		/* restores from the bundle if the bundle creation timestamp is reasonably
+//		 * close to current timestamp
+//		 */
+//		SnapshotManager snapManager = new SnapshotManager();
+//		snapManager.restore(inState, this);
+//		snapManager = null;
 	}
 
 	public void getSituation()

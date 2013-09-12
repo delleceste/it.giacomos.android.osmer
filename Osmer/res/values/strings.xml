@@ -85,7 +85,7 @@
     
     
     <!--  hint toasts -->
-    <string name="hint_home_icons">Touch an icon to read further details</string>
+    <string name="hint_forecast_icons">Touch an icon to read further details, also in today, tomorrow and two days forecast!</string>
     <string name="hint_tap_on_map_markers">Tap over an icon to get further details</string>
     <string name="hint_move_to_measure_on_map">Long click on a marker and move to start measure</string>
     <string name="hint_click_on_map_baloon_webcam_image">Tap on the image to open it on the image viewer</string>

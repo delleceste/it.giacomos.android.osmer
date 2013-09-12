@@ -14,16 +14,16 @@ public class Settings
 		mSharedPreferences = ctx.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
 	}
 
-	public boolean isHomeIconsHintEnabled()
+	public boolean isForecastIconsHintEnabled()
 	{
-		boolean res = mSharedPreferences.getBoolean("HINT_HOME_ICONS", true);
+		boolean res = mSharedPreferences.getBoolean("HINT_FORECAST_ICONS", true);
 		return res;
 	}
 
-	public void setHomeIconsHintEnabled(boolean en)
+	public void setForecastIconsHintEnabled(boolean en)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
-		e.putBoolean("HINT_HOME_ICONS", en);
+		e.putBoolean("HINT_FORECAST_ICONS", en);
 		e.commit();
 	}
 
