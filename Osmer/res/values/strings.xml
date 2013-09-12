@@ -210,6 +210,10 @@
 	<string name="wind34">ENE very strong</string>
 	<string name="wind35">breeze</string>
 	
+	<string name="evolution04">evolution 04h</string>
+	<string name="evolution12">evolution 12h</string>
+	<string name="evolution20">evolution 20h</string>
+	
     <string name="popup_data_update_info">
        <![CDATA[
        <h6>Data update policy</h6>

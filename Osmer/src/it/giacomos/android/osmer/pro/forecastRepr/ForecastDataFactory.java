@@ -50,9 +50,9 @@ public class ForecastDataFactory
 					if(a.mist != 100)
 						numLayers++;
 
-//					Log.e("ForecastDataFactory.buildDrawables", "There are layers " + numLayers +
-//							"rain " + a.rain + " snow " + a.snow + " storm " + a.storm + 
-//							" mist " + a.mist + " AREA " + a.getId());
+					//					Log.e("ForecastDataFactory.buildDrawables", "There are layers " + numLayers +
+					//							"rain " + a.rain + " snow " + a.snow + " storm " + a.storm + 
+					//							" mist " + a.mist + " AREA " + a.getId());
 					Drawable layers[] = new Drawable[numLayers];
 					/* first layer: sky */
 					if(a.sky == 0)
@@ -99,7 +99,7 @@ public class ForecastDataFactory
 						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_rain_9);
 					else if(a.rain == 36 && a.snow == 100 && a.storm != 13 )
 						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_rain_36);
-					
+
 					/* if there is snow or a storm to show together with rain we choose the 
 					 * version of the rain icon with the drops moved to the left, so that the
 					 * drops do not overlap with the lightning and/or the snow.
@@ -114,11 +114,11 @@ public class ForecastDataFactory
 						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_rain2_9);
 					else if(a.rain == 36)
 						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_rain2_36);
-					
+
 					/* if there is rain, increment the layer counter */
 					if((a.rain >= 6 && a.rain <= 9 ) || a.rain == 36)
 						layerIdx++;
-					
+
 					/* snow */
 					if(a.snow == 10)
 					{
@@ -202,19 +202,19 @@ public class ForecastDataFactory
 					{
 						a.setWindSymbol(windBmp);
 					}
-					
+
 					if(windLL != null)
 						a.setWindLocationLatLng(windLL);
-					
+
 				} /* end if(fdi.getType() == ForecastDataType.AREA) */
-				
+
 				/* from strips we take temperatures and rain and storms probability (if there is 
 				 * space to represent the last two quantities)
 				 */
 				else if(fdi.getType() == ForecastDataType.STRIP) /* Fascia, F1, F2... */
 				{
 					Strip s = (Strip ) fdi;
-					
+
 				}
 				/* from locality we take into account special snow and storms for now, nothing else 
 				 * 
@@ -232,9 +232,9 @@ public class ForecastDataFactory
 						l.setLightningBitmap(BitmapFactory.decodeResource(mResources, R.drawable.weather_particular_storm_50x50_13));
 
 				}
-				
+
 			}  /* end if(ll != null) */
-			
+
 		}
 	}
 
@@ -266,6 +266,11 @@ public class ForecastDataFactory
 				else if(line.matches("L\\d+"))
 				{
 					fdi = new Locality(line);
+					ret.add(fdi);
+				}
+				else if(line.matches("Z\\d+"))
+				{
+					fdi = new Zone(line);
 					ret.add(fdi);
 				}
 				else if(fdi.getType() == ForecastDataType.AREA)
@@ -340,11 +345,28 @@ public class ForecastDataFactory
 
 					}
 				}
+				else if(fdi.getType() == ForecastDataType.ZONE)
+				{
+					try{
+						Zone  z = (Zone) fdi;
+						if(line.startsWith("e00") && line.length() > 3)
+							z.evo00 = Integer.parseInt(line.replace("e00", ""));
+						else if(line.startsWith("e12") && line.length() > 3)
+							z.evo12 = Integer.parseInt(line.replace("e12", ""));
+						else if(line.startsWith("e24") && line.length() > 3)
+							z.evo24 = Integer.parseInt(line.replace("e24", ""));
+					}
+					catch(NumberFormatException nfe)
+					{
+
+					}
+
+				}
 
 			}
 
 			buildDrawables(ret);
-			
+
 		} /* data length is nonzero (supposed > 10). Otherwise ret will be not null but zero sized */
 
 		return ret;
