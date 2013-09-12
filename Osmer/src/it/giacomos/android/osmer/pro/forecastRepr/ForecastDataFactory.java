@@ -50,9 +50,9 @@ public class ForecastDataFactory
 					if(a.mist != 100)
 						numLayers++;
 
-					Log.e("ForecastDataFactory.buildDrawables", "There are layers " + numLayers +
-							"rain " + a.rain + " snow " + a.snow + " storm " + a.storm + 
-							" mist " + a.mist + " AREA " + a.getId());
+//					Log.e("ForecastDataFactory.buildDrawables", "There are layers " + numLayers +
+//							"rain " + a.rain + " snow " + a.snow + " storm " + a.storm + 
+//							" mist " + a.mist + " AREA " + a.getId());
 					Drawable layers[] = new Drawable[numLayers];
 					/* first layer: sky */
 					if(a.sky == 0)

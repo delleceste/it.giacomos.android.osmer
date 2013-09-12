@@ -159,7 +159,6 @@ public class DownloadStatus {
 
 	public void updateState(ViewType st, boolean downloaded)
 	{
-		Log.e("DownloadStatus.updateState", "ViewType " + st + ", downloaded " + downloaded);
 		if(downloaded) 
 		{
 			if(st == ViewType.TODAY)
@@ -205,7 +204,6 @@ public class DownloadStatus {
 				state = (state & ~TWODAYS_SYMTABLE_DOWNLOADED);
 			else if(st == ViewType.LATEST_TABLE)
 				state = (state & ~LATEST_TABLE_DOWNLOADED);
-			
 		}
 
 		if(!downloaded)

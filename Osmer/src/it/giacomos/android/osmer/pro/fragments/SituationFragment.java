@@ -75,7 +75,6 @@ public class SituationFragment extends Fragment implements DataPoolTextListener
 		{
 			OsmerActivity oActivity = ((OsmerActivity) getActivity());
 			DataPool dataPool = oActivity.getDataPool();
-			Log.e("SituationImage.onDestroy", "cleaning up image");
 			mSituationImage.cleanup();
 			/* unregister text listener */
 			dataPool.unregisterTextListener(mHomeTextView.getViewType());
