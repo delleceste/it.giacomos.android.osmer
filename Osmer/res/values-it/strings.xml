@@ -205,9 +205,10 @@
 	<string name="wind34">ENE molto forte</string>
 	<string name="wind35">brezza</string>
     	
-    <string name="evolution04">evoluzione ore 4</string>
-	<string name="evolution12">evoluzione ore 12</string>
-	<string name="evolution20">evoluzione ore 20</string>
+	<string name="evolution">evoluzione</string>
+    <string name="evolution04">ore 4</string>
+	<string name="evolution12">ore 12</string>
+	<string name="evolution20">ore 20</string>
 	<!--  WEBCAM -->    
 	 <string name="popup_data_update_info">
        <![CDATA[

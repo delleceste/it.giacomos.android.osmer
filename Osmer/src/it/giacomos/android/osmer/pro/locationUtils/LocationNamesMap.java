@@ -55,9 +55,9 @@ public class LocationNamesMap {
 		mMap.put("Prealpi Giulie", new LatLng(46.294972,13.334999));
 		mMap.put("Monti", new LatLng(46.59621,12.873917));
 		mMap.put("Alta Pianura", new LatLng(46.083174,13.141708));
-		mMap.put("Bassa Pianura", new LatLng(46.010857,12.812119));
-		mMap.put("Costa", new LatLng(45.802542,13.268051));
-		mMap.put("Carso", new LatLng(45.644498,13.980882));
+		mMap.put("Bassa Pianura", new LatLng(45.988057,12.812119));
+		mMap.put("Costa", new LatLng(45.782542,13.268051));
+		mMap.put("Carso", new LatLng(45.644498,13.960882));
 		
 		/* locations for forecast icons */
 		mMap.put("LignanoPrevisioni", new LatLng(45.744184,13.083858));

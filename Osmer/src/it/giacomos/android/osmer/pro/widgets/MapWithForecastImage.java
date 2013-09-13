@@ -13,6 +13,8 @@ import it.giacomos.android.osmer.pro.forecastRepr.ForecastDataStringMap;
 import it.giacomos.android.osmer.pro.forecastRepr.ForecastDataType;
 import it.giacomos.android.osmer.pro.forecastRepr.Locality;
 import it.giacomos.android.osmer.pro.forecastRepr.Strip;
+import it.giacomos.android.osmer.pro.forecastRepr.Zone;
+import it.giacomos.android.osmer.pro.forecastRepr.ZoneMapper;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 import android.content.Context;
@@ -21,14 +23,19 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnLongClickListener;
 
-public class MapWithForecastImage extends MapWithLocationImage
+public class MapWithForecastImage extends MapWithLocationImage implements OnLongClickListener
 {
 
 	public MapWithForecastImage(Context context, AttributeSet attrs) 
@@ -52,6 +59,7 @@ public class MapWithForecastImage extends MapWithLocationImage
 			mFontSize = 20;
 		else if(densityDpi == DisplayMetrics.DENSITY_XHIGH)
 			mFontSize = 24;	
+		setOnLongClickListener(this);
 	}
 
 	public void setViewType(ViewType vt)
@@ -91,7 +99,7 @@ public class MapWithForecastImage extends MapWithLocationImage
 					Bitmap bmp = a.getSymbol();
 					if(bmp != null)
 					{
-//						Log.e("MapWithForecastImage.umbindDrawables", "recycling bitmap " + bmp + ": " + a.getId() + ", " + mViewType);
+						//						Log.e("MapWithForecastImage.umbindDrawables", "recycling bitmap " + bmp + ": " + a.getId() + ", " + mViewType);
 						bmp.recycle();
 					}
 					/* recycle wind symbols */
@@ -99,7 +107,7 @@ public class MapWithForecastImage extends MapWithLocationImage
 					if(bmp != null)
 					{
 						bmp.recycle();
-//						Log.e("MapWithForecastImage.umbindDrawables", "recycling WIND bitmap " + bmp + ": " + a.getId() + ", " + mViewType);
+						//						Log.e("MapWithForecastImage.umbindDrawables", "recycling WIND bitmap " + bmp + ": " + a.getId() + ", " + mViewType);
 					}
 				}
 				else if(fdi.getType() == ForecastDataType.LOCALITY)
@@ -108,13 +116,13 @@ public class MapWithForecastImage extends MapWithLocationImage
 					Bitmap bmp = l.lightningBitmap();
 					if(bmp != null)
 					{
-//						Log.e("MapWithForecastImage.umbindDrawables", "recycling LIGHTNING bitmap " + bmp + ": " + l.getName() + ", " + mViewType);
+						//						Log.e("MapWithForecastImage.umbindDrawables", "recycling LIGHTNING bitmap " + bmp + ": " + l.getName() + ", " + mViewType);
 						bmp.recycle();
 					}
 					bmp = l.snowBitmap();
 					if(bmp != null)
 					{
-//						Log.e("MapWithForecastImage.umbindDrawables", "recycling SNOW bitmap " + bmp + ": " + l.getName() + ", " + mViewType);
+						//						Log.e("MapWithForecastImage.umbindDrawables", "recycling SNOW bitmap " + bmp + ": " + l.getName() + ", " + mViewType);
 						bmp.recycle();
 					}
 				}
@@ -166,7 +174,7 @@ public class MapWithForecastImage extends MapWithLocationImage
 				new Settings(getContext()).setMapWithForecastImageTextFontSize(mCachedTextFontSize);
 
 			/* font is now correctly scaled to fit into the image width */
-			mPaint.setColor(Color.WHITE);
+			mPaint.setColor(Color.DKGRAY);
 
 			txtH = txtRect.height();
 			totTxtH = (txtH + 4) * nLines;
@@ -201,6 +209,7 @@ public class MapWithForecastImage extends MapWithLocationImage
 			float x, y;
 			PointF p = null;
 			LocationToImgPixelMapper locationMapper = new LocationToImgPixelMapper();
+			ZoneMapper zoneMapper = new ZoneMapper(this);
 			for(ForecastDataInterface fdi : mForecastData)
 			{
 				if(fdi.getType() == ForecastDataType.AREA)
@@ -312,6 +321,26 @@ public class MapWithForecastImage extends MapWithLocationImage
 							}
 						}
 					}
+				} /* end if fdi is LOCALITY */
+				else if(fdi.getType() == ForecastDataType.ZONE)
+				{
+					Zone z = (Zone) fdi;
+					if(mOnLongPress)
+					{
+						mPaint.setStyle(Paint.Style.STROKE);
+						mPaint.setARGB(160, 100, 115, 75);
+						Path pa = zoneMapper.getAreaPath(z.getId());
+						if(pa != null)
+							canvas.drawPath(pa, mPaint);
+						if(z.isSelected())
+						{
+							mPaint.setStyle(Paint.Style.FILL);
+							mPaint.setARGB(120, 240, 255, 215);
+							canvas.drawPath(pa, mPaint);
+							drawBottomLeftText(canvas, z.getData(mForecastDataStringMap));
+						}
+					}
+
 				}
 			} /* end for(ForecastDataInterface fdi : mForecastData) */
 			if(selectionIsActive && mHintForecastIconEnabled)
@@ -439,12 +468,13 @@ public class MapWithForecastImage extends MapWithLocationImage
 		int margin = 3;
 		int textH;
 		int x = 3, y, i;
+		float fontSize = mFontSize * 0.85f;
 		if(nLines > 0)
 		{
 			Rect txtR = new Rect();
 			mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 			mPaint.setARGB(255, 16, 85, 45);
-			mPaint.setTextSize(mFontSize);
+			mPaint.setTextSize(fontSize);
 			mPaint.getTextBounds(lines[0], 0, lines[0].length(), txtR);
 			margin = txtR.height() / 5;
 			textH = txtR.height() + margin;
@@ -462,11 +492,28 @@ public class MapWithForecastImage extends MapWithLocationImage
 		/* save the touched point */
 		if(event.getAction() == MotionEvent.ACTION_DOWN)
 		{
+			mOnLongPress = mLongPressed = false;
+			Log.e("onTouchEvent", " ACTION_DOWN");
 			mCurrentTouchedPoint.x = event.getX(); 
 			mCurrentTouchedPoint.y = event.getY();
 			this.invalidate();
 		}
 		return super.onTouchEvent(event);
+	}
+
+	@Override
+	public boolean onLongClick(View view) 
+	{
+		Log.e("onLongClick", " ON LONG CLICKED!");
+		mOnLongPress = true;
+		PointF touchedPoint = new PointF(mCurrentTouchedPoint.x, mCurrentTouchedPoint.y);
+		selectZone(touchedPoint);
+		/* reset current touched point in order not to draw the selection on the icons,
+		 * in case the used long clicked on an icon.
+		 */
+		mCurrentTouchedPoint.x = mCurrentTouchedPoint.y = -1;
+		this.invalidate();
+		return true;
 	}
 	
 	protected void disableForecastIconsHint()
@@ -475,6 +522,32 @@ public class MapWithForecastImage extends MapWithLocationImage
 		Settings s = new Settings(getContext());
 		s.setForecastIconsHintEnabled(false);
 		s = null;
+	}
+
+	/** selects the zone under the point p, deselects all the others
+	 * 
+	 * @param p the point to search
+	 * @return the selected zone
+	 */
+	private Zone selectZone(PointF p)
+	{
+		Zone selectedZone = null;
+		ZoneMapper zm = new ZoneMapper(this);
+		for(ForecastDataInterface f : mForecastData)
+		{
+			if(f.getType() == ForecastDataType.ZONE)
+			{
+				Zone z = (Zone ) f;
+				if(zm.getAreaRegion(z.getId()).contains(Math.round(p.x), Math.round(p.y)))
+				{
+					selectedZone = z;
+					z.setSelected(true);
+				}
+				else 
+					z.setSelected(false);
+			}
+		}
+		return selectedZone;
 	}
 	
 	@SuppressWarnings("unused")
@@ -494,4 +567,5 @@ public class MapWithForecastImage extends MapWithLocationImage
 	private int mFontSize;
 	private ForecastDataStringMap mForecastDataStringMap;
 	private boolean mHintForecastIconEnabled;
+	private boolean mOnLongPress, mLongPressed;
 }

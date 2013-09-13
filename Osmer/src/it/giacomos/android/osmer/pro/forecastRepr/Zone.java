@@ -1,6 +1,14 @@
 package it.giacomos.android.osmer.pro.forecastRepr;
 
+import it.giacomos.android.osmer.pro.widgets.LocationToImgPixelMapper;
+import android.graphics.Point;
+import android.graphics.PointF;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Region;
+import android.util.Log;
 import android.util.SparseArray;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -10,6 +18,8 @@ public class Zone implements ForecastDataInterface {
 	private String mId, mName;
 	public int evo00, evo12, evo24;
 	public SparseArray<String> mDataMap;
+	private Region mRegion;
+	private boolean mIsSelected;
 	
 	public Zone(String id)
 	{
@@ -35,7 +45,6 @@ public class Zone implements ForecastDataInterface {
 		mDataMap.put(4, "variab. piogge abbond.");
 		mDataMap.put(5, "variab. piogge abbond.\ne temporali");
 		mDataMap.put(6, "variabile con temporali");
-		mDataMap.put(6, "variabile e nevicate");
 		mDataMap.put(7, "coperto piogge mod.\ne nevicate");
 		mDataMap.put(8, "variab. e nevicate");
 		mDataMap.put(9, "coperto piogge moderate");
@@ -45,11 +54,13 @@ public class Zone implements ForecastDataInterface {
 		mDataMap.put(13, "coperto con temporali");
 		mDataMap.put(14, "coperto piogge abbond.\ne nevicate");
 		mDataMap.put(15, "coperto con nevicate");
+		
+		mIsSelected = false;
 	}
 	
 	public String getData(ForecastDataStringMap dataMap)
 	{
-		String t = mName;
+		String t = mName + ", " + dataMap.get(ForecastDataStringMap.EVO) + ":";
 		if(evo00 != 100)
 			t += "\n" + dataMap.get(ForecastDataStringMap.EVO04) + ": " + mDataMap.get(evo00);
 		if(evo12 != 100)
@@ -58,6 +69,16 @@ public class Zone implements ForecastDataInterface {
 			t += "\n" + dataMap.get(ForecastDataStringMap.EVO20) + ": " + mDataMap.get(evo24);
 		
 		return t;	
+	}
+	
+	public boolean isSelected()
+	{
+		return mIsSelected;
+	}
+	
+	public void setSelected(boolean s)
+	{
+		mIsSelected = s;
 	}
 	
 	@Override
