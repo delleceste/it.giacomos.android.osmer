@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Meteo.FVG</string>
     <string name="version">versione</string>
     <string name="data_source">Fonte dati: http://www.meteo.fvg.it</string>
@@ -11,14 +12,14 @@
     <string name="tomorrow_title">Domani</string>
     <string name="two_days_title">Dopodomani</string>
     <string name="radar_title">Radar</string>
-    <string name="forecast_title">Previsioni</string> 
+    <string name="forecast_title">Previsioni</string>
     <string name="observations_title_daily">Giornaliere</string>
     <string name="observations_title_latest">Ultim\'ora</string>
     <string name="title_webcam">Webcam</string>
     <string name="reliability">Affidabilità</string>
     <string name="emission_date">Emessa il: </string>
     <string name="hours">ore</string>
-    <string name="offline">Offline</string>  
+    <string name="offline">Offline</string>
     <string name="forecast_map_avail_afternoon">Carta disponibile\ndal pomeriggio</string>
     <string name="forecast_map_error">Errore scaricamento dati</string>
     <string name="downloadingToast">Aggiornamento dati&#8230;</string>
@@ -30,7 +31,7 @@
     <string name="dataExpiredToast">aggiornamento dei dati&#8230;</string>
     <string name="radarUpdateToast">aggiorno l\'immagine del radar&#8230;</string>
     <string name="radarUpdatedOn">Immagine radar scaricata alle </string>
-    <string name="radarImageOld">L\'immagine radar scaricata più di quattro ore fa</string>    
+    <string name="radarImageOld">L\'immagine radar scaricata più di quattro ore fa</string>
     <string name="radarImageBlackWhiteHint">(Per questo è in bianco e nero)</string>
     <string name="radarDownloadError">Errore scaricamento immagine radar</string>
     <string name="webcam_lists_downloaded">lista webcam aggiornata</string>
@@ -76,13 +77,14 @@
     <string name="map_normal_view">Vista normale</string>
     <string name="measure_mode">Modalità misura</string>
     <string name="radar_help">Informazioni radar</string>
-    
-        <!--  hint toasts -->
+
+    <!-- hint toasts -->
     <string name="hint_forecast_icons">Suggerimento: tocca un\'icona e leggi i dettagli in basso a sinistra, da oggi anche sulla cartina delle previsioni!</string>
     <string name="hint_tap_on_map_markers">Tocca un\'icona per ottenere maggiori dettagli</string>
     <string name="hint_move_to_measure_on_map">Tocca un segnaposti a lungo poi inizia a muovere.\n
         Rilascia per completare la misura.</string>
     <string name="hint_click_on_map_baloon_webcam_image">Tocca la foto per vederla nel visualizzatore di immagini</string>
+    <string name="hint_zone_longpress">Premi a lungo su un punto della mappa per vedere l\'evoluzione del tempo</string>
     
     <string-array name="observation_types">
         <item>Temperatura Minima</item>
@@ -92,23 +94,22 @@
         <item>Pioggia</item>
     </string-array>
 
-        <!--  MENU -->
-    
+    <!-- MENU -->
+
     <string name="menu_info">Informazioni sulla app&#8230;</string>
-	<string name="menu_refresh">Info su aggiornamento dati</string>
-	<string name="menu_online_guide">Documentazione Online</string>
-	<string name="menu_author_info">Informazioni sull\'autore</string>
-	<string name="menu_config_info">Caratteristiche tecniche</string>
-	<string name="locality_unavailable">Località non disponibile</string>
-	<string name="ok_button">Ok</string>
-	<string name="popup_position_title">Informazioni sulla posizione</string>
-	<string name="popup_info_title">Meteo.FVG app info e copyright</string>
-	<string name="popup_data_update_title">Aggiornamento automatico dei dati</string>
-	<string name="meters">m</string>
-	<string name="error_message">Messaggio d\'errore</string>
-	
-	 
-	<!--  Drawer -->
+    <string name="menu_refresh">Info su aggiornamento dati</string>
+    <string name="menu_online_guide">Documentazione Online</string>
+    <string name="menu_author_info">Informazioni sull\'autore</string>
+    <string name="menu_config_info">Caratteristiche tecniche</string>
+    <string name="locality_unavailable">Località non disponibile</string>
+    <string name="ok_button">Ok</string>
+    <string name="popup_position_title">Informazioni sulla posizione</string>
+    <string name="popup_info_title">Meteo.FVG app info e copyright</string>
+    <string name="popup_data_update_title">Aggiornamento automatico dei dati</string>
+    <string name="meters">m</string>
+    <string name="error_message">Messaggio d\'errore</string>
+
+    <!-- Drawer -->
     <string-array name="drawer_text_items">
         <item>Previsioni</item>
         <item>Radar</item>
@@ -116,8 +117,7 @@
         <item>Osservazioni ultim\'ora</item>
         <item>Webcam</item>
     </string-array>
-
-	<string-array name="dailyobs_text_items">
+    <string-array name="dailyobs_text_items">
         <item>Cielo</item>
         <item>Temperatura minima</item>
         <item>Temperatura media</item>
@@ -127,8 +127,7 @@
         <item>Velocità massima vento</item>
         <item>Pioggia</item>
     </string-array>
-    
-		<string-array name="latestobs_text_items">
+    <string-array name="latestobs_text_items">
         <item>Cielo</item>
         <item>Temperatura</item>
         <item>Pressione</item>
@@ -138,80 +137,88 @@
         <item>Mare</item>
         <item>Umidità</item>
     </string-array>
-        
-		
-	<string name="drawer_open">Seleziona una vista</string>
+
+    <string name="drawer_open">Seleziona una vista</string>
     <string name="drawer_close">Close navigation drawer</string>
-	
-	
-    <!--  MEASURE MARKERS -->
+
+    <!-- MEASURE MARKERS -->
     <string name="drag_p0">Tocca a lungo poi muovi P0</string>
     <string name="drag_p1">Tocca a lungo poi muovi P1</string>
     <string name="dist_from_p0">distanza(P0, P1): </string>
     <string name="dist_from_p1">distanza(P1, P0): </string>
     <string name="meters">m</string>
     <string name="km">km</string>
-    <string name="my_location_layer_not_enabled">my-location layer is not enabled</string>
-    
-    
-	<!--  xml symbol map -->
-	<string name="sky">cielo</string>
-	<string name="sky0">sereno</string>
-	<string name="sky1">poco nuvoloso</string>
-	<string name="sky2">variabile</string>
-	<string name="sky3">nuvoloso</string>
-	<string name="sky4">coperto</string>
-	<string name="sky5">sole/nebbia</string>
-	
-	<string name="rain">pioggia</string>
-	<string name="rain6">debole [&lt;5mm]</string>
-	<string name="rain7_abbrev">moder.[5&#8211;10mm]</string>
-	<string name="rain8_abbrev">abbond.[10&#8211;30mm]</string>
-	<string name="rain9">intensa [30&#8211;100mm]</string>
-	<string name="rain36">molto intensa &gt;100mm</string>
-	
-	<string name="snow">neve</string>
-	<string name="snow10">moderata</string>
-	<string name="snow11">abbondante</string>
-	<string name="snow12">intensa</string>
-	
-	<string name="storm">temporale</string>
-	<string name="storms">temporali</string>
-	
-	<string name="mist">nebbia</string>
-	<string name="mist14">foschia</string>
-	<string name="mist15">nebbia</string>
-	
-	
-	<string name="wind">vento</string>
-	<string name="wind16">N moderato</string>
-	<string name="wind17">NE moderato</string>
-	<string name="wind18">ENE moderato</string>
-	<string name="wind19">E moderato</string>
-	<string name="wind20">SE moderato</string>
-	<string name="wind21">S moderato</string>
-	<string name="wind22">SW moderato</string>
-	<string name="wind23">W moderato</string>
-	<string name="wind24">NW moderato</string>
-	<string name="wind25">N forte</string>
-	<string name="wind26">NE forte</string>
-	<string name="wind27">ENE forte</string>
-	<string name="wind28">E forte</string>
-	<string name="wind29">SE forte</string>
-	<string name="wind30">S forte</string>
-	<string name="wind31">SW forte</string>
-	<string name="wind32">W forte</string>
-	<string name="wind33">NW forte</string>
-	<string name="wind34">ENE molto forte</string>
-	<string name="wind35">brezza</string>
-    	
-	<string name="evolution">evoluzione</string>
+    <string name="my_location_layer_not_enabled">my-location non abilitato</string>
+
+    <!-- xml symbol map -->
+    <string name="sky">cielo</string>
+    <string name="sky0">sereno</string>
+    <string name="sky1">poco nuvoloso</string>
+    <string name="sky2">variabile</string>
+    <string name="sky3">nuvoloso</string>
+    <string name="sky4">coperto</string>
+    <string name="sky5">sole/nebbia</string>
+    <string name="rain">pioggia</string>
+    <string name="rain6">debole [&lt;5mm]</string>
+    <string name="rain7_abbrev">moder.[5&#8211;10mm]</string>
+    <string name="rain8_abbrev">abbond.[10&#8211;30mm]</string>
+    <string name="rain9">intensa [30&#8211;100mm]</string>
+    <string name="rain36">molto intensa &gt;100mm</string>
+    <string name="snow">neve</string>
+    <string name="snow10">moderata</string>
+    <string name="snow11">abbondante</string>
+    <string name="snow12">intensa</string>
+    <string name="storm">temporale</string>
+    <string name="storms">temporali</string>
+    <string name="mist">nebbia</string>
+    <string name="mist14">foschia</string>
+    <string name="mist15">nebbia</string>
+    <string name="wind">vento</string>
+    <string name="wind16">N moderato</string>
+    <string name="wind17">NE moderato</string>
+    <string name="wind18">ENE moderato</string>
+    <string name="wind19">E moderato</string>
+    <string name="wind20">SE moderato</string>
+    <string name="wind21">S moderato</string>
+    <string name="wind22">SW moderato</string>
+    <string name="wind23">W moderato</string>
+    <string name="wind24">NW moderato</string>
+    <string name="wind25">N forte</string>
+    <string name="wind26">NE forte</string>
+    <string name="wind27">ENE forte</string>
+    <string name="wind28">E forte</string>
+    <string name="wind29">SE forte</string>
+    <string name="wind30">S forte</string>
+    <string name="wind31">SW forte</string>
+    <string name="wind32">W forte</string>
+    <string name="wind33">NW forte</string>
+    <string name="wind34">ENE molto forte</string>
+    <string name="wind35">brezza</string>
+    <string name="evolution">evoluzione</string>
     <string name="evolution04">ore 4</string>
-	<string name="evolution12">ore 12</string>
-	<string name="evolution20">ore 20</string>
-	<!--  WEBCAM -->    
-	 <string name="popup_data_update_info">
-       <![CDATA[
+    <string name="evolution12">ore 12</string>
+    <string name="evolution20">ore 20</string>
+    
+    <string name="evo0">sereno</string>
+    <string name="evo1">variabile</string>
+    <string name="evo2">coperto</string>
+    <string name="evo3">variab. piogge moderate</string>
+    <string name="evo4">variab. piogge abbondanti</string>
+    <string name="evo5">variabile con piogge \nabbondanti e temporali</string>
+    <string name="evo6">variabile con temporali</string>
+    <string name="evo7">coperto con piogge\nmoderate e nevicate</string>
+    <string name="evo8">variab. e nevicate</string>
+    <string name="evo9">coperto piogge moderate</string>
+    <string name="evo10">coperto piogge abbondanti</string>
+    <string name="evo11">coperto piogge intense</string>
+    <string name="evo12">coperto con piogge\nabbondanti e temporali</string>
+    <string name="evo13">coperto con temporali</string>
+    <string name="evo14">coperto piogge\nabbondanti e nevicate</string>
+    <string name="evo15">coperto con nevicate</string>
+
+    <!-- WEBCAM -->
+    <string name="popup_data_update_info">
+<![CDATA[
        <h6>Gestione dell\'aggiornamento dei dati meteo</h6>
         <p>
         La fonte delle osservazioni e le previsioni del tempo è rappresentata dal sito web
@@ -250,13 +257,10 @@
          
          </p>
         
-			]]>		 
-        
-        </string>
-	
-	
-	<string name="popup_app_info">
-		<![CDATA[
+			]]>
+    </string>
+    <string name="popup_app_info">
+<![CDATA[
 	    <h6>Fonte dei dati</h6>
 	    <p>Il testo e ogni altra informazione meteo provengono da 
 	        <a href="http://www.meteo.fvg.it"> http://www.meteo.fvg.it</a>
@@ -385,12 +389,10 @@
 	     osservazioni e previsioni di eventi atmosferici impetuosi o incontrollabili.
 	    </p>
 	
-	]]>		    
-	</string>
-	
-	<string name="radar_info">
-	    
-		<![CDATA[
+	]]>
+    </string>
+    <string name="radar_info">
+<![CDATA[
 		<h6>Mappa radar</h6>
 	Questa mappa radar (VMI, acronimo di Vertical Maximum Intensity) rappresenta il valore massimo di riflettività presente sulla verticale di ogni punto.
 
@@ -404,8 +406,7 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 	<br/>
 	Informazioni prese da http://www.meteo.fvg.it
 
-	]]>		
-	
-	</string>
-	
+	]]>
+    </string>
+
 </resources>

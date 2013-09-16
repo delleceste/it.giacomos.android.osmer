@@ -52,7 +52,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -238,7 +237,6 @@ DataPoolErrorListener
 		/* Set the list's click listener */
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener(this));
 		mTitle = getTitle();
-		mDrawerTitleOpen = getResources().getString(R.string.drawer_open);
 
 		DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -808,6 +806,9 @@ DataPoolErrorListener
 				updateWbcamList();
 		}
 
+		if(mSettings.isZoneLongPressHintEnabled() && id == ViewType.TODAY)
+			Toast.makeText(getApplicationContext(), R.string.hint_zone_longpress, Toast.LENGTH_LONG).show();
+		
 		TitlebarUpdater titleUpdater = new TitlebarUpdater();
 		titleUpdater.update(this);
 		titleUpdater = null;
@@ -892,7 +893,7 @@ DataPoolErrorListener
 	private ListView mDrawerList;
 	private String[] mDrawerItems;
 	private ActionBarDrawerToggle mDrawerToggle;
-	private CharSequence mTitle, mDrawerTitleOpen;
+	private CharSequence mTitle;
 	private ActionBarManager mActionBarManager;
 	private AnimatedImageView mRefreshAnimatedImageView;
 	private ViewType mCurrentViewType;

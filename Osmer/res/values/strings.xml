@@ -89,6 +89,7 @@
     <string name="hint_tap_on_map_markers">Tap over an icon to get further details</string>
     <string name="hint_move_to_measure_on_map">Long click on a marker and move to start measure</string>
     <string name="hint_click_on_map_baloon_webcam_image">Tap on the image to open it on the image viewer</string>
+    <string name="hint_zone_longpress">Long press on the map to see the evolution over the day</string>
     
     <string-array name="observation_types">
         <item>Minimum Temperature</item>
@@ -214,6 +215,23 @@
 	<string name="evolution04">evolution 04h</string>
 	<string name="evolution12">evolution 12h</string>
 	<string name="evolution20">evolution 20h</string>
+	
+	<string name="evo0">clear</string>
+    <string name="evo1">variable</string>
+    <string name="evo2">covered</string>
+    <string name="evo3">variable. mod. rain</string>
+    <string name="evo4">variab. abund. rain</string>
+    <string name="evo5">variab. abund. rain\nand storms</string>
+    <string name="evo6">variab. storms</string>
+    <string name="evo7">covered mod. rain\nand snow</string>
+    <string name="evo8">variab. and snow</string>
+    <string name="evo9">covered mod. rain</string>
+    <string name="evo10">covered abund. rain</string>
+    <string name="evo11">covered intense rain</string>
+    <string name="evo12">covered abund. rain\nand storms</string>
+    <string name="evo13">covered with storms</string>
+    <string name="evo14">covered abund.rain and snow</string>
+    <string name="evo15">covered and snow</string>
 	
     <string name="popup_data_update_info">
        <![CDATA[

@@ -44,6 +44,7 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 		Settings s = new Settings(context);
 		mCachedTextFontSize = s.getMapWithForecastImageTextFontSize();
 		mHintForecastIconEnabled = s.isForecastIconsHintEnabled();
+		mZoneLongPressHintEnabled = s.isZoneLongPressHintEnabled();
 		/* will contain the rectangles in the image that are associated to a 
 		 * forecast data interface, area, locality or strip.
 		 */
@@ -174,7 +175,7 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 				new Settings(getContext()).setMapWithForecastImageTextFontSize(mCachedTextFontSize);
 
 			/* font is now correctly scaled to fit into the image width */
-			mPaint.setColor(Color.DKGRAY);
+			mPaint.setColor(Color.WHITE);
 
 			txtH = txtRect.height();
 			totTxtH = (txtH + 4) * nLines;
@@ -236,7 +237,7 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 								mPaint.setStyle(Paint.Style.STROKE);
 								canvas.drawRoundRect(rect, 6, 6, mPaint);
 								selectionIsActive = true;
-								drawBottomLeftText(canvas, a.getData(mForecastDataStringMap));
+								drawBottomLeftText(canvas, a.getData(mForecastDataStringMap), false);
 								if(a.hasDetailedWindData())
 									drawTopRightTextIfOrientationPortrait(canvas, a.getDetailedWindData(mForecastDataStringMap));
 							}
@@ -297,7 +298,7 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 								mPaint.setStyle(Paint.Style.STROKE);
 								canvas.drawRoundRect(rect, 6, 6, mPaint);
 								selectionIsActive = true;
-								drawBottomLeftText(canvas, l.getData(mForecastDataStringMap));
+								drawBottomLeftText(canvas, l.getData(mForecastDataStringMap), false);
 							}
 						}
 						b = l.snowBitmap();
@@ -317,7 +318,7 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 								mPaint.setStyle(Paint.Style.STROKE);
 								canvas.drawRoundRect(rect, 6, 6, mPaint);
 								selectionIsActive = true;
-								drawBottomLeftText(canvas, l.getData(mForecastDataStringMap));
+								drawBottomLeftText(canvas, l.getData(mForecastDataStringMap), false);
 							}
 						}
 					}
@@ -337,7 +338,7 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 							mPaint.setStyle(Paint.Style.FILL);
 							mPaint.setARGB(120, 240, 255, 215);
 							canvas.drawPath(pa, mPaint);
-							drawBottomLeftText(canvas, z.getData(mForecastDataStringMap));
+							drawBottomLeftText(canvas, z.getData(mForecastDataStringMap), true);
 						}
 					}
 
@@ -461,24 +462,44 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 		}
 	}
 
-	private void drawBottomLeftText(Canvas canvas, String data) 
+	private void drawBottomLeftText(Canvas canvas, String data, boolean drawBackground) 
 	{
 		String [] lines = data.split("\n");
 		int nLines = lines.length;
 		int margin = 3;
 		int textH;
-		int x = 3, y, i;
+		int x = 4, y, i, bgRectX, bgRectY, bgRectH, bgRectW;
 		float fontSize = mFontSize * 0.85f;
 		if(nLines > 0)
 		{
 			Rect txtR = new Rect();
-			mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-			mPaint.setARGB(255, 16, 85, 45);
 			mPaint.setTextSize(fontSize);
 			mPaint.getTextBounds(lines[0], 0, lines[0].length(), txtR);
 			margin = txtR.height() / 5;
 			textH = txtR.height() + margin;
 			y = getHeight() - (nLines -1) * textH - 2 * margin;
+	
+			if(drawBackground)
+			{
+				bgRectH = textH;
+				bgRectY = y - textH;
+				bgRectW = txtR.width();
+				for(i = 1; i < nLines; i++)
+				{
+					mPaint.getTextBounds(lines[i], 0, lines[i].length(), txtR);
+					if(txtR.width() > bgRectW)
+						bgRectW = txtR.width();
+					bgRectH += textH;
+				}
+				bgRectX = x;
+				bgRectH += textH;
+				mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+				mPaint.setARGB(230, 255, 255, 255);
+				canvas.drawRoundRect(new RectF(bgRectX, bgRectY, bgRectX + bgRectW  + margin, bgRectY + bgRectH), 6, 6, mPaint);
+			}
+			
+			mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+			mPaint.setARGB(255, 16, 85, 45);
 			for(i = 0; i < nLines; i++)
 			{
 				canvas.drawText(lines[i], x, y, mPaint);
@@ -504,16 +525,27 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 	@Override
 	public boolean onLongClick(View view) 
 	{
-		Log.e("onLongClick", " ON LONG CLICKED!");
 		mOnLongPress = true;
 		PointF touchedPoint = new PointF(mCurrentTouchedPoint.x, mCurrentTouchedPoint.y);
 		selectZone(touchedPoint);
+		/* if the long press hint is enabled, then disable it */
+		if(mZoneLongPressHintEnabled)
+			mDisableLongPressHint();
+		
 		/* reset current touched point in order not to draw the selection on the icons,
 		 * in case the used long clicked on an icon.
 		 */
 		mCurrentTouchedPoint.x = mCurrentTouchedPoint.y = -1;
 		this.invalidate();
 		return true;
+	}
+	
+	protected void mDisableLongPressHint()
+	{
+		mZoneLongPressHintEnabled = false;
+		Settings s = new Settings(getContext());
+		s.setZoneLongPressHintEnabled(false);
+		s = null;
 	}
 	
 	protected void disableForecastIconsHint()
@@ -566,6 +598,6 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 	private PointF mCurrentTouchedPoint;
 	private int mFontSize;
 	private ForecastDataStringMap mForecastDataStringMap;
-	private boolean mHintForecastIconEnabled;
+	private boolean mHintForecastIconEnabled, mZoneLongPressHintEnabled;
 	private boolean mOnLongPress, mLongPressed;
 }

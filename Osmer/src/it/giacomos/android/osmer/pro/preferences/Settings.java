@@ -26,6 +26,19 @@ public class Settings
 		e.putBoolean("HINT_FORECAST_ICONS", en);
 		e.commit();
 	}
+	
+	public boolean isZoneLongPressHintEnabled()
+	{
+		boolean res = mSharedPreferences.getBoolean("HINT_ZONE_LONG_PRESS", true);
+		return res;
+	}
+
+	public void setZoneLongPressHintEnabled(boolean en)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putBoolean("HINT_ZONE_LONG_PRESS", en);
+		e.commit();
+	}
 
 	public boolean isSwipeHintEnabled()
 	{

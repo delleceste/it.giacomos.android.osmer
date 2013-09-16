@@ -1,6 +1,8 @@
 package it.giacomos.android.osmer.pro.forecastRepr;
 
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.widgets.LocationToImgPixelMapper;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -21,7 +23,7 @@ public class Zone implements ForecastDataInterface {
 	private Region mRegion;
 	private boolean mIsSelected;
 	
-	public Zone(String id)
+	public Zone(String id, Resources res)
 	{
 		evo00 = evo12 = evo24 = 100;
 		mId  = id;
@@ -38,22 +40,22 @@ public class Zone implements ForecastDataInterface {
 		
 		mDataMap = new SparseArray<String>();
 		
-		mDataMap.put(0, "sereno");
-		mDataMap.put(1, "variabile");
-		mDataMap.put(2, "coperto");
-		mDataMap.put(3, "variab. piogge mod.");
-		mDataMap.put(4, "variab. piogge abbond.");
-		mDataMap.put(5, "variab. piogge abbond.\ne temporali");
-		mDataMap.put(6, "variabile con temporali");
-		mDataMap.put(7, "coperto piogge mod.\ne nevicate");
-		mDataMap.put(8, "variab. e nevicate");
-		mDataMap.put(9, "coperto piogge moderate");
-		mDataMap.put(10, "coperto piogge abbondanti");
-		mDataMap.put(11, "coperto piogge intense");
-		mDataMap.put(12, "coperto piogge abbond.\ne temporali");
-		mDataMap.put(13, "coperto con temporali");
-		mDataMap.put(14, "coperto piogge abbond.\ne nevicate");
-		mDataMap.put(15, "coperto con nevicate");
+		mDataMap.put(0, res.getString(R.string.evo0));
+		mDataMap.put(1, res.getString(R.string.evo1));
+		mDataMap.put(2, res.getString(R.string.evo2));
+		mDataMap.put(3, res.getString(R.string.evo3));
+		mDataMap.put(4, res.getString(R.string.evo4));
+		mDataMap.put(5, res.getString(R.string.evo5));
+		mDataMap.put(6, res.getString(R.string.evo6));
+		mDataMap.put(7, res.getString(R.string.evo7));
+		mDataMap.put(8, res.getString(R.string.evo8));
+		mDataMap.put(9, res.getString(R.string.evo9));
+		mDataMap.put(10, res.getString(R.string.evo10));
+		mDataMap.put(11, res.getString(R.string.evo11));
+		mDataMap.put(12, res.getString(R.string.evo12));
+		mDataMap.put(13, res.getString(R.string.evo13));
+		mDataMap.put(14, res.getString(R.string.evo14));
+		mDataMap.put(15, res.getString(R.string.evo15));
 		
 		mIsSelected = false;
 	}

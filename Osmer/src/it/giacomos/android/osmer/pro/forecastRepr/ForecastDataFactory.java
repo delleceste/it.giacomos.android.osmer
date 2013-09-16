@@ -270,7 +270,7 @@ public class ForecastDataFactory
 				}
 				else if(line.matches("Z\\d+"))
 				{
-					fdi = new Zone(line);
+					fdi = new Zone(line, mResources);
 					ret.add(fdi);
 				}
 				else if(fdi.getType() == ForecastDataType.AREA)
