@@ -1,7 +1,7 @@
 package it.giacomos.android.osmer.pro.widgets.map;
 
 import android.content.res.Resources;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.pro.observations.MapMode;
 import it.giacomos.android.osmer.pro.observations.ObservationData;
 import it.giacomos.android.osmer.pro.observations.ObservationType;

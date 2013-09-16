@@ -1,7 +1,7 @@
 package it.giacomos.android.osmer.pro.interfaceHelpers;
 
 import it.giacomos.android.osmer.pro.OsmerActivity;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.pro.observations.MapMode;
 import it.giacomos.android.osmer.pro.observations.ObservationType;
 import android.app.AlertDialog;
