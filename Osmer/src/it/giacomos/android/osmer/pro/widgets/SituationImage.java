@@ -77,7 +77,8 @@ implements LatestObservationCacheChangeListener
 	
 	public void onCacheUpdate(ObservationsCache oCache) 
 	{
-		mMap.clear();
+		dClearObservationsDataMap();
+		
 		Resources res = this.getResources();
 		final String[] locations = { "Trieste", "Udine", "Gradisca d'Is.", "Pordenone",
 				"Tolmezzo", "Tarvisio", "Grado",
@@ -127,6 +128,20 @@ implements LatestObservationCacheChangeListener
 		}
 	}
 
+	private void dClearObservationsDataMap()
+	{
+		for(SituationImageObservationData siod : mMap.values())
+		{
+			Bitmap icon = siod.getIcon();
+			if(icon != null)
+			{
+				icon.recycle();
+				icon = null;
+			}
+		}
+		mMap.clear();
+	}
+	
 	protected void onDraw(Canvas canvas)
 	{
 		super.onDraw(canvas);
@@ -320,16 +335,10 @@ implements LatestObservationCacheChangeListener
 
 	public void cleanup()
 	{
-		for(SituationImageObservationData siod : mMap.values())
-		{
-			Bitmap bmp = siod.getIcon();
-			if(bmp != null)
-			{
-				bmp.recycle();
-				bmp = null;
-			}
-		}
-		mMap.clear();
+		/* for each SituationImageObservationData, gets the icon and recycles it
+		 * and then the map is cleared
+		 */
+		dClearObservationsDataMap();
 		
 		for(SituationImageObservationData siod : mObsRects.values())
 		{
@@ -341,13 +350,6 @@ implements LatestObservationCacheChangeListener
 			}
 		}
 		mObsRects.clear();
-		BitmapDrawable bDra = (BitmapDrawable) this.getDrawable();
-		if(bDra != null)
-		{
-//			Log.e("situationImage.cleanup", "recicling bitmap");
-//			bDra.getBitmap().recycle();
-		}
-
 	}
 
 	protected void disableForecastIconsHint()
