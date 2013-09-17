@@ -30,7 +30,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			DownloadStatus downloadStatus) 
 	{
 		super(stateUpdateListener, downloadStatus);
-		
+
 		m_urls = new Urls();
 		mTotSteps = 0;
 		mCurrentStep = 0;
@@ -45,11 +45,10 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 				m_downloadManagerUpdateListener.onDownloadStart(DownloadReason.Incomplete);
 			else if(downloadStatus.lastCompleteDownloadIsOld())
 				m_downloadManagerUpdateListener.onDownloadStart(DownloadReason.DataExpired);
+
+			downloadStatus.state = DownloadStatus.INIT;
 			
-			downloadStatus.state = DownloadStatus.INIT;		
-			/* starts bitmap task for today bmp and text task for situation */
-			//
-			// mTotSteps = 9; /* manually set 9 steps */
+			/* starts text task for today symbols and text task for situation */
 			startTextTask(m_urls.todaySymtableUrl(), ViewType.TODAY_SYMTABLE);
 			startTextTask(m_urls.situationUrl(), ViewType.HOME);
 			mGetObservationsTable(MapMode.LATEST_OBSERVATIONS);
@@ -57,9 +56,9 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	}
 
 	public StateName name() { return StateName.Online; }
-	
+
 	public String toString() { return name().toString(); }
-	
+
 	public void getSituation()
 	{
 		if(!dDownloadStatus.latestTableDownloaded() && !mIsTextTaskExecuting(ViewType.LATEST_TABLE))
@@ -71,7 +70,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			startTextTask(m_urls.situationUrl(), ViewType.HOME);
 		}
 	}
-	
+
 	public void getTodayForecast()
 	{
 		if(!dDownloadStatus.todaySymtableDownloaded() && !mIsTextTaskExecuting(ViewType.TODAY_SYMTABLE))
@@ -95,7 +94,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			startTextTask(m_urls.tomorrowUrl(), ViewType.TOMORROW);
 		}
 	}
-	
+
 	public void getTwoDaysForecast()
 	{
 		if(!dDownloadStatus.twoDaysSymtableDownloaded() && !mIsTextTaskExecuting(ViewType.TWODAYS_SYMTABLE))
@@ -107,7 +106,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			startTextTask(m_urls.twoDaysUrl(), ViewType.TWODAYS);
 		}
 	}
-	
+
 	public void getTodayTextOnly()
 	{
 		if(!dDownloadStatus.todayDownloaded()  && !mIsTextTaskExecuting(ViewType.TODAY))
@@ -127,7 +126,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			startBitmapTask(m_urls.radarImageUrl(), BitmapType.RADAR);
 		}
 	}
-	
+
 	/* for now, webcam list is obtained by a couple of files
 	 * http://www.osmer.fvg.it/GOOGLE/DatiWebcams1.php
 	 * and WebcamsList.xml
@@ -136,15 +135,15 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	{
 		if(!dDownloadStatus.webcamListDownloaded())
 		{
-//			Log.e("Online", "getWebcamList: downloading webcam update now");
+			//			Log.e("Online", "getWebcamList: downloading webcam update now");
 			dDownloadStatus.setWebcamListsDownloadRequested(true);
 			startTextTask(m_urls.webcamMapData(), ViewType.WEBCAMLIST_OSMER);
 			startTextTask(m_urls.webcamsListXML(), ViewType.WEBCAMLIST_OTHER);
 		}
-//		else
-//			Log.e("Online", "getWebcamList: data not too old, not starting download");
+		//		else
+		//			Log.e("Online", "getWebcamList: data not too old, not starting download");
 	}
-	
+
 	public void getObservationsTable(MapMode mapMode) 
 	{
 		mTotSteps++;
@@ -152,12 +151,12 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 		m_downloadManagerUpdateListener.onDownloadStart(DownloadReason.PartialDownload);
 		mGetObservationsTable(mapMode);
 	}
-	
+
 	@Override
 	public void onTextUpdate(String s, ViewType vt, String errorMessage, AsyncTask<URL, Integer, String> task) 
 	{
 		long oldState = dDownloadStatus.state;
-		
+
 		/* in version < 2.3, we used to complete download in onBitmapUpdate after BitmapType.TODAY was
 		 * downloaded. Following the same logic, after TODAY_SYMTABLE has been downloaded we complete
 		 * the data download.
@@ -165,14 +164,26 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 		if(vt == ViewType.TODAY_SYMTABLE && !dDownloadStatus.fullForecastDownloadRequested())
 		{
 			dDownloadStatus.setFullForecastDownloadRequested(true);
-			startTextTask(m_urls.todayUrl(), ViewType.TODAY);
-			startTextTask(m_urls.tomorrowSymtableUrl(), ViewType.TOMORROW_SYMTABLE);
-			startTextTask(m_urls.tomorrowUrl(), ViewType.TOMORROW);
-			startTextTask(m_urls.twoDaysSymtableUrl(), ViewType.TWODAYS_SYMTABLE);
-			startTextTask(m_urls.twoDaysUrl(), ViewType.TWODAYS);
-			mGetObservationsTable(MapMode.DAILY_OBSERVATIONS);
+			
+			if(!mIsTextTaskExecuting(ViewType.TODAY))
+				startTextTask(m_urls.todayUrl(), ViewType.TODAY);
+			
+			if(!mIsTextTaskExecuting(ViewType.TOMORROW_SYMTABLE))
+				startTextTask(m_urls.tomorrowSymtableUrl(), ViewType.TOMORROW_SYMTABLE);
+			
+			if(!mIsTextTaskExecuting(ViewType.TOMORROW))
+				startTextTask(m_urls.tomorrowUrl(), ViewType.TOMORROW);
+			
+			if(!mIsTextTaskExecuting(ViewType.TWODAYS_SYMTABLE))
+				startTextTask(m_urls.twoDaysSymtableUrl(), ViewType.TWODAYS_SYMTABLE);
+			
+			if(!mIsTextTaskExecuting(ViewType.TWODAYS))
+				startTextTask(m_urls.twoDaysUrl(), ViewType.TWODAYS);
+			
+			if(!mIsTextTaskExecuting(ViewType.DAILY_TABLE))
+				mGetObservationsTable(MapMode.DAILY_OBSERVATIONS);
 		}
-		
+
 		dDownloadStatus.updateState(vt, errorMessage.isEmpty());
 		m_downloadManagerUpdateListener.onTextUpdate(s, vt, errorMessage);
 		/* publish progress , after DownloadStatus state has been updated */
@@ -188,13 +199,13 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 		if(bytes != null)
 			m_downloadManagerUpdateListener.onTextBytesUpdate(bytes, vt);
 	}
-	
+
 	@Override
 	public void onBitmapBytesUpdate(byte [] bytes, BitmapType bt)
 	{
 		m_downloadManagerUpdateListener.onBitmapBytesUpdate(bytes, bt);
 	}
-	
+
 	@Override
 	public void onBitmapUpdate(Bitmap bmp, BitmapType bt, String errorMessage, AsyncTask<URL, Integer, Bitmap> task) 
 	{			
@@ -207,7 +218,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 		mProgressNeedsReset();
 		mMyTasks.remove(task);
 	}
-	
+
 	public void cancelRunningTasks()
 	{
 		for(int i = 0; i < mMyTasks.size(); i++)
@@ -215,63 +226,53 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			/* try to cancel the task. At least, onPostExecute is not called 
 			 * Calling this method guarantees that onPostExecute(Object) is never invoked.
 			 */
+			Log.e("cancelRunningTasks", "state " + mMyTasks.get(i).getStatus());
 			mMyTasks.get(i).cancel(false);
 		}
 		mMyTasks.clear();
 	}
-	
-	protected void startBitmapTask(String urlStr, BitmapType t)
-	{
-		mTotSteps++;
-		Log.e("startBitmapTask", "type " + t + " mTotSteps " + mTotSteps);
-//		m_downloadManagerUpdateListener.onDownloadStart(DownloadReason.PartialDownload);
-		mStartBitmapTask(urlStr, t);
-	}
-	
-	protected void startTextTask(String urlStr, ViewType t)
-	{
-		mTotSteps++;
-		Log.e("startTextTask", "type " + t + " mTotSteps " + mTotSteps);
-//		m_downloadManagerUpdateListener.onDownloadStart(DownloadReason.PartialDownload);
-		mStartTextTask(urlStr, t);
-	}
-	
-	protected void mStartBitmapTask(String urlStr, BitmapType t)
+
+	private void startBitmapTask(String urlStr, BitmapType t)
 	{
 		BitmapTask bitmapTask = new BitmapTask(this, t);
 		try{
 			URL url = new URL(urlStr);
 			bitmapTask.parallelExecute(url);
+			mTotSteps++;
 			mMyTasks.add(bitmapTask);
 		}
 		catch(MalformedURLException e)
 		{
 			onBitmapUpdate(null, t, e.getMessage(), null);
 		}
+
+		Log.e("startBitmapTask", "type " + t + " mTotSteps " + mTotSteps);
 	}
 
-	protected void mStartTextTask(String urlStr, ViewType t)
+	private void startTextTask(String urlStr, ViewType t)
 	{
 		TextTask textTask = new TextTask(this, t);
 		try{
 			URL url = new URL(urlStr);
 			textTask.parallelExecute(url);
+			mTotSteps++;
 			mMyTasks.add(textTask);
 		}
 		catch(MalformedURLException e)
 		{
 			onTextUpdate("Malformed url \"" + urlStr + "\"\n" , t, e.getMessage(), null);
 		}
+
+		Log.e("startTextTask", "type " + t + " mTotSteps " + mTotSteps);
 	}
-	
+
 	protected void mGetObservationsTable(MapMode mapMode)
 	{
-		mTotSteps++;
 		/* start text task ... */
 		String surl = null;
 		String referer = null;
 		ViewType viewType;
-		
+
 		if(mapMode == MapMode.DAILY_OBSERVATIONS)
 		{
 			surl = m_urls.dailyTableUrl();
@@ -284,12 +285,13 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			referer = m_urls.latestTableReferer();
 			viewType = ViewType.LATEST_TABLE;
 		}
-		
+
 		TextTask textTask = new TextTask(this, viewType);
 		try{
 			URL url = new URL(surl);
 			textTask.setReferer(referer);
 			textTask.parallelExecute(url);
+			mTotSteps++;
 			mMyTasks.add(textTask);
 		}
 		catch(MalformedURLException e)
@@ -297,10 +299,10 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			onTextUpdate("Malformed url \"" + surl + "\"\n" , viewType, e.getMessage(), null);
 		}
 	}
-	
+
 	private boolean mIsTextTaskExecuting(ViewType vt)
 	{
-		for(AsyncTask at : mMyTasks)
+		for(AsyncTask<?, ?, ?> at : mMyTasks)
 		{
 			if(at instanceof TextTask )
 			{
@@ -315,7 +317,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 		Log.e("mIsTextTaskExecuting", "TextTask " + vt + " is NOT RUNNING");
 		return false;	
 	}
-	
+
 	private void mProgressNeedsReset()
 	{
 		if(mCurrentStep == mTotSteps)
@@ -324,7 +326,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			Log.e("mProgressNeedsReset", " mTotSteps " + mTotSteps);
 		}
 	}
-	
+
 
 	ArrayList<AsyncTask> mMyTasks;
 	Urls m_urls;
