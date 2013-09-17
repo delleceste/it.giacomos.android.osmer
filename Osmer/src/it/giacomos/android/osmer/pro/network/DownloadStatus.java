@@ -43,7 +43,8 @@ public class DownloadStatus {
 
 	private static DownloadStatus _instance = null;
 
-	public static final int DOWNLOAD_OLD_TIMEOUT = 60000;
+	////////// OCCCIO ////////////////
+	public static final int DOWNLOAD_OLD_TIMEOUT = 2000;
 	public static final int DOWNLOAD_OBSERVATIONS_OLD_TIMEOUT = 60;
 
 	public boolean homeDownloaded() { return (state & HOME_DOWNLOADED) != 0; }

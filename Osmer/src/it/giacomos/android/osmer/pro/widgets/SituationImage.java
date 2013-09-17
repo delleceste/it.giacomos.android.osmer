@@ -60,6 +60,12 @@ implements LatestObservationCacheChangeListener
 			mFontSize = 20;
 		else if(densityDpi == DisplayMetrics.DENSITY_XHIGH)
 			mFontSize = 24;
+		else if(densityDpi == DisplayMetrics.DENSITY_XXHIGH)
+			mFontSize = 28;
+		else if(densityDpi == DisplayMetrics.DENSITY_XXXHIGH)
+			mFontSize = 32;
+		else /* shouldn't happen */
+			mFontSize = 36;
 		/* in this class we use mPaint which is allocated in superclass */
 		mViewType = ViewType.HOME;
 		mHintForecastIconEnabled = new Settings(context).isForecastIconsHintEnabled();

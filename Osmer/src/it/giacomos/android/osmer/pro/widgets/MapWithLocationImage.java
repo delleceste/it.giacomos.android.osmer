@@ -128,12 +128,16 @@ implements LocationServiceUpdateListener, LocationServiceAddressUpdateListener
 
 			int densityDpi = this.getResources().getDisplayMetrics().densityDpi;
 
-			if(densityDpi == DisplayMetrics.DENSITY_XHIGH)
+			if(densityDpi == DisplayMetrics.DENSITY_XXXHIGH)
+				mPaint.setTextSize(28f);
+			else if(densityDpi == DisplayMetrics.DENSITY_XXHIGH)
+				mPaint.setTextSize(25f);
+			else if(densityDpi == DisplayMetrics.DENSITY_XHIGH)
 				mPaint.setTextSize(20f);
 			else if(densityDpi == DisplayMetrics.DENSITY_HIGH)
 				mPaint.setTextSize(12);
 			else
-				mPaint.setTextSize(8);
+				mPaint.setTextSize(11);
 
 			if(!mAddress.isEmpty())
 			{

@@ -34,6 +34,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
+import android.widget.Toast;
 
 public class MapWithForecastImage extends MapWithLocationImage implements OnLongClickListener
 {
@@ -59,7 +60,14 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 		else if(densityDpi == DisplayMetrics.DENSITY_HIGH)
 			mFontSize = 20;
 		else if(densityDpi == DisplayMetrics.DENSITY_XHIGH)
-			mFontSize = 24;	
+			mFontSize = 24;
+		else if(densityDpi == DisplayMetrics.DENSITY_XXHIGH)
+			mFontSize = 28;
+		else if(densityDpi == DisplayMetrics.DENSITY_XXXHIGH)
+			mFontSize = 32;
+		else /* shouldn't happen */
+			mFontSize = 36;
+		
 		setOnLongClickListener(this);
 	}
 
@@ -390,7 +398,7 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 
 	private void drawT1000T2000(Canvas canvas, Strip s, PointF pt) 
 	{
-		int t200XShift = 0;
+		int t1000XShift = 0;
 		float fontSize = mFontSize;
 		Rect txtRect = new Rect();
 		String text;
@@ -400,21 +408,21 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 		mPaint.setColor(Color.WHITE);
 		mPaint.setStyle(Paint.Style.STROKE);
 		if(!s.t1000.isEmpty())
-		{
-			text = getResources().getString(R.string.t1000) + ": " + s.t1000 + getResources().getString(R.string.celsius);
+		{			
+			text = getResources().getString(R.string.t2000) + ": " + s.t2000 + getResources().getString(R.string.celsius);
 			mPaint.getTextBounds(text, 0, text.length(), txtRect);
 			canvas.drawText(text, pt.x, y, mPaint);
 			//			mPaint.setColor(Color.BLUE);
 			//			canvas.drawRoundRect(new RectF(pt.x - 4, y - txtRect.height() - 4, pt.x + 4 + txtRect.right, y+ txtRect.bottom + 4), 6, 6, mPaint);
 			y += txtRect.height() + 4;
-			t200XShift = txtRect.width() / 4;
+			t1000XShift = txtRect.width() / 4;
 		}
 		if(!s.t2000.isEmpty())
-		{
+		{			
+			text = getResources().getString(R.string.t1000) + ": " + s.t1000 + getResources().getString(R.string.celsius);
 			mPaint.setColor(Color.WHITE);
-			text = getResources().getString(R.string.t2000) + ": " + s.t2000 + getResources().getString(R.string.celsius);
 			//			mPaint.getTextBounds(text, 0, text.length(), txtRect);
-			x = pt.x + t200XShift;
+			x = pt.x + t1000XShift;
 			canvas.drawText(text, x, y, mPaint);
 			//			mPaint.setColor(Color.LTGRAY);
 			//			canvas.drawRoundRect(new RectF(x - 4, y - txtRect.height() - 4, pt.x + txtRect.right + 4, y+ txtRect.bottom + 4), 6, 6, mPaint);

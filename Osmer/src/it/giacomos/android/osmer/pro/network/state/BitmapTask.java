@@ -31,6 +31,11 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
 		m_bitmapType = bt;
 	}
 	
+	public BitmapType getType()
+	{
+		return m_bitmapType;
+	}
+	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public final AsyncTask<URL, Integer, Bitmap> parallelExecute (URL... urls)
 	{

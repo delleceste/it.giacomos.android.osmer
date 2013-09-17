@@ -47,8 +47,15 @@ public class CustomMarkerBitmapFactory
 			mInitialFontSize = 12;
 		else if(dm.densityDpi == DisplayMetrics.DENSITY_MEDIUM)
 			mInitialFontSize = 16;
-		else
+		else if(dm.densityDpi == DisplayMetrics.DENSITY_HIGH)
 			mInitialFontSize = 26;
+		else if(dm.densityDpi == DisplayMetrics.DENSITY_XHIGH)
+			mInitialFontSize = 28;
+		else if(dm.densityDpi == DisplayMetrics.DENSITY_XXHIGH)
+			mInitialFontSize = 32;
+		else if(dm.densityDpi == DisplayMetrics.DENSITY_XXXHIGH)
+			mInitialFontSize = 36;
+		
 		mAlphaTextContainer = 230;
 		mTextBgColor = Color.argb(mAlphaTextContainer, 250, 252, 255);	
 		mTextWidthScaleFactor = 2.4f;

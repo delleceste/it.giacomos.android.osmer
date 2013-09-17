@@ -19,6 +19,11 @@ public class TextTask extends AsyncTask<URL, Integer, String> {
 		mReferer = null;
 	}
 
+	public ViewType getType()
+	{
+		return m_type;
+	}
+	
 	public void setReferer(String ref)
 	{
 		mReferer = ref;
