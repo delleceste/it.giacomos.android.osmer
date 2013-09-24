@@ -273,7 +273,10 @@ public class ForecastDataFactory
 					fdi = new Zone(line, mResources);
 					ret.add(fdi);
 				}
-				else if(fdi.getType() == ForecastDataType.AREA)
+				/* must look for fdi != null in case of malformed data (for instance when you connect to a 
+				 * protected wi fi network and you are redirected to a login web page).
+				 */
+				else if(fdi != null && fdi.getType() == ForecastDataType.AREA)
 				{
 					try{
 						area = (Area) fdi;
@@ -315,7 +318,7 @@ public class ForecastDataFactory
 
 					}
 				}
-				else if(fdi.getType() == ForecastDataType.STRIP)
+				else if(fdi != null && fdi.getType() == ForecastDataType.STRIP)
 				{	
 					strip = (Strip) fdi;
 					if(line.startsWith("t1") && line.length() > 2)
@@ -327,7 +330,7 @@ public class ForecastDataFactory
 					else if(line.startsWith("tM") && line.length() > 2)
 						strip.tMax = line.replace("tM", "");
 				}
-				else if(fdi.getType() == ForecastDataType.LOCALITY)
+				else if(fdi != null && fdi.getType() == ForecastDataType.LOCALITY)
 				{
 					try{
 						loc = (Locality ) fdi;
@@ -345,7 +348,7 @@ public class ForecastDataFactory
 
 					}
 				}
-				else if(fdi.getType() == ForecastDataType.ZONE)
+				else if(fdi != null && fdi.getType() == ForecastDataType.ZONE)
 				{
 					try{
 						Zone  z = (Zone) fdi;
