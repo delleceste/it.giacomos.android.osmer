@@ -36,6 +36,8 @@ import it.giacomos.android.osmer.pro.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.pro.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.pro.widgets.map.RadarOverlayUpdateListener;
+import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimation;
+import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -84,11 +86,12 @@ OnMenuItemClickListener,
 OnDismissListener,
 MapFragmentListener,
 RadarOverlayUpdateListener,
-DataPoolErrorListener
+DataPoolErrorListener,
+RadarAnimationListener
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
-	
+
 	public OsmerActivity()
 	{
 		super();
@@ -97,7 +100,7 @@ DataPoolErrorListener
 		mDownloadStatus = DownloadStatus.Instance();
 		m_downloadManager = new DownloadManager(this, mDownloadStatus);
 	}
-	
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -120,7 +123,7 @@ DataPoolErrorListener
 			mGoogleServicesAvailable = false;
 			GooglePlayServicesUtil.getErrorDialog(resultCode, this, 0).show();
 		}
-		
+
 	}
 
 	public void onResume()
@@ -137,7 +140,7 @@ DataPoolErrorListener
 		super.onPause();
 		if(!mGoogleServicesAvailable)
 			return;
-		
+
 		Log.e("OsmerActivity.onPause", "stopping pending tasks");
 		/* cancel async tasks that may be running when the application is destroyed */
 		m_downloadManager.stopPendingTasks();
@@ -214,7 +217,7 @@ DataPoolErrorListener
 		mCurrentViewType = ViewType.HOME;
 		mViewPager = new ViewPager(this);
 		mViewPager.setId(R.id.pager);
-		
+
 		mLocationService = new LocationService(getApplicationContext(), mDownloadStatus);
 		/* Set the number of pages that should be retained to either side of 
 		 * the current page in the view hierarchy in an idle state
@@ -274,12 +277,12 @@ DataPoolErrorListener
 		 */
 		mDataPool.registerTextListener(ViewType.DAILY_TABLE, m_observationsCache);
 		mDataPool.registerTextListener(ViewType.LATEST_TABLE, m_observationsCache);
-		
+
 		/* download manager. Instantiated in the constructor because it's final */
 		m_downloadManager.setDownloadListener(mDataPool);
-		
+
 		DataPoolCacheUtils dataPoolCacheUtils = new DataPoolCacheUtils();
-		
+
 		/* load cached tables at startup. map is updated because installed as a listener
 		 * above. Situation image will register as LatestObservationCacheChangeListener
 		 * in SituationFragment.onActivityCreated. It will be immediately notified
@@ -291,12 +294,12 @@ DataPoolErrorListener
 				ViewType.LATEST_TABLE, true);
 		/* create the location update client and connect it to the location service */
 		mLocationService.connect();
-		
+
 		/* show touch forecast icons hint until a MapWithForecastImage disables this */
 		if(mSettings.isForecastIconsHintEnabled())
 			Toast.makeText(getApplicationContext(), R.string.hint_forecast_icons, Toast.LENGTH_LONG).show();
 	}
-	
+
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) 
@@ -412,7 +415,7 @@ DataPoolErrorListener
 	{
 
 	}
-	
+
 	@Override
 	public void setTitle(CharSequence title) {
 		mTitle = title;
@@ -451,9 +454,9 @@ DataPoolErrorListener
 		 * data is preserved as long as the process is running.
 		 * The class and file shall be removed.
 		 */
-//		SnapshotManager snapManager = new SnapshotManager();
-//		snapManager.save(outState, this);
-//		snapManager = null;
+		//		SnapshotManager snapManager = new SnapshotManager();
+		//		snapManager.save(outState, this);
+		//		snapManager = null;
 	}
 
 	protected void onRestoreInstanceState(Bundle inState)
@@ -464,12 +467,12 @@ DataPoolErrorListener
 		 * its state through orientation changes and application put in background,
 		 * generally until the process is running.
 		 */
-//		/* restores from the bundle if the bundle creation timestamp is reasonably
-//		 * close to current timestamp
-//		 */
-//		SnapshotManager snapManager = new SnapshotManager();
-//		snapManager.restore(inState, this);
-//		snapManager = null;
+		//		/* restores from the bundle if the bundle creation timestamp is reasonably
+		//		 * close to current timestamp
+		//		 */
+		//		SnapshotManager snapManager = new SnapshotManager();
+		//		snapManager.restore(inState, this);
+		//		snapManager = null;
 	}
 
 	public void getSituation()
@@ -619,6 +622,10 @@ DataPoolErrorListener
 				Toast.makeText(getApplicationContext(), R.string.hint_move_to_measure_on_map, Toast.LENGTH_LONG).show();
 			omv.setMeasureEnabled(menuItem.isChecked());
 			break;
+		case R.id.radarAnimationAction:
+			findViewById(R.id.radarTimestampTextView).setVisibility(View.GONE);
+			startRadarAnimation();
+			break;
 		default:
 			break;
 		}
@@ -628,16 +635,19 @@ DataPoolErrorListener
 	@Override
 	public void onClick(View v)
 	{
-
-		switch(v.getId())
+		if (v.getId() == R.id.actionOverflow) 
 		{
-		case R.id.actionOverflow:
-			ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
-			buttonMapsOveflowMenu.setChecked(true);
-			mCreateMapOptionsPopupMenu();
-			break;
-		default:
-			break;		
+			OMapFragment omv = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+			if(omv.isRadarAnimationRunning())
+			{
+				stopRadarAnimation();
+			}
+			
+			mCreateMapOptionsPopupMenu(true);
+		} 
+		else 
+		{
+
 		}
 	}
 
@@ -676,7 +686,7 @@ DataPoolErrorListener
 		}
 	}
 
-	private void mCreateMapOptionsPopupMenu() 
+	private void mCreateMapOptionsPopupMenu(boolean show) 
 	{
 		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
 		ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
@@ -707,9 +717,13 @@ DataPoolErrorListener
 			break;
 		}
 
-		mapOptionsMenu.setOnMenuItemClickListener(this);
-		mapOptionsMenu.setOnDismissListener(this);
-		mapOptionsMenu.show();
+		Log.e("mCreateMapOptionsPopupMenu", "show is " + show);
+		if(show)
+		{
+			mapOptionsMenu.setOnMenuItemClickListener(this);
+			mapOptionsMenu.setOnDismissListener(this);
+			mapOptionsMenu.show();
+		}
 	}
 
 	public void switchView(ViewType id) 
@@ -811,7 +825,7 @@ DataPoolErrorListener
 
 		if(mSettings.isZoneLongPressHintEnabled() && id == ViewType.TODAY)
 			Toast.makeText(getApplicationContext(), R.string.hint_zone_longpress, Toast.LENGTH_LONG).show();
-		
+
 		TitlebarUpdater titleUpdater = new TitlebarUpdater();
 		titleUpdater.update(this);
 		titleUpdater = null;
@@ -821,6 +835,19 @@ DataPoolErrorListener
 	}
 
 	public DownloadManager stateMachine() { return m_downloadManager; }
+
+	public void startRadarAnimation()
+	{
+		OMapFragment omv = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+		omv.startRadarAnimation();
+	}
+
+	public void stopRadarAnimation()
+	{
+		OMapFragment omv = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+		if(omv.isRadarAnimationRunning())
+			omv.stopRadarAnimation();
+	}
 
 	public ObservationsCache getObservationsCache()
 	{
@@ -861,17 +888,17 @@ DataPoolErrorListener
 	{
 		return mDataPool;
 	}
-	
+
 	public DownloadStatus getDownloadStatus()
 	{
 		return mDownloadStatus;
 	}
-	
+
 	public LocationService getLocationService()
 	{
 		return mLocationService;
 	}
-	
+
 	@Override
 	public void onRadarImageUpdated() 
 	{
@@ -885,6 +912,23 @@ DataPoolErrorListener
 			radarTimestampText.setText(text);
 	}
 
+	@Override
+	public void onRadarAnimationStart() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onRadarAnimationPause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onRadarAnimationStop() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	/* private members */
 	int mTapOnMarkerHintCount;
@@ -914,4 +958,6 @@ DataPoolErrorListener
 
 
 	int availCnt = 0;
+
+	
 }

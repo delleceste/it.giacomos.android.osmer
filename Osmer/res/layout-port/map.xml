@@ -36,6 +36,57 @@
             android:textColor="@android:color/black"
             android:textSize="12sp"
             android:visibility="visible" />
+        
+        <ProgressBar 
+         android:id="@+id/radarAnimProgressBar"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         style="@android:style/Widget.ProgressBar.Large"
+         android:layout_marginRight="5dp"
+	    android:layout_centerInParent="true"
+            android:visibility="gone" />
+        
+        <TextView
+            android:id="@+id/radarAnimTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+        		android:layout_marginRight="6dp"
+            	android:layout_marginLeft="6dp"
+            android:background="@drawable/rounded_text_box"
+            android:padding="5dp"
+            android:textColor="@android:color/black"
+            android:textSize="12sp"
+            android:visibility="gone" />
+        
+        <ToggleButton 
+         	    android:layout_width="32dp"
+        		android:layout_height="32dp"       		
+				android:textOff=""
+				android:textOn=""
+        		android:background="@drawable/ic_play_pause_button" 
+        		android:layout_marginRight="6dp"
+            	android:layout_marginLeft="6dp"
+	    		android:layout_alignParentBottom="true"
+	    		android:layout_toLeftOf="@id/radarAnimTime"
+        		android:id="@+id/playPauseButton"
+            	android:visibility="gone" />	
+            
+         <ToggleButton
+            android:id="@+id/stopButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_toLeftOf="@id/playPauseButton"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:background="@drawable/ic_media_stop"
+            android:textOff=""
+            android:textOn=""
+            android:visibility="gone" />
+        
+        
     </RelativeLayout>
 
 </fragment>

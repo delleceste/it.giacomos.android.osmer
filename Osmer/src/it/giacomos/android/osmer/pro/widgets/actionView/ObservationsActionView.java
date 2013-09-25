@@ -2,14 +2,11 @@ package it.giacomos.android.osmer.pro.widgets.actionView;
 
 import it.giacomos.android.osmer.R;
 import android.content.Context;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ActionProvider;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Spinner;
 
 public class ObservationsActionView extends ActionProvider
@@ -25,7 +22,6 @@ public class ObservationsActionView extends ActionProvider
 	@Override
 	public View onCreateActionView() 
 	{
-		Log.i("onCreateActionView", "inflating");
 		LayoutInflater li = LayoutInflater.from(mContext);
 		View v = li.inflate(R.layout.dailyobs_spinner, null);
 		

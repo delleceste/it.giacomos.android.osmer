@@ -76,7 +76,9 @@
     <string name="terrain_view">Vista terreno</string>
     <string name="map_normal_view">Vista normale</string>
     <string name="measure_mode">Modalità misura</string>
-    <string name="radar_help">Informazioni radar</string>
+    <string name="radar_help">Informazioni radar</string>    
+    <string name="radar_animation">Animazione</string>
+    
 
     <!-- hint toasts -->
     <string name="hint_forecast_icons">Suggerimento: tocca un\'icona e leggi i dettagli in basso a sinistra, da oggi anche sulla cartina delle previsioni!</string>

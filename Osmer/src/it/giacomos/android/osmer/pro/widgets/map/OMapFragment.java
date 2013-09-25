@@ -31,6 +31,8 @@ import it.giacomos.android.osmer.pro.webcams.LastImageCache;
 import it.giacomos.android.osmer.pro.webcams.OtherWebcamListDecoder;
 import it.giacomos.android.osmer.pro.webcams.WebcamData;
 import it.giacomos.android.osmer.pro.widgets.OAnimatedTextView;
+import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimation;
+import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationStatus;
 
 import android.app.Activity;
 import android.content.Context;
@@ -69,6 +71,7 @@ DataPoolErrorListener
 	private boolean mMapClickOnBaloonImageHintEnabled;
 	private Settings mSettings;
 	private RadarOverlayUpdateListener mRadarOverlayUpdateListener;
+	private RadarAnimation mRadarAnimation;
 
 	/* MapFragmentListener: the activity must implement this in order to be notified when 
 	 * the GoogleMap is ready.
@@ -87,6 +90,7 @@ DataPoolErrorListener
 		mOverlays = new ArrayList<OOverlayInterface>();
 		mMode = new MapViewMode(ObservationType.NONE, MapMode.RADAR);
 		mMode.isExplicit = false; /* setMode is not called */
+		mRadarAnimation = null;
 	}
 
 	@Override
@@ -173,6 +177,10 @@ DataPoolErrorListener
 	@Override
 	public void onSaveInstanceState(Bundle outState)
 	{
+		Log.e("MapSupportFragment.onSaveInstanceState", "saving outState");
+		if(mRadarAnimation != null)
+			mRadarAnimation.saveState(outState);
+		
 		super.onSaveInstanceState(outState); /* modificato x map v2 */
 	}
 
@@ -220,6 +228,9 @@ DataPoolErrorListener
 		/* initialize radar bitmap */
 		onBitmapChanged(dpcu.loadFromStorage(BitmapType.RADAR, 
 				oActivity.getApplicationContext()), BitmapType.RADAR, true);
+		
+		mRadarAnimation = new RadarAnimation(this);
+		mRadarAnimation.restoreState(savedInstanceState);
 	}
 
 	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -362,6 +373,8 @@ DataPoolErrorListener
 			mRefreshRadarImage();
 			mOverlays.add(mRadarOverlay);
 			radarTimestampText.scheduleShow();
+			if(mRadarAnimation.animationInProgress())
+				mRadarAnimation.resume();
 		} 
 		else if(m.currentMode == MapMode.WEBCAM) 
 		{
@@ -578,5 +591,19 @@ DataPoolErrorListener
 				"\n" + error, Toast.LENGTH_LONG).show();
 	}
 
+	public void startRadarAnimation() 
+	{
+		mRadarAnimation.start();
+	}
+
+	public void stopRadarAnimation()
+	{
+		mRadarAnimation.stop();
+	}
+	
+	public boolean isRadarAnimationRunning()
+	{
+		return mRadarAnimation != null && mRadarAnimation.isRunning();
+	}
 
 }
