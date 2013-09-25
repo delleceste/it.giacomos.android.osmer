@@ -34,6 +34,7 @@
     <string name="radarImageOld">L\'immagine radar scaricata più di quattro ore fa</string>
     <string name="radarImageBlackWhiteHint">(Per questo è in bianco e nero)</string>
     <string name="radarDownloadError">Errore scaricamento immagine radar</string>
+    <string name="radarAnimDownloadError">Errore scaricamento dati animazione</string>
     <string name="webcam_lists_downloaded">lista webcam aggiornata</string>
     <string name="webcam_downloading">download immagine webcam&#8230;</string>
     <string name="webcam_download_task_canceled">annullo il download di </string>

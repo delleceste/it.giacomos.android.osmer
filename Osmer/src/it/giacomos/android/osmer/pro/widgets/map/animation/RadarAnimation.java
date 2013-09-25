@@ -10,6 +10,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.view.View.OnClickListener;
 
@@ -19,6 +20,7 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener
 	private RadarAnimationStatus mAnimationStatus;
 	private ArrayList<RadarAnimationListener> mAnimationListeners;
 	private int mFrameNo, mDownloadProgress;
+	private String mUrlList;
 	
 	private SparseArray<String> mAnimationData;
 	
@@ -51,6 +53,8 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener
 		Log.e("RadarAnimation", "start");
 		mAnimationStatus = RadarAnimationStatus.RUNNING;
 		
+		mUrlList = "";
+		
 		for(RadarAnimationListener ral : mAnimationListeners)
 			ral.onRadarAnimationStart();
 	}
@@ -61,6 +65,8 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener
 		mAnimationStatus = RadarAnimationStatus.NOT_RUNNING;
 		
 		hideControls();
+		
+		mUrlList = "";
 		
 		for(RadarAnimationListener ral : mAnimationListeners)
 			ral.onRadarAnimationStop();
@@ -112,6 +118,7 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener
 		
 		outState.putInt("animationDownloadProgress", mDownloadProgress);
 		outState.putInt("animationFrameNo", mFrameNo);
+		outState.putString("urlList", mUrlList);
 	}
 
 	public void restoreState(Bundle savedInstanceState) 
@@ -193,6 +200,19 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener
 	public void onDownloadComplete() 
 	{
 		
+	}
+
+	@Override
+	public void onDownloadError(String message) 
+	{
+		String msg = mMapFrag.getActivity().getResources().getString(R.string.radarAnimDownloadError) + "\n" + message;
+		Toast.makeText(mMapFrag.getActivity().getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	public void onUrlsReady(String urlList) 
+	{
+		mUrlList = urlList;
 	}
 
 }

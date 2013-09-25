@@ -38,6 +38,7 @@
     <string name="radarImageOld">Radar image is older than four hours</string>
     <string name="radarImageBlackWhiteHint">(So radar image is black and white)</string>
     <string name="radarDownloadError">Error getting radar image</string>
+    <string name="radarAnimDownloadError">Error downloading radar animation data</string>
     <string name="webcam_lists_downloaded">webcam list updated</string>
     <string name="webcam_downloading"> downloading webcam image&#8230;</string>
     <string name="webcam_download_task_canceled">canceling image download</string>

@@ -67,6 +67,11 @@ public class Urls {
 		return "http://www.meteo.fvg.it/COMMON/RAD/GOOGLE.gif";
 	}
 	
+	public String radarHistoricalImagesFolderUrl()
+	{
+		return "http://www.giacomos.it/meteo.fvg/data/radar/";
+	}
+	
 	public String minTempUrl()
 	{
 		return "";

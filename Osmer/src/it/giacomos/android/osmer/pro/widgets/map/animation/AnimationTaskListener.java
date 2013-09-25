@@ -10,4 +10,8 @@ public interface AnimationTaskListener
 	public void animationCanStart();
 	
 	public void onDownloadComplete();
+	
+	public void onDownloadError(String message);
+	
+	public void onUrlsReady(String urlList);
 }
