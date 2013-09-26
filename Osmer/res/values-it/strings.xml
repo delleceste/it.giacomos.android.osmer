@@ -219,6 +219,10 @@
     <string name="evo14">coperto piogge\nabbondanti e nevicate</string>
     <string name="evo15">coperto con nevicate</string>
 
+    <!--  radar animation -->
+    <string name="radarAnimationTaskCancelled">Operazione annullata</string>
+    
+    
     <!-- WEBCAM -->
     <string name="popup_data_update_info">
 <![CDATA[

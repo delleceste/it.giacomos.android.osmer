@@ -154,6 +154,8 @@ DataPoolErrorListener
 		/* clear webcam data, cancel current task, finalize info window adapter */
 		if(mWebcamOverlay != null)
 			mWebcamOverlay.clear();
+		
+		mRadarAnimation.onDestroy();
 		super.onDestroy();
 	}
 
@@ -230,7 +232,11 @@ DataPoolErrorListener
 				oActivity.getApplicationContext()), BitmapType.RADAR, true);
 		
 		mRadarAnimation = new RadarAnimation(this);
-		mRadarAnimation.restoreState(savedInstanceState);
+		/* restoreState just initializes internal variables. We do not restore animation
+		 * here. Animation is restored inside setMode, when the mode is MapMode.RADAR.
+		 */
+		if(savedInstanceState != null)
+			mRadarAnimation.restoreState(savedInstanceState);
 	}
 
 	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -374,7 +380,7 @@ DataPoolErrorListener
 			mOverlays.add(mRadarOverlay);
 			radarTimestampText.scheduleShow();
 			if(mRadarAnimation.animationInProgress())
-				mRadarAnimation.resume();
+				mRadarAnimation.restore();
 		} 
 		else if(m.currentMode == MapMode.WEBCAM) 
 		{

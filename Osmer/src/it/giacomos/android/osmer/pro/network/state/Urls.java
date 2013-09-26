@@ -72,6 +72,11 @@ public class Urls {
 		return "http://www.giacomos.it/meteo.fvg/data/radar/";
 	}
 	
+	public String radarHistoricalFileListUrl()
+	{
+		return "http://www.giacomos.it/meteo.fvg/get_radar_files.php";
+	}
+	
 	public String minTempUrl()
 	{
 		return "";

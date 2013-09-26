@@ -234,6 +234,9 @@
     <string name="evo13">covered with storms</string>
     <string name="evo14">covered abund.rain and snow</string>
     <string name="evo15">covered and snow</string>
+    
+    <!--  radar animation -->
+    <string name="radarAnimationTaskCancelled">task cancelled</string>
 	
     <string name="popup_data_update_info">
        <![CDATA[

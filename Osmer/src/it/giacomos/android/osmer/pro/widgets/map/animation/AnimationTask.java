@@ -15,7 +15,7 @@ import java.util.Arrays;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class AnimationTask extends AsyncTask <URL, Integer, Integer>
+public class AnimationTask extends AsyncTask <String, Integer, Integer>
 {
 	private String mExternalStorageDirPath;
 	private String m_errorMessage;
@@ -35,16 +35,21 @@ public class AnimationTask extends AsyncTask <URL, Integer, Integer>
 	{
 		mDownloadUrls = doc;
 	}
+	
+	public String getDownloadUrls()
+	{
+		return mDownloadUrls;
+	}
 
 	@Override
-	protected Integer doInBackground(URL... urls) 
+	protected Integer doInBackground(String... urls) 
 	{
 		int stepCnt = 0;
 		m_errorMessage = "";
 		InputStream inputStream;
 		byte [] bytes;
 		int nRead;
-		URL imgUrl;
+		URL url;
 		Urls myurls = new Urls();
 		String surl; /* url as string */
 		int removedFilesCount;
@@ -68,7 +73,8 @@ public class AnimationTask extends AsyncTask <URL, Integer, Integer>
 			{
 				URLConnection urlConnection = null;
 				try {
-					urlConnection = urls[0].openConnection();
+					url = new URL(urls[0]);
+					urlConnection = url.openConnection();
 					inputStream = urlConnection.getInputStream();
 					BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 					while((line = reader.readLine()) != null)
@@ -90,6 +96,10 @@ public class AnimationTask extends AsyncTask <URL, Integer, Integer>
 		stepCnt = 1;
 		/* progress == 1 means text file downloaded */
 		this.publishProgress(stepCnt);
+		
+		/* check for isCancelled */
+		if(isCancelled())
+			return stepCnt;
 		
 		String [] lines = mDownloadUrls.split("\n");
 		String [] filenames = new String[lines.length];
@@ -123,8 +133,8 @@ public class AnimationTask extends AsyncTask <URL, Integer, Integer>
 				try
 	        	{
 					try{
-						imgUrl = new URL(surl);
-		        		inputStream = (InputStream) imgUrl.getContent();
+						url = new URL(surl);
+		        		inputStream = (InputStream) url.getContent();
 		        		/* get bytes from input stream */
 		        		ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
 		        		bytes = new byte[1024];
@@ -144,6 +154,13 @@ public class AnimationTask extends AsyncTask <URL, Integer, Integer>
 		        		}
 		        		else
 		        			Log.e("AnimationTask.doInBackground", "got and saveth " + surl + "[" + stepCnt + "/" + mTotSteps + "]");
+		        		
+		        		/* if the task is cancelled, return before incrementing stepCnt and publishProgress, because the task
+		        		 * may have been cancelled on screen rotation. This ensures that the current step is not taken into account
+		        		 * (can be incomplete if the activity is destroyed here) when the activity is restarted.
+		        		 */
+		        		if(isCancelled())
+		        			return stepCnt;
 		        		
 		        		/* increment stepCnt */
 		        		stepCnt++;
@@ -178,13 +195,6 @@ public class AnimationTask extends AsyncTask <URL, Integer, Integer>
 		mAnimationTaskListener.onProgressUpdate(progress[0], mTotSteps);
 		if(progress[0] == 1)
 			mAnimationTaskListener.onUrlsReady(mDownloadUrls);
-
-		/* calculate the step at which the animation can start */
-		if(progress[0] > 0.4f * (float) mTotSteps)
-		{
-			Log.e("AnimationTask.onProgressUpdate", "can start animation " + progress[0] + " > " + 0.4f * (float) mTotSteps);
-			mAnimationTaskListener.animationCanStart();
-		}
 	}
 
 	protected void onPostExecute(Integer result) 
@@ -197,9 +207,10 @@ public class AnimationTask extends AsyncTask <URL, Integer, Integer>
 			mAnimationTaskListener.onDownloadComplete();
 	}
 
-	public void onCancelled(Integer res)
-	{
-
+	public void onCancelled(Integer step)
+	{ 
+		Log.e("AnimationTask.onCancelled", "task was cancelled at step " + step);
+		mAnimationTaskListener.onTaskCancelled();
 	}
 
 }
