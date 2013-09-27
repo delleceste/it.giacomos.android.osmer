@@ -221,6 +221,8 @@
 
     <!--  radar animation -->
     <string name="radarAnimationTaskCancelled">Operazione annullata</string>
+    <string name="radarAnimationBuffering">scaricamento in corso&#8230;</string>
+    <string name="radarAnimationPausedAfterRotation">animazione in pausa</string>
     
     
     <!-- WEBCAM -->

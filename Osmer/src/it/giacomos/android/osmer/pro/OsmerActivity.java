@@ -697,7 +697,9 @@ RadarAnimationListener
 		menu.findItem(R.id.radarInfoButton).setVisible(mCurrentViewType == ViewType.RADAR);
 		menu.findItem(R.id.measureToggleButton).setChecked(map.isMeasureEnabled());
 		menu.findItem(R.id.radarInfoButton).setChecked(findViewById(R.id.radarInfoTextView).getVisibility() == View.VISIBLE);
-
+		/* animation available only in radar mode */
+		menu.findItem(R.id.radarAnimationAction).setVisible(mCurrentViewType == ViewType.RADAR);
+		
 		switch(mCurrentViewType)
 		{
 		case HOME: case TODAY: case TOMORROW: case TWODAYS:
@@ -930,6 +932,18 @@ RadarAnimationListener
 		
 	}
 
+	@Override
+	public void onRadarAnimationRestored() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onRadarAnimationResumed() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	/* private members */
 	int mTapOnMarkerHintCount;
 	private Location mCurrentLocation;

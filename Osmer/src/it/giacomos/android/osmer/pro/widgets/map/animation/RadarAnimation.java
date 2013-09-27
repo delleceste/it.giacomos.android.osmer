@@ -1,11 +1,18 @@
 package it.giacomos.android.osmer.pro.widgets.map.animation;
 
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.pro.network.state.Urls;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -31,6 +38,8 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 	private int animationStepDuration;
 	private Handler mTimeoutHandler;
 	private boolean mControlsVisible;
+	private GroundOverlayOptions mGroundOverlayOptions;
+	private GroundOverlay mGroundOverlay;
 
 	private SparseArray<AnimationData> mAnimationData;
 
@@ -38,7 +47,7 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 	{
 		mMapFrag = mapf;
 		mAnimationStatus = RadarAnimationStatus.NOT_RUNNING;
-		mFrameNo = mDownloadProgress = 0;
+		mResetProgressVariables();
 		/* button listeners */
 		((ToggleButton) (mMapFrag.getActivity().findViewById(R.id.playPauseButton))).setOnClickListener(this);
 		((ToggleButton) (mMapFrag.getActivity().findViewById(R.id.stopButton))).setOnClickListener(this);
@@ -47,6 +56,9 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 		mAnimationListeners = new ArrayList<RadarAnimationListener>();
 		mAnimationData = new SparseArray<AnimationData>();
 		mTimeoutHandler = new Handler();
+		
+		mGroundOverlayOptions = null;
+		mGroundOverlay = null;
 	}
 
 	public void pause()
@@ -70,6 +82,8 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 		{
 			mAnimationStatus = RadarAnimationStatus.RUNNING;
 			mTimeoutHandler.postDelayed(this, 250);
+			for(RadarAnimationListener ral : mAnimationListeners)
+				ral.onRadarAnimationResumed();
 		}
 		else if(mAnimationStatus == RadarAnimationStatus.NOT_RUNNING)
 		{
@@ -79,7 +93,8 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 			Log.e("RadarAnimation.resume", "cannot resume animation from status " + mAnimationStatus);
 	}
 
-	/** Called to restore the animation when interrupted by a screen orientation change.
+	/** Called to restore the animation when interrupted by a screen orientation change
+	 *  (or when the activity is put in the background).
 	 *  Any state variable has to be correctly initialized in order to start() perform the
 	 *  correct resume. (mDownloadProgress, mUrlList, mFrameNo).
 	 *  If restore is called right after restoreState, then it should correctly resume 
@@ -88,21 +103,20 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 	 */
 	public void restore()
 	{
-		if(mAnimationStatus == RadarAnimationStatus.RUNNING)
+		if(mAnimationStatus == RadarAnimationStatus.PAUSED)
 		{
-			Log.e("RadarAnimation.restore", "status is running, so invoking start");
-			start();
+			Log.e("RadarAnimation.restore", "the animation status is PAUSED, starting animation task");
+			setButtonPlay(); /* prepare the toggle button to play */
+			mStartAnimationTask(); /* start the thread to retrieve / complete its task */			
 		}
-		else if(mAnimationStatus == RadarAnimationStatus.PAUSED)
-		{
-			start(); /* start the thread to retrieve / complete its task */
-			mAnimationStatus = RadarAnimationStatus.PAUSED;
-			
-		}
+		else
+			Log.e("RadarAnimation.restore", "animation status " + mAnimationStatus);
 		/* animation may have been NOT_RUNNING but the controls may have been visible */
 		if(mControlsVisible)
 			showControls();
-			
+
+		for(RadarAnimationListener ral : mAnimationListeners)
+			ral.onRadarAnimationRestored();
 	}
 
 	public void start()
@@ -110,21 +124,33 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 		Log.e("RadarAnimation", "start");
 		mAnimationStatus = RadarAnimationStatus.RUNNING;
 
-		/* show progress bar and stop button */
-		setProgressBarValue(0, 10);
-		mMapFrag.getActivity().findViewById(R.id.stopButton).setVisibility(View.VISIBLE);
-
-		mAnimationTask = new AnimationTask(this, mMapFrag.getActivity().getApplicationContext().getExternalFilesDir(null).getPath());
-		mAnimationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().radarHistoricalFileListUrl());
+		mStartAnimationTask();
 
 		for(RadarAnimationListener ral : mAnimationListeners)
 			ral.onRadarAnimationStart();
 	}
 
+	private void mStartAnimationTask()
+	{
+		/* show progress bar and stop button */
+		setProgressBarValue(0, 10);
+		mMapFrag.getActivity().findViewById(R.id.stopButton).setVisibility(View.VISIBLE);
+
+		showTimestampText();
+		String text = mMapFrag.getActivity().getResources().getString(R.string.radarAnimationBuffering);
+		setTimestampText(text);
+		mAnimationTask = new AnimationTask(this, mMapFrag.getActivity().getApplicationContext().getExternalFilesDir(null).getPath());
+		/* after state restore (screen rotation), mUrlList may contain the urls downloaded right before the rotation if
+		 * the animation was running.
+		 */
+		mAnimationTask.setDownloadUrls(mUrlList);
+		mAnimationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().radarHistoricalFileListUrl());
+	}
+
 	public void stop() 
 	{
 		Log.e("RadarAnimation", "stop");
-		
+
 		mAnimationStatus = RadarAnimationStatus.NOT_RUNNING;
 
 		if(mAnimationTask != null && !mAnimationTask.isCancelled())
@@ -148,7 +174,7 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 		mDownloadProgress = 0;
 		mFrameNo = 0;
 	}
-	
+
 	public boolean animationInProgress()
 	{
 		return mAnimationStatus == RadarAnimationStatus.RUNNING ||
@@ -187,15 +213,34 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 
 	public void saveState(Bundle outState) 
 	{
+		int lastFrameNo = mFrameNo;
 		if(mAnimationStatus == RadarAnimationStatus.RUNNING)
+		{
 			outState.putInt("animationStatus", 1);
+			/* mFrameNo - 1 when RUNNING because the last run() invocation 
+			 * incremented mFrameNo by 1 before returning. But on restore, 
+			 * we want to show the paused animation with the last frame shown
+			 * before the screen rotation.
+			 */
+			if(lastFrameNo > 0)
+			{
+				lastFrameNo--;
+			}
+		}
 		else if(mAnimationStatus == RadarAnimationStatus.NOT_RUNNING)
 			outState.putInt("animationStatus", 0);
 		else if(mAnimationStatus == RadarAnimationStatus.PAUSED)
+		{
 			outState.putInt("animationStatus", 2);
+			/* when saving the state in PAUSED status, lastFrameNo correctly points to the 
+			 * currently shown frame. No need to subtract 1 as in the RUNNING status 
+			 * case above.
+			 */
+		}
 
+		Log.e("RadarAnimation.saveState", "lastFrameNo " + lastFrameNo);
+		outState.putInt("animationFrameNo", lastFrameNo);
 		outState.putInt("animationDownloadProgress", mDownloadProgress);
-		outState.putInt("animationFrameNo", mFrameNo);
 		outState.putString("urlList", mUrlList);
 		outState.putBoolean("controlsVisible", (mMapFrag.getActivity().findViewById(R.id.playPauseButton).getVisibility() == View.VISIBLE));
 	}
@@ -204,26 +249,49 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 	{
 		mFrameNo = savedInstanceState.getInt("animationFrameNo", 0);
 		mDownloadProgress = savedInstanceState.getInt("animationDownloadProgress", 0);
-		mControlsVisible = savedInstanceState.getBoolean("controlsVisible");
+		mControlsVisible = savedInstanceState.getBoolean("controlsVisible", false);
+		mUrlList = savedInstanceState.getString("urlList", "");
 		int state = savedInstanceState.getInt("animationStatus", 0);
 		/* status initialized to NOT_RUNNING in the constructor. No need to check for
-		 * state == 0
+		 * state == 0.
+		 * On the other hand, if before rotating the animation was running, set it to
+		 * paused after rotation.
 		 */
-		if(state == 1)
-			mAnimationStatus = RadarAnimationStatus.RUNNING;
-		else if(state == 2)
+		if(state > 0) /* set paused both if before the rotation it was running or paused */
 			mAnimationStatus = RadarAnimationStatus.PAUSED;
 	}
-	
+
 	public void onDestroy()
 	{
-		/* stop download task if running */
-		if(mAnimationTask != null && mAnimationTask.getStatus() == AsyncTask.Status.RUNNING)
-			mAnimationTask.cancel(false);
 		
-		mTimeoutHandler.removeCallbacks(this);
 	}
 
+	public void onPause() 
+	{
+		Log.e("RadarAnimation.onPause", "cancelling task if running, removing callbacks on timeout handler");
+		/* stop running task and unschedule timeout handler when activity is paused */
+		if(mAnimationTask != null && mAnimationTask.getStatus() == AsyncTask.Status.RUNNING)
+			mAnimationTask.cancel(false);
+		mTimeoutHandler.removeCallbacks(this);
+		
+		/* in case activity is resumed, just proceed in the same way as if it were destroyed and
+		 * recreated.
+		 * mFrameNo-- when RUNNING because the last run() invocation 
+		 * incremented mFrameNo by 1 before returning
+		 */
+		if(mAnimationStatus == RadarAnimationStatus.RUNNING)
+		{
+			mAnimationStatus = RadarAnimationStatus.PAUSED;
+			if(mFrameNo > 0)
+				mFrameNo--;
+		}
+	}
+		
+	public void onResume()
+	{
+		restore();
+	}
+	
 	@Override
 	public void onClick(View v) 
 	{
@@ -234,8 +302,6 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 				resume();
 			else
 				pause();
-
-			//pp.setChecked(!pp.isChecked());
 		}
 		else if(v.getId() == R.id.stopButton)
 			stop();
@@ -255,11 +321,32 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 		mMapFrag.getActivity().findViewById(R.id.playPauseButton).setVisibility(View.GONE);
 		mMapFrag.getActivity().findViewById(R.id.radarAnimProgressBar).setVisibility(View.GONE);
 	}
+
+	public void hidePlayPause()
+	{
+		mMapFrag.getActivity().findViewById(R.id.playPauseButton).setVisibility(View.GONE);
+	}
+	
+	public void showPlayPause()
+	{
+		mMapFrag.getActivity().findViewById(R.id.playPauseButton).setVisibility(View.VISIBLE);
+	}
 	
 	public void setButtonPlay()
 	{
 		ToggleButton tb = (ToggleButton )mMapFrag.getActivity().findViewById(R.id.playPauseButton);
 		tb.setChecked(true);
+	}
+	
+	public void showTimestampText()
+	{
+		mMapFrag.getActivity().findViewById(R.id.radarAnimTime).setVisibility(View.VISIBLE);
+	}
+	
+	public void setTimestampText(String text)
+	{
+		TextView timeTv = (TextView) mMapFrag.getActivity().findViewById(R.id.radarAnimTime);
+		timeTv.setText(text);
 	}
 
 	public void setProgressBarValue(int step, int total)
@@ -302,9 +389,13 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 			mStartAnimation();
 		}
 		else
+		{
 			setProgressBarValue(step, total);
-
-
+			showTimestampText();
+			String text = mMapFrag.getActivity().getResources().getString(R.string.radarAnimationBuffering) + " " + 
+					step + "/" + total;
+			setTimestampText(text);
+		}
 	}
 
 	@Override
@@ -329,9 +420,13 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 	@Override
 	public void onTaskCancelled()
 	{
-		String msg = mMapFrag.getActivity().getResources().getString(R.string.radarAnimationTaskCancelled);
-		Toast.makeText(mMapFrag.getActivity().getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-		mTimeoutHandler.removeCallbacks(this);
+		if(mMapFrag != null && mMapFrag.getActivity() != null)
+		{
+			String msg = mMapFrag.getActivity().getResources().getString(R.string.radarAnimationTaskCancelled);
+			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+		}
+		if(mTimeoutHandler != null)
+			mTimeoutHandler.removeCallbacks(this);
 	}
 
 	private void mStartAnimation()
@@ -368,13 +463,24 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 		}
 		else if(mAnimationStatus == RadarAnimationStatus.PAUSED)
 		{
+			Log.e("RadarAnimation.run()", "mDownloadProgress is " + mDownloadProgress + ", mFrameNo is " + mFrameNo);
 			/* normally reached after a restore phase (after screen orientation when the animation was paused)
-			 * In that case, mFrameNo has been restored from the bundle
+			 * In that case, mFrameNo has been restored from the bundle.
+			 * Normally, run shouldn't be invoked after the user presses the "pause" button, because on pause button
+			 * press, the mTimeoutHandler used to schedule a future update is stopped.
 			 */
-			if(mDownloadProgress == mFrameNo)
-				mMakeStep();
+			if(mDownloadProgress < mFrameNo)
+			{
+				Log.e("RadarAnimation.run", "waiting for download progress to be equal to " + mFrameNo);
+				mTimeoutHandler.postDelayed(this, 150);
+				hidePlayPause();
+			}
 			else
-				Log.e("RadarAnimation.run()", "mDownloadProgress is " + mDownloadProgress + " discarding in pause mode");
+			{
+				Log.e("RadarAnimation.run", "mDownloadProgress >= mFrameNo -> " + mFrameNo + " - making step");
+				showPlayPause();
+				mMakeStep();
+			}
 		}
 		else
 		{
@@ -384,19 +490,19 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 				hideProgressBar();
 				/* show the pause button and the time label */
 				showControls();
-
 				/* get image from the external storage and update */
-
 				mMakeStep();
-				
-				
 				/* increment the number of updated frames */
 				mFrameNo++;
-						
 			}
 			else /* not enough data! Show progress bar */
 			{
 				setProgressBarValue(mDownloadProgress, mAnimationData.size());
+				showTimestampText();
+				String text = mMapFrag.getActivity().getResources().getString(R.string.radarAnimationBuffering) + " " + 
+						mDownloadProgress + "/" + mAnimationData.size();
+				setTimestampText(text);
+				hidePlayPause();
 			}
 
 			if(mFrameNo >= mAnimationData.size()) /* end */
@@ -405,6 +511,7 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 				/* animation ended */
 				mAnimationStatus = RadarAnimationStatus.NOT_RUNNING;
 				/* user can replay it */
+				showPlayPause();
 				setButtonPlay();
 				/* reset counters and invalidate url list */
 				this.mResetProgressVariables();
@@ -416,14 +523,38 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 
 		} /* if(mAnimationStatus == RadarAnimationStatus.PAUSED || mAnimationStatus == RadarAnimationStatus.NOT_RUNNING) */
 	}
-	
+
 	private void mMakeStep()
 	{
-		TextView timeTv = (TextView) mMapFrag.getActivity().findViewById(R.id.radarAnimTime);
-		timeTv.setVisibility(View.VISIBLE);
-		String text = mAnimationData.valueAt(mFrameNo).time + " [" + (mFrameNo + 1) + "/" + mAnimationData.size() + "] [" + 
-				mDownloadProgress + "]";
-		timeTv.setText(text);	
+		if(mAnimationData != null && mFrameNo < mAnimationData.size())
+		{
+			showTimestampText();
+			String text = mAnimationData.valueAt(mFrameNo).time + " [" + (mFrameNo + 1) + "/" + mAnimationData.size() + "] [" + 
+					mDownloadProgress + "]";
+			setTimestampText(text);
+			
+			/* get bitmap */
+			FileHelper fileHelper = new FileHelper();
+			Bitmap bmp = fileHelper.decodeImage(mAnimationData.valueAt(mFrameNo).fileName, 
+					mMapFrag.getActivity().getApplicationContext().getExternalFilesDir(null).getPath());
+			if(bmp != null)
+			{
+				GoogleMap googleMap = mMapFrag.getMap();
+				/* ground overlay configuration */
+				if(mGroundOverlayOptions == null)
+				{
+					mGroundOverlayOptions = new GroundOverlayOptions();
+					mGroundOverlayOptions.positionFromBounds(GeoCoordinates.radarImageBounds);
+					mGroundOverlayOptions.transparency(0.65f);
+				}
+				/* specify the image before the ovelay is added */
+				BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bmp);
+				mGroundOverlayOptions.image(bitmapDescriptor);
+				if(mGroundOverlay != null)
+					mGroundOverlay.remove();
+				mGroundOverlay = googleMap.addGroundOverlay(mGroundOverlayOptions);
+			}
+		}
 	}
 
 }

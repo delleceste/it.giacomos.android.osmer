@@ -13,6 +13,7 @@ import android.widget.TextView;
 public class OAnimatedTextView extends TextView implements AnimationListener
 {
 	public final long TIMEOUT = 1500L;
+	private ShowDelayedAnimatedTextViewRunnable mShowDelayedAnimatedTextViewRunnable;
 	
 	public OAnimatedTextView(Context context, AttributeSet set) 
 	{
@@ -21,11 +22,14 @@ public class OAnimatedTextView extends TextView implements AnimationListener
 	
 	public void scheduleShow()
 	{
-		postDelayed(new ShowDelayedAnimatedTextViewRunnable(this), TIMEOUT);
+		mShowDelayedAnimatedTextViewRunnable = new ShowDelayedAnimatedTextViewRunnable(this);
+		postDelayed(mShowDelayedAnimatedTextViewRunnable, TIMEOUT);
 	}
 	
 	public void hide()
 	{
+		if(mShowDelayedAnimatedTextViewRunnable != null)
+			removeCallbacks(mShowDelayedAnimatedTextViewRunnable);
 		setVisibility(View.GONE);
 	}
 

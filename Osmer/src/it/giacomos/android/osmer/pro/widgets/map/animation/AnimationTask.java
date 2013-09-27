@@ -92,7 +92,14 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 					return 0;
 				}
 			}
+			Log.e("AnimationTask", "downloaded text file for URLS - totSteps "  + mTotSteps);
 		}
+		else
+		{
+			mTotSteps += mDownloadUrls.length() - mDownloadUrls.replace("\n", "").length() -1;
+			Log.e("AnimationTask", "no need to download text file for URLS - totSteps " + mTotSteps);
+		}
+		
 		stepCnt = 1;
 		/* progress == 1 means text file downloaded */
 		this.publishProgress(stepCnt);

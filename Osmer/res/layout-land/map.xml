@@ -42,9 +42,9 @@
             style="@android:style/Widget.ProgressBar.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-	    android:layout_centerHorizontal="true"
-	    android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
+	    	android:layout_centerHorizontal="true"
+	    	android:layout_centerVertical="true"
             android:visibility="gone" />
 
         <TextView
@@ -63,8 +63,8 @@
 
         <ToggleButton
             android:id="@+id/playPauseButton"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_above="@id/radarAnimTime"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="6dp"
@@ -76,13 +76,13 @@
         
         <ToggleButton
             android:id="@+id/stopButton"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_above="@id/playPauseButton"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"
-            android:background="@drawable/ic_media_stop"
+            android:background="@drawable/ic_menu_close_clear_cancel"
             android:textOff=""
             android:textOn=""
             android:visibility="gone" />

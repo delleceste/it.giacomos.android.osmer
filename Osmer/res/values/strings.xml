@@ -237,6 +237,9 @@
     
     <!--  radar animation -->
     <string name="radarAnimationTaskCancelled">task cancelled</string>
+    <string name="radarAnimationBuffering">buffering data&#8230;</string>
+    <string name="radarAnimationPausedAfterRotation">animation paused after rotation</string>
+    
 	
     <string name="popup_data_update_info">
        <![CDATA[

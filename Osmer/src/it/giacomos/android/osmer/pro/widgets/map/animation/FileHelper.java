@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
@@ -22,6 +24,13 @@ public class FileHelper
 	public String getErrorMessage()
 	{
 		return mErrorMessage;
+	}
+	
+	public Bitmap decodeImage(String fileName, String externalStorageDirPath)
+	{
+		Bitmap bmp;
+		bmp = BitmapFactory.decodeFile(externalStorageDirPath + "/" + fileName);
+		return bmp;
 	}
 	
 	public boolean isExternalFileSystemDirReadableWritable()
