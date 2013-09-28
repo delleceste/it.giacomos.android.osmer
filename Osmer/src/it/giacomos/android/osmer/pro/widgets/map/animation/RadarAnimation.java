@@ -107,7 +107,10 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 		{
 			Log.e("RadarAnimation.restore", "the animation status is PAUSED, starting animation task");
 			setButtonPlay(); /* prepare the toggle button to play */
-			mStartAnimationTask(); /* start the thread to retrieve / complete its task */			
+			mStartAnimationTask(); /* start the thread to retrieve / complete its task */	
+			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), 
+					mMapFrag.getResources().getString(R.string.radarAnimationPausedAfterRotation),
+							Toast.LENGTH_SHORT).show();
 		}
 		else
 			Log.e("RadarAnimation.restore", "animation status " + mAnimationStatus);
@@ -125,6 +128,7 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 		mAnimationStatus = RadarAnimationStatus.RUNNING;
 
 		mStartAnimationTask();
+		setButtonPause();
 
 		for(RadarAnimationListener ral : mAnimationListeners)
 			ral.onRadarAnimationStart();
@@ -163,7 +167,11 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 		hideProgressBar();
 		/* reset counters and the list of image urls */
 		mResetProgressVariables();
-
+		
+		/* remove image */
+		if(mGroundOverlay != null)
+			mGroundOverlay.remove();
+		
 		for(RadarAnimationListener ral : mAnimationListeners)
 			ral.onRadarAnimationStop();
 	}
@@ -338,6 +346,12 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 		tb.setChecked(true);
 	}
 	
+	public void setButtonPause()
+	{
+		ToggleButton tb = (ToggleButton )mMapFrag.getActivity().findViewById(R.id.playPauseButton);
+		tb.setChecked(false);
+	}
+	
 	public void showTimestampText()
 	{
 		mMapFrag.getActivity().findViewById(R.id.radarAnimTime).setVisibility(View.VISIBLE);
@@ -499,6 +513,8 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 			{
 				setProgressBarValue(mDownloadProgress, mAnimationData.size());
 				showTimestampText();
+
+				Log.e("RadarAnimation.run", " mDownloadProgress " + mDownloadProgress + "mAnimationData size " + mAnimationData.size());
 				String text = mMapFrag.getActivity().getResources().getString(R.string.radarAnimationBuffering) + " " + 
 						mDownloadProgress + "/" + mAnimationData.size();
 				setTimestampText(text);
@@ -529,8 +545,7 @@ public class RadarAnimation implements OnClickListener, AnimationTaskListener, R
 		if(mAnimationData != null && mFrameNo < mAnimationData.size())
 		{
 			showTimestampText();
-			String text = mAnimationData.valueAt(mFrameNo).time + " [" + (mFrameNo + 1) + "/" + mAnimationData.size() + "] [" + 
-					mDownloadProgress + "]";
+			String text = mAnimationData.valueAt(mFrameNo).time + " [" + (mFrameNo + 1) + "/" + mAnimationData.size() + "]";
 			setTimestampText(text);
 			
 			/* get bitmap */

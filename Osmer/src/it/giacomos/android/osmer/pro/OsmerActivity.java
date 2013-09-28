@@ -732,36 +732,41 @@ RadarAnimationListener
 	{
 		mCurrentViewType = id;
 		ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
-
+		OMapFragment mapFragment = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+		
 		if (id == ViewType.HOME) 
 		{
 			viewFlipper.setDisplayedChild(0);
 			mViewPager.setCurrentItem(ViewPagerPages.HOME);
+			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
 		} 
 		else if (id == ViewType.TODAY) 
 		{
 			viewFlipper.setDisplayedChild(0);
 			mViewPager.setCurrentItem(ViewPagerPages.TODAY);
+			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
 		} 
 		else if (id == ViewType.TOMORROW) 
 		{
 			viewFlipper.setDisplayedChild(0);
 			mViewPager.setCurrentItem(ViewPagerPages.TOMORROW);
+			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
 		} 
 		else if (id == ViewType.TWODAYS) 
 		{
 			viewFlipper.setDisplayedChild(0);
 			mViewPager.setCurrentItem(ViewPagerPages.TWODAYS);
+			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
 		} 
 		else if (id == ViewType.RADAR) 
 		{
 			viewFlipper.setDisplayedChild(1);
 			/* remove itemized overlays (observations), if present, and restore radar view */
-			((OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview)).setMode(new MapViewMode(ObservationType.NONE, MapMode.RADAR));
+			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.RADAR));
 		} 
 		else if (id == ViewType.ACTION_CENTER_MAP) 
 		{
-			((OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview)).centerMap();
+			mapFragment.centerMap();
 		} 
 		else 
 		{

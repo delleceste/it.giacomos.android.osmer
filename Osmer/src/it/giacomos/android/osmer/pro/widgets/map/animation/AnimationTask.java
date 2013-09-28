@@ -96,7 +96,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 		}
 		else
 		{
-			mTotSteps += mDownloadUrls.length() - mDownloadUrls.replace("\n", "").length() -1;
+			mTotSteps += mDownloadUrls.length() - mDownloadUrls.replace("\n", "").length();
 			Log.e("AnimationTask", "no need to download text file for URLS - totSteps " + mTotSteps);
 		}
 		

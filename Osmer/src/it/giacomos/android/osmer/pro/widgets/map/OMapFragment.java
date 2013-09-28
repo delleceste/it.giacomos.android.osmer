@@ -185,7 +185,6 @@ RadarAnimationListener
 	@Override
 	public void onSaveInstanceState(Bundle outState)
 	{
-		Log.e("MapSupportFragment.onSaveInstanceState", "saving outState");
 		if(mRadarAnimation != null)
 			mRadarAnimation.saveState(outState);
 
@@ -379,6 +378,12 @@ RadarAnimationListener
 
 		mUninstallAdaptersAndListeners();
 
+		/* stop animation, be it in progress or not. If not in progress, stop removes
+		 * the last animation frame image overlay from the map.
+		 */
+		if(m.currentMode == MapMode.HIDDEN && mRadarAnimation != null)
+			mRadarAnimation.stop();
+
 		if(m.currentMode == MapMode.RADAR) 
 		{
 			/* update the overlay with a previously set bitmap */
@@ -401,7 +406,7 @@ RadarAnimationListener
 			radarTimestampText.hide();
 			mRadarAnimation.stop();
 		} 
-		else 
+		else if(m.currentMode != MapMode.HIDDEN)
 		{
 			ObservationDrawableIdPicker observationDrawableIdPicker = new ObservationDrawableIdPicker();
 			int resId = observationDrawableIdPicker.pick(m.currentType);
@@ -572,11 +577,14 @@ RadarAnimationListener
 
 	private void mUninstallAdaptersAndListeners()
 	{
-		mMap.setInfoWindowAdapter(null);
-		mMap.setOnMapClickListener(null);
-		mMap.setOnMarkerClickListener(null);
-		mMap.setOnMarkerDragListener(null);
-		mMap.setOnInfoWindowClickListener(null);
+		if(mMap != null)
+		{
+			mMap.setInfoWindowAdapter(null);
+			mMap.setOnMapClickListener(null);
+			mMap.setOnMarkerClickListener(null);
+			mMap.setOnMarkerDragListener(null);
+			mMap.setOnInfoWindowClickListener(null);
+		}
 		setOnZoomChangeListener(null);
 	}
 
@@ -603,7 +611,7 @@ RadarAnimationListener
 					getActivity().getResources().getString(R.string.webcam_list_error) +
 					"\n" + error, Toast.LENGTH_LONG).show();
 	}
-	
+
 	public void startRadarAnimation() 
 	{
 		mRadarAnimation.start();
@@ -630,7 +638,7 @@ RadarAnimationListener
 	@Override
 	public void onRadarAnimationPause() 
 	{
-		
+
 	}
 
 	@Override
@@ -650,7 +658,7 @@ RadarAnimationListener
 	@Override
 	public void onRadarAnimationResumed() 
 	{
-				
+
 	}
 
 }

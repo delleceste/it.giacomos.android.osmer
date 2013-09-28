@@ -106,14 +106,12 @@ public class FileHelper
 					deleted = file.delete();
 					if(deleted)
 					{
-						Log.e("FileHelper.removeUnneededFiles", "successfully removed unneeded file " + fName);
+//						Log.e("FileHelper.removeUnneededFiles", "successfully removed unneeded file " + fName);
 						removed++;
 					}
 					else
 						Log.e("FileHelper.removeUnneededFiles", "failed to delete unneeded file " + fName);
-				}
-				else
-					Log.e("FileHelper.removeUnneededFiles", "the file " + fName + " is still needed");
+				}	
 			}
 		}
 		return removed;
