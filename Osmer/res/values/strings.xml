@@ -59,16 +59,12 @@
     <string name="t2000">T.2000m</string>
     <string name="celsius">&#8451;</string>
     <string name="humidity">Humidity</string>
-    <string name="wind">Wind</string>
     <string name="mean_wind">Average Wind</string>
     <string name="max_wind">Max Wind</string>
-    <string name="sky">Sky</string>
-    <string name="rain">Rain</string>
     <string name="temp">Temperature</string>
     <string name="mean_temp">Average Temperature</string>
     <string name="sea">Sea</string>
     <string name="mean_humidity">Average Humidity</string>
-    <string name="snow">Snow</string>
     <string name="pressure">Pressure</string>
     <string name="not_available">n.a.</string>
     <string name="select_obs_type_daily">Select Daily Observation Type</string>
@@ -112,7 +108,6 @@
 	<string name="popup_position_title">About your position</string>
 	<string name="popup_info_title">App info and copyright</string>
 	<string name="popup_data_update_title">Data automatic refresh</string>
-	<string name="meters">m</string>
 	<string name="error_message">Error message</string>
 	
     

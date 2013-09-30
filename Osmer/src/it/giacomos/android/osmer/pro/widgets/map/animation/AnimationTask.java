@@ -23,14 +23,19 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 	private AnimationTaskListener mAnimationTaskListener;
 	private int mTotSteps;
 
-	public AnimationTask(AnimationTaskListener atl, String externalStorageDirPath)
+	public AnimationTask(String externalStorageDirPath)
 	{
-		mAnimationTaskListener = atl;
+		mAnimationTaskListener = null;
 		mTotSteps = 0;
 		mDownloadUrls = "";
 		mExternalStorageDirPath = externalStorageDirPath;
 	}
 
+	void setAnimationTaskListener(AnimationTaskListener atl)
+	{
+		mAnimationTaskListener = atl;
+	}
+	
 	public void setDownloadUrls(String doc)
 	{
 		mDownloadUrls = doc;

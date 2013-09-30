@@ -54,18 +54,14 @@
     <string name="t1000">T.1000m</string>
     <string name="t2000">T.2000m</string>
     <string name="celsius">&#8451;</string>
-    <string name="humidity">Umidità</string>
-    <string name="wind">Vento</string>
-    <string name="mean_wind">Vento V.Media</string>
-    <string name="max_wind">Vento V.Max</string>
-    <string name="sky">Cielo</string>
-    <string name="rain">Pioggia</string>
-    <string name="temp">Temperatura</string>
-    <string name="mean_temp">Temperatura media</string>
-    <string name="sea">Mare</string>
-    <string name="mean_humidity">Umidità media</string>
-    <string name="snow">Neve</string>
-    <string name="pressure">Pressione</string>
+    <string name="humidity">umidità</string>
+    <string name="mean_wind">vento V.Media</string>
+    <string name="max_wind">vento V.Max</string>
+    <string name="temp">temperatura</string>
+    <string name="mean_temp">Ttemperatura media</string>
+    <string name="sea">mare</string>
+    <string name="mean_humidity">umidità media</string>
+    <string name="pressure">pressione</string>
     <string name="not_available">n.d.</string>
     <string name="select_obs_type_daily">Seleziona Osservazioni Giornaliere</string>
     <string name="select_obs_type_latest">Seleziona Osservazioni dell\'ultim\'ora</string>
@@ -109,7 +105,6 @@
     <string name="popup_position_title">Informazioni sulla posizione</string>
     <string name="popup_info_title">Meteo.FVG app info e copyright</string>
     <string name="popup_data_update_title">Aggiornamento automatico dei dati</string>
-    <string name="meters">m</string>
     <string name="error_message">Messaggio d\'errore</string>
 
     <!-- Drawer -->
