@@ -16,18 +16,44 @@ import android.widget.ToggleButton;
  * @author giacomo
  *
  */
-public class Paused extends State {
-
+public class Paused extends State 
+{
+	private int mTotSteps;
+	private int mFrameNo;
+	private int mDownloadStep;
+	
 	Paused(RadarAnimation radarAnimation, AnimationTask animationTask, Handler timeoutHandler, State previousState) 
 	{		
 		/* removes callbacks on handler (previous state run will not be invoked any more */
 		super(radarAnimation, animationTask, timeoutHandler, previousState);
+		if(previousState.getStatus() == RadarAnimationStatus.RUNNING)
+		{
+			Running ru = (Running) previousState;
+			mTotSteps = ru.getTotSteps();
+			mFrameNo = ru.getFrameNo();
+			mDownloadStep = ru.getDownloadStep();
+		}
 	}
 
+	public int getDownloadStep()
+	{
+		return mDownloadStep;
+	}
+	
+	public int getTotSteps()
+	{
+		return mTotSteps;
+	}
+	
+	public int getFrameNo()
+	{
+		return mFrameNo;
+	}
+	
 	@Override
 	public RadarAnimationStatus getStatus() 
 	{
-		return null;
+		return RadarAnimationStatus.PAUSED;
 	}
 
 	@Override
@@ -60,12 +86,6 @@ public class Paused extends State {
 	public void run() 
 	{
 
-	}
-
-	@Override
-	public void cancel() 
-	{
-		
 	}
 
 }

@@ -44,12 +44,4 @@ public class NotRunning extends State
 	{
 		
 	}
-
-	@Override
-	public void cancel() 
-	{
-		/* remain in the same state */
-		
-	}
-
 }

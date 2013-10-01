@@ -19,10 +19,10 @@ public abstract class State implements Runnable
 		dRadarAnimation = radarAnimation;
 		dAnimationTask = at;
 		dTimeoutHandler = handler;
-		
+		dPreviousState = previousState;
 		if(previousState != null && handler != null)
 		{
-			Log.e("State.State", "removing callbacks on handler " + handler + " for runnable " + previousState.getPreviousState());
+			Log.e("State.State", "removing callbacks on handler " + handler + " for runnable status " + previousState.getStatus());
 			handler.removeCallbacks(previousState);
 		}
 	}
@@ -30,12 +30,15 @@ public abstract class State implements Runnable
 	public abstract RadarAnimationStatus getStatus();
 	
 	public abstract void enter();
-	
-	public abstract void cancel();
-	
+		
 	public State getPreviousState() 
 	{
 		return dPreviousState;
+	}
+	
+	public AnimationTask getAnimationTask()
+	{
+		return dAnimationTask;
 	}
 		
 	protected RadarAnimation dRadarAnimation;

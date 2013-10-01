@@ -34,8 +34,9 @@ public class Buffering extends State  implements  AnimationTaskListener
 {
 
 	private String mUrlList;
-	private int mTotSteps, mCurrentStep;
+	private int mTotSteps, mDownloadStep;
 	private SparseArray<AnimationData> mAnimationData;
+	private int mPauseOnFrameNo;
 	
 	Buffering(RadarAnimation radarAnimation, AnimationTask animationTask, Handler handler,
 			State previousState, String urlList) 
@@ -43,8 +44,24 @@ public class Buffering extends State  implements  AnimationTaskListener
 		super(radarAnimation, animationTask, handler, previousState);
 		dAnimationStatus = RadarAnimationStatus.BUFFERING;
 		mUrlList = urlList;
-		
-		animationTask.setAnimationTaskListener(this);
+		mPauseOnFrameNo = -1;
+		/* network latency */
+		if(previousState.getStatus() == RadarAnimationStatus.RUNNING)
+		{
+			Running ru = (Running) previousState;
+			mTotSteps = ru.getTotSteps();
+			mDownloadStep = ru.getDownloadStep();
+		}
+	}
+	
+	public void setPauseOnFrameNo(int frameNo)
+	{
+		mPauseOnFrameNo = frameNo;
+	}
+	
+	public int getPauseOnFrameNo()
+	{
+		return mPauseOnFrameNo;
 	}
 	
 	public int getTotSteps()
@@ -54,7 +71,7 @@ public class Buffering extends State  implements  AnimationTaskListener
 	
 	public int getCurrentStep()
 	{
-		return mCurrentStep;
+		return mDownloadStep;
 	}
 	
 	public String getUrlList()
@@ -80,7 +97,7 @@ public class Buffering extends State  implements  AnimationTaskListener
 		/* stop (cancel) visible */
 		mapFrag.getActivity().findViewById(R.id.stopButton).setVisibility(View.VISIBLE);
 		/* progress bar visible */
-		dRadarAnimation.getMapFragment().getActivity().findViewById(R.id.radarAnimProgressBar);
+		mapFrag.getActivity().findViewById(R.id.radarAnimProgressBar).setVisibility(View.VISIBLE);
 		
 		/* timestamp label visible and showing "buffering" */
 		TextView timeTv = (TextView) mapFrag.getActivity().findViewById(R.id.radarAnimTime);
@@ -94,13 +111,22 @@ public class Buffering extends State  implements  AnimationTaskListener
 		
 		/* after state restore (screen rotation), mUrlList may contain the urls downloaded right before the rotation if
 		 * the animation was running.
+		 * Normally, we enter this state from NOT_RUNNING, and so a new task has to be created and executed.
+		 * In case of high network latency, we may enter the BUFFERING state from a RUNNING state.
+		 * In that case, the animation task is still executing and downloading images, so it must not be recreated and
+		 * started. In any case, set the animation task listener to this in order to switch again to the RUNNING state
+		 * when some more data has been downloaded.
 		 */
+		if(dPreviousState == null || dPreviousState.getStatus() != RadarAnimationStatus.RUNNING)
+			dAnimationTask = new AnimationTask(mapFrag.getActivity().getApplicationContext().getExternalFilesDir(null).getPath());
+		
 		dAnimationTask.setDownloadUrls(mUrlList);
-		dAnimationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().radarHistoricalFileListUrl());
+		dAnimationTask.setAnimationTaskListener(this);
+		if(dPreviousState == null || dPreviousState.getStatus() != RadarAnimationStatus.RUNNING)
+			dAnimationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().radarHistoricalFileListUrl());
 	}
 
-	@Override
-	public void cancel() 
+	private void mCancel() 
 	{
 		Log.e("Buffering.cancel", "cancelling task, migrating to NOT_RUNNING");
 		dAnimationTask.cancel(false);
@@ -115,7 +141,7 @@ public class Buffering extends State  implements  AnimationTaskListener
 	@Override
 	public void onProgressUpdate(int step, int total) 
 	{
-		mCurrentStep = step;
+		mDownloadStep = step;
 		mTotSteps = total;
 		
 		/* when step is == 1, the images url file is ready and the RadarAnimation,
@@ -124,13 +150,15 @@ public class Buffering extends State  implements  AnimationTaskListener
 		dRadarAnimation.onDownloadProgressChanged(step, total);
 		
 		/* wait until the 40% of the images has been downloaded */
-		if(step > 1 && step == Math.round(0.4f * (float) total))
+		if(step > 1 && step >= Math.round(0.4f * (float) total))
 		{
+			Log.e("Buffering.onProgressUpdate", "leaving with step " + step + " and total is " + total);
 			/* can start animating */
 			leave();
 		}
 		else
 		{
+			Log.e("Buffering.onProgressUpdate", "progress bar with step " + step + " and total is " + total);
 			OMapFragment mapFrag = dRadarAnimation.getMapFragment();
 			TextView timeTv = (TextView) mapFrag.getActivity().findViewById(R.id.radarAnimTime);
 			String text = mapFrag.getActivity().getResources().getString(R.string.radarAnimationBuffering) + " " + 
@@ -149,6 +177,8 @@ public class Buffering extends State  implements  AnimationTaskListener
 	public void onDownloadError(String message) 
 	{
 		dRadarAnimation.onError(message);
+		Log.e("Buffering.onDownloadError", "cancelling task, going to NOT_RUNNING");
+		mCancel();
 	}
 
 	@Override

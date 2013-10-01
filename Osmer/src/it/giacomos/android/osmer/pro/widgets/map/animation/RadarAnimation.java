@@ -32,12 +32,33 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 {
 	private OMapFragment mMapFrag;
 	private ArrayList<RadarAnimationListener> mAnimationListeners;
-	private int mFrameNo, mDownloadProgress, mTotalSteps, mSavedFrameNo;
+	private int mFrameNo, mDownloadProgress, mTotalSteps;
+	
+	/* if > -1 tells restore that the animation was running (or paused) before rotation
+	 * or before the app had been put in background. This variable is saved/restored by
+	 * saveState and restoreState. 
+	 */
+	private int mSavedFrameNo;
+	private int mSavedAnimationStatusAsInt;
 	private String mUrlList;
 	private Handler mTimeoutHandler;
 	private boolean mControlsVisible;
 	private GroundOverlayOptions mGroundOverlayOptions;
 	private GroundOverlay mGroundOverlay;
+	
+	
+	/* The animation task, which downloads all necessary data from the internet (text file
+	 * with the list of the URLs of the images and all the images.
+	 * This AnimationTask is allocated by the Buffering State, inside the enter method.
+	 * Notwithstanding, this class keeps a reference to the task which is always passed through
+	 * different states. Actually, the Buffering and Running states share the same animation task,
+	 * while the other states can possibly cancel the task (for instance the NotRunning state, 
+	 * entered after we cancel the download or the animation in the Buffering or Running states,
+	 * cancels the task).
+	 * Since an AsyncTask can be used only once, and since the Buffering state is the one that 
+	 * initiates a new data fetch, the Buffering enter method allocates a new task each time it
+	 * is called, thus changing the reference of mAnimationTask.
+	 */
 	private AnimationTask mAnimationTask;
 
 	private SparseArray<AnimationData> mAnimationData;
@@ -75,6 +96,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	{
 		Log.e("RadarAnimation", "pause");
 		mState = new Paused(this, mAnimationTask, mTimeoutHandler, mState);
+		mState.enter();
 		for(RadarAnimationListener ral : mAnimationListeners)
 			ral.onRadarAnimationPause();
 	}
@@ -86,14 +108,14 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	{
 		if(getStatus() == RadarAnimationStatus.PAUSED)
 		{
-			mState = new Running(this, mAnimationTask, mTimeoutHandler, mState,
-					mUrlList, mDownloadProgress, mTotalSteps);
+			mState = new Running(this, mAnimationTask, mTimeoutHandler, mState);
 			mState.enter();
 
 			for(RadarAnimationListener ral : mAnimationListeners)
 				ral.onRadarAnimationResumed();
 		}
-		else if(getStatus()  == RadarAnimationStatus.NOT_RUNNING)
+		else if(getStatus() == RadarAnimationStatus.NOT_RUNNING 
+				|| getStatus() == RadarAnimationStatus.FINISHED)
 		{
 			start();
 		}
@@ -111,20 +133,31 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	 */
 	public void restore()
 	{
-		if(getStatus() == RadarAnimationStatus.PAUSED)
+		if(mSavedFrameNo > -1) /* animation running before rotation/ app backgrounded */
 		{
 			Log.e("RadarAnimation.restore", "the animation status is PAUSED, starting animation task");
 			
-			mAnimationTask = new AnimationTask(mMapFrag.getActivity().getApplicationContext().getExternalFilesDir(null).getPath());
 			Buffering buffering = new Buffering(this, mAnimationTask,
 					mTimeoutHandler, mState, mUrlList);
-			
-			buffering.enter();
 			mState = buffering;
+			
+			/* to tell the following Running state that it must post the mSavedFrameNo frame and go to pause */
+			buffering.setPauseOnFrameNo(mSavedFrameNo);
+			
+			/* allocates a new AnimationTask. mAnimationTask is passed through states */
+			buffering.enter();
+			mAnimationTask = buffering.getAnimationTask();
 			
 			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), 
 					mMapFrag.getResources().getString(R.string.radarAnimationPausedAfterRotation),
 					Toast.LENGTH_SHORT).show();
+		}
+		else if(mSavedAnimationStatusAsInt == 3) /* was finished */
+		{
+			Log.e("RadarAnimation.restore", " saved status was FINISHED");
+			mState = new Finished(this, mAnimationTask,
+					mTimeoutHandler, mState);
+			mState.enter();
 		}
 		else
 			Log.e("RadarAnimation.restore", "animation status " + getStatus());
@@ -137,6 +170,8 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	{
 		Log.e("RadarAnimation", "start");
 		mState = new Buffering(this, mAnimationTask, mTimeoutHandler, mState, mUrlList);
+		mState.enter();
+		mAnimationTask = mState.getAnimationTask();
 
 		for(RadarAnimationListener ral : mAnimationListeners)
 			ral.onRadarAnimationStart();
@@ -146,7 +181,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	{
 		Log.e("RadarAnimation", "stop");
 		mState = new NotRunning(this, mAnimationTask, mTimeoutHandler, mState);
-
+		mState.enter();
 		/* reset counters and the list of image urls */
 		mResetProgressVariables();
 
@@ -229,6 +264,8 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			 * case above.
 			 */
 		}
+		else if(currentAnimationStatus == RadarAnimationStatus.FINISHED)
+			outState.putInt("animationStatus", 3);
 
 		Log.e("RadarAnimation.saveState", "lastFrameNo " + lastFrameNo);
 		outState.putInt("animationFrameNo", lastFrameNo);
@@ -243,14 +280,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		mDownloadProgress = savedInstanceState.getInt("animationDownloadProgress", 0);
 		mControlsVisible = savedInstanceState.getBoolean("controlsVisible", false);
 		mUrlList = savedInstanceState.getString("urlList", "");
-		int state = savedInstanceState.getInt("animationStatus", 0);
-		/* status initialized to NOT_RUNNING in the constructor. No need to check for
-		 * state == 0.
-		 * On the other hand, if before rotating the animation was running, set it to
-		 * paused after rotation.
-		 */
-		if(state > 0) /* set paused both if before the rotation it was running or paused */
-			mState = new Paused(this, mAnimationTask, mTimeoutHandler, mState);
+		mSavedAnimationStatusAsInt = savedInstanceState.getInt("animationStatus", 0);
 	}
 
 	public void onDestroy()
@@ -262,6 +292,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	{
 		Log.e("RadarAnimation.onPause", "setting Paused state (this does not cancel task!)");
 		mState = new Paused(this, mAnimationTask, mTimeoutHandler, mState);
+		mState.enter();
 		
 		/* in case activity is resumed, just proceed in the same way as if it were destroyed and
 		 * recreated.
@@ -338,24 +369,19 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		Log.e("RadarAnimation.onTransition", from + " --> " + to);
 		if(from == RadarAnimationStatus.BUFFERING && to == RadarAnimationStatus.RUNNING)
 		{
-			Buffering buff = (Buffering) mState;
-			Running running = new Running(this, mAnimationTask, mTimeoutHandler, mState,
-					buff.getUrlList(), 
-					buff.getCurrentStep(), buff.getTotSteps());
-			
-			if(mSavedFrameNo > -1)
-				running.setPauseOnFrameNo(mSavedFrameNo);
-			
+			Running running = new Running(this, mAnimationTask, mTimeoutHandler, mState);
 			mState = running;
 			running.enter();
 		}
 		else if(from == RadarAnimationStatus.RUNNING && to == RadarAnimationStatus.FINISHED)
 		{
-
+			mState = new Finished(this, mAnimationTask, mTimeoutHandler, mState);
+			mState.enter();
 		}
 		else if(to == RadarAnimationStatus.FINISHED)
 		{
-			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), R.string.radarAnimationTaskCancelled, Toast.LENGTH_SHORT).show();
+			mState = new Finished(this, mAnimationTask, mTimeoutHandler, mState);
+			mState.enter();
 		}
 	}
 
