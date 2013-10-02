@@ -93,7 +93,8 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 					mDownloadUrls = null;
 					m_errorMessage = "IOException: URL: \"" + urls[0].toString() + "\":\n\"" + e.getLocalizedMessage() + "\"";
 					mTotSteps = 0;
-					publishProgress(0);
+					if(!isCancelled())
+						publishProgress(0);
 					return 0;
 				}
 			}
@@ -107,10 +108,9 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 		
 		stepCnt = 1;
 		/* progress == 1 means text file downloaded */
-		this.publishProgress(stepCnt);
-		
-		/* check for isCancelled */
-		if(isCancelled())
+		if(!isCancelled())
+			this.publishProgress(stepCnt);
+		else
 			return stepCnt;
 		
 		String [] lines = mDownloadUrls.split("\n");
@@ -194,8 +194,8 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 	        		break;
 	        	}
 			}
-			
-			publishProgress(stepCnt);
+			if(!isCancelled())
+				publishProgress(stepCnt);
 		}
 		
 

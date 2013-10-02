@@ -16,38 +16,19 @@ import android.widget.ToggleButton;
  * @author giacomo
  *
  */
-public class Paused extends State 
-{
-	private int mTotSteps;
-	private int mFrameNo;
-	private int mDownloadStep;
-	
-	Paused(RadarAnimation radarAnimation, AnimationTask animationTask, Handler timeoutHandler, State previousState) 
+public class Paused extends ProgressState 
+{	
+	Paused(RadarAnimation radarAnimation, AnimationTask animationTask, State previousState) 
 	{		
 		/* removes callbacks on handler (previous state run will not be invoked any more */
-		super(radarAnimation, animationTask, timeoutHandler, previousState);
+		super(radarAnimation, animationTask, previousState);
 		if(previousState.getStatus() == RadarAnimationStatus.RUNNING)
 		{
-			Running ru = (Running) previousState;
-			mTotSteps = ru.getTotSteps();
-			mFrameNo = ru.getFrameNo();
-			mDownloadStep = ru.getDownloadStep();
+			/* before leaving RUNNING for PAUSED, the number of frames is 
+			 * incremented by one. The last shown frame number is frameNo - 1
+			 */
+			dFrameNo--;
 		}
-	}
-
-	public int getDownloadStep()
-	{
-		return mDownloadStep;
-	}
-	
-	public int getTotSteps()
-	{
-		return mTotSteps;
-	}
-	
-	public int getFrameNo()
-	{
-		return mFrameNo;
 	}
 	
 	@Override
@@ -83,9 +64,14 @@ public class Paused extends State
 	}
 
 	@Override
-	public void run() 
-	{
-
+	public boolean isRunnable() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
+	@Override
+	public boolean isProgressState() 
+	{
+		return true;
+	}
 }

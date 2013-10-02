@@ -637,12 +637,7 @@ RadarAnimationListener
 	{
 		if (v.getId() == R.id.actionOverflow) 
 		{
-			OMapFragment omv = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
-			if(omv.isRadarAnimationRunning())
-			{
-				stopRadarAnimation();
-			}
-			
+			stopRadarAnimation();
 			mCreateMapOptionsPopupMenu(true);
 		} 
 		else 
@@ -852,8 +847,7 @@ RadarAnimationListener
 	public void stopRadarAnimation()
 	{
 		OMapFragment omv = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
-		if(omv.isRadarAnimationRunning())
-			omv.stopRadarAnimation();
+		omv.stopRadarAnimation();
 	}
 
 	public ObservationsCache getObservationsCache()

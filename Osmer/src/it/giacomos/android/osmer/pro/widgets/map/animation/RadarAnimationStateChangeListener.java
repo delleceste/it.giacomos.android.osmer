@@ -9,7 +9,4 @@ public interface RadarAnimationStateChangeListener
 	public void onError(String message);
 	
 	public void onFrameUpdatePossible(int frameNo);
-	
-	public void onAnimationDataAvailable(int index, AnimationData animationData);
-
 }

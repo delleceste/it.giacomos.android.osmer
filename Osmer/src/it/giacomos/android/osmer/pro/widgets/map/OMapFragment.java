@@ -171,7 +171,7 @@ RadarAnimationListener
 		super.onResume();
 		mMap.setMyLocationEnabled(true);
 
-		if(mRadarAnimation.animationInProgress())
+		if(mRadarAnimation.getState().animationInProgress())
 			mRadarAnimation.restore();
 	}
 
@@ -289,7 +289,7 @@ RadarAnimationListener
 	private void mRefreshRadarImage() 
 	{
 		if(mMode.currentMode == MapMode.RADAR   /* after first camera update */
-				&& (mRadarAnimation == null  || !mRadarAnimation.animationInProgress()) )
+				&& (mRadarAnimation == null  || !mRadarAnimation.getState().animationInProgress()) )
 		{
 			long radarTimestampMillis = mSettings.getRadarImageTimestamp();
 			long currentTimestampMillis = System.currentTimeMillis();
@@ -358,7 +358,7 @@ RadarAnimationListener
 		 * and not to call setMode.
 		 * Secondly, update the radar image in order to draw it black and white if old.
 		 */
-		if (m.equals(mMode) && m.currentMode == MapMode.RADAR && !mRadarAnimation.animationInProgress())
+		if (m.equals(mMode) && m.currentMode == MapMode.RADAR && !mRadarAnimation.getState().animationInProgress())
 		{
 			radarTimestampText.scheduleShow();
 			mRefreshRadarImage();
@@ -620,11 +620,6 @@ RadarAnimationListener
 	public void stopRadarAnimation()
 	{
 		mRadarAnimation.stop();
-	}
-
-	public boolean isRadarAnimationRunning()
-	{
-		return mRadarAnimation != null && mRadarAnimation.isRunning();
 	}
 
 	@Override

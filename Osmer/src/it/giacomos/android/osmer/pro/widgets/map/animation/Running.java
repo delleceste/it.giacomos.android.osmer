@@ -34,11 +34,8 @@ import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
  * @author giacomo
  *
  */
-public class Running extends State implements AnimationTaskListener
-{
-
-	private int mDownloadStep, mTotSteps, mFrameNo, mTotalFrames;
-	
+public class Running extends ProgressState implements AnimationTaskListener, Runnable
+{	
 	/* holds whether the Running state automatically switches to pause after notifying the
 	 * RadarAnimation that the desired frame is ready to be used (mPauseOnFrameNo >= 0).
 	 * This only happens after a state restore (screen rotation or app gone in background).
@@ -47,62 +44,58 @@ public class Running extends State implements AnimationTaskListener
 	 */
 	private int mPauseOnFrameNo;
 	private int mAnimationStepDuration;
+	private Handler mTimeoutHandler;
 	
 	Running(RadarAnimation radarAnimation, 
-			AnimationTask animationTask, 
-			Handler handler,
+			AnimationTask animationTask,
 			State previousState) 
 	{
-		/* removes callbacks on handler (previous state run will not be invoked any more */
-		super(radarAnimation, animationTask, handler, previousState);
+		/* if previousState is ProgressState, fetches the frameNo, the tot frames, the download step */
+		super(radarAnimation, animationTask, previousState);
 		
 		Log.e("Running.Running", "previous state was " + previousState.getStatus());
 		if(previousState.getStatus() == RadarAnimationStatus.BUFFERING)
 		{
 			Buffering bu = (Buffering) previousState;
-			mDownloadStep = bu.getCurrentStep();
-			mTotSteps = bu.getTotSteps();
 			mPauseOnFrameNo = bu.getPauseOnFrameNo();
-			mTotalFrames = mTotSteps - 1;
 		}
 		else if(previousState.getStatus() == RadarAnimationStatus.PAUSED)
 		{
 			Paused pa = (Paused) previousState;
-			mDownloadStep = pa.getDownloadStep();
-			mTotSteps = pa.getTotSteps();
-			mFrameNo = pa.getFrameNo();
-			Log.e("Running.Running", "previous state was PAUSED, tot steps " + mTotSteps + " mFrameNo " + mFrameNo + " download step " + mDownloadStep);
+			Log.e("Running.Running", "previous state was PAUSED, tot steps " + dTotSteps + " dFrameNo " + dFrameNo + " download step " + dDownloadStep);
 			mPauseOnFrameNo = -1;
-			mTotalFrames = mTotSteps - 1;
 		}
 		else if(previousState.getStatus() == RadarAnimationStatus.FINISHED)
 		{
-			mFrameNo = 0;
-			mDownloadStep = 0;
-			mTotSteps = ((Finished) previousState).getTotSteps();
-			mTotalFrames = mTotSteps - 1;
+			dFrameNo = 0;
+			dDownloadStep = 0;
+			dTotSteps = ((Finished) previousState).getTotSteps();
 			mPauseOnFrameNo = -1;
 		}
 		else
 			Log.e("Running.Running", "error: can only get to RUNNING from BUFFERING, PAUSED or FINISHED states");
 		
+		if(dTotSteps > 0)
+			dTotalFrames = dTotSteps - 1;
+		else
+			dTotalFrames = 0;
+		
 		mAnimationStepDuration = 1000;
-		mPauseOnFrameNo = -1;
 	}
 
 	public int getDownloadStep()
 	{
-		return mDownloadStep;
+		return dDownloadStep;
 	}
 	
 	public int getTotSteps()
 	{
-		return mTotSteps;
+		return dTotSteps;
 	}
 	
 	public int getFrameNo()
 	{
-		return mFrameNo;
+		return dFrameNo;
 	}
 	
 	/** Returns the value of the only frame that is posted to the animation listener.
@@ -135,49 +128,50 @@ public class Running extends State implements AnimationTaskListener
 		mapFrag.getActivity().findViewById(R.id.playPauseButton).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.radarAnimProgressBar).setVisibility(View.GONE);
 		dAnimationTask.setAnimationTaskListener(this);
-		dTimeoutHandler.postDelayed(this, 250);
+		mTimeoutHandler = new Handler();
+		mTimeoutHandler.postDelayed(this, 250);
 	}
 
-	private void mCancel()
+	public void cancel()
 	{
 		Log.e("Running.cancel", "migrating to not running. Cancelling tasks, remove callbacks on Handler");
-		dTimeoutHandler.removeCallbacks(this);
+		mTimeoutHandler.removeCallbacks(this);
 		dAnimationTask.cancel(false);
 		dRadarAnimation.onTransition(RadarAnimationStatus.NOT_RUNNING);
 	}
 	
 	public void leave() 
 	{
-		dTimeoutHandler.removeCallbacks(this);
+		mTimeoutHandler.removeCallbacks(this);
 		
-		if(mPauseOnFrameNo > 0)
+		if(mPauseOnFrameNo >= 0)
 		{
 			Log.e("Running.leave", "paused on frame no " + mPauseOnFrameNo + ": migrating to PAUSED");
 			dRadarAnimation.onTransition(RadarAnimationStatus.PAUSED);
 		}
-		else if(mFrameNo == mTotalFrames)
+		else if(dFrameNo == dTotalFrames)
 		{
 			Log.e("Running.leave", "frame no == total frames: migrating to FINISHED");
 			dRadarAnimation.onTransition(RadarAnimationStatus.FINISHED);
 		}
-		else if(mDownloadStep <= mFrameNo)
+		else if(dDownloadStep <= dFrameNo)
 		{
-			Log.e("Running.leave", "mDownloadStep <= mFrameNo: " + mDownloadStep + " <= " + mFrameNo + " going to buffering");
+			Log.e("Running.leave", "dDownloadStep <= dFrameNo: " + dDownloadStep + " <= " + dFrameNo + " going to buffering");
 			dRadarAnimation.onTransition(RadarAnimationStatus.BUFFERING);
 		}
 		else
 		{
 			Log.e("Running.leave", "leave method incorrectly called... dunnow what to do: cancelling");
-			mCancel();
+			cancel();
 		}
 	}
 
 	@Override
 	public void onProgressUpdate(int step, int total) 
 	{
-		mDownloadStep = step;
-		mTotSteps = total;
-		mTotalFrames = mTotSteps - 1;
+		dDownloadStep = step;
+		dTotSteps = total;
+		dTotalFrames = dTotSteps - 1;
 		
 		dRadarAnimation.onDownloadProgressChanged(step, total);
 	}
@@ -193,7 +187,7 @@ public class Running extends State implements AnimationTaskListener
 	{
 		dRadarAnimation.onError(message);
 		Log.e("Running.onDownloadError", "cancelling task, going to NOT_RUNNING");
-		mCancel();
+		cancel();
 	}
 
 	@Override
@@ -211,7 +205,7 @@ public class Running extends State implements AnimationTaskListener
 	@Override
 	public void run() 
 	{
-		if(mDownloadStep > mFrameNo)
+		if(dDownloadStep > dFrameNo)
 		{
 			OMapFragment mapFrag = dRadarAnimation.getMapFragment();
 			 /* show "pause" button */
@@ -224,47 +218,56 @@ public class Running extends State implements AnimationTaskListener
 			/* show the pause button and the time label */
 			showControls();
 			
+			Log.e("Running.run", "pause on frame no " + mPauseOnFrameNo + " frame no " + dFrameNo);
+			
 			if(mPauseOnFrameNo < 0)
 			{
 				/* get image from the external storage and update */
-				dRadarAnimation.onFrameUpdatePossible(mFrameNo);
+				dRadarAnimation.onFrameUpdatePossible(dFrameNo);
 			}
-			else if(mFrameNo == mPauseOnFrameNo)
+			else if(dFrameNo == mPauseOnFrameNo)
 			{
 				/* the current frame is the one desired before pausing (restore 
-				 * mode): post the update of mFrameNo only.
+				 * mode): post the update of dFrameNo only.
 				 * 
 				 * This state continues "running" until the condition below
-				 * `if(mFrameNo >= mTotalFrames)' is reached because in the Running 
+				 * `if(dFrameNo >= dTotalFrames)' is reached because in the Running 
 				 * state the AnimationTask is cancelled only if cancel() is 
 				 * invoked.
 				 */
 				dRadarAnimation.onFrameUpdatePossible(mPauseOnFrameNo);
 			}
 			/* increment the number of updated frames */
-			mFrameNo++;
+			dFrameNo++;
 		}
 		else /* not enough data! */
 		{
 			leave(); /* back to buffering */
 		}
-
-		if(mFrameNo >= mTotalFrames) /* end */
+		
+		if(dFrameNo - 1 == mPauseOnFrameNo)
 		{
-			Log.e("Running.run()", "not rescheduling execution: frame no " + mFrameNo + " anim size " + mTotalFrames);
+			/* dFrameNo has been incremented by one also in the case dFrameNo == mPauseOnFrameNo */
+			Log.e("Running.run", "Leaving cuz dFrameNo - 1 == mPauseOnFrameNo");
+			leave();
+		}
+		else if(dFrameNo >= dTotalFrames) /* end */
+		{
+			Log.e("Running.run()", "not rescheduling execution: frame no " + dFrameNo + " anim size " + dTotalFrames);
 			leave();
 		}
 		else if(mPauseOnFrameNo < 0) /* reschedule */
 		{
-			dTimeoutHandler.postDelayed(this, this.mAnimationStepDuration);
+			mTimeoutHandler.postDelayed(this, this.mAnimationStepDuration);
 		}
-		else 
+		else  if(dFrameNo < mPauseOnFrameNo)
 		{
-			/* if mPauseOnFrameNo is set to >= 0, then rapidly check for (mDownloadStep > mFrameNo)
+			Log.e("Running.run", "waiting for dFrameNo " + dFrameNo + " to become == mPauseOnFrameNo: " + mPauseOnFrameNo);
+			/* if mPauseOnFrameNo is set to >= 0, then rapidly check for (dDownloadStep > dFrameNo)
 			 * in order to call dRadarAnimation.onFrameUpdatePossible(mPauseOnFrameNo) as soon as
 			 * possible. Check in 150ms.
 			 */
-			dTimeoutHandler.postDelayed(this, 150);
+			mTimeoutHandler.postDelayed(this, 150);
 		}
 	}
 
@@ -290,6 +293,23 @@ public class Running extends State implements AnimationTaskListener
 		mapFrag.getActivity().findViewById(R.id.radarAnimTime).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.stopButton).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.playPauseButton).setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public boolean isRunnable() 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean isProgressState() 
+	{
+		return true;
+	}
+
+	public Handler getHandler() 
+	{
+		return mTimeoutHandler;
 	}
 	
 }

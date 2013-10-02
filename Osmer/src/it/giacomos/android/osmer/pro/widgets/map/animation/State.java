@@ -12,18 +12,19 @@ import android.util.Log;
  * @author giacomo
  *
  */
-public abstract class State implements Runnable
+public abstract class State
 {
-	State(RadarAnimation radarAnimation, AnimationTask at, Handler handler, State previousState) 
+	State(RadarAnimation radarAnimation, AnimationTask at, State previousState) 
 	{
 		dRadarAnimation = radarAnimation;
 		dAnimationTask = at;
-		dTimeoutHandler = handler;
 		dPreviousState = previousState;
-		if(previousState != null && handler != null)
+		
+		if(previousState != null && previousState.getStatus() == RadarAnimationStatus.RUNNING)
 		{
-			Log.e("State.State", "removing callbacks on handler " + handler + " for runnable status " + previousState.getStatus());
-			handler.removeCallbacks(previousState);
+			Running running = (Running) previousState;
+			Log.e("State.State", "removing callbacks on handler " + running.getHandler() + " for runnable status " + previousState.getStatus());
+			running.getHandler().removeCallbacks(running);
 		}
 	}
 
@@ -31,6 +32,12 @@ public abstract class State implements Runnable
 	
 	public abstract void enter();
 		
+	public boolean animationInProgress()
+	{
+		return getStatus() == RadarAnimationStatus.BUFFERING || getStatus() == RadarAnimationStatus.RUNNING
+				|| getStatus() == RadarAnimationStatus.PAUSED  || getStatus() == RadarAnimationStatus.INTERRUPTED;
+	}
+	
 	public State getPreviousState() 
 	{
 		return dPreviousState;
@@ -40,14 +47,16 @@ public abstract class State implements Runnable
 	{
 		return dAnimationTask;
 	}
+	
+	public abstract boolean isRunnable();
+	
+	public abstract  boolean isProgressState();
 		
 	protected RadarAnimation dRadarAnimation;
 	
 	protected AnimationTask dAnimationTask;
 	
 	protected RadarAnimationStatus dAnimationStatus;
-	
-	protected Handler dTimeoutHandler;
-	
+		
 	protected State dPreviousState;
 }

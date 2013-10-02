@@ -147,7 +147,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	public void getObservationsTable(MapMode mapMode) 
 	{
 		mTotSteps++;
-		Log.e("getObservationsTable", "mapMode " + mapMode + " mTotSteps " + mTotSteps);
+		Log.e("getObservationsTable", "mapMode " + mapMode + " dTotSteps " + mTotSteps);
 		m_downloadManagerUpdateListener.onDownloadStart(DownloadReason.PartialDownload);
 		mGetObservationsTable(mapMode);
 	}
@@ -246,7 +246,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			onBitmapUpdate(null, t, e.getMessage(), null);
 		}
 
-		Log.e("startBitmapTask", "type " + t + " mTotSteps " + mTotSteps);
+		Log.e("startBitmapTask", "type " + t + " dTotSteps " + mTotSteps);
 	}
 
 	private void startTextTask(String urlStr, ViewType t)
@@ -263,7 +263,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			onTextUpdate("Malformed url \"" + urlStr + "\"\n" , t, e.getMessage(), null);
 		}
 
-		Log.e("startTextTask", "type " + t + " mTotSteps " + mTotSteps);
+		Log.e("startTextTask", "type " + t + " dTotSteps " + mTotSteps);
 	}
 
 	protected void mGetObservationsTable(MapMode mapMode)
@@ -323,7 +323,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 		if(mCurrentStep == mTotSteps)
 		{
 			mCurrentStep = mTotSteps = 0;
-			Log.e("mProgressNeedsReset", " mTotSteps " + mTotSteps);
+			Log.e("mProgressNeedsReset", " dTotSteps " + mTotSteps);
 		}
 	}
 

@@ -11,10 +11,10 @@ public class Finished extends State {
 
 	private int mTotSteps;
 
-	Finished(RadarAnimation radarAnimation, AnimationTask at, Handler handler,
+	Finished(RadarAnimation radarAnimation, AnimationTask at,
 			State previousState) 
 	{
-		super(radarAnimation, at, handler, previousState);
+		super(radarAnimation, at, previousState);
 		if(previousState != null && previousState.getStatus() == RadarAnimationStatus.RUNNING)
 			mTotSteps = ((Running) previousState).getTotSteps();
 		else if(previousState.getStatus() == RadarAnimationStatus.NOT_RUNNING)
@@ -30,12 +30,6 @@ public class Finished extends State {
 	public int getTotSteps()
 	{
 		return mTotSteps;
-	}
-	
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -54,6 +48,18 @@ public class Finished extends State {
 		ToggleButton tb = (ToggleButton )mapFrag.getActivity().findViewById(R.id.playPauseButton);
 		tb.setVisibility(View.VISIBLE);
 		tb.setChecked(true);
+	}
+
+	@Override
+	public boolean isRunnable() 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isProgressState() 
+	{
+		return false;
 	}
 
 }

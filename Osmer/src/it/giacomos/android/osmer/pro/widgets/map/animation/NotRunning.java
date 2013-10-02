@@ -3,14 +3,15 @@ package it.giacomos.android.osmer.pro.widgets.map.animation;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 
 public class NotRunning extends State 
 {
-	public NotRunning(RadarAnimation radarAnimation, AnimationTask at, Handler handler, State previousState) 
+	public NotRunning(RadarAnimation radarAnimation, AnimationTask at, State previousState) 
 	{
 		/* removes previousState as callback, so first of all it stops the animation */
-		super(radarAnimation, at, handler, previousState);
+		super(radarAnimation, at, previousState);
 	}
 
 	@Override
@@ -24,7 +25,11 @@ public class NotRunning extends State
 	{
 		/* cancels the current task */
 		if(dAnimationTask!= null && !dAnimationTask.isCancelled())
-			dAnimationTask.cancel(false);
+		{
+			Log.e("NotRunning.enter", "cancelling animation task");
+		}
+		else if(dAnimationTask != null)
+			Log.e("NotRunning.enter", "not cancelling task: its state is " + dAnimationTask.getStatus());
 		
 		/* hide all animation controls */
 		OMapFragment mapFrag = dRadarAnimation.getMapFragment();
@@ -36,12 +41,17 @@ public class NotRunning extends State
 
 	public void leave()
 	{
-//		dRadarAnimation.onTransition(RadarAnimationStatus.NOT_RUNNING);
 	}
 
 	@Override
-	public void run() 
+	public boolean isRunnable() 
 	{
-		
+		return false;
+	}
+
+	@Override
+	public boolean isProgressState() 
+	{
+		return false;
 	}
 }

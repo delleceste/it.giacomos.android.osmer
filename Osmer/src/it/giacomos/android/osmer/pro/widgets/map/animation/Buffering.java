@@ -30,18 +30,16 @@ import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimation;
  * @author giacomo
  *
  */
-public class Buffering extends State  implements  AnimationTaskListener
+public class Buffering extends ProgressState  implements  AnimationTaskListener
 {
 
 	private String mUrlList;
-	private int mTotSteps, mDownloadStep;
-	private SparseArray<AnimationData> mAnimationData;
 	private int mPauseOnFrameNo;
 	
-	Buffering(RadarAnimation radarAnimation, AnimationTask animationTask, Handler handler,
+	Buffering(RadarAnimation radarAnimation, AnimationTask animationTask,
 			State previousState, String urlList) 
 	{
-		super(radarAnimation, animationTask, handler, previousState);
+		super(radarAnimation, animationTask, previousState);
 		dAnimationStatus = RadarAnimationStatus.BUFFERING;
 		mUrlList = urlList;
 		mPauseOnFrameNo = -1;
@@ -49,8 +47,9 @@ public class Buffering extends State  implements  AnimationTaskListener
 		if(previousState.getStatus() == RadarAnimationStatus.RUNNING)
 		{
 			Running ru = (Running) previousState;
-			mTotSteps = ru.getTotSteps();
-			mDownloadStep = ru.getDownloadStep();
+			dTotSteps = ru.getTotSteps();
+			dDownloadStep = ru.getDownloadStep();
+			dFrameNo = ru.getFrameNo();
 		}
 	}
 	
@@ -66,12 +65,12 @@ public class Buffering extends State  implements  AnimationTaskListener
 	
 	public int getTotSteps()
 	{
-		return mTotSteps;
+		return dTotSteps;
 	}
 	
 	public int getCurrentStep()
 	{
-		return mDownloadStep;
+		return dDownloadStep;
 	}
 	
 	public String getUrlList()
@@ -126,7 +125,7 @@ public class Buffering extends State  implements  AnimationTaskListener
 			dAnimationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().radarHistoricalFileListUrl());
 	}
 
-	private void mCancel() 
+	public void cancel() 
 	{
 		Log.e("Buffering.cancel", "cancelling task, migrating to NOT_RUNNING");
 		dAnimationTask.cancel(false);
@@ -141,8 +140,8 @@ public class Buffering extends State  implements  AnimationTaskListener
 	@Override
 	public void onProgressUpdate(int step, int total) 
 	{
-		mDownloadStep = step;
-		mTotSteps = total;
+		dDownloadStep = step;
+		dTotSteps = total;
 		
 		/* when step is == 1, the images url file is ready and the RadarAnimation,
 		 * inside onAnimationProgressChanged, will populate AnimationData SparseArray.
@@ -178,7 +177,7 @@ public class Buffering extends State  implements  AnimationTaskListener
 	{
 		dRadarAnimation.onError(message);
 		Log.e("Buffering.onDownloadError", "cancelling task, going to NOT_RUNNING");
-		mCancel();
+		cancel();
 	}
 
 	@Override
@@ -195,9 +194,13 @@ public class Buffering extends State  implements  AnimationTaskListener
 	}
 
 	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
+	public boolean isRunnable() {
+		return false;
+	}
+
+	@Override
+	public boolean isProgressState() {
+		return true;
 	}
 
 }
