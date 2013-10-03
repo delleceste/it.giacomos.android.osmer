@@ -7,6 +7,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.network.DownloadStatus;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 
 /** This state listens for AnimationTask progress updates and completes
@@ -53,7 +54,9 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		/* if previousState is ProgressState, fetches the frameNo, the tot frames, the download step */
 		super(radarAnimation, animationTask, previousState);
 		
-		Log.e("Running.Running", "previous state was " + previousState.getStatus());
+		Log.e("Running.Running", "previous state was " + previousState.getStatus()
+				+ "[" + 
+				DownloadStatus.Instance().executionNumber + "]");
 		if(previousState.getStatus() == RadarAnimationStatus.BUFFERING)
 		{
 			Buffering bu = (Buffering) previousState;
@@ -120,7 +123,7 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 	@Override
 	public void enter() 
 	{
-		Log.e("Running.enter", "entering RUNNING state");
+		Log.e("Running.enter",  this + "entering RUNNING state");
 		hideProgressBar();
 		/* show controls */
 		OMapFragment mapFrag = dRadarAnimation.getMapFragment();
@@ -157,7 +160,7 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		}
 		else if(dDownloadStep <= dFrameNo)
 		{
-			Log.e("Running.leave", "dDownloadStep <= dFrameNo: " + dDownloadStep + " <= " + dFrameNo + " going to buffering");
+			Log.e("Running.leave", this + "dDownloadStep <= dFrameNo: " + dDownloadStep + " <= " + dFrameNo + " going to buffering");
 			dRadarAnimation.onTransition(RadarAnimationStatus.BUFFERING);
 		}
 		else
@@ -244,6 +247,7 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		else /* not enough data! */
 		{
 			leave(); /* back to buffering */
+			return;
 		}
 		
 		if(dFrameNo - 1 == mPauseOnFrameNo)

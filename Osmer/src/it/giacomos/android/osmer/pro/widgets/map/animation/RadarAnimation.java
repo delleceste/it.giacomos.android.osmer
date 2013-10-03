@@ -73,6 +73,9 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		mGroundOverlay = null;
 		mState = new NotRunning(this, mAnimationTask, null);
 		mState.enter(); /* not running: hide controls */
+		
+		// TEMPPP
+		DownloadStatus.Instance().executionNumber++;
 	}
 
 	public OMapFragment getMapFragment() 
@@ -334,7 +337,8 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	public void onTransition(RadarAnimationStatus to) 
 	{
 		RadarAnimationStatus from = mState.getStatus();
-		Log.e("RadarAnimation.onTransition", from + " --> " + to);
+		Log.e("RadarAnimation.onTransition", from + " --> " + to + "[" + 
+				this + "]");
 		if(from == RadarAnimationStatus.BUFFERING && to == RadarAnimationStatus.RUNNING)
 		{
 			Running running = new Running(this, mAnimationTask, mState);

@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.network.DownloadStatus;
 import it.giacomos.android.osmer.pro.network.state.Urls;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimation;
@@ -87,7 +88,8 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 	@Override
 	public void enter() 
 	{
-		Log.e("Buffering.enter", "entering");
+		Log.e("Buffering.enter", "entering" + "[" + 
+						DownloadStatus.Instance().executionNumber + "]");
 		OMapFragment mapFrag = dRadarAnimation.getMapFragment();
 		Resources res = mapFrag.getActivity().getResources();
 		ToggleButton tb = (ToggleButton )mapFrag.getActivity().findViewById(R.id.playPauseButton);
@@ -135,7 +137,7 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 	
 	public void leave() 
 	{
-		Log.e("Buffering.enter", "leaving for RUNNING");
+		Log.e("Buffering.leave", "leaving for RUNNING");
 		dRadarAnimation.onTransition(RadarAnimationStatus.RUNNING);
 	}
 

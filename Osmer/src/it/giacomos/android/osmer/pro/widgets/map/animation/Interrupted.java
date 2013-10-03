@@ -1,5 +1,6 @@
 package it.giacomos.android.osmer.pro.widgets.map.animation;
 
+import it.giacomos.android.osmer.pro.network.DownloadStatus;
 import android.util.Log;
 
 public class Interrupted extends ProgressState 
@@ -9,15 +10,15 @@ public class Interrupted extends ProgressState
 	Interrupted(RadarAnimation radarAnimation, AnimationTask at,
 			 State previousState, String urlList) 
 	{
+		
 		super(radarAnimation, at, previousState);
+		
+		Log.e("Interrupted.Interrupted", "constructor " + "[" + 
+				DownloadStatus.Instance().executionNumber + "]");
+		
 		mUrlList = urlList;
 		if(previousState.getStatus() == RadarAnimationStatus.RUNNING && dFrameNo > 0)
 			dFrameNo--;
-		if(dAnimationTask != null)
-		{
-			dAnimationTask.setAnimationTaskListener(null);
-			dAnimationTask.cancel(false);
-		}
 	}
 	
 	Interrupted(RadarAnimation radarAnimation, 
