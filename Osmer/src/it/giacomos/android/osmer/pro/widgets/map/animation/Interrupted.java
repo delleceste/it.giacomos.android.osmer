@@ -13,6 +13,11 @@ public class Interrupted extends ProgressState
 		mUrlList = urlList;
 		if(previousState.getStatus() == RadarAnimationStatus.RUNNING && dFrameNo > 0)
 			dFrameNo--;
+		if(dAnimationTask != null)
+		{
+			dAnimationTask.setAnimationTaskListener(null);
+			dAnimationTask.cancel(false);
+		}
 	}
 	
 	Interrupted(RadarAnimation radarAnimation, 

@@ -133,7 +133,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			buffering.setPauseOnFrameNo(interrupted.getFrameNo());
 
 			Log.e("RadarAnimation.restore", "the animation status is INTERRUPTED, starting animation task, will pause on frame "
-					+ interrupted.getFrameNo() + " , urlList is " + urlList);
+					+ interrupted.getFrameNo());
 			/* allocates a new AnimationTask. mAnimationTask is passed through states */
 			buffering.enter();
 			mAnimationTask = buffering.getAnimationTask();
@@ -246,7 +246,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		if(savedAnimationStatusAsInt == 1)
 		{
 			Log.e("RadarAnimation.restoreState", "creating INTERRUPTED, savedFrameNo "  + savedFrameNo + 
-					" download progress " + savedDownloadProgress + " urlList " + urlList);
+					" download progress " + savedDownloadProgress);
 			mState = new Interrupted(this, savedFrameNo, savedDownloadProgress, urlList);
 			mState.enter();
 		}
@@ -344,6 +344,11 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		else if(from == RadarAnimationStatus.RUNNING && to == RadarAnimationStatus.FINISHED)
 		{
 			mState = new Finished(this, mAnimationTask, mState);
+			mState.enter();
+		}
+		else if(to == RadarAnimationStatus.BUFFERING)
+		{
+			mState = new Buffering(this, mAnimationTask, mState, mUrlList);
 			mState.enter();
 		}
 		else if(from == RadarAnimationStatus.RUNNING && to == RadarAnimationStatus.PAUSED)

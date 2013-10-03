@@ -120,6 +120,7 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 	@Override
 	public void enter() 
 	{
+		Log.e("Running.enter", "entering RUNNING state");
 		hideProgressBar();
 		/* show controls */
 		OMapFragment mapFrag = dRadarAnimation.getMapFragment();

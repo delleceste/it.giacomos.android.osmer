@@ -87,6 +87,7 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 	@Override
 	public void enter() 
 	{
+		Log.e("Buffering.enter", "entering");
 		OMapFragment mapFrag = dRadarAnimation.getMapFragment();
 		Resources res = mapFrag.getActivity().getResources();
 		ToggleButton tb = (ToggleButton )mapFrag.getActivity().findViewById(R.id.playPauseButton);
@@ -134,6 +135,7 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 	
 	public void leave() 
 	{
+		Log.e("Buffering.enter", "leaving for RUNNING");
 		dRadarAnimation.onTransition(RadarAnimationStatus.RUNNING);
 	}
 

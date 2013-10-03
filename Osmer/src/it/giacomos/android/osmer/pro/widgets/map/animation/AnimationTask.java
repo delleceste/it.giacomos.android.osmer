@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -137,6 +138,24 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 			{
 				/* file exists, no need to download it */
 				stepCnt++;
+				
+				if(stepCnt == 8)
+        		{
+        			Log.e("AnimationTask", "sleeping on stepCnt 8");
+        			int i = 0;
+        			while(i < 16)
+        			{
+        			try {
+						Thread.sleep(1000);
+						Log.e("AnimationTask", "slept " + i + "secs!");
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+        			i++;
+        			}
+        		}
+				
 			}
 			else
 			{
@@ -176,6 +195,8 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 		        		
 		        		/* increment stepCnt */
 		        		stepCnt++;
+		        		
+		        		
 					}
 					catch(MalformedURLException e)
 					{
@@ -204,6 +225,8 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 
 	protected void onProgressUpdate(Integer... progress) 
 	{
+		if(mAnimationTaskListener == null)
+			return;
 		mAnimationTaskListener.onProgressUpdate(progress[0], mTotSteps);
 		if(progress[0] == 1)
 			mAnimationTaskListener.onUrlsReady(mDownloadUrls);
@@ -211,6 +234,8 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 
 	protected void onPostExecute(Integer result) 
 	{
+		if(mAnimationTaskListener == null)
+			return;
 		if(result == 0) /* error */
 			mAnimationTaskListener.onDownloadError(m_errorMessage);
 		else if(result < mTotSteps)
@@ -221,6 +246,8 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 
 	public void onCancelled(Integer step)
 	{ 
+		if(mAnimationTaskListener == null)
+			return;
 		Log.e("AnimationTask.onCancelled", "task was cancelled at step " + step);
 		mAnimationTaskListener.onTaskCancelled();
 	}
