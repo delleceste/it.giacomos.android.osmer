@@ -4,7 +4,7 @@ import android.os.Handler;
 
 public abstract class ProgressState extends State 
 {
-	protected int dTotSteps, dDownloadStep, dFrameNo, dTotalFrames;
+	protected int dTotSteps, dDownloadStep, dFrameNo, dTotalFrames, dPauseOnFrameNo;
 	
 	public ProgressState(RadarAnimation radarAnimation, AnimationTask at,
 			State previousState) 
@@ -19,6 +19,7 @@ public abstract class ProgressState extends State
 			dDownloadStep = prevProgressState.getDownloadStep();
 			dFrameNo = prevProgressState.getFrameNo();
 			dTotalFrames = prevProgressState.getTotalFrames();
+			dPauseOnFrameNo = prevProgressState.getPauseOnFrameNo();
 		}
 		else
 		{
@@ -26,9 +27,15 @@ public abstract class ProgressState extends State
 			dDownloadStep = 0;
 			dFrameNo = 0;
 			dTotalFrames = 0;
+			dPauseOnFrameNo = -1;
 		}
 	}
 	
+	public int getPauseOnFrameNo() 
+	{
+		return dPauseOnFrameNo;
+	}
+
 	public int getTotSteps()
 	{
 		return dTotSteps;

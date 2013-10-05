@@ -37,7 +37,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	private GroundOverlayOptions mGroundOverlayOptions;
 	private GroundOverlay mGroundOverlay;
 	private String mUrlList;
-	
+
 	/* The animation task, which downloads all necessary data from the internet (text file
 	 * with the list of the URLs of the images and all the images.
 	 * This AnimationTask is allocated by the Buffering State, inside the enter method.
@@ -73,7 +73,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		mGroundOverlay = null;
 		mState = new NotRunning(this, mAnimationTask, null);
 		mState.enter(); /* not running: hide controls */
-		
+
 		// TEMPPP
 		DownloadStatus.Instance().executionNumber++;
 	}
@@ -97,68 +97,38 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	 */
 	public void resume() 
 	{
-		if(mState.getStatus() == RadarAnimationStatus.PAUSED)
+		if(mState.isProgressState())
 		{
-			mState = new Running(this, mAnimationTask, mState);
-			mState.enter();
-
-			for(RadarAnimationListener ral : mAnimationListeners)
-				ral.onRadarAnimationResumed();
+			ProgressState progState = (ProgressState) mState;
+			if(mState.getStatus() == RadarAnimationStatus.PAUSED )
+					
+			{
+				if(progState.getFrameNo() < progState.getTotalFrames())
+				{
+					mState = new Running(this, mAnimationTask, mState);
+					mState.enter();
+					for(RadarAnimationListener ral : mAnimationListeners)
+						ral.onRadarAnimationResumed();
+				}
+				else /* download data and restart animation */
+					start();
+			}
 		}
-		else if(mState.getStatus() == RadarAnimationStatus.NOT_RUNNING 
-				|| mState.getStatus() == RadarAnimationStatus.FINISHED)
+		else if(mState.getStatus() == RadarAnimationStatus.NOT_RUNNING)
 		{
 			start();
 		}
 		else
 			Log.e("RadarAnimation.resume", "cannot resume animation from status " + mState.getStatus());
 	}
-
-	/** Called to restore the animation when interrupted by a screen orientation change
-	 *  (or when the activity is put in the background).
-	 *  Any state variable has to be correctly initialized in order to start() perform the
-	 *  correct resume. (mDownloadProgress, mUrlList, mSavedFrameNo).
-	 *  If restore is called right after restoreState, then it should correctly resume 
-	 *  a previously interrupted animation.
-	 * 
-	 */
-	public void restore()
-	{
-		if(mState.getStatus() == RadarAnimationStatus.INTERRUPTED ) /* animation running before rotation/ app backgrounded */
-		{
-			Interrupted interrupted = (Interrupted) mState;
-			String urlList = interrupted.getUrlList();
-			Buffering buffering = new Buffering(this, mAnimationTask,
-					mState, urlList);
-			mState = buffering;
-			
-			/* to tell the following Running state that it must post the mSavedFrameNo frame and go to pause */
-			buffering.setPauseOnFrameNo(interrupted.getFrameNo());
-
-			Log.e("RadarAnimation.restore", "the animation status is INTERRUPTED, starting animation task, will pause on frame "
-					+ interrupted.getFrameNo());
-			/* allocates a new AnimationTask. mAnimationTask is passed through states */
-			buffering.enter();
-			mAnimationTask = buffering.getAnimationTask();
-			
-			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), 
-					mMapFrag.getResources().getString(R.string.radarAnimationPausedAfterRotation),
-					Toast.LENGTH_SHORT).show();
-		}
-		else
-			Log.e("RadarAnimation.restore", "animation status " + mState.getStatus());
-
-		for(RadarAnimationListener ral : mAnimationListeners)
-			ral.onRadarAnimationRestored();
-	}
-
 	public void start()
 	{
 		Log.e("RadarAnimation", "start");
+		boolean isStart = true;
 		DownloadStatus downloadStatus = DownloadStatus.Instance();
 		if(downloadStatus.isOnline)
 		{
-			mState = new Buffering(this, mAnimationTask, mState, mUrlList);
+			mState = new Buffering(this, mAnimationTask, mState, mUrlList, isStart);
 			mState.enter();
 			mAnimationTask = mState.getAnimationTask();
 
@@ -207,15 +177,16 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		RadarAnimationStatus currentAnimationStatus = mState.getStatus();
 		if(mState.isProgressState())
 		{
+			/* Buffering, Interrupted, Paused, Running */
 			ProgressState progressState = (ProgressState) mState;
 			lastFrameNo = progressState.getFrameNo();
 			downloadStep = progressState.getDownloadStep();
 			/* animationStatus 1 means it was interrupted */
 			outState.putInt("animationStatus", 1);
-			
+
 			Log.e("RadarAnimation.saveStaeate", "state is in progress... saving variables sownload step: " + downloadStep + " frame no "
-					+ lastFrameNo + " mUrlList " + mUrlList);
-			
+					+ lastFrameNo + " mUrlList ie empty " + mUrlList.isEmpty());
+
 			if(currentAnimationStatus == RadarAnimationStatus.RUNNING && lastFrameNo > 0)
 			{
 				/* dFrameNo - 1 when RUNNING because the last run() invocation 
@@ -228,8 +199,6 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		}
 		else if(currentAnimationStatus == RadarAnimationStatus.NOT_RUNNING)
 			outState.putInt("animationStatus", 0);
-		else if(currentAnimationStatus == RadarAnimationStatus.FINISHED)
-			outState.putInt("animationStatus", 2);
 
 		Log.e("RadarAnimation.saveState", "lastFrameNo " + lastFrameNo);
 		outState.putInt("animationFrameNo", lastFrameNo);
@@ -244,7 +213,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		int savedDownloadProgress = savedInstanceState.getInt("animationDownloadProgress", 0);
 		String urlList = savedInstanceState.getString("urlList", "");
 		int savedAnimationStatusAsInt = savedInstanceState.getInt("animationStatus", 0);
-		
+
 		/* NotRunning state already set in the constructor: look for 1 and 3 */
 		if(savedAnimationStatusAsInt == 1)
 		{
@@ -253,14 +222,48 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			mState = new Interrupted(this, savedFrameNo, savedDownloadProgress, urlList);
 			mState.enter();
 		}
-		else if(savedAnimationStatusAsInt == 2)
-		{
-			Log.e("RadarAnimation.restoreState", " saved status was FINISHED");
-			mState = new Finished(this, mAnimationTask, mState);
-			mState.enter();
-		}
 		else
 			Log.e("RadarAnimation.restoreState", "no particular saved state");
+	}
+
+
+	/** Called to restore the animation when interrupted by a screen orientation change
+	 *  (or when the activity is put in the background).
+	 *  Any state variable has to be correctly initialized in order to start() perform the
+	 *  correct resume. (mDownloadProgress, mUrlList, mSavedFrameNo).
+	 *  If restore is called right after restoreState, then it should correctly resume 
+	 *  a previously interrupted animation.
+	 * 
+	 */
+	public void restore()
+	{
+		if(mState.getStatus() == RadarAnimationStatus.INTERRUPTED ) /* animation running before rotation/ app backgrounded */
+		{
+			Interrupted interrupted = (Interrupted) mState;
+			mUrlList = interrupted.getUrlList();
+			boolean isStart = true;
+			Buffering buffering = new Buffering(this, mAnimationTask,
+					mState, mUrlList, isStart);
+			mState = buffering;
+
+			/* to tell the following Running state that it must post the mSavedFrameNo frame and go to pause */
+			buffering.setPauseOnFrameNo(interrupted.getFrameNo());
+
+			Log.e("RadarAnimation.restore", "the animation status is INTERRUPTED, starting animation task, will pause on frame "
+					+ interrupted.getFrameNo());
+			/* allocates a new AnimationTask. mAnimationTask is passed through states */
+			buffering.enter();
+			mAnimationTask = buffering.getAnimationTask();
+
+			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), 
+					mMapFrag.getResources().getString(R.string.radarAnimationPausedAfterRotation),
+					Toast.LENGTH_SHORT).show();
+		}
+		else
+			Log.e("RadarAnimation.restore", "animation status " + mState.getStatus());
+
+		for(RadarAnimationListener ral : mAnimationListeners)
+			ral.onRadarAnimationRestored();
 	}
 
 	public void onDestroy()
@@ -345,11 +348,6 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			mState = running;
 			running.enter();
 		}
-		else if(from == RadarAnimationStatus.RUNNING && to == RadarAnimationStatus.FINISHED)
-		{
-			mState = new Finished(this, mAnimationTask, mState);
-			mState.enter();
-		}
 		else if(to == RadarAnimationStatus.BUFFERING)
 		{
 			mState = new Buffering(this, mAnimationTask, mState, mUrlList);
@@ -358,12 +356,6 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		else if(from == RadarAnimationStatus.RUNNING && to == RadarAnimationStatus.PAUSED)
 		{
 			mState = new Paused(this, mAnimationTask, mState);
-			mState.enter();
-		}
-		
-		else if(to == RadarAnimationStatus.FINISHED)
-		{
-			mState = new Finished(this, mAnimationTask, mState);
 			mState.enter();
 		}
 	}
@@ -410,7 +402,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			}
 		}
 	}
-	
+
 	public State getState()
 	{
 		return mState;

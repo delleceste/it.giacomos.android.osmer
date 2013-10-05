@@ -16,7 +16,7 @@ import android.widget.ToggleButton;
  * @author giacomo
  *
  */
-public class Paused extends ProgressState 
+public class Paused extends ProgressState implements AnimationTaskListener 
 {	
 	Paused(RadarAnimation radarAnimation, AnimationTask animationTask, State previousState) 
 	{		
@@ -44,8 +44,10 @@ public class Paused extends ProgressState
 			Log.e("Paused.enter", "Error: PAUSED state can be entered only from RUNNING state");
 		else
 		{
+			dAnimationTask.setAnimationTaskListener(this);
 			/* - pause does not cancel the download task.
-			 * - pause can be entered only from the RUNNING state.
+			 * - pause can be entered only from the RUNNING state, either when paused by the
+			 *   user or when the animation finishes
 			 * 
 			 * It just pauses the animation.
 			 * This is done in the constructor by the super() call, which removes 
@@ -64,8 +66,8 @@ public class Paused extends ProgressState
 	}
 
 	@Override
-	public boolean isRunnable() {
-		// TODO Auto-generated method stub
+	public boolean isRunnable() 
+	{
 		return false;
 	}
 
@@ -73,5 +75,36 @@ public class Paused extends ProgressState
 	public boolean isProgressState() 
 	{
 		return true;
+	}
+
+	@Override
+	public void onProgressUpdate(int step, int total) 
+	{
+		dTotSteps = total;
+		dDownloadStep = step;
+	}
+
+	@Override
+	public void onDownloadComplete() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDownloadError(String message) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUrlsReady(String urlList) 
+	{
+		
+	}
+
+	@Override
+	public void onTaskCancelled() 
+	{
+		
 	}
 }

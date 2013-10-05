@@ -35,7 +35,7 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 {
 
 	private String mUrlList;
-	private int mPauseOnFrameNo;
+	private boolean mIsStart;
 	
 	Buffering(RadarAnimation radarAnimation, AnimationTask animationTask,
 			State previousState, String urlList) 
@@ -43,25 +43,22 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		super(radarAnimation, animationTask, previousState);
 		dAnimationStatus = RadarAnimationStatus.BUFFERING;
 		mUrlList = urlList;
-		mPauseOnFrameNo = -1;
-		/* network latency */
-		if(previousState.getStatus() == RadarAnimationStatus.RUNNING)
-		{
-			Running ru = (Running) previousState;
-			dTotSteps = ru.getTotSteps();
-			dDownloadStep = ru.getDownloadStep();
-			dFrameNo = ru.getFrameNo();
-		}
+		mIsStart = false;
 	}
+	
+	Buffering(RadarAnimation radarAnimation, AnimationTask animationTask,
+			State previousState, String urlList, boolean isStart) 
+	{
+		super(radarAnimation, animationTask, previousState);
+		dAnimationStatus = RadarAnimationStatus.BUFFERING;
+		mUrlList = urlList;
+		mIsStart = isStart;
+	}
+	
 	
 	public void setPauseOnFrameNo(int frameNo)
 	{
-		mPauseOnFrameNo = frameNo;
-	}
-	
-	public int getPauseOnFrameNo()
-	{
-		return mPauseOnFrameNo;
+		dPauseOnFrameNo = frameNo;
 	}
 	
 	public int getTotSteps()
@@ -119,12 +116,15 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		 * started. In any case, set the animation task listener to this in order to switch again to the RUNNING state
 		 * when some more data has been downloaded.
 		 */
-		if(dPreviousState == null || dPreviousState.getStatus() != RadarAnimationStatus.RUNNING)
+		if(mIsStart)
+		{
 			dAnimationTask = new AnimationTask(mapFrag.getActivity().getApplicationContext().getExternalFilesDir(null).getPath());
+			dTotSteps = dDownloadStep  = 0;
+		}
 		
 		dAnimationTask.setDownloadUrls(mUrlList);
 		dAnimationTask.setAnimationTaskListener(this);
-		if(dPreviousState == null || dPreviousState.getStatus() != RadarAnimationStatus.RUNNING)
+		if(mIsStart)
 			dAnimationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().radarHistoricalFileListUrl());
 	}
 

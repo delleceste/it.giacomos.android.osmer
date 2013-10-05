@@ -143,32 +143,6 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		dAnimationTask.cancel(false);
 		dRadarAnimation.onTransition(RadarAnimationStatus.NOT_RUNNING);
 	}
-	
-	public void leave() 
-	{
-		mTimeoutHandler.removeCallbacks(this);
-		
-		if(mPauseOnFrameNo >= 0)
-		{
-			Log.e("Running.leave", "paused on frame no " + mPauseOnFrameNo + ": migrating to PAUSED");
-			dRadarAnimation.onTransition(RadarAnimationStatus.PAUSED);
-		}
-		else if(dFrameNo == dTotalFrames)
-		{
-			Log.e("Running.leave", "frame no == total frames: migrating to FINISHED");
-			dRadarAnimation.onTransition(RadarAnimationStatus.FINISHED);
-		}
-		else if(dDownloadStep <= dFrameNo)
-		{
-			Log.e("Running.leave", this + "dDownloadStep <= dFrameNo: " + dDownloadStep + " <= " + dFrameNo + " going to buffering");
-			dRadarAnimation.onTransition(RadarAnimationStatus.BUFFERING);
-		}
-		else
-		{
-			Log.e("Running.leave", "leave method incorrectly called... dunnow what to do: cancelling");
-			cancel();
-		}
-	}
 
 	@Override
 	public void onProgressUpdate(int step, int total) 
@@ -206,6 +180,33 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		
 	}
 
+
+	public void leave() 
+	{
+		mTimeoutHandler.removeCallbacks(this);
+		
+		if(dDownloadStep <= dFrameNo)
+		{
+			Log.e("Running.leave", this + "dDownloadStep <= dFrameNo: " + dDownloadStep + " <= " + dFrameNo + " going to buffering");
+			dRadarAnimation.onTransition(RadarAnimationStatus.BUFFERING);
+		}
+		else if(mPauseOnFrameNo >= 0)
+		{
+			Log.e("Running.leave", "paused on frame no " + mPauseOnFrameNo + ": migrating to PAUSED");
+			dRadarAnimation.onTransition(RadarAnimationStatus.PAUSED);
+		}
+		else if(dFrameNo == dTotalFrames)
+		{
+			Log.e("Running.leave", "frame no == total frames: migrating to PAUSED");
+			dRadarAnimation.onTransition(RadarAnimationStatus.PAUSED);
+		}
+		else 
+		{
+			Log.e("Running.leave", "leave method incorrectly called... dunnow what to do: cancelling");
+			cancel();
+		}
+	}
+	
 	@Override
 	public void run() 
 	{

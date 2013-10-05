@@ -36,12 +36,12 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 	{
 		mAnimationTaskListener = atl;
 	}
-	
+
 	public void setDownloadUrls(String doc)
 	{
 		mDownloadUrls = doc;
 	}
-	
+
 	public String getDownloadUrls()
 	{
 		return mDownloadUrls;
@@ -59,7 +59,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 		Urls myurls = new Urls();
 		String surl; /* url as string */
 		int removedFilesCount;
-		
+
 		FileHelper fileHelper = new FileHelper();
 		if(!fileHelper.isExternalFileSystemDirReadableWritable())
 		{
@@ -69,7 +69,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 			/* leave function */
 			return 0;
 		}
-		
+
 		mTotSteps = 1; /* 1 step is to download the url list text file */
 		if(mDownloadUrls.isEmpty())
 		{
@@ -106,14 +106,14 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 			mTotSteps += mDownloadUrls.length() - mDownloadUrls.replace("\n", "").length();
 			Log.e("AnimationTask", "no need to download text file for URLS - totSteps " + mTotSteps);
 		}
-		
+
 		stepCnt = 1;
 		/* progress == 1 means text file downloaded */
 		if(!isCancelled())
 			this.publishProgress(stepCnt);
 		else
 			return stepCnt;
-		
+
 		String [] lines = mDownloadUrls.split("\n");
 		String [] filenames = new String[lines.length];
 		for(int i = 0; i < lines.length; i++)
@@ -124,79 +124,84 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 				filenames[i] = parts[1];
 			}
 		}
-		
+
 		/* remove unnecessary files on external storage, that were previously 
 		 * downloaded
 		 */
 		ArrayList<String> neededFiles = new ArrayList<String>(Arrays.asList(filenames));
 		removedFilesCount = fileHelper.removeUnneededFiles(neededFiles, mExternalStorageDirPath);
 		Log.e("AnimationTask.doInBackground", "removed unneeded files " + removedFilesCount);
-		
+
 		for(String fName : filenames)
 		{
 			if(fileHelper.exists(fName, mExternalStorageDirPath))
 			{
 				/* file exists, no need to download it */
 				stepCnt++;
-				
+
 				if(stepCnt == 8)
-        		{
-        			Log.e("AnimationTask", "sleeping on stepCnt 8");
-        			int i = 0;
-        			while(i < 16)
-        			{
-        			try {
-						Thread.sleep(1000);
-						Log.e("AnimationTask", "slept " + i + "secs!");
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+				{
+					Log.e("AnimationTask", "sleeping on stepCnt 8");
+					int i = 0;
+					while(i < 16)
+					{
+						try {
+							if(isCancelled())
+							{
+								Log.e("ANimationTask.doInBackground", "task cancelled while sleeping!");
+								break;
+							}
+							Thread.sleep(1000);
+							Log.e("AnimationTask", "slept " + i + "secs!");
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						i++;
 					}
-        			i++;
-        			}
-        		}
-				
+				}
+
 			}
 			else
 			{
 				surl = myurls.radarHistoricalImagesFolderUrl() + fName;
 				/* download it and save on file */
 				try
-	        	{
+				{
 					try{
 						url = new URL(surl);
-		        		inputStream = (InputStream) url.getContent();
-		        		/* get bytes from input stream */
-		        		ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-		        		bytes = new byte[1024];
-		        		while ((nRead = inputStream.read(bytes, 0, bytes.length)) != -1) {
-		        			byteBuffer.write(bytes, 0, nRead);
-		        		}
-		        		byteBuffer.flush();
-		        		/* back to bytes again */
-		        		bytes = byteBuffer.toByteArray();
-		        		if(!fileHelper.storeRadarImage(fName, bytes, mExternalStorageDirPath))
-		        		{
-		        			m_errorMessage = "Error saving image on external storage " +
-		        					fileHelper.getErrorMessage();
-		        			Log.e("AnimationTask.doInBackground", "failed to save " + fName + " on external storage: " + fileHelper.getErrorMessage());
-		        			
-		        			break;
-		        		}
-		        		else
-		        			Log.e("AnimationTask.doInBackground", "got and saveth " + surl + "[" + stepCnt + "/" + mTotSteps + "]");
-		        		
-		        		/* if the task is cancelled, return before incrementing stepCnt and publishProgress, because the task
-		        		 * may have been cancelled on screen rotation. This ensures that the current step is not taken into account
-		        		 * (can be incomplete if the activity is destroyed here) when the activity is restarted.
-		        		 */
-		        		if(isCancelled())
-		        			return stepCnt;
-		        		
-		        		/* increment stepCnt */
-		        		stepCnt++;
-		        		
-		        		
+						inputStream = (InputStream) url.getContent();
+						/* get bytes from input stream */
+						ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+						bytes = new byte[1024];
+						while ((nRead = inputStream.read(bytes, 0, bytes.length)) != -1) {
+							byteBuffer.write(bytes, 0, nRead);
+						}
+						byteBuffer.flush();
+						/* back to bytes again */
+						bytes = byteBuffer.toByteArray();
+						if(!fileHelper.storeRadarImage(fName, bytes, mExternalStorageDirPath))
+						{
+							m_errorMessage = "Error saving image on external storage " +
+									fileHelper.getErrorMessage();
+							Log.e("AnimationTask.doInBackground", "failed to save " + fName + " on external storage: " + fileHelper.getErrorMessage());
+
+							break;
+						}
+						else
+							Log.e("AnimationTask.doInBackground", "got and saveth " + surl + "[" + stepCnt + "/" + mTotSteps + "]");
+
+						/* if the task is cancelled, return before incrementing stepCnt and publishProgress, because the task
+						 * may have been cancelled on screen rotation. This ensures that the current step is not taken into account
+						 * (can be incomplete if the activity is destroyed here) when the activity is restarted.
+						 */
+						if(isCancelled())
+							return stepCnt;
+
+						/* increment stepCnt */
+						stepCnt++;
+
+
 					}
 					catch(MalformedURLException e)
 					{
@@ -205,20 +210,25 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 						/* leave on error */
 						break;
 					}
-					
-	        	}
-	        	catch(IOException e)
-	        	{
-	        		m_errorMessage = "IOException: URL: \"" + surl + "\":\n\"" + e.getLocalizedMessage() + "\"";
-	        		Log.e("AnimationTask.doInBackground", m_errorMessage);
-	        		/* leave on error */
-	        		break;
-	        	}
+
+				}
+				catch(IOException e)
+				{
+					m_errorMessage = "IOException: URL: \"" + surl + "\":\n\"" + e.getLocalizedMessage() + "\"";
+					Log.e("AnimationTask.doInBackground", m_errorMessage);
+					/* leave on error */
+					break;
+				}
 			}
 			if(!isCancelled())
 				publishProgress(stepCnt);
+			else
+			{
+				Log.e("AnimationTask.doInBackground", "task cancelled during for at fName " + fName);
+				break;
+			}
 		}
-		
+
 
 		return stepCnt;
 	}
