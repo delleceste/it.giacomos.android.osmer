@@ -3,12 +3,9 @@ package it.giacomos.android.osmer.pro.widgets.map.animation;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.pro.network.DownloadStatus;
-import it.giacomos.android.osmer.pro.network.state.Urls;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 
 import java.util.ArrayList;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -18,17 +15,14 @@ import com.google.android.gms.maps.model.GroundOverlayOptions;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+import android.widget.Button;
 import android.view.View.OnClickListener;
-import android.os.AsyncTask;
 
 public class RadarAnimation implements OnClickListener,  RadarAnimationStateChangeListener
 {
@@ -65,6 +59,8 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		/* button listeners */
 		((ToggleButton) (mMapFrag.getActivity().findViewById(R.id.playPauseButton))).setOnClickListener(this);
 		((ToggleButton) (mMapFrag.getActivity().findViewById(R.id.stopButton))).setOnClickListener(this);
+		((Button)(mMapFrag.getActivity().findViewById(R.id.previousButton))).setOnClickListener(this);
+		((Button)(mMapFrag.getActivity().findViewById(R.id.nextButton))).setOnClickListener(this);
 		mAnimationListeners = new ArrayList<RadarAnimationListener>();
 		mAnimationData = new SparseArray<AnimationData>();
 		mAnimationTask = null;
@@ -95,7 +91,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	/** called when the play/pause toggle button is clicked
 	 * 
 	 */
-	public void resume() 
+	public void play() 
 	{
 		if(mState.isProgressState())
 		{
@@ -103,7 +99,10 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			if(mState.getStatus() == RadarAnimationStatus.PAUSED )
 					
 			{
-				if(progState.getFrameNo() < progState.getTotalFrames())
+				/* frame number starts from 0 and it reaches at most total frames - 1 */
+				Log.e("RadarAnimation.play", " frameNo " + progState.getFrameNo() +
+						"progState.getTotalFrames() - 1 " + (progState.getTotalFrames() - 1 ));
+				if(progState.getFrameNo() < progState.getTotalFrames() - 1)
 				{
 					mState = new Running(this, mAnimationTask, mState);
 					mState.enter();
@@ -121,6 +120,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		else
 			Log.e("RadarAnimation.resume", "cannot resume animation from status " + mState.getStatus());
 	}
+	
 	public void start()
 	{
 		Log.e("RadarAnimation", "start");
@@ -248,6 +248,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 
 			/* to tell the following Running state that it must post the mSavedFrameNo frame and go to pause */
 			buffering.setPauseOnFrameNo(interrupted.getFrameNo());
+			buffering.setFrameNo(interrupted.getFrameNo());
 
 			Log.e("RadarAnimation.restore", "the animation status is INTERRUPTED, starting animation task, will pause on frame "
 					+ interrupted.getFrameNo());
@@ -294,12 +295,79 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		{
 			ToggleButton pp = (ToggleButton) v;
 			if(!pp.isChecked())
-				resume();
+				play();
 			else
 				pause();
 		}
 		else if(v.getId() == R.id.stopButton)
 			stop();
+		else if(v.getId() == R.id.previousButton)
+		{
+			previousFrame();
+			mSetPrevNextButtonsState();
+		}
+		else if(v.getId() == R.id.nextButton)
+		{
+			nextFrame();
+			mSetPrevNextButtonsState();
+		}
+	}
+
+	private void nextFrame() 
+	{
+		if(isNextFramePossible() && mState.isProgressState())
+		{
+			ProgressState progressState = (ProgressState) mState;
+			progressState.setFrameNo(progressState.getFrameNo() + 1);
+			mMakeStep(progressState.getFrameNo());
+		}
+		
+	}
+
+	private void previousFrame() 
+	{
+		if(isPreviousFramePossible() && mState.isProgressState())
+		{
+			ProgressState progressState = (ProgressState) mState;
+			progressState.setFrameNo(progressState.getFrameNo() - 1);
+			mMakeStep(progressState.getFrameNo());
+		}
+	}
+	
+	private boolean isPreviousFramePossible()
+	{
+		boolean ret = false;
+		if(mState.isProgressState())
+		{
+			ProgressState ps = (ProgressState) mState;
+			if(ps.getFrameNo() > 0)
+				ret = true;
+			Log.e("RadarAnimation.isPreviousFramePossible", "cur frame no " + ps.getFrameNo() );
+		}
+		Log.e("RadarAnimation.isPreviousFramePossible", " returning " + ret);
+		
+		return ret;
+	}
+	
+	private boolean isNextFramePossible()
+	{
+		boolean ret = false;
+		if(mState.isProgressState())
+		{
+			ProgressState ps = (ProgressState) mState;
+			int curFrameNo = ps.getFrameNo();
+			if(curFrameNo < ps.getTotSteps() -2)
+				ret = true;
+			Log.e("RadarAnimation.isNextFramePossible", "cur frame no " + curFrameNo + " tot " + ps.getTotSteps());
+		}
+		Log.e("RadarAnimation.isNextFramePossible", "rertutning " + ret);
+		return ret;
+	}
+	
+	private void mSetPrevNextButtonsState()
+	{
+			mMapFrag.getActivity().findViewById(R.id.previousButton).setEnabled(isPreviousFramePossible());
+			mMapFrag.getActivity().findViewById(R.id.nextButton).setEnabled(isNextFramePossible());
 	}
 
 	@Override
@@ -357,6 +425,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		{
 			mState = new Paused(this, mAnimationTask, mState);
 			mState.enter();
+			mSetPrevNextButtonsState();
 		}
 	}
 

@@ -141,7 +141,7 @@ RadarAnimationListener
 		if(!mGoogleServicesAvailable)
 			return;
 
-		Log.e("OsmerActivity.onPause", "stopping pending tasks");
+//		Log.e("OsmerActivity.onPause", "stopping pending tasks");
 		/* cancel async tasks that may be running when the application is destroyed */
 		m_downloadManager.stopPendingTasks();
 		/* unregisters network status monitor broadcast receiver (for this it needs `this')
@@ -524,7 +524,7 @@ RadarAnimationListener
 		double progressValue = ProgressBarParams.MAX_PB_VALUE * step /  total;
 		setProgress((int) progressValue);
 		ProgressBarParams.currentValue = progressValue;
-		Log.e("onDownloadProgressUpdate", "step " + step + "/" + total);
+//		Log.e("onDownloadProgressUpdate", "step " + step + "/" + total);
 		if(mRefreshAnimatedImageView != null && ProgressBarParams.currentValue == ProgressBarParams.MAX_PB_VALUE)
 			mRefreshAnimatedImageView.hide(); /* stops and hides */
 		else if(mRefreshAnimatedImageView != null)
@@ -714,7 +714,6 @@ RadarAnimationListener
 			break;
 		}
 
-		Log.e("mCreateMapOptionsPopupMenu", "show is " + show);
 		if(show)
 		{
 			mapOptionsMenu.setOnMenuItemClickListener(this);

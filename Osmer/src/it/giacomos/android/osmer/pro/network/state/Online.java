@@ -147,7 +147,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	public void getObservationsTable(MapMode mapMode) 
 	{
 		mTotSteps++;
-		Log.e("getObservationsTable", "mapMode " + mapMode + " dTotSteps " + mTotSteps);
+	//	Log.e("getObservationsTable", "mapMode " + mapMode + " dTotSteps " + mTotSteps);
 		m_downloadManagerUpdateListener.onDownloadStart(DownloadReason.PartialDownload);
 		mGetObservationsTable(mapMode);
 	}
@@ -226,7 +226,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			/* try to cancel the task. At least, onPostExecute is not called 
 			 * Calling this method guarantees that onPostExecute(Object) is never invoked.
 			 */
-			Log.e("cancelRunningTasks", "state " + mMyTasks.get(i).getStatus());
+//			Log.e("cancelRunningTasks", "state " + mMyTasks.get(i).getStatus());
 			mMyTasks.get(i).cancel(false);
 		}
 		mMyTasks.clear();
@@ -246,7 +246,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			onBitmapUpdate(null, t, e.getMessage(), null);
 		}
 
-		Log.e("startBitmapTask", "type " + t + " dTotSteps " + mTotSteps);
+//		Log.e("startBitmapTask", "type " + t + " dTotSteps " + mTotSteps);
 	}
 
 	private void startTextTask(String urlStr, ViewType t)
@@ -263,7 +263,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			onTextUpdate("Malformed url \"" + urlStr + "\"\n" , t, e.getMessage(), null);
 		}
 
-		Log.e("startTextTask", "type " + t + " dTotSteps " + mTotSteps);
+//		Log.e("startTextTask", "type " + t + " dTotSteps " + mTotSteps);
 	}
 
 	protected void mGetObservationsTable(MapMode mapMode)
@@ -309,12 +309,12 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 				TextTask tt = (TextTask) at;
 				if(tt.getType() == vt && tt.getStatus() == AsyncTask.Status.RUNNING)
 				{
-					Log.e("mIsTextTaskExecuting", "TextTask " + vt + " is already RUNNING");
+//					Log.e("mIsTextTaskExecuting", "TextTask " + vt + " is already RUNNING");
 					return true;
 				}
 			}
 		}
-		Log.e("mIsTextTaskExecuting", "TextTask " + vt + " is NOT RUNNING");
+//		Log.e("mIsTextTaskExecuting", "TextTask " + vt + " is NOT RUNNING");
 		return false;	
 	}
 
@@ -323,7 +323,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 		if(mCurrentStep == mTotSteps)
 		{
 			mCurrentStep = mTotSteps = 0;
-			Log.e("mProgressNeedsReset", " dTotSteps " + mTotSteps);
+//			"mProgressNeedsReset", " dTotSteps " + mTotSteps);
 		}
 	}
 

@@ -4,6 +4,7 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.ToggleButton;
 
 /** This class represents the PAUSED state.
@@ -55,6 +56,10 @@ public class Paused extends ProgressState implements AnimationTaskListener
 			 * What we have to do is to change the pause control to the play one.
 			 */
 			OMapFragment mapFrag = dRadarAnimation.getMapFragment();
+			mapFrag.getActivity().findViewById(R.id.animationButtonsLinearLayout).setVisibility(View.VISIBLE);
+			mapFrag.getActivity().findViewById(R.id.radarAnimTime).setVisibility(View.VISIBLE);
+			mapFrag.getActivity().findViewById(R.id.nextButton).setVisibility(View.VISIBLE);
+			mapFrag.getActivity().findViewById(R.id.previousButton).setVisibility(View.VISIBLE);
 			ToggleButton tb = (ToggleButton )mapFrag.getActivity().findViewById(R.id.playPauseButton);
 			tb.setChecked(true);
 		}

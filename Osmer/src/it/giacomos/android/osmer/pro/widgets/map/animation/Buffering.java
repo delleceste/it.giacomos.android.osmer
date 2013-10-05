@@ -53,6 +53,8 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		dAnimationStatus = RadarAnimationStatus.BUFFERING;
 		mUrlList = urlList;
 		mIsStart = isStart;
+		if(isStart)
+			dTotSteps = dDownloadStep  =  dFrameNo = 0;
 	}
 	
 	
@@ -91,12 +93,16 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		Resources res = mapFrag.getActivity().getResources();
 		ToggleButton tb = (ToggleButton )mapFrag.getActivity().findViewById(R.id.playPauseButton);
 		tb.setChecked(true);
+		/* layout container visible */
+		mapFrag.getActivity().findViewById(R.id.animationButtonsLinearLayout).setVisibility(View.VISIBLE);
 		/* play/ pause hidden */
 		mapFrag.getActivity().findViewById(R.id.playPauseButton).setVisibility(View.GONE);
 		/* stop (cancel) visible */
 		mapFrag.getActivity().findViewById(R.id.stopButton).setVisibility(View.VISIBLE);
 		/* progress bar visible */
 		mapFrag.getActivity().findViewById(R.id.radarAnimProgressBar).setVisibility(View.VISIBLE);
+		mapFrag.getActivity().findViewById(R.id.nextButton).setVisibility(View.GONE);
+		mapFrag.getActivity().findViewById(R.id.previousButton).setVisibility(View.GONE);
 		
 		/* timestamp label visible and showing "buffering" */
 		TextView timeTv = (TextView) mapFrag.getActivity().findViewById(R.id.radarAnimTime);
@@ -119,7 +125,6 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		if(mIsStart)
 		{
 			dAnimationTask = new AnimationTask(mapFrag.getActivity().getApplicationContext().getExternalFilesDir(null).getPath());
-			dTotSteps = dDownloadStep  = 0;
 		}
 		
 		dAnimationTask.setDownloadUrls(mUrlList);
@@ -164,8 +169,10 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 			Log.e("Buffering.onProgressUpdate", "progress bar with step " + step + " and total is " + total);
 			OMapFragment mapFrag = dRadarAnimation.getMapFragment();
 			TextView timeTv = (TextView) mapFrag.getActivity().findViewById(R.id.radarAnimTime);
+			/* total is one too much */ 
 			String text = mapFrag.getActivity().getResources().getString(R.string.radarAnimationBuffering) + " " + 
-					step + "/" + total;
+					(step ) + "/" + (total - 1);
+			//Log.e("Buffering.onProgressUpdate", " step is " + step + " total is " + total);
 			timeTv.setText(text);
 		}
 	}

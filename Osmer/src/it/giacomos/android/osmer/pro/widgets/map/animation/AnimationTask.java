@@ -139,27 +139,27 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 				/* file exists, no need to download it */
 				stepCnt++;
 
-				if(stepCnt == 8)
-				{
-					Log.e("AnimationTask", "sleeping on stepCnt 8");
-					int i = 0;
-					while(i < 16)
-					{
-						try {
-							if(isCancelled())
-							{
-								Log.e("ANimationTask.doInBackground", "task cancelled while sleeping!");
-								break;
-							}
-							Thread.sleep(1000);
-							Log.e("AnimationTask", "slept " + i + "secs!");
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						i++;
-					}
-				}
+//				if(stepCnt == 8)
+//				{
+//					Log.e("AnimationTask", "sleeping on stepCnt 8");
+//					int i = 0;
+//					while(i < 16)
+//					{
+//						try {
+//							if(isCancelled())
+//							{
+//								Log.e("ANimationTask.doInBackground", "task cancelled while sleeping!");
+//								break;
+//							}
+//							Thread.sleep(1000);
+//							Log.e("AnimationTask", "slept " + i + "secs!");
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//						i++;
+//					}
+//				}
 
 			}
 			else
@@ -228,18 +228,17 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 				break;
 			}
 		}
-
-
 		return stepCnt;
 	}
 
 	protected void onProgressUpdate(Integer... progress) 
 	{
-		if(mAnimationTaskListener == null)
-			return;
-		mAnimationTaskListener.onProgressUpdate(progress[0], mTotSteps);
-		if(progress[0] == 1)
-			mAnimationTaskListener.onUrlsReady(mDownloadUrls);
+		if(mAnimationTaskListener != null)
+		{
+			mAnimationTaskListener.onProgressUpdate(progress[0], mTotSteps);
+			if(progress[0] == 1)
+				mAnimationTaskListener.onUrlsReady(mDownloadUrls);
+		}
 	}
 
 	protected void onPostExecute(Integer result) 

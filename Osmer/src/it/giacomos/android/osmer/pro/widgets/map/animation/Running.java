@@ -78,11 +78,6 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		else
 			Log.e("Running.Running", "error: can only get to RUNNING from BUFFERING, PAUSED or FINISHED states");
 		
-		if(dTotSteps > 0)
-			dTotalFrames = dTotSteps - 1;
-		else
-			dTotalFrames = 0;
-		
 		mAnimationStepDuration = 1000;
 	}
 
@@ -127,10 +122,13 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		hideProgressBar();
 		/* show controls */
 		OMapFragment mapFrag = dRadarAnimation.getMapFragment();
+		mapFrag.getActivity().findViewById(R.id.animationButtonsLinearLayout).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.radarAnimTime).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.stopButton).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.playPauseButton).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.radarAnimProgressBar).setVisibility(View.GONE);
+		mapFrag.getActivity().findViewById(R.id.nextButton).setVisibility(View.GONE);
+		mapFrag.getActivity().findViewById(R.id.previousButton).setVisibility(View.GONE);
 		dAnimationTask.setAnimationTaskListener(this);
 		mTimeoutHandler = new Handler();
 		mTimeoutHandler.postDelayed(this, 250);
@@ -149,8 +147,6 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 	{
 		dDownloadStep = step;
 		dTotSteps = total;
-		dTotalFrames = dTotSteps - 1;
-		
 		dRadarAnimation.onDownloadProgressChanged(step, total);
 	}
 
@@ -169,8 +165,8 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 	}
 
 	@Override
-	public void onUrlsReady(String urlList) {
-		// TODO Auto-generated method stub
+	public void onUrlsReady(String urlList) 
+	{
 		
 	}
 
@@ -179,7 +175,6 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 	{	
 		
 	}
-
 
 	public void leave() 
 	{
@@ -195,7 +190,7 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 			Log.e("Running.leave", "paused on frame no " + mPauseOnFrameNo + ": migrating to PAUSED");
 			dRadarAnimation.onTransition(RadarAnimationStatus.PAUSED);
 		}
-		else if(dFrameNo == dTotalFrames)
+		else if(dFrameNo == dTotSteps - 1)
 		{
 			Log.e("Running.leave", "frame no == total frames: migrating to PAUSED");
 			dRadarAnimation.onTransition(RadarAnimationStatus.PAUSED);
@@ -247,6 +242,11 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		}
 		else /* not enough data! */
 		{
+			if(dDownloadStep > 1)
+			{
+				Log.e("Running.run", "posting an update possible at dwnlod step " + dDownloadStep);
+				dRadarAnimation.onFrameUpdatePossible(dDownloadStep);
+			}
 			leave(); /* back to buffering */
 			return;
 		}
@@ -257,9 +257,9 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 			Log.e("Running.run", "Leaving cuz dFrameNo - 1 == mPauseOnFrameNo");
 			leave();
 		}
-		else if(dFrameNo >= dTotalFrames) /* end */
+		else if(dFrameNo >= dTotSteps - 1) /* end */
 		{
-			Log.e("Running.run()", "not rescheduling execution: frame no " + dFrameNo + " anim size " + dTotalFrames);
+			Log.e("Running.run()", "not rescheduling execution: frame no " + dFrameNo + " anim size " + (dTotSteps - 1));
 			leave();
 		}
 		else if(mPauseOnFrameNo < 0) /* reschedule */
