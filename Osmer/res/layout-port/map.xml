@@ -64,7 +64,7 @@
             android:visibility="gone" />
         
          <LinearLayout
-        android:id="@+id/todayRelativeLayout"
+        android:id="@+id/animationButtonsLinearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 	    android:layout_alignParentBottom="true"
@@ -72,7 +72,18 @@
 	    android:layout_marginBottom="20dp"
 	    android:background="@drawable/rounded_box_dark"
         android:orientation="horizontal" >
-            
+              
+          <Button
+            android:id="@+id/previousButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:background="@drawable/ic_media_previous"
+            android:textOff=""
+            android:textOn=""
+            android:visibility="gone" />    
+             
          <ToggleButton
             android:id="@+id/stopButton"
             android:layout_width="36dp"
@@ -94,7 +105,17 @@
             	android:layout_marginLeft="6dp"
         		android:id="@+id/playPauseButton"
             	android:visibility="gone" />	
-        
+          <Button
+            android:id="@+id/nextButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:background="@drawable/ic_media_next"
+            android:textOff=""
+            android:textOn=""
+            android:visibility="gone" />    
+             
         </LinearLayout>
         
     </RelativeLayout>

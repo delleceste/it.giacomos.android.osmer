@@ -35,7 +35,7 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 {
 
 	private String mUrlList;
-	private int mPauseOnFrameNo;
+	private boolean mIsStart;
 	
 	Buffering(RadarAnimation radarAnimation, AnimationTask animationTask,
 			State previousState, String urlList) 
@@ -43,25 +43,24 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		super(radarAnimation, animationTask, previousState);
 		dAnimationStatus = RadarAnimationStatus.BUFFERING;
 		mUrlList = urlList;
-		mPauseOnFrameNo = -1;
-		/* network latency */
-		if(previousState.getStatus() == RadarAnimationStatus.RUNNING)
-		{
-			Running ru = (Running) previousState;
-			dTotSteps = ru.getTotSteps();
-			dDownloadStep = ru.getDownloadStep();
-			dFrameNo = ru.getFrameNo();
-		}
+		mIsStart = false;
 	}
+	
+	Buffering(RadarAnimation radarAnimation, AnimationTask animationTask,
+			State previousState, String urlList, boolean isStart) 
+	{
+		super(radarAnimation, animationTask, previousState);
+		dAnimationStatus = RadarAnimationStatus.BUFFERING;
+		mUrlList = urlList;
+		mIsStart = isStart;
+		if(isStart)
+			dTotSteps = dDownloadStep  =  dFrameNo = 0;
+	}
+	
 	
 	public void setPauseOnFrameNo(int frameNo)
 	{
-		mPauseOnFrameNo = frameNo;
-	}
-	
-	public int getPauseOnFrameNo()
-	{
-		return mPauseOnFrameNo;
+		dPauseOnFrameNo = frameNo;
 	}
 	
 	public int getTotSteps()
@@ -94,12 +93,16 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		Resources res = mapFrag.getActivity().getResources();
 		ToggleButton tb = (ToggleButton )mapFrag.getActivity().findViewById(R.id.playPauseButton);
 		tb.setChecked(true);
+		/* layout container visible */
+		mapFrag.getActivity().findViewById(R.id.animationButtonsLinearLayout).setVisibility(View.VISIBLE);
 		/* play/ pause hidden */
 		mapFrag.getActivity().findViewById(R.id.playPauseButton).setVisibility(View.GONE);
 		/* stop (cancel) visible */
 		mapFrag.getActivity().findViewById(R.id.stopButton).setVisibility(View.VISIBLE);
 		/* progress bar visible */
 		mapFrag.getActivity().findViewById(R.id.radarAnimProgressBar).setVisibility(View.VISIBLE);
+		mapFrag.getActivity().findViewById(R.id.nextButton).setVisibility(View.GONE);
+		mapFrag.getActivity().findViewById(R.id.previousButton).setVisibility(View.GONE);
 		
 		/* timestamp label visible and showing "buffering" */
 		TextView timeTv = (TextView) mapFrag.getActivity().findViewById(R.id.radarAnimTime);
@@ -119,12 +122,14 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		 * started. In any case, set the animation task listener to this in order to switch again to the RUNNING state
 		 * when some more data has been downloaded.
 		 */
-		if(dPreviousState == null || dPreviousState.getStatus() != RadarAnimationStatus.RUNNING)
+		if(mIsStart)
+		{
 			dAnimationTask = new AnimationTask(mapFrag.getActivity().getApplicationContext().getExternalFilesDir(null).getPath());
+		}
 		
 		dAnimationTask.setDownloadUrls(mUrlList);
 		dAnimationTask.setAnimationTaskListener(this);
-		if(dPreviousState == null || dPreviousState.getStatus() != RadarAnimationStatus.RUNNING)
+		if(mIsStart)
 			dAnimationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().radarHistoricalFileListUrl());
 	}
 
@@ -164,8 +169,10 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 			Log.e("Buffering.onProgressUpdate", "progress bar with step " + step + " and total is " + total);
 			OMapFragment mapFrag = dRadarAnimation.getMapFragment();
 			TextView timeTv = (TextView) mapFrag.getActivity().findViewById(R.id.radarAnimTime);
+			/* total is one too much */ 
 			String text = mapFrag.getActivity().getResources().getString(R.string.radarAnimationBuffering) + " " + 
-					step + "/" + total;
+					(step ) + "/" + (total - 1);
+			//Log.e("Buffering.onProgressUpdate", " step is " + step + " total is " + total);
 			timeTv.setText(text);
 		}
 	}

@@ -22,6 +22,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 	private int mType;
 	private MapWithForecastImage mImageView;
 	private ForecastTextView mTextView;
+	private Handler mHandler;
 	
 	public ForecastFragment() 
 	{
@@ -77,7 +78,8 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 		locationService.registerLocationServiceAddressUpdateListener(mImageView);
 		locationService.registerLocationServiceUpdateListener(mImageView);
 		
-		new Handler().postDelayed(this, 200);
+		mHandler = new Handler();
+		mHandler.postDelayed(this, 200);
 	}
 	
 	public void run()
@@ -118,9 +120,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 				mImageView.setSymTable(symtab);
 			}
 		}
-		
 		dataCacheUtils = null;
-		
 	}
 	
 	@Override
@@ -162,6 +162,10 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 	public void onDestroy()
 	{
 		super.onDestroy();
+		/* in case this is destroyed before handler timeout... */
+		if(mHandler != null)
+			mHandler.removeCallbacks(this);
+		
 		if(mImageView != null)
 		{
 			OsmerActivity activity = (OsmerActivity) getActivity();

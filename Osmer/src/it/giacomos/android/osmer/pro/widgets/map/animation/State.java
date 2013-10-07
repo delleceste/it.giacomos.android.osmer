@@ -26,6 +26,8 @@ public abstract class State
 			Log.e("State.State", "removing callbacks on handler " + running.getHandler() + " for runnable status " + previousState.getStatus());
 			running.getHandler().removeCallbacks(running);
 		}
+		if(dAnimationTask != null)
+			dAnimationTask.setAnimationTaskListener(null);
 	}
 
 	public abstract RadarAnimationStatus getStatus();
