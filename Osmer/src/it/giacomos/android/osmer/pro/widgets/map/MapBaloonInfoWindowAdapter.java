@@ -4,7 +4,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;

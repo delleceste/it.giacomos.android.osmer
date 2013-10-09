@@ -11,7 +11,7 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 
 import it.giacomos.android.osmer.pro.OsmerActivity;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.pro.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.pro.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.pro.network.Data.DataPoolBitmapListener;
@@ -146,6 +146,7 @@ DataPoolErrorListener
 			/* save the map type */
 			mSettings.setMapType(mMap.getMapType());
 		}
+		mRemoveOverlays();
 		mRadarOverlay.finalize(); /* recycles bitmap for GC */
 		/* clear webcam data, cancel current task, finalize info window adapter */
 		if(mWebcamOverlay != null)

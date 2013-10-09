@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.pro.forecastRepr;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 
 import java.util.HashMap;
 

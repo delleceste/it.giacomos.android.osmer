@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.pro.widgets;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.pro.locationUtils.LocationServiceAddressUpdateListener;
 import it.giacomos.android.osmer.pro.locationUtils.LocationServiceUpdateListener;
 import android.content.Context;

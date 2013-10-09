@@ -2,7 +2,7 @@ package it.giacomos.android.osmer.pro;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.pro.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.pro.interfaceHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.pro.interfaceHelpers.NetworkGuiErrorManager;
