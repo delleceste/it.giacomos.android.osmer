@@ -33,7 +33,7 @@
     <!-- android:label="@string/app_name" before releasing!!! -->
 
     <application
-        android:debuggable="true"
+        android:debuggable="false"
         android:icon="@drawable/ic_launcher"
         android:label="Meteo.FVG" >
 
