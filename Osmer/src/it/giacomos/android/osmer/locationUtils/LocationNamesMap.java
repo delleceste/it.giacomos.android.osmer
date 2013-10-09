@@ -47,6 +47,9 @@ public class LocationNamesMap {
 		mMap.put("Piancavallo", new GeoPoint(46107436,12522217));
 		mMap.put("Ligosullo", new GeoPoint(46539706,13076066));
 		mMap.put("Sauris", new GeoPoint(46466675, 12697044));
+		mMap.put("Borgo Grotta Gigante", new GeoPoint(45705993, 13763003));
+		mMap.put("Sappada", new GeoPoint(46568321,12685434));
+		
 		
 	}
 	
@@ -68,6 +71,7 @@ public class LocationNamesMap {
 			locations.add("Piancavallo");
 			locations.add("M.Zoncolan");
 			locations.add("Faedis");
+			locations.add("Borgo Grotta Gigante");
 		case 11:
 			locations.add("S.Vito al Tgl.");
 			locations.add("Tolmezzo");
@@ -76,12 +80,14 @@ public class LocationNamesMap {
 			locations.add("Vivaro");
 			locations.add("Cividale d.F.");
 			locations.add("S.Vito al Tgl.");
+			locations.add("Forni di Sopra");
 			/* do not put break here: add also level 1 locations */
 		case 10:
 			locations.add("Capriva d.F.");
 			locations.add("Grado");
 			locations.add("Gemona d.F.");
 			locations.add("Lignano");
+			locations.add("Sappada");
 			
 			/* do not put break here: add also level 1 locations */
 		case 9:
