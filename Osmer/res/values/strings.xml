@@ -235,6 +235,7 @@
     <string name="radarAnimationBuffering">buffering data&#8230;</string>
     <string name="radarAnimationPausedAfterRotation">animation paused after rotation</string>
     <string name="radarAnimationMustBeOnline">you must be online to play the animation</string>
+    <string name="radarAnimationImageUnavailable">Image unavailable</string>
     
 	
     <string name="popup_data_update_info">

@@ -107,6 +107,9 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 			Log.e("AnimationTask", "no need to download text file for URLS - totSteps " + mTotSteps);
 		}
 
+		if(!m_errorMessage.isEmpty())
+			cancel(false);
+		
 		stepCnt = 1;
 		/* progress == 1 means text file downloaded */
 		if(!isCancelled())
@@ -220,6 +223,10 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 					break;
 				}
 			}
+			
+			if(!m_errorMessage.isEmpty())
+				cancel(false);
+			
 			if(!isCancelled())
 				publishProgress(stepCnt);
 			else
@@ -227,7 +234,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 				Log.e("AnimationTask.doInBackground", "task cancelled during for at fName " + fName);
 				break;
 			}
-		}
+		} /* end for(String fName : filenames) */
 		return stepCnt;
 	}
 
@@ -259,6 +266,8 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 			return;
 		Log.e("AnimationTask.onCancelled", "task was cancelled at step " + step);
 		mAnimationTaskListener.onTaskCancelled();
+		if(!m_errorMessage.isEmpty())
+			mAnimationTaskListener.onDownloadError(m_errorMessage);
 	}
 
 }

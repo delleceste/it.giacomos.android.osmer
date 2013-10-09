@@ -54,9 +54,7 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		/* if previousState is ProgressState, fetches the frameNo, the tot frames, the download step */
 		super(radarAnimation, animationTask, previousState);
 		
-		Log.e("Running.Running", "previous state was " + previousState.getStatus()
-				+ "[" + 
-				DownloadStatus.Instance().executionNumber + "]");
+		Log.e("Running.Running", "previous state was " + previousState.getStatus());
 		if(previousState.getStatus() == RadarAnimationStatus.BUFFERING)
 		{
 			Buffering bu = (Buffering) previousState;
@@ -68,13 +66,13 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 			Log.e("Running.Running", "previous state was PAUSED, tot steps " + dTotSteps + " dFrameNo " + dFrameNo + " download step " + dDownloadStep);
 			mPauseOnFrameNo = -1;
 		}
-		else if(previousState.getStatus() == RadarAnimationStatus.FINISHED)
-		{
-			dFrameNo = 0;
-			dDownloadStep = 0;
-			dTotSteps = ((Finished) previousState).getTotSteps();
-			mPauseOnFrameNo = -1;
-		}
+//		else if(previousState.getStatus() == RadarAnimationStatus.FINISHED)
+//		{
+//			dFrameNo = 0;
+//			dDownloadStep = 0;
+//			dTotSteps = ((Finished) previousState).getTotSteps();
+//			mPauseOnFrameNo = -1;
+//		}
 		else
 			Log.e("Running.Running", "error: can only get to RUNNING from BUFFERING, PAUSED or FINISHED states");
 		

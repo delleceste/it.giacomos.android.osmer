@@ -13,8 +13,7 @@ public class Interrupted extends ProgressState
 		
 		super(radarAnimation, at, previousState);
 		
-		Log.e("Interrupted.Interrupted", "constructor " + "[" + 
-				DownloadStatus.Instance().executionNumber + "]");
+		Log.e("Interrupted.Interrupted", "constructor");
 		
 		mUrlList = urlList;
 		if(previousState.getStatus() == RadarAnimationStatus.RUNNING && dFrameNo > 0)

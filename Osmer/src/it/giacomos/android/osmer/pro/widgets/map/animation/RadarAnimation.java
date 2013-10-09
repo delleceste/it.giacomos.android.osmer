@@ -69,9 +69,6 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		mGroundOverlay = null;
 		mState = new NotRunning(this, mAnimationTask, null);
 		mState.enter(); /* not running: hide controls */
-
-		// TEMPPP
-		DownloadStatus.Instance().executionNumber++;
 	}
 
 	public OMapFragment getMapFragment() 
@@ -97,7 +94,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		{
 			ProgressState progState = (ProgressState) mState;
 			if(mState.getStatus() == RadarAnimationStatus.PAUSED )
-					
+
 			{
 				/* frame number starts from 0 and it reaches at most total frames - 1 */
 				Log.e("RadarAnimation.play", " frameNo " + progState.getFrameNo() +
@@ -120,23 +117,23 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		else
 			Log.e("RadarAnimation.resume", "cannot resume animation from status " + mState.getStatus());
 	}
-	
+
 	public void start()
 	{
 		Log.e("RadarAnimation", "start");
 		boolean isStart = true;
 		DownloadStatus downloadStatus = DownloadStatus.Instance();
-		if(downloadStatus.isOnline)
-		{
-			mState = new Buffering(this, mAnimationTask, mState, mUrlList, isStart);
-			mState.enter();
-			mAnimationTask = mState.getAnimationTask();
-
-			for(RadarAnimationListener ral : mAnimationListeners)
-				ral.onRadarAnimationStart();
-		}
-		else
+		
+		if(!downloadStatus.isOnline)
 			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), R.string.radarAnimationMustBeOnline, Toast.LENGTH_LONG).show();
+
+		mState = new Buffering(this, mAnimationTask, mState, mUrlList, isStart);
+		mState.enter();
+		mAnimationTask = mState.getAnimationTask();
+
+		for(RadarAnimationListener ral : mAnimationListeners)
+			ral.onRadarAnimationStart();
+
 	}
 
 	public void stop() 
@@ -321,7 +318,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			progressState.setFrameNo(progressState.getFrameNo() + 1);
 			mMakeStep(progressState.getFrameNo());
 		}
-		
+
 	}
 
 	private void previousFrame() 
@@ -333,7 +330,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			mMakeStep(progressState.getFrameNo());
 		}
 	}
-	
+
 	private boolean isPreviousFramePossible()
 	{
 		boolean ret = false;
@@ -345,10 +342,10 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			Log.e("RadarAnimation.isPreviousFramePossible", "cur frame no " + ps.getFrameNo() );
 		}
 		Log.e("RadarAnimation.isPreviousFramePossible", " returning " + ret);
-		
+
 		return ret;
 	}
-	
+
 	private boolean isNextFramePossible()
 	{
 		boolean ret = false;
@@ -356,18 +353,18 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		{
 			ProgressState ps = (ProgressState) mState;
 			int curFrameNo = ps.getFrameNo();
-			if(curFrameNo < ps.getTotSteps() -2)
+			if(curFrameNo < mAnimationData.size())
 				ret = true;
-			Log.e("RadarAnimation.isNextFramePossible", "cur frame no " + curFrameNo + " tot " + ps.getTotSteps());
+			Log.e("RadarAnimation.isNextFramePossible", "cur frame no " + curFrameNo + " tot " + mAnimationData.size());
 		}
 		Log.e("RadarAnimation.isNextFramePossible", "rertutning " + ret);
 		return ret;
 	}
-	
+
 	private void mSetPrevNextButtonsState()
 	{
-			mMapFrag.getActivity().findViewById(R.id.previousButton).setEnabled(isPreviousFramePossible());
-			mMapFrag.getActivity().findViewById(R.id.nextButton).setEnabled(isNextFramePossible());
+		mMapFrag.getActivity().findViewById(R.id.previousButton).setEnabled(isPreviousFramePossible());
+		mMapFrag.getActivity().findViewById(R.id.nextButton).setEnabled(isNextFramePossible());
 	}
 
 	@Override
@@ -427,6 +424,10 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			mState.enter();
 			mSetPrevNextButtonsState();
 		}
+		else if(to == RadarAnimationStatus.NOT_RUNNING)
+		{
+			stop();
+		}
 	}
 
 	/** implements onError from interface RadarAnimationStateChangeListener
@@ -469,6 +470,10 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 					mGroundOverlay.remove();
 				mGroundOverlay = googleMap.addGroundOverlay(mGroundOverlayOptions);
 			}
+			else
+				Toast.makeText(mMapFrag.getActivity().getApplicationContext(), 
+						mMapFrag.getActivity().getResources().getString(R.string.radarAnimationImageUnavailable) +
+						": " + mAnimationData.valueAt(frameNo).time, Toast.LENGTH_LONG).show();
 		}
 	}
 

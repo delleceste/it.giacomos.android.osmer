@@ -219,6 +219,7 @@
     <string name="radarAnimationBuffering">scaricamento in corso&#8230;</string>
     <string name="radarAnimationPausedAfterRotation">animazione in pausa</string>
     <string name="radarAnimationMustBeOnline">devi essere online per riprodurre l\'animazione</string>
+    <string name="radarAnimationImageUnavailable">Immagine non disponibile</string>
     
     
     <!-- WEBCAM -->

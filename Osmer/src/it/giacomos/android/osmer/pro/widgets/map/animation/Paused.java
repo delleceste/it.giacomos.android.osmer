@@ -90,15 +90,16 @@ public class Paused extends ProgressState implements AnimationTaskListener
 	}
 
 	@Override
-	public void onDownloadComplete() {
-		// TODO Auto-generated method stub
+	public void onDownloadComplete() 
+	{
 		
 	}
 
 	@Override
-	public void onDownloadError(String message) {
-		// TODO Auto-generated method stub
-		
+	public void onDownloadError(String message) 
+	{
+		dRadarAnimation.onError(message);
+		Log.e("Paused.onDownloadError", "cancelling task, going to NOT_RUNNING");		
 	}
 
 	@Override

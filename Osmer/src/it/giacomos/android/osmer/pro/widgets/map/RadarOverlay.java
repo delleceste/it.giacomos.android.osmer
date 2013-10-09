@@ -100,16 +100,19 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 		if(mGroundOverlay != null)
 		{
 			mGroundOverlay.remove();
+			Log.e("RadarOverlay.clear", "removing ground overlay");
 			mGroundOverlay = null;
 		}
 		if(mGroundOverlayCircle != null)
 		{
 			mGroundOverlayCircle.remove();
+			Log.e("RadarOverlay.clear", "removing mGroundOverlayCircle overlay");
 			mGroundOverlayCircle = null;
 		}
 		if(mScaleImageOverlay != null)
 		{
 			mScaleImageOverlay.remove();
+			Log.e("RadarOverlay.clear", "removing mScaleImageOverlay overlay");
 			mScaleImageOverlay = null;
 		}
 	}

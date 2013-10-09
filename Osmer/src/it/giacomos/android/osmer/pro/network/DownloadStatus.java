@@ -239,9 +239,6 @@ public class DownloadStatus {
 	public long state;
 	public boolean isOnline;
 	
-	/// TEMPPPPPPPPPPPPPPPP //////////////////
-	public int executionNumber = 0;
-
 	private long m_lastUpdateCompletedOn;
 
 	public  static final long INIT = 0x0;

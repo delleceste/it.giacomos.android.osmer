@@ -152,6 +152,7 @@ RadarAnimationListener
 			/* save the map type */
 			mSettings.setMapType(mMap.getMapType());
 		}
+		mRemoveOverlays();
 		mRadarOverlay.finalize(); /* recycles bitmap for GC */
 		/* clear webcam data, cancel current task, finalize info window adapter */
 		if(mWebcamOverlay != null)
