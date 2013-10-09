@@ -129,14 +129,14 @@ public class Settings
 	
 	public boolean isUpgradeDialogEnabled() 
 	{
-		boolean res = mSharedPreferences.getBoolean("UPGRADE_TO_PRO_DIALOG_ENABLED", true);
+		boolean res = mSharedPreferences.getBoolean("UPGRADE_TO_PRO_DIALOG_ENABLED_1_2_4", true);
 		return res;
 	}
 	
 	public void setUpgradeDialogEnabled(boolean en) 
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
-		e.putBoolean("UPGRADE_TO_PRO_DIALOG_ENABLED", en);
+		e.putBoolean("UPGRADE_TO_PRO_DIALOG_ENABLED_1_2_4", en);
 		e.commit();
 	}
 	
