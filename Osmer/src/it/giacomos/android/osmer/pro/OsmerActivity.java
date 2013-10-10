@@ -36,7 +36,6 @@ import it.giacomos.android.osmer.pro.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.pro.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.pro.widgets.map.RadarOverlayUpdateListener;
-import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimation;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
 import android.app.ActionBar;
 import android.app.Activity;

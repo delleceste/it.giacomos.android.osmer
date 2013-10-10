@@ -297,7 +297,11 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 				pause();
 		}
 		else if(v.getId() == R.id.stopButton)
+		{
+			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), R.string.radarAnimationTaskCancelled, 
+					Toast.LENGTH_SHORT).show();
 			stop();
+		}
 		else if(v.getId() == R.id.previousButton)
 		{
 			previousFrame();
