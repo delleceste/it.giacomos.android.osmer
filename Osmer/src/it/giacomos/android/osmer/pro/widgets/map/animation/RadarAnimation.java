@@ -496,18 +496,19 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			/* timestamp image */
 			bmp = fileHelper.decodeImage(mAnimationData.valueAt(frameNo).fileName.replace(".gif", "_timestamp.png"), 
 					mMapFrag.getActivity().getApplicationContext().getExternalFilesDir(null).getPath());
-			ImageView timestampIV = (ImageView) mMapFrag.getActivity().findViewById(R.id.radarAnimTimestampImageView);
-			BitmapDrawable oldTimestampBitmapDrawable = ((BitmapDrawable) timestampIV.getDrawable());
-			Bitmap oldTimestampBitmap = null;
-			
-			if(oldTimestampBitmapDrawable != null)
-				oldTimestampBitmap = oldTimestampBitmapDrawable.getBitmap();
-			if(oldTimestampBitmap != null)
-				oldTimestampBitmap.recycle();
-			
 			if(bmp != null)
+			{
+				ImageView timestampIV = (ImageView) mMapFrag.getActivity().findViewById(R.id.radarAnimTimestampImageView);
+				BitmapDrawable oldTimestampBitmapDrawable = ((BitmapDrawable) timestampIV.getDrawable());
+				Bitmap oldTimestampBitmap = null;
+				
+				if(oldTimestampBitmapDrawable != null)
+					oldTimestampBitmap = oldTimestampBitmapDrawable.getBitmap();
+				if(oldTimestampBitmap != null)
+					oldTimestampBitmap.recycle();
 				timestampIV.setImageBitmap(Bitmap.createScaledBitmap(bmp, (int)Math.round(1.8 * bmp.getWidth()), 
 						(int)Math.round(1.8 * bmp.getHeight()), true));
+			}
 			else
 				Log.e("RadarAnimation.mMakeStep", "the image for the timestamp is null");
 		}
