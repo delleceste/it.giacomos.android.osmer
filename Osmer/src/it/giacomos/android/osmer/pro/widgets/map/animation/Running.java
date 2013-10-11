@@ -121,7 +121,9 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		/* show controls */
 		OMapFragment mapFrag = dRadarAnimation.getMapFragment();
 		mapFrag.getActivity().findViewById(R.id.animationButtonsLinearLayout).setVisibility(View.VISIBLE);
+		mapFrag.getActivity().findViewById(R.id.animationTimestampLinearLayout).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.radarAnimTime).setVisibility(View.VISIBLE);
+		mapFrag.getActivity().findViewById(R.id.radarAnimTimestampImageView).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.stopButton).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.playPauseButton).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.radarAnimProgressBar).setVisibility(View.GONE);
@@ -177,8 +179,12 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 	public void leave() 
 	{
 		mTimeoutHandler.removeCallbacks(this);
-		
-		if(dDownloadStep <= dFrameNo)
+		if(dFrameNo >= dTotSteps - 1)
+		{
+			Log.e("Running.leave", "frame no == total frames: migrating to PAUSED");
+			dRadarAnimation.onTransition(RadarAnimationStatus.PAUSED);
+		}
+		else if(dDownloadStep <= dFrameNo)
 		{
 			Log.e("Running.leave", this + "dDownloadStep <= dFrameNo: " + dDownloadStep + " <= " + dFrameNo + " going to buffering");
 			dRadarAnimation.onTransition(RadarAnimationStatus.BUFFERING);
@@ -186,11 +192,6 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		else if(mPauseOnFrameNo >= 0)
 		{
 			Log.e("Running.leave", "paused on frame no " + mPauseOnFrameNo + ": migrating to PAUSED");
-			dRadarAnimation.onTransition(RadarAnimationStatus.PAUSED);
-		}
-		else if(dFrameNo == dTotSteps - 1)
-		{
-			Log.e("Running.leave", "frame no == total frames: migrating to PAUSED");
 			dRadarAnimation.onTransition(RadarAnimationStatus.PAUSED);
 		}
 		else 
@@ -203,6 +204,8 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 	@Override
 	public void run() 
 	{
+		Log.e("Running.run", "dDownloadStep " + dDownloadStep + " mPauseOnFrameNo " + mPauseOnFrameNo 
+				+ " dFrameNo " + dFrameNo);
 		if(dDownloadStep > dFrameNo)
 		{
 			OMapFragment mapFrag = dRadarAnimation.getMapFragment();

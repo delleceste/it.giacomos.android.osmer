@@ -57,7 +57,9 @@ public class Paused extends ProgressState implements AnimationTaskListener
 			 */
 			OMapFragment mapFrag = dRadarAnimation.getMapFragment();
 			mapFrag.getActivity().findViewById(R.id.animationButtonsLinearLayout).setVisibility(View.VISIBLE);
+			mapFrag.getActivity().findViewById(R.id.animationTimestampLinearLayout).setVisibility(View.VISIBLE);
 			mapFrag.getActivity().findViewById(R.id.radarAnimTime).setVisibility(View.VISIBLE);
+			mapFrag.getActivity().findViewById(R.id.radarAnimTimestampImageView).setVisibility(View.VISIBLE);
 			mapFrag.getActivity().findViewById(R.id.nextButton).setVisibility(View.VISIBLE);
 			mapFrag.getActivity().findViewById(R.id.previousButton).setVisibility(View.VISIBLE);
 			ToggleButton tb = (ToggleButton )mapFrag.getActivity().findViewById(R.id.playPauseButton);

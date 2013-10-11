@@ -34,10 +34,12 @@ public class NotRunning extends State
 		/* hide all animation controls */
 		OMapFragment mapFrag = dRadarAnimation.getMapFragment();
 		mapFrag.getActivity().findViewById(R.id.animationButtonsLinearLayout).setVisibility(View.GONE);
+		mapFrag.getActivity().findViewById(R.id.animationTimestampLinearLayout).setVisibility(View.GONE);
 		mapFrag.getActivity().findViewById(R.id.radarAnimTime).setVisibility(View.GONE);
 		mapFrag.getActivity().findViewById(R.id.stopButton).setVisibility(View.GONE);
 		mapFrag.getActivity().findViewById(R.id.playPauseButton).setVisibility(View.GONE);
 		mapFrag.getActivity().findViewById(R.id.radarAnimProgressBar).setVisibility(View.GONE);
+		mapFrag.getActivity().findViewById(R.id.radarAnimTimestampImageView).setVisibility(View.GONE);
 	}
 
 	public void leave()

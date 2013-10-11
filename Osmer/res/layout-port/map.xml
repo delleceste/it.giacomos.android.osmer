@@ -47,21 +47,44 @@
 	    android:layout_centerVertical="true"
             android:visibility="gone" />
         
-        <TextView
+        
+                    <LinearLayout
+        android:id="@+id/animationTimestampLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal"
+        
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginLeft="6dp"
+        android:orientation="vertical" >
+        
+            
+            <TextView
             android:id="@+id/radarAnimTime"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="6dp"
-        		android:layout_marginRight="6dp"
-            	android:layout_marginLeft="6dp"
-            android:background="@drawable/rounded_text_box"
-            android:padding="5dp"
+            android:layout_height="wrap_content"  
+            android:padding="2dp"
             android:textColor="@android:color/black"
+        	            android:background="@drawable/rounded_text_box"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:visibility="gone" />
+            android:visibility="gone" />      
+                  
+        <ImageView
+            android:id="@+id/radarAnimTimestampImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:minWidth="180dp"
+            style="@style/ImageView" /> 
+           
+        
+        
+        
+        </LinearLayout>
         
          <LinearLayout
         android:id="@+id/animationButtonsLinearLayout"

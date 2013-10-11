@@ -117,14 +117,24 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 		else
 			return stepCnt;
 
+		/* since stepCnt/2 is returned, being incremented at each image download and being a 
+		 * progress step considered augmented by one when the radar image + the timestamp image
+		 * have been downloaded, we must increment stepCnt by one so that the first progress step
+		 * has stepCnt equal to 2.
+		 */
+		stepCnt++;
+		
 		String [] lines = mDownloadUrls.split("\n");
-		String [] filenames = new String[lines.length];
-		for(int i = 0; i < lines.length; i++)
+		String [] filenames = new String[lines.length * 2];
+		for(int i = 0; i < lines.length * 2; i = i + 2)
 		{
-			if(lines[i].contains("->"))
+			if(lines[i/2].contains("->"))
 			{
-				String [] parts = lines[i].split("->");
+				String [] parts = lines[i/2].split("->");
+				/* name of the radar image file */
 				filenames[i] = parts[1];
+				/* name of the radar timestamp image file */
+				filenames[i + 1] = parts[1].replace(".gif", "_timestamp.png");
 			}
 		}
 
@@ -136,7 +146,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 		Log.e("AnimationTask.doInBackground", "removed unneeded files " + removedFilesCount);
 
 		for(String fName : filenames)
-		{
+		{			
 			if(fileHelper.exists(fName, mExternalStorageDirPath))
 			{
 				/* file exists, no need to download it */
@@ -172,6 +182,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 				try
 				{
 					try{
+						/* get radar image */
 						url = new URL(surl);
 						inputStream = (InputStream) url.getContent();
 						/* get bytes from input stream */
@@ -199,11 +210,10 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 						 * (can be incomplete if the activity is destroyed here) when the activity is restarted.
 						 */
 						if(isCancelled())
-							return stepCnt;
-
+							return stepCnt / 2;
+						
 						/* increment stepCnt */
 						stepCnt++;
-
 
 					}
 					catch(MalformedURLException e)
@@ -227,15 +237,16 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 			if(!m_errorMessage.isEmpty())
 				cancel(false);
 			
+			/* publish progress each time a radar image + image timestamp have been downloaded */
 			if(!isCancelled())
-				publishProgress(stepCnt);
+				publishProgress(stepCnt / 2);
 			else
 			{
 				Log.e("AnimationTask.doInBackground", "task cancelled during for at fName " + fName);
 				break;
 			}
 		} /* end for(String fName : filenames) */
-		return stepCnt;
+		return stepCnt / 2;
 	}
 
 	protected void onProgressUpdate(Integer... progress) 
@@ -250,6 +261,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 
 	protected void onPostExecute(Integer result) 
 	{
+		Log.e("AnimationTask.onPostExecute", " result is " + result);
 		if(mAnimationTaskListener == null)
 			return;
 		if(result == 0) /* error */

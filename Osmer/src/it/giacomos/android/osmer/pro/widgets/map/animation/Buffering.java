@@ -54,7 +54,7 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		mUrlList = urlList;
 		mIsStart = isStart;
 		if(isStart)
-			dTotSteps = dDownloadStep  =  dFrameNo = 0;
+			dTotSteps = dDownloadStep = dFrameNo = 0;
 	}
 	
 	
@@ -94,6 +94,8 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		tb.setChecked(true);
 		/* layout container visible */
 		mapFrag.getActivity().findViewById(R.id.animationButtonsLinearLayout).setVisibility(View.VISIBLE);
+		mapFrag.getActivity().findViewById(R.id.animationTimestampLinearLayout).setVisibility(View.VISIBLE);
+		mapFrag.getActivity().findViewById(R.id.radarAnimTimestampImageView).setVisibility(View.GONE);
 		/* play/ pause hidden */
 		mapFrag.getActivity().findViewById(R.id.playPauseButton).setVisibility(View.GONE);
 		/* stop (cancel) visible */

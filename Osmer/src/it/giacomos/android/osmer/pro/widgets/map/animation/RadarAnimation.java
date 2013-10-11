@@ -6,6 +6,10 @@ import it.giacomos.android.osmer.pro.network.DownloadStatus;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -14,10 +18,12 @@ import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -31,6 +37,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	private GroundOverlayOptions mGroundOverlayOptions;
 	private GroundOverlay mGroundOverlay;
 	private String mUrlList;
+	private long mTimeZoneOffset;
 
 	/* The animation task, which downloads all necessary data from the internet (text file
 	 * with the list of the URLs of the images and all the images.
@@ -69,6 +76,12 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		mGroundOverlay = null;
 		mState = new NotRunning(this, mAnimationTask, null);
 		mState.enter(); /* not running: hide controls */
+		
+		Calendar mCalendar = new GregorianCalendar();  
+		TimeZone mTimeZone = mCalendar.getTimeZone();  
+		mTimeZoneOffset = mTimeZone.getOffset(System.currentTimeMillis());
+		mTimeZoneOffset = TimeUnit.HOURS.convert(mTimeZoneOffset, TimeUnit.MILLISECONDS);
+		//System.out.printf("GMT offset is %s hours", TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS)); 
 	}
 
 	public OMapFragment getMapFragment() 
@@ -127,8 +140,10 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		if(!downloadStatus.isOnline)
 			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), R.string.radarAnimationMustBeOnline, Toast.LENGTH_LONG).show();
 
-		mState = new Buffering(this, mAnimationTask, mState, mUrlList, isStart);
-		mState.enter();
+		Buffering buffering = new Buffering(this, mAnimationTask, mState, mUrlList, isStart);
+		buffering.setPauseOnFrameNo(-1);
+		buffering.enter();
+		mState = buffering;
 		mAnimationTask = mState.getAnimationTask();
 
 		for(RadarAnimationListener ral : mAnimationListeners)
@@ -343,10 +358,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			ProgressState ps = (ProgressState) mState;
 			if(ps.getFrameNo() > 0)
 				ret = true;
-			Log.e("RadarAnimation.isPreviousFramePossible", "cur frame no " + ps.getFrameNo() );
 		}
-		Log.e("RadarAnimation.isPreviousFramePossible", " returning " + ret);
-
 		return ret;
 	}
 
@@ -359,9 +371,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			int curFrameNo = ps.getFrameNo();
 			if(curFrameNo < mAnimationData.size())
 				ret = true;
-			Log.e("RadarAnimation.isNextFramePossible", "cur frame no " + curFrameNo + " tot " + mAnimationData.size());
 		}
-		Log.e("RadarAnimation.isNextFramePossible", "rertutning " + ret);
 		return ret;
 	}
 
@@ -449,7 +459,11 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	{
 		if(mAnimationData != null && frameNo < mAnimationData.size())
 		{
-			String text = mAnimationData.valueAt(frameNo).time + " [" + (frameNo + 1) + "/" + mAnimationData.size() + "]";
+			// String text = mAnimationData.valueAt(frameNo).time + " [" + (frameNo + 1) + "/" + mAnimationData.size() + "]";
+			String text = "[" + (frameNo + 1) + "/" + mAnimationData.size() + "] " + 
+					mMapFrag.getResources().getString(R.string.radarAnimationLocalTimeFromUTC) + 
+					mTimeZoneOffset;
+			
 			TextView timeTv = (TextView) mMapFrag.getActivity().findViewById(R.id.radarAnimTime);
 			timeTv.setText(text);
 
@@ -478,6 +492,24 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 				Toast.makeText(mMapFrag.getActivity().getApplicationContext(), 
 						mMapFrag.getActivity().getResources().getString(R.string.radarAnimationImageUnavailable) +
 						": " + mAnimationData.valueAt(frameNo).time, Toast.LENGTH_LONG).show();
+			
+			/* timestamp image */
+			bmp = fileHelper.decodeImage(mAnimationData.valueAt(frameNo).fileName.replace(".gif", "_timestamp.png"), 
+					mMapFrag.getActivity().getApplicationContext().getExternalFilesDir(null).getPath());
+			ImageView timestampIV = (ImageView) mMapFrag.getActivity().findViewById(R.id.radarAnimTimestampImageView);
+			BitmapDrawable oldTimestampBitmapDrawable = ((BitmapDrawable) timestampIV.getDrawable());
+			Bitmap oldTimestampBitmap = null;
+			
+			if(oldTimestampBitmapDrawable != null)
+				oldTimestampBitmap = oldTimestampBitmapDrawable.getBitmap();
+			if(oldTimestampBitmap != null)
+				oldTimestampBitmap.recycle();
+			
+			if(bmp != null)
+				timestampIV.setImageBitmap(Bitmap.createScaledBitmap(bmp, (int)Math.round(1.8 * bmp.getWidth()), 
+						(int)Math.round(1.8 * bmp.getHeight()), true));
+			else
+				Log.e("RadarAnimation.mMakeStep", "the image for the timestamp is null");
 		}
 	}
 
