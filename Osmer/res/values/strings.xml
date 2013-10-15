@@ -234,7 +234,7 @@
     <string name="radarAnimationTaskCancelled">task cancelled</string>
     <string name="radarAnimationBuffering">buffering data&#8230;</string>
     <string name="radarAnimationPausedAfterRotation">animation paused after rotation</string>
-    <string name="radarAnimationMustBeOnline">you must be online to play the animation</string>
+    <string name="radarAnimationOffline">offline animation may not be up to date</string>
     <string name="radarAnimationImageUnavailable">Image unavailable</string>
     <string name="radarAnimationLocalTimeFromUTC">Local time = UTC +</string>
     

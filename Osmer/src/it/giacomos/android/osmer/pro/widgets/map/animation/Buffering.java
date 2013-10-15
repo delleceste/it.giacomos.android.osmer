@@ -36,6 +36,7 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 
 	private String mUrlList;
 	private boolean mIsStart;
+	private boolean mOffline;
 	
 	Buffering(RadarAnimation radarAnimation, AnimationTask animationTask,
 			State previousState, String urlList) 
@@ -43,7 +44,7 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		super(radarAnimation, animationTask, previousState);
 		dAnimationStatus = RadarAnimationStatus.BUFFERING;
 		mUrlList = urlList;
-		mIsStart = false;
+		mIsStart = mOffline = false;
 	}
 	
 	Buffering(RadarAnimation radarAnimation, AnimationTask animationTask,
@@ -131,7 +132,10 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		dAnimationTask.setDownloadUrls(mUrlList);
 		dAnimationTask.setAnimationTaskListener(this);
 		if(mIsStart)
+		{
+			dAnimationTask.setOfflineMode(mOffline);
 			dAnimationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().radarHistoricalFileListUrl());
+		}
 	}
 
 	public void cancel() 
@@ -172,7 +176,7 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 			TextView timeTv = (TextView) mapFrag.getActivity().findViewById(R.id.radarAnimTime);
 			/* total is one too much */ 
 			String text = mapFrag.getActivity().getResources().getString(R.string.radarAnimationBuffering) + " " + 
-					(step ) + "/" + (total - 1);
+					(step + 1 ) + "/" + (total);
 			//Log.e("Buffering.onProgressUpdate", " step is " + step + " total is " + total);
 			timeTv.setText(text);
 		}
@@ -213,6 +217,11 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 	@Override
 	public boolean isProgressState() {
 		return true;
+	}
+	
+	public void setOfflineMode(boolean offline)
+	{
+		mOffline = offline;
 	}
 
 }

@@ -23,6 +23,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 	private String mDownloadUrls;
 	private AnimationTaskListener mAnimationTaskListener;
 	private int mTotSteps;
+	private boolean mOffline;
 
 	public AnimationTask(String externalStorageDirPath)
 	{
@@ -30,6 +31,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 		mTotSteps = 0;
 		mDownloadUrls = "";
 		mExternalStorageDirPath = externalStorageDirPath;
+		mOffline = false;
 	}
 
 	void setAnimationTaskListener(AnimationTaskListener atl)
@@ -70,60 +72,64 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 			return 0;
 		}
 
-		mTotSteps = 1; /* 1 step is to download the url list text file */
 		if(mDownloadUrls.isEmpty())
 		{
 			String line;
 			m_errorMessage = "";
 			if(urls.length == 1)
 			{
-				URLConnection urlConnection = null;
-				try {
-					url = new URL(urls[0]);
-					urlConnection = url.openConnection();
-					inputStream = urlConnection.getInputStream();
-					BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-					while((line = reader.readLine()) != null)
+				if(mOffline)
+				{
+					mDownloadUrls = fileHelper.getCachedUrlList(mExternalStorageDirPath);
+					if(mDownloadUrls.isEmpty())
 					{
-						mTotSteps++;
-						mDownloadUrls += line + "\n";
+						m_errorMessage = fileHelper.getErrorMessage();
+						return 0;
 					}
 				}
-				catch (IOException e) 
+				else
 				{
-					mDownloadUrls = null;
-					m_errorMessage = "IOException: URL: \"" + urls[0].toString() + "\":\n\"" + e.getLocalizedMessage() + "\"";
-					mTotSteps = 0;
-					if(!isCancelled())
-						publishProgress(0);
-					return 0;
+					URLConnection urlConnection = null;
+					try {
+						url = new URL(urls[0]);
+						urlConnection = url.openConnection();
+						inputStream = urlConnection.getInputStream();
+						BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+						while((line = reader.readLine()) != null)
+						{
+							mDownloadUrls += line + "\n";
+						}
+						/* cache for offline mode */
+						fileHelper.storeUrlList(mDownloadUrls, mExternalStorageDirPath);
+						Log.e("AnimationTask", "downloaded text file for URLS - totSteps "  + mTotSteps);
+					}
+					catch (IOException e) 
+					{
+						mDownloadUrls = null;
+						m_errorMessage = "IOException: URL: \"" + urls[0].toString() + "\":\n\"" + e.getLocalizedMessage() + "\"";
+						mTotSteps = 0;
+						if(!isCancelled())
+							publishProgress(0);
+						return 0;
+					}
 				}
 			}
-			Log.e("AnimationTask", "downloaded text file for URLS - totSteps "  + mTotSteps);
 		}
 		else
-		{
-			mTotSteps += mDownloadUrls.length() - mDownloadUrls.replace("\n", "").length();
 			Log.e("AnimationTask", "no need to download text file for URLS - totSteps " + mTotSteps);
-		}
+
+		mTotSteps = mDownloadUrls.length() - mDownloadUrls.replace("\n", "").length();
+			
 
 		if(!m_errorMessage.isEmpty())
 			cancel(false);
-		
-		stepCnt = 1;
+
 		/* progress == 1 means text file downloaded */
 		if(!isCancelled())
 			this.publishProgress(stepCnt);
 		else
 			return stepCnt;
 
-		/* since stepCnt/2 is returned, being incremented at each image download and being a 
-		 * progress step considered augmented by one when the radar image + the timestamp image
-		 * have been downloaded, we must increment stepCnt by one so that the first progress step
-		 * has stepCnt equal to 2.
-		 */
-		stepCnt++;
-		
 		String [] lines = mDownloadUrls.split("\n");
 		String [] filenames = new String[lines.length * 2];
 		for(int i = 0; i < lines.length * 2; i = i + 2)
@@ -152,27 +158,27 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 				/* file exists, no need to download it */
 				stepCnt++;
 
-//				if(stepCnt == 8)
-//				{
-//					Log.e("AnimationTask", "sleeping on stepCnt 8");
-//					int i = 0;
-//					while(i < 16)
-//					{
-//						try {
-//							if(isCancelled())
-//							{
-//								Log.e("ANimationTask.doInBackground", "task cancelled while sleeping!");
-//								break;
-//							}
-//							Thread.sleep(1000);
-//							Log.e("AnimationTask", "slept " + i + "secs!");
-//						} catch (InterruptedException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//						i++;
-//					}
-//				}
+				//				if(stepCnt == 8)
+				//				{
+				//					Log.e("AnimationTask", "sleeping on stepCnt 8");
+				//					int i = 0;
+				//					while(i < 16)
+				//					{
+				//						try {
+				//							if(isCancelled())
+				//							{
+				//								Log.e("ANimationTask.doInBackground", "task cancelled while sleeping!");
+				//								break;
+				//							}
+				//							Thread.sleep(1000);
+				//							Log.e("AnimationTask", "slept " + i + "secs!");
+				//						} catch (InterruptedException e) {
+				//							// TODO Auto-generated catch block
+				//							e.printStackTrace();
+				//						}
+				//						i++;
+				//					}
+				//				}
 
 			}
 			else
@@ -211,7 +217,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 						 */
 						if(isCancelled())
 							return stepCnt / 2;
-						
+
 						/* increment stepCnt */
 						stepCnt++;
 
@@ -233,14 +239,17 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 					break;
 				}
 			}
-			
+
 			if(!m_errorMessage.isEmpty())
 				cancel(false);
-			
+
 			/* publish progress each time a radar image + image timestamp have been downloaded */
-			if(!isCancelled())
+			if(!isCancelled() && stepCnt % 2 == 0)
+			{
 				publishProgress(stepCnt / 2);
-			else
+				Log.e("AnimationTask.doInBackground", "publishing progress " + stepCnt/2 );
+			}
+			else if(isCancelled())
 			{
 				Log.e("AnimationTask.doInBackground", "task cancelled during for at fName " + fName);
 				break;
@@ -274,12 +283,17 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 
 	public void onCancelled(Integer step)
 	{ 
+		Log.e("AnimationTask.onCancelled", "task was cancelled at step " + step);
 		if(mAnimationTaskListener == null)
 			return;
-		Log.e("AnimationTask.onCancelled", "task was cancelled at step " + step);
 		mAnimationTaskListener.onTaskCancelled();
 		if(!m_errorMessage.isEmpty())
 			mAnimationTaskListener.onDownloadError(m_errorMessage);
+	}
+
+	public void setOfflineMode(boolean offline) 
+	{
+		mOffline = offline;
 	}
 
 }

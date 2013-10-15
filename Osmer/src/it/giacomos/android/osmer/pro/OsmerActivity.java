@@ -213,6 +213,8 @@ RadarAnimationListener
 
 	public void init()
 	{
+		mProgressBarStep = mProgressBarTotSteps = 0;
+		mAdditionalProgressBarStep = mProgressBarAdditionalSteps = 0;
 		mCurrentViewType = ViewType.HOME;
 		mViewPager = new ViewPager(this);
 		mViewPager.setId(R.id.pager);
@@ -941,6 +943,12 @@ RadarAnimationListener
 		
 	}
 	
+	@Override
+	public void onRadarAnimationProgress(int step, int total) 
+	{
+		
+	}
+	
 	/* private members */
 	int mTapOnMarkerHintCount;
 	private Location mCurrentLocation;
@@ -962,6 +970,9 @@ RadarAnimationListener
 
 	private DataPool mDataPool;
 	private LocationService mLocationService;
+	
+	private int mProgressBarStep, mProgressBarTotSteps;
+	private int mAdditionalProgressBarStep, mProgressBarAdditionalSteps;
 
 	ViewPager mViewPager;
 	TabsAdapter mTabsAdapter;

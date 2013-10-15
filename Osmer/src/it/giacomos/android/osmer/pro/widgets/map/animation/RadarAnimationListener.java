@@ -24,5 +24,7 @@ public interface RadarAnimationListener {
 	/** invoked from PAUSED to RUNNING 
 	 */
 	public void onRadarAnimationResumed();
+	
+	public void onRadarAnimationProgress(int step, int total);
 
 }

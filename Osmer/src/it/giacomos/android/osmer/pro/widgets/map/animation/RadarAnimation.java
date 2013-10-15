@@ -112,7 +112,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 				/* frame number starts from 0 and it reaches at most total frames - 1 */
 				Log.e("RadarAnimation.play", " frameNo " + progState.getFrameNo() +
 						"progState.getTotalFrames() - 1 " + (progState.getTotalFrames() - 1 ));
-				if(progState.getFrameNo() < progState.getTotalFrames() - 1)
+				if(progState.getFrameNo() < progState.getTotalFrames())
 				{
 					mState = new Running(this, mAnimationTask, mState);
 					mState.enter();
@@ -137,10 +137,11 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		boolean isStart = true;
 		DownloadStatus downloadStatus = DownloadStatus.Instance();
 		
-		if(!downloadStatus.isOnline)
-			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), R.string.radarAnimationMustBeOnline, Toast.LENGTH_LONG).show();
-
+		mUrlList = "";
 		Buffering buffering = new Buffering(this, mAnimationTask, mState, mUrlList, isStart);
+		if(!downloadStatus.isOnline)
+			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), R.string.radarAnimationOffline, Toast.LENGTH_LONG).show();
+		buffering.setOfflineMode(!downloadStatus.isOnline);
 		buffering.setPauseOnFrameNo(-1);
 		buffering.enter();
 		mState = buffering;
@@ -313,7 +314,9 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		}
 		else if(v.getId() == R.id.stopButton)
 		{
-			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), R.string.radarAnimationTaskCancelled, 
+			if(mState.getStatus() == RadarAnimationStatus.RUNNING ||
+						mState.getStatus() == RadarAnimationStatus.BUFFERING)
+				Toast.makeText(mMapFrag.getActivity().getApplicationContext(), R.string.radarAnimationTaskCancelled, 
 					Toast.LENGTH_SHORT).show();
 			stop();
 		}
@@ -457,12 +460,15 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 
 	private void mMakeStep(int frameNo)
 	{
+		Log.e("RadarAnimation.mmakeStep", "frameNo is " + frameNo + " mAnimationData,size is " + mAnimationData.size());
 		if(mAnimationData != null && frameNo < mAnimationData.size())
 		{
 			// String text = mAnimationData.valueAt(frameNo).time + " [" + (frameNo + 1) + "/" + mAnimationData.size() + "]";
 			String text = "[" + (frameNo + 1) + "/" + mAnimationData.size() + "] " + 
 					mMapFrag.getResources().getString(R.string.radarAnimationLocalTimeFromUTC) + 
 					mTimeZoneOffset;
+			if(!DownloadStatus.Instance().isOnline)
+				text += " (" + mMapFrag.getResources().getString(R.string.offline) + ")";
 			
 			TextView timeTv = (TextView) mMapFrag.getActivity().findViewById(R.id.radarAnimTime);
 			timeTv.setText(text);
@@ -510,7 +516,8 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 						(int)Math.round(1.8 * bmp.getHeight()), true));
 			}
 			else
-				Log.e("RadarAnimation.mMakeStep", "the image for the timestamp is null");
+				Log.e("RadarAnimation.mMakeStep", "the image for the timestamp is null "
+							+ " frameNo " + frameNo + ", "+ mAnimationData.valueAt(frameNo).fileName);
 		}
 	}
 

@@ -1,9 +1,13 @@
 package it.giacomos.android.osmer.pro.widgets.map.animation;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -82,6 +86,49 @@ public class FileHelper
 		
 	}
 
+	public boolean storeUrlList(String text, String externalStorageDirPath)
+	{
+		File file = new File(externalStorageDirPath, "lastUrlList.txt");
+		try
+		{
+			FileOutputStream fos;
+			fos = new FileOutputStream(file);
+			fos.write(text.getBytes());
+			fos.close();
+			return true;
+		} 
+		catch (FileNotFoundException e) {
+			mErrorMessage = e.getLocalizedMessage();
+		}
+		catch (IOException e) {
+			mErrorMessage = e.getLocalizedMessage();
+		}
+		return false;
+	}
+	
+	public String getCachedUrlList(String externalStorageDirPath)
+	{
+		String txt = "";
+		byte [] buf = null;
+		int nRead;
+		ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+		try
+		{	
+			InputStream is = new FileInputStream(externalStorageDirPath + "/lastUrlList.txt");
+			buf = new byte[128];
+			while((nRead = is.read(buf)) != -1)
+				byteBuffer.write(buf, 0, nRead);
+			byteBuffer.flush();
+			buf = byteBuffer.toByteArray();
+			txt = new String(buf);
+		}
+		catch (IOException ex) {
+			mErrorMessage = ex.getLocalizedMessage();
+		}		
+		System.out.println("****_> " + txt);
+		return txt;
+	}
+	
 	/** Removes from the directory on the external filesystem where the application can 
 	 *  place persistent files it owns the files that start with "radar-" and whose names are not
 	 *  among the needed files.

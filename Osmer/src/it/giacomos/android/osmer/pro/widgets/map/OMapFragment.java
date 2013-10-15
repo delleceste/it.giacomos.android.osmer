@@ -657,4 +657,10 @@ RadarAnimationListener
 
 	}
 
+	@Override
+	public void onRadarAnimationProgress(int step, int total) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

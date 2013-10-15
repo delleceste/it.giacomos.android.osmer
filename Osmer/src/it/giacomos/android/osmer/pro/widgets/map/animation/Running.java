@@ -179,7 +179,7 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 	public void leave() 
 	{
 		mTimeoutHandler.removeCallbacks(this);
-		if(dFrameNo >= dTotSteps - 1)
+		if(dFrameNo >= dTotSteps)
 		{
 			Log.e("Running.leave", "frame no == total frames: migrating to PAUSED");
 			dRadarAnimation.onTransition(RadarAnimationStatus.PAUSED);
@@ -245,7 +245,7 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		{
 			if(dDownloadStep > 1)
 			{
-				Log.e("Running.run", "posting an update possible at dwnlod step " + dDownloadStep);
+				Log.e("Running.run", "posting an update possible at dwnlod step " + dDownloadStep +  " and dFrameNO " + dFrameNo);
 				dRadarAnimation.onFrameUpdatePossible(dDownloadStep);
 			}
 			leave(); /* back to buffering */
@@ -258,7 +258,7 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 			Log.e("Running.run", "Leaving cuz dFrameNo - 1 == mPauseOnFrameNo");
 			leave();
 		}
-		else if(dFrameNo >= dTotSteps - 1) /* end */
+		else if(dFrameNo >= dTotSteps) /* end */
 		{
 			Log.e("Running.run()", "not rescheduling execution: frame no " + dFrameNo + " anim size " + (dTotSteps - 1));
 			leave();
