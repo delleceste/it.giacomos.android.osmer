@@ -42,6 +42,7 @@
     <string name="webcam_list_error">Errore scaricamento lista webcam</string>
     <string name="webcam_updating">Scarico la lista delle webcam&#8230;</string>
     <string name="lcation_service_error">Errore nel sistema di localizzazione</string>
+    <string name="data_missing">Dati mancanti</string>
     <string name="min_temp">Temperatura Minima</string>
     <string name="max_temp">Temperatura Massima</string>
     <string name="min_temp_abbr">Min.T</string>

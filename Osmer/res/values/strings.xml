@@ -46,6 +46,7 @@
     <string name="webcam_updating">Downloading webcams list</string>
     <string name="webcam_list_error">Error downloading webcam list</string>
     <string name="lcation_service_error">There was an error obtaining the location service</string>
+    <string name="data_missing">Data missing</string>
     <string name="min_temp">Minimum Temperature</string>
     <string name="max_temp">Maximum Temperature</string>
     <string name="min_temp_abbr">Min.T</string>

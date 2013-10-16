@@ -14,17 +14,17 @@ public class Urls {
 
 	public String todayUrl()
 	{
-		return "http://www.giacomos.it/meteo.fvg/data/oggi.html";
+		return "http://www.giacomos.it/meteo.fvg/data/today_full.html";
 	}
 
 	public String tomorrowUrl()
 	{
-		return "http://www.giacomos.it/meteo.fvg/data/domani.html";
+		return "http://www.giacomos.it/meteo.fvg/data/tomorrow_full.html";
 	}
 
 	public String twoDaysUrl()
 	{
-		return "http://www.giacomos.it/meteo.fvg/data/dopodomani.html";
+		return "http://www.giacomos.it/meteo.fvg/data/twodays_full.html";
 	}
 
 	public String todaySymtableUrl()

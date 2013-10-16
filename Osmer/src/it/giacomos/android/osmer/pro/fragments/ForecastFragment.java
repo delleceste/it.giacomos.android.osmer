@@ -23,15 +23,15 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 	private MapWithForecastImage mImageView;
 	private ForecastTextView mTextView;
 	private Handler mHandler;
-	
+
 	public ForecastFragment() 
 	{
 		super();
 		mImageView = null;
 		mTextView = null;
-//		Log.e("ForecastFragment", "constructor");
+		//		Log.e("ForecastFragment", "constructor");
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
@@ -46,7 +46,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			if(!dataPool.isTextValid(ViewType.TODAY))
 			{
 				text = dataCacheUtils.loadFromStorage(ViewType.TODAY, getActivity().getApplicationContext());
-				mTextView.setHtml(text);
+				mTextView.setData(text);
 			}
 			/* if there already is data for the given ViewType, the listener is immediately called */
 			dataPool.registerTextListener(ViewType.TODAY, this);
@@ -54,11 +54,11 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 		else if(mType == R.string.tomorrow_title)
 		{
 			dataPool.registerTextListener(ViewType.TOMORROW, this);
-			
+
 			if(!dataPool.isTextValid(ViewType.TOMORROW))
 			{
 				text = dataCacheUtils.loadFromStorage(ViewType.TOMORROW, getActivity().getApplicationContext());
-				mTextView.setHtml(text);
+				mTextView.setData(text);
 			}
 		}
 		else if(mType == R.string.two_days_title)
@@ -67,21 +67,21 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			if(!dataPool.isTextValid(ViewType.TWODAYS))
 			{
 				text = dataCacheUtils.loadFromStorage(ViewType.TWODAYS, getActivity().getApplicationContext());
-				mTextView.setHtml(text);
+				mTextView.setData(text);
 			}
 		}
-		
+
 		dataCacheUtils = null;
-		
+
 		/* register image view for location updates */
 		LocationService locationService = activity.getLocationService();
 		locationService.registerLocationServiceAddressUpdateListener(mImageView);
 		locationService.registerLocationServiceUpdateListener(mImageView);
-		
+
 		mHandler = new Handler();
 		mHandler.postDelayed(this, 200);
 	}
-	
+
 	public void run()
 	{
 		String symtab = "";
@@ -122,13 +122,13 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 		}
 		dataCacheUtils = null;
 	}
-	
+
 	@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState)
 	{
 		View view = null;
-		
+
 		Bundle args = getArguments();
 		mType = args.getInt("type");
 
@@ -147,25 +147,27 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			mTextView.setViewType(ViewType.TOMORROW);
 			mImageView = (MapWithForecastImage) view.findViewById(R.id.tomorrowImageView);
 			mImageView.setViewType(ViewType.TOMORROW_SYMTABLE);
-			}
+		}
 		else if(mType == R.string.two_days_title)
 		{
 			view = inflater.inflate(R.layout.twodays, null);
 			mTextView = (ForecastTextView)view.findViewById(R.id.twoDaysTextView);
 			mTextView.setViewType(ViewType.TWODAYS);
 			mImageView = (MapWithForecastImage) view.findViewById(R.id.twoDaysImageView);
-			mImageView.setViewType(ViewType.TWODAYS_SYMTABLE);}
+			mImageView.setViewType(ViewType.TWODAYS_SYMTABLE);
+		}
 
+		mImageView.setAreaTouchListener(mTextView);
 		return view;
 	}
-	
+
 	public void onDestroy()
 	{
 		super.onDestroy();
 		/* in case this is destroyed before handler timeout... */
 		if(mHandler != null)
 			mHandler.removeCallbacks(this);
-		
+
 		if(mImageView != null)
 		{
 			OsmerActivity activity = (OsmerActivity) getActivity();
@@ -179,16 +181,16 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			locationService.removeLocationServiceUpdateListener(mImageView);
 		}
 	}
-	
+
 	@Override
 	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
 	{
-//		Log.e("ForecastFragment.onTextChanged", "viewType " + t + " fromCache " + fromCache);
+		//		Log.e("ForecastFragment.onTextChanged", "viewType " + t + " fromCache " + fromCache);
 		if(t == ViewType.TODAY || t == ViewType.TOMORROW || t == ViewType.TWODAYS)
-			mTextView.setHtml(txt);
+			mTextView.setData(txt);
 		else if(t == ViewType.TODAY_SYMTABLE || t == ViewType.TOMORROW_SYMTABLE || t == ViewType.TWODAYS_SYMTABLE)
 			mImageView.setSymTable(txt);
-			
+
 	}
 
 	@Override

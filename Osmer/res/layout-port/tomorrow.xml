@@ -16,15 +16,13 @@
         <it.giacomos.android.osmer.pro.widgets.MapWithForecastImage
             android:id="@+id/tomorrowImageView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:minHeight="280dp"
+            android:layout_height="340dp"
             android:src="@drawable/fvg_background2" />
 
         <it.giacomos.android.osmer.pro.widgets.ForecastTextView
             android:id="@+id/tomorrowTextView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_margin="6dp"
             android:background="@drawable/shape_textview"
             android:inputType="none" >
