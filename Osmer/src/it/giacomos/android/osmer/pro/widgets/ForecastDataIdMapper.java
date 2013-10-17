@@ -35,7 +35,7 @@ public class ForecastDataIdMapper {
 		 * giacomos.it/meteo.fvg/make_text.php
 		 * 
 		 */
-		startOfStripOrZone = areas.size() + 1;
+		startOfStripOrZone = areas.size();
 
 		String id = fdi.getId();
 

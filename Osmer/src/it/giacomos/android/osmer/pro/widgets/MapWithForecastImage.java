@@ -88,6 +88,8 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 
 	public void setSymTable(String symtab)
 	{
+		unbindDrawables();
+		Log.e("MapWithForecastImage.setSymtable", "unbnding drawables before setting new!");
 		ForecastDataFactory forecastDataFactory = new ForecastDataFactory(getResources());
 		ArrayList<ForecastDataInterface > forecastDataIfList =  forecastDataFactory.getForecastData(symtab);
 		for(ForecastDataInterface fdi : forecastDataIfList)
@@ -148,6 +150,7 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 					}
 				}
 			}
+			mForecastData.clear();
 		}
 	}
 
@@ -366,7 +369,8 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 							mPaint.setStyle(Paint.Style.FILL);
 							mPaint.setARGB(120, 240, 255, 215);
 							canvas.drawPath(pa, mPaint);
-							drawBottomLeftText(canvas, z.getData(mForecastDataStringMap), true);
+							/* no more since 2.5.0 (this information is provided in the ForecastTextView) */
+//							drawBottomLeftText(canvas, z.getData(mForecastDataStringMap), true);
 							selectedForecastData = z;
 						}
 					}
