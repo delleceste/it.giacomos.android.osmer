@@ -223,7 +223,7 @@ RadarAnimationListener
 		/* Set the number of pages that should be retained to either side of 
 		 * the current page in the view hierarchy in an idle state
 		 */
-		//		mViewPager.setOffscreenPageLimit(3);
+		mViewPager.setOffscreenPageLimit(3);
 		mMainLayout = (LinearLayout) findViewById(R.id.mainLayout);
 		mMainLayout.addView(mViewPager);
 

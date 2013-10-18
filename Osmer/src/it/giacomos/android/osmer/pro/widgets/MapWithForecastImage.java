@@ -555,7 +555,6 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 			double dist = Math.sqrt(Math.pow(event.getX() - mDownPoint.x, 2) + Math.pow(event.getY() - mDownPoint.y, 2));
 			if(dist < Math.min(getWidth(), getHeight()) / 10 && !mOnLongPress)
 			{
-				Log.e("onTouchEvent", " ACTION_DOWN");
 				mCurrentTouchedPoint.x = event.getX(); 
 				mCurrentTouchedPoint.y = event.getY();
 
@@ -573,11 +572,8 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 								id = forecastDataIdMapper.get(fdi);
 								break;
 							}
-							else if(rect == null)
-								Log.e("MapWithForecast... onTouchEvent", " rect null for fdi " + fdi.getId());
 						}
 					}
-					Log.e("MapWithForecastImage.onDraw", "areaTouched with id " + id);
 					mAreaTouchListener.onAreaTouched(id);
 				}
 
@@ -605,7 +601,6 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 				ForecastDataIdMapper forecastDataIdMapper = new ForecastDataIdMapper();
 				id = forecastDataIdMapper.get(selectedZone);
 			}
-			Log.e("MapWithForecastImage.onLongClick", "areaTouched with id " + id);
 			mAreaTouchListener.onAreaTouched(id);
 		}
 

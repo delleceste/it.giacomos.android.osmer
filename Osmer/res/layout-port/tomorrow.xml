@@ -16,7 +16,7 @@
         <it.giacomos.android.osmer.pro.widgets.MapWithForecastImage
             android:id="@+id/tomorrowImageView"
             android:layout_width="match_parent"
-            android:layout_height="340dp"
+            android:layout_height="330dp"
             android:src="@drawable/fvg_background2" />
 
         <it.giacomos.android.osmer.pro.widgets.ForecastTextView
