@@ -131,16 +131,14 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 			return stepCnt;
 
 		String [] lines = mDownloadUrls.split("\n");
-		String [] filenames = new String[lines.length * 2];
-		for(int i = 0; i < lines.length * 2; i = i + 2)
+		String [] filenames = new String[lines.length];
+		for(int i = 0; i < lines.length; i++)
 		{
-			if(lines[i/2].contains("->"))
+			if(lines[i].contains("->"))
 			{
-				String [] parts = lines[i/2].split("->");
+				String [] parts = lines[i].split("->");
 				/* name of the radar image file */
 				filenames[i] = parts[1];
-				/* name of the radar timestamp image file */
-				filenames[i + 1] = parts[1].replace(".gif", "_timestamp.png");
 			}
 		}
 
@@ -216,7 +214,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 						 * (can be incomplete if the activity is destroyed here) when the activity is restarted.
 						 */
 						if(isCancelled())
-							return stepCnt / 2;
+							return stepCnt;
 
 						/* increment stepCnt */
 						stepCnt++;
@@ -244,10 +242,10 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 				cancel(false);
 
 			/* publish progress each time a radar image + image timestamp have been downloaded */
-			if(!isCancelled() && stepCnt % 2 == 0)
+			if(!isCancelled())
 			{
-				publishProgress(stepCnt / 2);
-				Log.e("AnimationTask.doInBackground", "publishing progress " + stepCnt/2 );
+				publishProgress(stepCnt);
+				Log.e("AnimationTask.doInBackground", "publishing progress " + stepCnt);
 			}
 			else if(isCancelled())
 			{
@@ -255,7 +253,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 				break;
 			}
 		} /* end for(String fName : filenames) */
-		return stepCnt / 2;
+		return stepCnt;
 	}
 
 	protected void onProgressUpdate(Integer... progress) 

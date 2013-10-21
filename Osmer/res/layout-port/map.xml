@@ -36,111 +36,110 @@
             android:textColor="@android:color/black"
             android:textSize="12sp"
             android:visibility="visible" />
-        
-        <ProgressBar 
-         android:id="@+id/radarAnimProgressBar"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         style="@android:style/Widget.ProgressBar.Large"
-         android:layout_marginRight="5dp"
-	    android:layout_centerHorizontal="true"
-	    android:layout_centerVertical="true"
-            android:visibility="gone" />
-        
-        
-                    <LinearLayout
-        android:id="@+id/animationTimestampLinearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-                android:gravity="center_horizontal"
-        
-        android:layout_marginTop="12dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginLeft="6dp"
-        android:orientation="vertical" >
-        
-            
-            <TextView
-            android:id="@+id/radarAnimTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"  
-            android:padding="2dp"
-            android:textColor="@android:color/black"
-        	            android:background="@drawable/rounded_text_box"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:visibility="gone" />      
-                  
-        <ImageView
-            android:id="@+id/radarAnimTimestampImageView"
+
+        <ProgressBar
+            android:id="@+id/radarAnimProgressBar"
+            style="@android:style/Widget.ProgressBar.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:minWidth="180dp"
-            style="@style/ImageView" /> 
-           
-        
-        
-        
-        </LinearLayout>
-        
-         <LinearLayout
-        android:id="@+id/animationButtonsLinearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-	    android:layout_alignParentBottom="true"
-	    android:layout_centerHorizontal="true"
-	    android:layout_marginBottom="20dp"
-	    android:background="@drawable/rounded_box_dark"
-        android:orientation="horizontal" >
-              
-          <Button
-            android:id="@+id/previousButton"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:background="@drawable/ic_media_previous"
-            android:textOff=""
-            android:textOn=""
-            android:visibility="gone" />    
-             
-         <ToggleButton
-            android:id="@+id/stopButton"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:background="@drawable/ic_menu_close_clear_cancel"
-            android:textOff=""
-            android:textOn=""
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
             android:visibility="gone" />
-         
-        <ToggleButton 
-         	    android:layout_width="36dp"
-        		android:layout_height="36dp"       		
-				android:textOff=""
-				android:textOn=""
-        		android:background="@drawable/ic_play_pause_button" 
-        		android:layout_marginRight="6dp"
-            	android:layout_marginLeft="6dp"
-        		android:id="@+id/playPauseButton"
-            	android:visibility="gone" />	
-          <Button
-            android:id="@+id/nextButton"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+
+        <!--  LinearLayout
+            android:id="@+id/animationTimestampLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"
-            android:background="@drawable/ic_media_next"
-            android:textOff=""
-            android:textOn=""
-            android:visibility="gone" />    
-             
+            android:layout_marginTop="12dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" -->
+
+            <TextView
+                android:id="@+id/radarAnimTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_text_box"
+                android:padding="2dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginTop="12dp"
+                android:gravity="center_horizontal"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <!--ImageView
+                android:id="@+id/radarAnimTimestampImageView"
+                style="@style/ImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="180dp"
+                android:padding="5dp" / -->
+       
+            <!-- /LinearLayout-->
+
+        <LinearLayout
+            android:id="@+id/animationButtonsLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_box_dark"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/previousButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/ic_media_previous"
+                android:textOff=""
+                android:textOn=""
+                android:visibility="gone" />
+
+            <ToggleButton
+                android:id="@+id/stopButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/ic_menu_close_clear_cancel"
+                android:textOff=""
+                android:textOn=""
+                android:visibility="gone" />
+
+            <ToggleButton
+                android:id="@+id/playPauseButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/ic_play_pause_button"
+                android:textOff=""
+                android:textOn=""
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/nextButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/ic_media_next"
+                android:textOff=""
+                android:textOn=""
+                android:visibility="gone" />
         </LinearLayout>
-        
     </RelativeLayout>
 
 </fragment>

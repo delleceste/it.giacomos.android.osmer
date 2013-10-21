@@ -463,10 +463,10 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		Log.e("RadarAnimation.mmakeStep", "frameNo is " + frameNo + " mAnimationData,size is " + mAnimationData.size());
 		if(mAnimationData != null && frameNo < mAnimationData.size())
 		{
-			// String text = mAnimationData.valueAt(frameNo).time + " [" + (frameNo + 1) + "/" + mAnimationData.size() + "]";
-			String text = "[" + (frameNo + 1) + "/" + mAnimationData.size() + "] " + 
-					mMapFrag.getResources().getString(R.string.radarAnimationLocalTimeFromUTC) + 
-					mTimeZoneOffset;
+			String text = mAnimationData.valueAt(frameNo).time + " [" + (frameNo + 1) + "/" + mAnimationData.size() + "]";
+//			String text = "[" + (frameNo + 1) + "/" + mAnimationData.size() + "] " + 
+//					mMapFrag.getResources().getString(R.string.radarAnimationLocalTimeFromUTC) + 
+//					mTimeZoneOffset;
 			if(!DownloadStatus.Instance().isOnline)
 				text += " (" + mMapFrag.getResources().getString(R.string.offline) + ")";
 			
@@ -499,25 +499,25 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 						mMapFrag.getActivity().getResources().getString(R.string.radarAnimationImageUnavailable) +
 						": " + mAnimationData.valueAt(frameNo).time, Toast.LENGTH_LONG).show();
 			
-			/* timestamp image */
-			bmp = fileHelper.decodeImage(mAnimationData.valueAt(frameNo).fileName.replace(".gif", "_timestamp.png"), 
-					mMapFrag.getActivity().getApplicationContext().getExternalFilesDir(null).getPath());
-			if(bmp != null)
-			{
-				ImageView timestampIV = (ImageView) mMapFrag.getActivity().findViewById(R.id.radarAnimTimestampImageView);
-				BitmapDrawable oldTimestampBitmapDrawable = ((BitmapDrawable) timestampIV.getDrawable());
-				Bitmap oldTimestampBitmap = null;
-				
-				if(oldTimestampBitmapDrawable != null)
-					oldTimestampBitmap = oldTimestampBitmapDrawable.getBitmap();
-				if(oldTimestampBitmap != null)
-					oldTimestampBitmap.recycle();
-				timestampIV.setImageBitmap(Bitmap.createScaledBitmap(bmp, (int)Math.round(1.8 * bmp.getWidth()), 
-						(int)Math.round(1.8 * bmp.getHeight()), true));
-			}
-			else
-				Log.e("RadarAnimation.mMakeStep", "the image for the timestamp is null "
-							+ " frameNo " + frameNo + ", "+ mAnimationData.valueAt(frameNo).fileName);
+			/* timestamp image -- no more used since it's most of the times wrong */
+//			bmp = fileHelper.decodeImage(mAnimationData.valueAt(frameNo).fileName.replace(".gif", "_timestamp.png"), 
+//					mMapFrag.getActivity().getApplicationContext().getExternalFilesDir(null).getPath());
+//			if(bmp != null)
+//			{
+//				ImageView timestampIV = (ImageView) mMapFrag.getActivity().findViewById(R.id.radarAnimTimestampImageView);
+//				BitmapDrawable oldTimestampBitmapDrawable = ((BitmapDrawable) timestampIV.getDrawable());
+//				Bitmap oldTimestampBitmap = null;
+//				
+//				if(oldTimestampBitmapDrawable != null)
+//					oldTimestampBitmap = oldTimestampBitmapDrawable.getBitmap();
+//				if(oldTimestampBitmap != null)
+//					oldTimestampBitmap.recycle();
+//				timestampIV.setImageBitmap(Bitmap.createScaledBitmap(bmp, (int)Math.round(1.8 * bmp.getWidth()), 
+//						(int)Math.round(1.8 * bmp.getHeight()), true));
+//			}
+//			else
+//				Log.e("RadarAnimation.mMakeStep", "the image for the timestamp is null "
+//							+ " frameNo " + frameNo + ", "+ mAnimationData.valueAt(frameNo).fileName);
 		}
 	}
 

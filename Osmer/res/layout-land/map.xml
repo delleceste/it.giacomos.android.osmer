@@ -47,7 +47,7 @@
 	    	android:layout_centerVertical="true"
             android:visibility="gone" />
 
-              <LinearLayout
+              <!--  LinearLayout
         android:id="@+id/animationTimestampLinearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,20 +57,26 @@
         android:layout_marginTop="12dp"
         android:layout_marginRight="6dp"
         android:layout_marginLeft="6dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal" -->
         
-            <ImageView
+            <!-- ImageView
             android:id="@+id/radarAnimTimestampImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"    
         	android:gravity="center_horizontal"
             android:padding="5dp"
-            style="@style/ImageView" />        
+            style="@style/ImageView" /  -->        
                   
              <TextView
             android:id="@+id/radarAnimTime"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"  
+            android:layout_height="wrap_content"    
+        	android:gravity="center_horizontal"
+        	android:layout_alignParentTop="true"
+        	android:layout_centerHorizontal="true"
+        	android:layout_marginTop="12dp"
+        	android:layout_marginRight="6dp"
+        	android:layout_marginLeft="6dp"
             android:padding="2dp"
             android:textColor="@android:color/black"
         	android:background="@drawable/rounded_text_box"
@@ -82,7 +88,7 @@
         
         
         
-        </LinearLayout>
+        <!-- /LinearLayout-->
     
          <LinearLayout
         android:id="@+id/animationButtonsLinearLayout"

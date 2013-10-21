@@ -121,9 +121,9 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		/* show controls */
 		OMapFragment mapFrag = dRadarAnimation.getMapFragment();
 		mapFrag.getActivity().findViewById(R.id.animationButtonsLinearLayout).setVisibility(View.VISIBLE);
-		mapFrag.getActivity().findViewById(R.id.animationTimestampLinearLayout).setVisibility(View.VISIBLE);
+//		mapFrag.getActivity().findViewById(R.id.animationTimestampLinearLayout).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.radarAnimTime).setVisibility(View.VISIBLE);
-		mapFrag.getActivity().findViewById(R.id.radarAnimTimestampImageView).setVisibility(View.VISIBLE);
+//		mapFrag.getActivity().findViewById(R.id.radarAnimTimestampImageView).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.stopButton).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.playPauseButton).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.radarAnimProgressBar).setVisibility(View.GONE);
