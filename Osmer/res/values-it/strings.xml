@@ -326,15 +326,15 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 	    per visualizzare ancora il messaggio di upgrade alla versione 2</string>
 	
 	<string name="upgrade"><![CDATA[
-		<h4>Acquista la versione Pro per Android 4!</h4>
+		<h3>Acquista la versione Pro per Android 4! Ora c\'è l\'animazione radar!</h3>
 		<p>
-		<h2>Grandi novità in arrivo!</h2>
-		<ul><li>- Interfaccia grafica ancora migliorata:</li><br/>
-		<li>- nuove icone interattive nelle cartine delle previsioni;</li><br/>
-		<li>- tocca un\'icona e leggi i dettagli;</li><br/>
-		<li>- temperature a 1000 e 2000 metri;</li><br/>
-		<li>- toccando a lungo su un punto della mappa, si ottiene un riassunto della 
-		evoluzione alle ore 4, 12 e 20.</li> <br/>
+		<h2>Importanti novità!</h2>
+		
+		<ul><li>- Animazione radar!</li><br/>
+		<li>- <strong>Tendenza</strong> meteo per il <strong>terzo giorno</strong>;</li><br/>
+		<li>- dati aggiuntivi toccando un\'icona o un punto sulla mappa delle previsioni;</li><br/>
+		<li>- previsioni dettagliate per monti, prealpi, alta pianura, costa... (tocca un\'icona
+			o un punto sulla mappa delle previsioni);</li><br/>
 		</ul>
 		Acquista <a href="https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro">Meteo.FVG Pro</a>
 		supportandone lo sviluppo.

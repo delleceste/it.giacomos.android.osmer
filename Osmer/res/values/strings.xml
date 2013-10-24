@@ -334,16 +334,15 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
 	<string name="upgrade"><![CDATA[
 		<h4>Acquista la versione Pro per Android 4!</h4>
 		<p>
-	    Lo sviluppo dell\'applicazione <em>Meteo.FVG</em>, la sua manutenzione
-	    e l\'aggiornamento periodico hanno richiesto al programmatore mesi di sviluppo 
-	    a tempo pieno.
-		
-		<br/>Gli utenti Android 4 possono da oggi acquistare la versione <em>Pro</em>
-		di <cite>Meteo.FVG</cite> 
-		dal <a href="https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro">play store di Google</a>,
-		supportando così eventuali sviluppi futuri, aggiornamenti e correzioni della app.
-	    
-	    </p>
+		<h2>Grandi novità!</h2>
+		<ul><li>- Animazione radar!</li><br/>
+		<li>- dati aggiuntivi toccando un\'icona o un punto sulla mappa delle previsioni;</li><br/>
+		<li>- previsioni dettagliate per monti, prealpi, alta pianura, costa... (tocca un\'icona
+			o un punto sulla mappa delle previsioni);</li><br/>
+		</ul>
+		Acquista <a href="https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro">Meteo.FVG Pro</a>
+		supportandone lo sviluppo.
+		</p>
 	    
 	    <h5>Scaricamento gratuito della versione di Meteo.FVG Pro (versioni 2.0 e successive.)</h5>
 	    <p>
