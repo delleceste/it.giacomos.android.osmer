@@ -126,6 +126,11 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			startBitmapTask(m_urls.radarImageUrl(), BitmapType.RADAR);
 		}
 	}
+	
+	public void getReport()
+	{
+		Log.e("Online.getReport", "not implemented. Should get updated report ;-)");
+	}
 
 	/* for now, webcam list is obtained by a couple of files
 	 * http://www.osmer.fvg.it/GOOGLE/DatiWebcams1.php

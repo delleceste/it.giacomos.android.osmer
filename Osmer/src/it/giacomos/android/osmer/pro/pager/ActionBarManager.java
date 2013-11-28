@@ -7,7 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SpinnerAdapter;
 import it.giacomos.android.osmer.pro.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.fragments.ForecastFragment;
 import it.giacomos.android.osmer.pro.fragments.SituationFragment;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
@@ -20,6 +20,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	public  static final int DAILY_OBS = 2;
 	public  static final int LATEST_OBS = 3;
 	public  static final int WEBCAM = 4;
+	public static final int REPORT = 5;
 	
 	private TabsAdapter mTabsAdapter;
 	private ActionBarListItemNavigationListener mActionBarListItemNavigationListener;
@@ -148,6 +149,13 @@ public class ActionBarManager implements ActionBarTabChangeListener
 				mTabsAdapter.disable();
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			mActivity.switchView(ViewType.WEBCAM);
+			break;
+		case 5:
+			mType = REPORT;
+			if(mTabsAdapter != null)
+				mTabsAdapter.disable();
+			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+			mActivity.switchView(ViewType.REPORT);
 			break;
 		}
 		

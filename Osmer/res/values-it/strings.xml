@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Meteo.FVG Pro</string>
+    <string name="app_name">Meteo.FVG</string>
     <string name="version">versione</string>
     <string name="data_source">Fonte dati: http://www.meteo.fvg.it</string>
     <string name="author">&#169; 2013</string>
@@ -74,9 +74,8 @@
     <string name="terrain_view">Vista terreno</string>
     <string name="map_normal_view">Vista normale</string>
     <string name="measure_mode">Modalità misura</string>
-    <string name="radar_help">Informazioni radar</string>    
+    <string name="radar_help">Informazioni radar</string>
     <string name="radar_animation">Animazione</string>
-    
 
     <!-- hint toasts -->
     <string name="hint_forecast_icons">Suggerimento: tocca un\'icona e leggi i dettagli in basso a sinistra, da oggi anche sulla cartina delle previsioni!</string>
@@ -85,7 +84,7 @@
         Rilascia per completare la misura.</string>
     <string name="hint_click_on_map_baloon_webcam_image">Tocca la foto per vederla nel visualizzatore di immagini</string>
     <string name="hint_zone_longpress">Premi a lungo su un punto della mappa per vedere l\'evoluzione del tempo</string>
-    
+
     <string-array name="observation_types">
         <item>Temperatura Minima</item>
         <item>Temperatura Massima</item>
@@ -115,6 +114,7 @@
         <item>Osservazioni giornaliere</item>
         <item>Osservazioni ultim\'ora</item>
         <item>Webcam</item>
+        <item>Segnalazioni</item>
     </string-array>
     <string-array name="dailyobs_text_items">
         <item>Cielo</item>
@@ -197,7 +197,6 @@
     <string name="evolution04">ore 4</string>
     <string name="evolution12">ore 12</string>
     <string name="evolution20">ore 20</string>
-    
     <string name="evo0">sereno</string>
     <string name="evo1">variabile</string>
     <string name="evo2">coperto</string>
@@ -215,15 +214,51 @@
     <string name="evo14">coperto piogge\nabbondanti e nevicate</string>
     <string name="evo15">coperto con nevicate</string>
 
-    <!--  radar animation -->
+    <!-- radar animation -->
     <string name="radarAnimationTaskCancelled">Operazione annullata</string>
     <string name="radarAnimationBuffering">scaricamento&#8230;</string>
     <string name="radarAnimationPausedAfterRotation">animazione in pausa</string>
     <string name="radarAnimationOffline">i dati offline dell\'animazione potrebbero essere obsoleti</string>
     <string name="radarAnimationImageUnavailable">Immagine non disponibile</string>
     <string name="radarAnimationLocalTimeFromUTC">ora locale = UTC+</string>
+    <string name="reportDialogTitle">Segnala il tempo</string>
+    <string name="reportDialogMessage">Segnala la situazione meteo nella tua zona</string>
+    <string name="reportDialogSendButton">Invia!</string>
+    <string name="reportDialogCancelButton">Annulla</string>
+    <string name="reportName">Nome</string>
+    <string name="reportSky">Cielo</string>
+    <string name="reportWind">Vento</string>
+    <string name="reportTemp">Temperatura</string>
+
+    <string-array name="report_sky_textitems">
+        <item>non segnalare il cielo</item>
+        <item>cielo sereno</item>
+        <item>cielo poco nuvoloso</item>
+        <item>cielo variabile</item>
+        <item>cielo nuvoloso</item>
+        <item>cielo coperto</item>
+        <item>pioggia debole [&lt;5mm]</item>
+        <item>pioggia moderata[5&#8211;10mm]</item>
+        <item>pioggia abbondante[10&#8211;30mm]</item>
+        <item>pioggia intensa [30&#8211;100mm]</item>
+        <item>pioggia molto intensa &gt;100mm</item>
+        <item>neve moderata</item>
+        <item>neve abbondante</item>
+        <item>neve intensa</item>
+        <item>temporali</item>
+        <item>nebbia</item>
+        <item>foschia</item>
+    </string-array>
     
-    
+    <string-array name="report_wind_textitems">
+        <item>non segnalare il vento</item>
+        <item>assente</item>
+        <item>brezza</item>
+        <item>moderato</item>
+        <item>forte</item>
+        <item>molto forte</item>
+    </string-array>
+
     <!-- WEBCAM -->
     <string name="popup_data_update_info">
 <![CDATA[

@@ -17,5 +17,6 @@ public enum ObservationType
 	TEMP, 
 	AVERAGE_WIND,
 	MAX_WIND, 
-	AVERAGE_HUMIDITY
+	AVERAGE_HUMIDITY, 
+	REPORT
 }

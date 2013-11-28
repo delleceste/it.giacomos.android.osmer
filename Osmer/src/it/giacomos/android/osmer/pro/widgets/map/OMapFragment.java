@@ -11,7 +11,7 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 
 import it.giacomos.android.osmer.pro.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.pro.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.pro.network.Data.DataPoolBitmapListener;
@@ -407,6 +407,13 @@ RadarAnimationListener
 			radarTimestampText.hide();
 			mRadarAnimation.stop();
 		} 
+		else if(m.currentMode == MapMode.REPORT)
+		{
+			Log.e("OMapFragment.setMode", "switching to REPORT mode");
+			mRemoveOverlays();
+			mRadarAnimation.stop();
+			Toast.makeText(getActivity(), "REPORT MODE", Toast.LENGTH_SHORT).show();
+		}
 		else if(m.currentMode != MapMode.HIDDEN)
 		{
 			ObservationDrawableIdPicker observationDrawableIdPicker = new ObservationDrawableIdPicker();

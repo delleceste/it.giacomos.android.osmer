@@ -1,7 +1,7 @@
 package it.giacomos.android.osmer.pro.interfaceHelpers;
 
 import it.giacomos.android.osmer.pro.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.pro.locationUtils.GeocodeAddressUpdateListener;
 import it.giacomos.android.osmer.pro.locationUtils.LocationInfo;

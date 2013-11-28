@@ -102,6 +102,11 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 		m_state.getWebcamList();
 	}
 	
+	public void updateReport()
+	{
+		m_state.getReport();
+	}
+	
 	public void getObservationsTable(MapMode mapMode) 
 	{
 		m_state.getObservationsTable(mapMode);

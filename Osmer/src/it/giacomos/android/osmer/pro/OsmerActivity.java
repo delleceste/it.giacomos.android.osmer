@@ -1,8 +1,11 @@
 package it.giacomos.android.osmer.pro;
 
+import java.util.List;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import it.giacomos.android.osmer.pro.R;
+
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.pro.interfaceHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.pro.interfaceHelpers.NetworkGuiErrorManager;
@@ -37,11 +40,14 @@ import it.giacomos.android.osmer.pro.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.pro.widgets.map.RadarOverlayUpdateListener;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
+import it.giacomos.android.osmer.pro.widgets.map.report.IconTextSpinnerAdapter;
+import it.giacomos.android.osmer.pro.widgets.map.report.ReportDialogFragment;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
@@ -65,6 +71,7 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -501,6 +508,11 @@ RadarAnimationListener
 		m_downloadManager.getRadarImage();
 	}
 
+	void updateReport()
+	{
+		m_downloadManager.updateReport();
+	}
+	
 	void satellite()
 	{
 		//TextView textView = (TextView) findViewById(R.id.mainTextView);
@@ -627,6 +639,8 @@ RadarAnimationListener
 			findViewById(R.id.radarTimestampTextView).setVisibility(View.GONE);
 			startRadarAnimation();
 			break;
+		case R.id.reportDialogAction:
+			popupReportDialog();
 		default:
 			break;
 		}
@@ -695,6 +709,8 @@ RadarAnimationListener
 		menu.findItem(R.id.radarInfoButton).setChecked(findViewById(R.id.radarInfoTextView).getVisibility() == View.VISIBLE);
 		/* animation available only in radar mode */
 		menu.findItem(R.id.radarAnimationAction).setVisible(mCurrentViewType == ViewType.RADAR);
+		/* report action */
+		menu.findItem(R.id.reportDialogAction).setVisible(mCurrentViewType == ViewType.REPORT);
 		
 		switch(mCurrentViewType)
 		{
@@ -808,6 +824,8 @@ RadarAnimationListener
 			onSelectionDone(ObservationType.TEMP, MapMode.LATEST_OBSERVATIONS);
 		else if (id == ViewType.WEBCAM) 
 			onSelectionDone(ObservationType.NONE, MapMode.WEBCAM);
+		else if (id == ViewType.REPORT) 
+			onSelectionDone(ObservationType.REPORT, MapMode.REPORT);
 		/* try to download only if online */
 		if(m_downloadManager.state().name() == StateName.Online)
 		{
@@ -823,6 +841,8 @@ RadarAnimationListener
 			{ }
 			else if(id == ViewType.WEBCAM)
 				updateWbcamList();
+			else if(id == ViewType.REPORT)
+				updateReport();
 		}
 
 		if(mSettings.isZoneLongPressHintEnabled() && id == ViewType.TODAY)
@@ -850,6 +870,13 @@ RadarAnimationListener
 		omv.stopRadarAnimation();
 	}
 
+	public void popupReportDialog()
+	{
+		ReportDialogFragment reportDialog = new ReportDialogFragment();
+	
+		reportDialog.show(getSupportFragmentManager(), "ReportDialogFragment");
+	}
+	
 	public ObservationsCache getObservationsCache()
 	{
 		return m_observationsCache;

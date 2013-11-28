@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Meteo.FVG Pro</string>
+    <string name="app_name">Meteo.FVG</string>
     <string name="version">version</string>
     <string name="data_source">Data source: http://www.meteo.fvg.it</string>
     <string name="author">&#169; 2013</string>
@@ -120,6 +120,7 @@
         <item>Daily observations</item>
         <item>Latest observations</item>
         <item>Webcam</item>
+        <item>Reports</item>
     </string-array>
 
     
@@ -239,8 +240,46 @@
     <string name="radarAnimationImageUnavailable">Image unavailable</string>
     <string name="radarAnimationLocalTimeFromUTC">Local time = UTC +</string>
     
+    
+    <!--  report dialog fragment -->
+    <string name="reportDialogTitle">Report</string>
+    <string name="reportDialogMessage">Report the weather in your area</string>
+    <string name="reportDialogSendButton">Report!</string>
+    <string name="reportDialogCancelButton">Cancel</string>
+    <string name="reportName">Name</string>
+    <string name="reportSky">Sky</string>
+    <string name="reportWind">Wind</string>
+    <string name="reportTemp">Temperature</string>
 	
-    <string name="popup_data_update_info">
+    <string-array name="report_sky_textitems">
+        <item>don\'t report</item>
+        <item>clear</item>
+        <item>few clouds</item>
+        <item>variable</item>
+        <item>cloudy</item>
+        <item>covered</item>
+        <item>weak rain</item>
+        <item>moderate rain</item>
+        <item>abundant rain</item>
+        <item>intense rain</item>
+        <item>very intense rain</item>
+        <item>moderate snow</item>
+        <item>abundant snow</item>
+        <item>intense snow</item>
+        <item>storms</item>
+        <item>mist</item>
+        <item>fog</item>
+    </string-array>
+    
+    <string-array name="report_wind_textitems">
+        <item>don\'t report</item>
+        <item>breeze</item>
+        <item>moderate</item>
+        <item>strong</item>
+        <item>very strong</item>
+    </string-array>
+    
+<string name="popup_data_update_info">
        <![CDATA[
        <h6>Data update policy</h6>
         <p>
