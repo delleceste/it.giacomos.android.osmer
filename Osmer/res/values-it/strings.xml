@@ -228,7 +228,11 @@
     <string name="reportName">Nome</string>
     <string name="reportSky">Cielo</string>
     <string name="reportWind">Vento</string>
+    <string name="reportComment">Commento</string>
     <string name="reportTemp">Temperatura</string>
+    <string name="reportOk">le tue osservazioni sono state pubblicate! Grazie.</string>
+	<string name="reportError">errore di rete durante la pubblicazione delle tue osservazioni :-(</string>
+	<string name="reportMustInsertUserName">Per iniziare, inserisci un nome</string>
 
     <string-array name="report_sky_textitems">
         <item>non segnalare il cielo</item>

@@ -272,7 +272,21 @@ public class Settings
 		return mSharedPreferences.getFloat("MAP_WITH_FOREACAST_IMAGE_TEXT_FONT_SIZE", 100.0f);
 	}
 
+	public void setReporterUserName(String name)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putString("REPORTER_USER_NAME", name);
+		e.commit();
+	}
+
+	public String getReporterUserName() 
+	{
+		String res = mSharedPreferences.getString("REPORTER_USER_NAME", "");
+		return res;
+	}
+	
 	private final String PREFERENCES_NAME = "Osmer.conf";
 	private SharedPreferences mSharedPreferences;
+	
 
 }
