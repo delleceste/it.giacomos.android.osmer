@@ -1,7 +1,6 @@
 package it.giacomos.android.osmer.pro.widgets.map;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import it.giacomos.android.osmer.R;
@@ -22,7 +21,6 @@ public class MapBaloonInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
 	public MapBaloonInfoWindowAdapter(Activity activity) 
 	{
 		mView = activity.getLayoutInflater().inflate(R.layout.mapbaloon, null);
-		mLatLng = null;
 		mType = Type.OBSERVATIONS;
 	}
 	
@@ -93,8 +91,6 @@ public class MapBaloonInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
 //	}
 	
 	private Type mType;
-	
-	private LatLng mLatLng;
 
 
 	

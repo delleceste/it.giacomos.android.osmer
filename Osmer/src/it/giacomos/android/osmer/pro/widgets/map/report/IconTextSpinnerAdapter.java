@@ -83,8 +83,8 @@ public class IconTextSpinnerAdapter extends ArrayAdapter<String> {
 			arr_images =  new int[] { -1, 
 				R.drawable.weather_sky_0, R.drawable.weather_few_clouds,
 				R.drawable.weather_clouds, R.drawable.weather_sky_3, R.drawable.weather_sky_4,
-				R.drawable.weather_rain_6, R.drawable.weather_rain_7, R.drawable.weather_rain_8,
-				R.drawable.weather_rain_9, R.drawable.weather_rain_36, R.drawable.weather_snow_10,
+				R.drawable.weather_rain_cloud_6, R.drawable.weather_rain_cloud_7, R.drawable.weather_rain_cloud_8,
+				R.drawable.weather_rain_cloud_9, R.drawable.weather_rain_cloud_36, R.drawable.weather_snow_10,
 				R.drawable.weather_snow_11, R.drawable.weather_snow_12, R.drawable.weather_storm_13,
 				R.drawable.weather_mist_14,R.drawable.weather_mist_15 
 				};

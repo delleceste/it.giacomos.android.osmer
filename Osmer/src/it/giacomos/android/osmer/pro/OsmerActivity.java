@@ -274,7 +274,7 @@ RadarAnimationListener
 		/* map updates the observation data in ItemizedOverlay when new observations are available
 		 *
 		 */
-		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment map = getMapFragment();
 		m_observationsCache.installObservationsCacheUpdateListener(map);
 
 		/* Create DataPool.  */
@@ -359,7 +359,7 @@ RadarAnimationListener
 		{
 			/* first of all, if there's a info window on the map, close it */
 			int displayedChild = ((ViewFlipper) findViewById(R.id.viewFlipper)).getDisplayedChild();
-			OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+			OMapFragment map = getMapFragment();
 			if(displayedChild == 1  &&  map.isInfoWindowVisible()) /* map view visible */
 			{
 				map.hideInfoWindow();
@@ -594,7 +594,7 @@ RadarAnimationListener
 	public void onSelectionDone(ObservationType observationType, MapMode mapMode) 
 	{
 		/* switch the working mode of the map view. Already in PAGE_MAP view flipper page */
-		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment map = getMapFragment();
 		map.setMode(new MapViewMode(observationType, mapMode));
 		if(mapMode == MapMode.DAILY_OBSERVATIONS || mapMode == MapMode.LATEST_OBSERVATIONS)
 			map.updateObservations(m_observationsCache.getObservationData(mapMode));
@@ -608,7 +608,7 @@ RadarAnimationListener
 		 */
 		if(menuItem.isCheckable())
 			menuItem.setChecked(!menuItem.isChecked());
-		OMapFragment omv = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment omv = getMapFragment();
 		switch(menuItem.getItemId())
 		{
 		case R.id.centerMapButton:
@@ -698,7 +698,7 @@ RadarAnimationListener
 
 	private void mCreateMapOptionsPopupMenu(boolean show) 
 	{
-		OMapFragment map = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment map = getMapFragment();
 		ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
 		PopupMenu mapOptionsMenu = new PopupMenu(this, buttonMapsOveflowMenu);
 		Menu menu = mapOptionsMenu.getMenu();
@@ -743,7 +743,7 @@ RadarAnimationListener
 	{
 		mCurrentViewType = id;
 		ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
-		OMapFragment mapFragment = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment mapFragment = getMapFragment();
 		
 		if (id == ViewType.HOME) 
 		{
@@ -860,20 +860,19 @@ RadarAnimationListener
 
 	public void startRadarAnimation()
 	{
-		OMapFragment omv = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment omv = getMapFragment();
 		omv.startRadarAnimation();
 	}
 
 	public void stopRadarAnimation()
 	{
-		OMapFragment omv = (OMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment omv = getMapFragment();
 		omv.stopRadarAnimation();
 	}
 
 	public void popupReportDialog()
 	{
 		ReportDialogFragment reportDialog = new ReportDialogFragment();
-	
 		reportDialog.show(getSupportFragmentManager(), "ReportDialogFragment");
 	}
 	
@@ -927,6 +926,12 @@ RadarAnimationListener
 		return mLocationService;
 	}
 
+	public OMapFragment getMapFragment()
+	{
+		OMapFragment mapFrag = (OMapFragment)getSupportFragmentManager().findFragmentById(R.id.mapview);
+		return mapFrag;
+	}
+	
 	@Override
 	public void onRadarImageUpdated() 
 	{

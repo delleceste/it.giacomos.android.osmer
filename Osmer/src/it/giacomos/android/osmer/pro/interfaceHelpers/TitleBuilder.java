@@ -43,6 +43,8 @@ public class TitleBuilder
 				t += res.getString(R.string.observations_title_daily);
 			else if(mapMode.currentMode == MapMode.LATEST_OBSERVATIONS)
 				t += res.getString(R.string.observations_title_latest);
+			else if(mapMode.currentMode == MapMode.REPORT)
+				t += res.getString(R.string.reportDialogTitle);
 		}
 		
 		t += " - " + res.getString(R.string.app_name);

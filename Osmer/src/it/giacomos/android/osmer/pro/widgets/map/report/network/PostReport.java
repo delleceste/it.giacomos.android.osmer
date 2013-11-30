@@ -1,9 +1,9 @@
 package it.giacomos.android.osmer.pro.widgets.map.report.network;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.network.state.Urls;
+import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
+import it.giacomos.android.osmer.pro.widgets.map.ReportPublishedListener;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -11,11 +11,15 @@ import android.widget.Toast;
 public class PostReport implements PostReportTaskListener
 {
 	private Context mContext;
+	private ReportPublishedListener mReportPublishedListener;
 	
-	public PostReport(String user, double lat, double lng, int sky, int wind, String temp, String comment, Context ctx)
+	public PostReport(String user, String locality, 
+			double lat, double lng, int sky, int wind, 
+			String temp, String comment, OMapFragment frag)
 	{
-		mContext = ctx;
-		PostReportTask reportTask = new PostReportTask(user, lat, lng, sky, wind, temp, comment, this);
+		mContext = frag.getActivity().getApplicationContext();
+		mReportPublishedListener = frag;
+		PostReportTask reportTask = new PostReportTask(user, locality, lat, lng, sky, wind, temp, comment, this);
 		String url = new Urls().postReportUrl();
 		reportTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
 	}
@@ -24,7 +28,10 @@ public class PostReport implements PostReportTaskListener
 	public void onTaskCompleted(boolean error, String message) 
 	{
 		if(!error)
+		{
 			Toast.makeText(mContext, R.string.reportOk, Toast.LENGTH_SHORT).show();
+			mReportPublishedListener.onReportPublished();
+		}
 		else
 		{
 			String m = mContext.getResources().getString(R.string.reportError) + "\n" + message;

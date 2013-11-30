@@ -3,6 +3,7 @@ package it.giacomos.android.osmer.pro.widgets.map.report;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.pro.preferences.Settings;
+import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostReport;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -22,10 +23,12 @@ public class ReportDialogClickListener implements DialogInterface.OnClickListene
 	@Override
 	public void onClick(DialogInterface dialogI, int id) 
 	{
-		Location loc = ((OsmerActivity)mDialogFragment.getActivity()).getLocationService().getCurrentLocation();
+		OsmerActivity oActivity = (OsmerActivity) mDialogFragment.getActivity();
+		Location loc = oActivity.getLocationService().getCurrentLocation();
 		if(loc == null)
 			return;
 		String user, temp, comment = "";
+		String locality = mDialogFragment.getLocality();
 		int sky = -1 , wind = -1;
 		Dialog d = (Dialog) dialogI;
 		EditText te = (EditText) d.findViewById(R.id.ettemp);
@@ -45,7 +48,9 @@ public class ReportDialogClickListener implements DialogInterface.OnClickListene
 			sky = sp.getSelectedItemPosition();
 			sp = (Spinner) d.findViewById(R.id.spinWind);
 			wind = sp.getSelectedItemPosition();
-			new PostReport(user, loc.getLatitude(), loc.getLongitude(), sky, wind, temp, comment, mDialogFragment.getActivity().getApplicationContext());
+			OMapFragment mapFragment = oActivity.getMapFragment();
+			new PostReport(user, locality, loc.getLatitude(), loc.getLongitude(), 
+					sky, wind, temp, comment, mapFragment);
 		}
 		else
 			Log.e("ReportDialogClickListener.onClick", "user name is empty");

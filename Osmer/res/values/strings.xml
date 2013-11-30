@@ -242,7 +242,7 @@
     
     
     <!--  report dialog fragment -->
-    <string name="reportDialogTitle">Report</string>
+    <string name="reportDialogTitle">Report the weather</string>
     <string name="reportDialogMessage">Report the weather in your area</string>
     <string name="reportDialogSendButton">Report!</string>
     <string name="reportDialogCancelButton">Cancel</string>
@@ -254,6 +254,8 @@
 	<string name="reportOk">Report has been successfully published</string>
 	<string name="reportError">There was an error posting your report.</string>
 	<string name="reportMustInsertUserName">Insert a user name to start</string>
+	<string name="reportNoneAvailable">No recent reports available</string>
+	<string name="reportComment">Comment</string>
     
     <string-array name="report_sky_textitems">
         <item>don\'t report</item>

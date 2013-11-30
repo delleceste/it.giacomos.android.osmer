@@ -21,14 +21,14 @@ import android.util.Log;
 public class PostReportTask extends AsyncTask<String, Integer, String> 
 {
 	private int mSky, mWind;
-	private String mUser, mComment, mTemp;
+	private String mUser, mComment, mTemp, mLocality;
 	private String mErrorMsg;
 	private PostReportTaskListener mPostReportTaskListener;
 	private double mLat, mLong;
 	
 	private static String CLI = "afe0983der38819073rxc1900lksjd";
 	
-	public PostReportTask(String user, double lat, double lng, int sky, int wind, String temp, String comment, PostReportTaskListener tl)
+	public PostReportTask(String user, String locality, double lat, double lng, int sky, int wind, String temp, String comment, PostReportTaskListener tl)
 	{
 		mSky = sky;
 		mWind = wind;
@@ -38,6 +38,7 @@ public class PostReportTask extends AsyncTask<String, Integer, String>
 		mPostReportTaskListener = tl;
 		mLat = lat;
 		mLong = lng;
+		mLocality = locality;
 	}
 	
 	@Override
@@ -55,6 +56,7 @@ public class PostReportTask extends AsyncTask<String, Integer, String>
         postParameters.add(new BasicNameValuePair("c", String.valueOf(mComment)));
         postParameters.add(new BasicNameValuePair("la", String.valueOf(mLat)));
         postParameters.add(new BasicNameValuePair("lo", String.valueOf(mLong)));
+        // postParameters.add(new BasicNameValuePair("loc", mLocality));
         UrlEncodedFormEntity form;
 		try {
 			form = new UrlEncodedFormEntity(postParameters);

@@ -34,7 +34,7 @@ import it.giacomos.android.osmer.pro.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimation;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationStatus;
-
+import it.giacomos.android.osmer.pro.widgets.map.report.ReportOverlay;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -52,7 +52,8 @@ WebcamOverlayChangeListener,
 MeasureOverlayChangeListener,
 DataPoolBitmapListener,
 DataPoolErrorListener,
-RadarAnimationListener
+RadarAnimationListener,
+ReportPublishedListener
 {
 	public final int minLatitude = GeoCoordinates.bottomRight.getLatitudeE6();
 	public final int maxLatitude = GeoCoordinates.topLeft.getLatitudeE6();
@@ -74,6 +75,7 @@ RadarAnimationListener
 	private Settings mSettings;
 	private RadarOverlayUpdateListener mRadarOverlayUpdateListener;
 	private RadarAnimation mRadarAnimation;
+	private ReportOverlay mReportOverlay;
 
 	/* MapFragmentListener: the activity must implement this in order to be notified when 
 	 * the GoogleMap is ready.
@@ -93,6 +95,7 @@ RadarAnimationListener
 		mMode = new MapViewMode(ObservationType.NONE, MapMode.RADAR);
 		mMode.isExplicit = false; /* setMode is not called */
 		mRadarAnimation = null;
+		mReportOverlay = null;
 	}
 
 	@Override
@@ -409,10 +412,12 @@ RadarAnimationListener
 		} 
 		else if(m.currentMode == MapMode.REPORT)
 		{
-			Log.e("OMapFragment.setMode", "switching to REPORT mode");
 			mRemoveOverlays();
 			mRadarAnimation.stop();
-			Toast.makeText(getActivity(), "REPORT MODE", Toast.LENGTH_SHORT).show();
+			radarTimestampText.hide();
+			mReportOverlay = new ReportOverlay(this);
+			mOverlays.add(mReportOverlay);
+			mReportOverlay.update(); /* trigger an update */
 		}
 		else if(m.currentMode != MapMode.HIDDEN)
 		{
@@ -630,6 +635,14 @@ RadarAnimationListener
 		mRadarAnimation.stop();
 	}
 
+	public void refreshUserReports()
+	{
+		if(mMode.currentMode == MapMode.REPORT && this.mReportOverlay != null)
+		{
+			mReportOverlay.update();
+		}
+	}
+	
 	@Override
 	public void onRadarAnimationStart() 
 	{
@@ -668,6 +681,13 @@ RadarAnimationListener
 	public void onRadarAnimationProgress(int step, int total) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void onReportPublished() 
+	{
+		/* invoked when the user has successfully published its report */
+		refreshUserReports();
 	}
 
 }

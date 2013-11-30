@@ -4,12 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:scrollbars="vertical" >
+    android:scrollbars="vertical" 
+    android:padding="5dp">
+    
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+  
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+      
+      <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/reportDialogTitle"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+  </LinearLayout>  
     
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="horizontal" 
+    android:baselineAligned="false">
 
   <LinearLayout
       android:layout_width="0dp"
@@ -19,7 +39,8 @@
     
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+    		android:padding="5dp" >
             
             <TextView
             android:id="@+id/tvName"
@@ -36,13 +57,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:inputType="text"
                 android:ems="10" />
         
     </LinearLayout>
     
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+    android:padding="5dp" >
 
         <TextView
             android:id="@+id/tvSky"
@@ -65,7 +88,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content" 
+    android:padding="5dp">
 
         <TextView
             android:id="@+id/tvWind"
@@ -97,7 +121,8 @@
     
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content" 
+    android:padding="5dp">
 
         <CheckBox
             android:id="@+id/cbTemp"
@@ -121,7 +146,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical" 
+    android:padding="5dp">
 
         <TextView
             android:id="@+id/textView1"
@@ -139,5 +165,6 @@
 
     </LinearLayout>
     </LinearLayout>
+</LinearLayout>
 </LinearLayout>
 </ScrollView>
