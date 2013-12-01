@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.network.Data.DataPoolTextListener;
 import it.giacomos.android.osmer.pro.network.state.TextTask;
 import it.giacomos.android.osmer.pro.network.state.TextTaskListener;
 import it.giacomos.android.osmer.pro.network.state.Urls;
@@ -24,12 +25,11 @@ import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.pro.widgets.map.OOverlayInterface;
 import it.giacomos.android.osmer.pro.widgets.map.OverlayType;
 
-public class ReportOverlay implements OOverlayInterface, TextTaskListener, ReportOverlayTaskListener, 
+public class ReportOverlay implements OOverlayInterface, DataPoolTextListener, ReportOverlayTaskListener, 
 OnMarkerClickListener
 {
 
 	private OMapFragment mMapFrag;
-	private TextTask mTextTask;
 	private ReportOverlayTask mReportOverlayTask;
 	private ArrayList<Marker> mMarkers;
 	private  MapBaloonInfoWindowAdapter mMapBaloonInfoWindowAdapter;
@@ -38,7 +38,6 @@ OnMarkerClickListener
 	{
 		mMapFrag = oMapFragment;
 		mReportOverlayTask = null;
-		mTextTask = null;
 		mMapBaloonInfoWindowAdapter = new MapBaloonInfoWindowAdapter(mMapFrag.getActivity());
 		mMapFrag.getMap().setInfoWindowAdapter(mMapBaloonInfoWindowAdapter);
 		mMarkers = new ArrayList<Marker>();
@@ -48,16 +47,6 @@ OnMarkerClickListener
 	{
 		mCancelTasks(); /* if yet running before starting new ones */
 		mRemoveMarkers();
-		mTextTask = new TextTask(this, ViewType.REPORT);
-		String urlStr = new Urls().getReportUrl();
-		try{
-			URL url = new URL(urlStr);
-			mTextTask.parallelExecute(url);
-		}
-		catch(MalformedURLException e)
-		{
-			onTextUpdate("Malformed url \"" + urlStr + "\"\n" , ViewType.REPORT, e.getMessage(), null);
-		}
 	}
 	
 	@Override
@@ -77,8 +66,6 @@ OnMarkerClickListener
 	
 	private void mCancelTasks()
 	{
-		if(mTextTask != null)
-			mTextTask.cancel(false);
 		if(mReportOverlayTask != null)
 			mReportOverlayTask.cancel(false);
 	}
@@ -105,33 +92,6 @@ OnMarkerClickListener
 	}
 
 	@Override
-	public void onTextUpdate(String text, ViewType st, String errorMessage,
-			AsyncTask<URL, Integer, String> task) 
-	{
-		if(!errorMessage.isEmpty())
-			Toast.makeText(mMapFrag.getActivity(), errorMessage, Toast.LENGTH_LONG).show();
-		else
-		{
-			/* ok start processing data */
-			ReportDataFactory reportDataFactory = new ReportDataFactory();
-			ReportData[] reportDataList = reportDataFactory.parse(text);
-			if(reportDataList != null)
-			{
-				mReportOverlayTask = new ReportOverlayTask(mMapFrag.getActivity().getApplicationContext(), this);
-				mReportOverlayTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, reportDataList);
-			}
-			else
-				Toast.makeText(mMapFrag.getActivity().getApplicationContext(), R.string.reportNoneAvailable, Toast.LENGTH_LONG).show();
-		}
-	}
-
-	@Override
-	public void onTextBytesUpdate(byte[] bytes, ViewType vt) 
-	{
-
-	}
-
-	@Override
 	public void onReportOverlayTaskFinished(
 			ArrayList<MarkerOptions> markerOptionsArray) 
 	{
@@ -149,6 +109,29 @@ OnMarkerClickListener
 		mMapBaloonInfoWindowAdapter.setTitle(m.getTitle());
 		mMapBaloonInfoWindowAdapter.setText(m.getSnippet());
 		return false;
+	}
+
+	@Override
+	public void onTextChanged(String txt, ViewType t, boolean fromCache) {
+		// TODO Auto-generated method stub
+		
+		
+			/* ok start processing data */
+			ReportDataFactory reportDataFactory = new ReportDataFactory();
+			ReportData[] reportDataList = reportDataFactory.parse(txt);
+			if(reportDataList != null)
+			{
+				mReportOverlayTask = new ReportOverlayTask(mMapFrag.getActivity().getApplicationContext(), this);
+				mReportOverlayTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, reportDataList);
+			}
+			else
+				Toast.makeText(mMapFrag.getActivity().getApplicationContext(), R.string.reportNoneAvailable, Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	public void onTextError(String error, ViewType t) {
+		Toast.makeText(mMapFrag.getActivity(), error, Toast.LENGTH_LONG).show();
+		
 	}
 	
 }

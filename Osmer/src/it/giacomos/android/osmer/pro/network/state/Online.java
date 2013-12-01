@@ -129,7 +129,13 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	
 	public void getReport()
 	{
-		Log.e("Online.getReport", "not implemented. Should get updated report ;-)");
+		Log.e("Online.getReport", "implemented. Should get updated report ;-)");
+		if(!dDownloadStatus.reportUpToDate() && !mIsTextTaskExecuting(ViewType.REPORT))
+		{
+			startTextTask(m_urls.getReportUrl(), ViewType.REPORT);
+		}
+		else
+			Log.e("Online.getReport()", "report is considereth up to date!");
 	}
 
 	/* for now, webcam list is obtained by a couple of files
@@ -189,6 +195,9 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 				mGetObservationsTable(MapMode.DAILY_OBSERVATIONS);
 		}
 
+		if(vt == ViewType.REPORT)
+			dDownloadStatus.setReportUpdatedNow();
+		
 		dDownloadStatus.updateState(vt, errorMessage.isEmpty());
 		m_downloadManagerUpdateListener.onTextUpdate(s, vt, errorMessage);
 		/* publish progress , after DownloadStatus state has been updated */

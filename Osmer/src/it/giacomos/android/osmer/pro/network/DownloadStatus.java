@@ -45,6 +45,7 @@ public class DownloadStatus {
 
 	public static final int DOWNLOAD_OLD_TIMEOUT = 60000;
 	public static final int DOWNLOAD_OBSERVATIONS_OLD_TIMEOUT = 60;
+	public static final int DOWNLOAD_REPORT_OLD_TIMEOUT = 30;
 
 	public boolean homeDownloaded() { return (state & HOME_DOWNLOADED) != 0; }
 	public boolean todayDownloaded() { return (state & TODAY_DOWNLOADED) != 0; }
@@ -70,7 +71,7 @@ public class DownloadStatus {
 
 	public void init() {
 		state = INIT;
-		m_lastUpdateCompletedOn = 0;
+		m_lastUpdateCompletedAt = 0;
 	}
 
 	/* suppose it is always necessary to refresh radar image.
@@ -78,6 +79,21 @@ public class DownloadStatus {
 	 */
 	public boolean radarImageDownloaded() { return false;	}
 
+
+	/** Evaluate if the report is old 
+	 * 
+	 * @return
+	 */
+	public boolean reportUpToDate() 
+	{	
+		return System.currentTimeMillis() - mLastReportUpdatedAt > DOWNLOAD_REPORT_OLD_TIMEOUT;
+	}
+	
+	public void setReportUpdatedNow()
+	{
+		mLastReportUpdatedAt = System.currentTimeMillis();
+	}
+	
 	/* webcam lists age is externally check in order not to download the 
 	 * webcam lists too frequently.
 	 * As far as DownloadStatus is concerned, we consider webcam list downloaded
@@ -91,7 +107,7 @@ public class DownloadStatus {
 
 	public boolean lastCompleteDownloadIsOld()
 	{
-		return System.currentTimeMillis() - m_lastUpdateCompletedOn > DOWNLOAD_OLD_TIMEOUT;
+		return System.currentTimeMillis() - m_lastUpdateCompletedAt > DOWNLOAD_OLD_TIMEOUT;
 	}
 
 	public boolean observationsNeedUpdate()
@@ -102,14 +118,9 @@ public class DownloadStatus {
 		return false;
 	}
 
-	public void setObservationsSaved()
-	{
-		m_observationsSavedOn = Calendar.getInstance().getTime();
-	}
+	public long lastUpdateCompletedOn() { return m_lastUpdateCompletedAt; }
 
-	public long lastUpdateCompletedOn() { return m_lastUpdateCompletedOn; }
-
-	public void setLastUpdateCompletedOn(long l) { m_lastUpdateCompletedOn = l; }
+	public void setLastUpdateCompletedOn(long l) { m_lastUpdateCompletedAt = l; }
 
 	public boolean downloadIncomplete()
 	{
@@ -211,7 +222,7 @@ public class DownloadStatus {
 		else if(downloadComplete())
 		{
 			setDownloadErrorCondition(false);
-			m_lastUpdateCompletedOn = System.currentTimeMillis();
+			m_lastUpdateCompletedAt = System.currentTimeMillis();
 		}
 	}
 
@@ -232,14 +243,14 @@ public class DownloadStatus {
 		else if(downloadComplete())
 		{
 			setDownloadErrorCondition(false);
-			m_lastUpdateCompletedOn = System.currentTimeMillis();
+			m_lastUpdateCompletedAt = System.currentTimeMillis();
 		}
 	}
 
 	public long state;
 	public boolean isOnline;
 	
-	private long m_lastUpdateCompletedOn;
+	private long m_lastUpdateCompletedAt, mLastReportUpdatedAt;
 
 	public  static final long INIT = 0x0;
 
@@ -266,4 +277,5 @@ public class DownloadStatus {
 	public static final long DOWNLOAD_ERROR_CONDITION = 0x10000000;
 
 	private Date m_observationsSavedOn;
+
 }
