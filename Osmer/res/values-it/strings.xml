@@ -235,6 +235,7 @@
 	<string name="reportMustInsertUserName">Per iniziare, inserisci un nome</string>
 	<string name="reportNoneAvailable">Nessuna segnalazione recente</string>
 	<string name="reportComment">Commento</string>
+	<string name="reportUpdate">Aggiorna</string>
 
     <string-array name="report_sky_textitems">
         <item>non segnalare il cielo</item>

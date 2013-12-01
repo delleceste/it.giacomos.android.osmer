@@ -256,6 +256,7 @@
 	<string name="reportMustInsertUserName">Insert a user name to start</string>
 	<string name="reportNoneAvailable">No recent reports available</string>
 	<string name="reportComment">Comment</string>
+	<string name="reportUpdate">Refresh</string>
     
     <string-array name="report_sky_textitems">
         <item>don\'t report</item>

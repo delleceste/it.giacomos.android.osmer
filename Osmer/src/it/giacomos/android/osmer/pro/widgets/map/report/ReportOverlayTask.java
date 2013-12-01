@@ -46,6 +46,7 @@ public class ReportOverlayTask extends AsyncTask<ReportData, Integer, ArrayList<
 			if(this.isCancelled())
 				break;
 			
+			skystr = "";
 			ReportData rd = params[i];
 			sky = rd.sky;
 			if(sky == 1)

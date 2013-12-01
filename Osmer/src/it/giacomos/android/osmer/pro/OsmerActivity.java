@@ -641,6 +641,10 @@ RadarAnimationListener
 			break;
 		case R.id.reportDialogAction:
 			popupReportDialog();
+			break;
+		case R.id.reportUpdateAction:
+			updateReport();
+			break;
 		default:
 			break;
 		}
@@ -711,6 +715,7 @@ RadarAnimationListener
 		menu.findItem(R.id.radarAnimationAction).setVisible(mCurrentViewType == ViewType.RADAR);
 		/* report action */
 		menu.findItem(R.id.reportDialogAction).setVisible(mCurrentViewType == ViewType.REPORT);
+		menu.findItem(R.id.reportUpdateAction).setVisible(mCurrentViewType == ViewType.REPORT);
 		
 		switch(mCurrentViewType)
 		{
