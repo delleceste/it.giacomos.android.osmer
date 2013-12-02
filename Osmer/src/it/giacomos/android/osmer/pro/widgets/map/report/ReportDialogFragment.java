@@ -40,7 +40,7 @@ LocationServiceUpdateListener
 {
 	private View mDialogView;
 	private String mLocality;
-	
+
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) 
 	{
@@ -48,8 +48,8 @@ LocationServiceUpdateListener
 		mLocality = "-";
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//		builder.setMessage(R.string.reportDialogMessage)
-//		.setTitle(R.string.reportDialogTitle);
+		//		builder.setMessage(R.string.reportDialogMessage)
+		//		.setTitle(R.string.reportDialogTitle);
 		// Get the layout inflater
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		// Inflate and set the layout for the dialog
@@ -62,24 +62,24 @@ LocationServiceUpdateListener
 
 		String[] textItems = getResources().getStringArray(R.array.report_sky_textitems);
 		IconTextSpinnerAdapter skySpinnerAdapter = 
-					new IconTextSpinnerAdapter(this.getActivity().getApplicationContext(), 
+				new IconTextSpinnerAdapter(this.getActivity().getApplicationContext(), 
 						R.layout.report_icon_text_spinner_row, 
 						textItems, getActivity());
 		skySpinnerAdapter.setType(IconTextSpinnerAdapter.SPINNER_SKY);
 		Spinner spinner = (Spinner) mDialogView.findViewById(R.id.spinSky);
 		spinner.setAdapter(skySpinnerAdapter);
 		spinner.setSelection(1);
-		
+
 		textItems = getResources().getStringArray(R.array.report_wind_textitems);
 		IconTextSpinnerAdapter windSpinnerAdapter = 
 				new IconTextSpinnerAdapter(this.getActivity().getApplicationContext(), 
-					R.layout.report_icon_text_spinner_row, 
-					textItems, getActivity());
+						R.layout.report_icon_text_spinner_row, 
+						textItems, getActivity());
 		windSpinnerAdapter.setType(IconTextSpinnerAdapter.SPINNER_WIND);
 		spinner = (Spinner) mDialogView.findViewById(R.id.spinWind);
 		spinner.setAdapter(windSpinnerAdapter);
 		spinner.setSelection(1);
-		
+
 		CheckBox cb = (CheckBox) mDialogView.findViewById(R.id.cbTemp);
 		cb.setOnClickListener(this);
 		mDialogView.findViewById(R.id.ettemp).setEnabled(false);
@@ -91,17 +91,17 @@ LocationServiceUpdateListener
 		et.setText(userName);
 		et.addTextChangedListener(new TextWatcher() {
 
-	        	public void onTextChanged(CharSequence cs, int start, int before, int count) {}
+			public void onTextChanged(CharSequence cs, int start, int before, int count) {}
 
-				@Override
-				public void afterTextChanged(Editable ed) {
-					Log.e("TextWatcher.afterTextChanged", "afterTextChangeth");
-					setEnabled(ed.length() > 0);
-				}
+			@Override
+			public void afterTextChanged(Editable ed) {
+				Log.e("TextWatcher.afterTextChanged", "afterTextChangeth");
+				setEnabled(ed.length() > 0);
+			}
 
-				@Override
-				public void beforeTextChanged(CharSequence s, int start,
-						int count, int after) {}
+			@Override
+			public void beforeTextChanged(CharSequence s, int start,
+					int count, int after) {}
 
 		});
 		if(userName.isEmpty())
@@ -113,16 +113,16 @@ LocationServiceUpdateListener
 		}
 		/* negative button: save the user name */
 		builder.setNegativeButton(R.string.reportDialogCancelButton, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogI, int id) {
-                Dialog dialog = (Dialog) dialogI;
-                EditText et = (EditText) dialog.findViewById(R.id.etUserName);
-                Settings s = new Settings(getActivity());
-                s.setReporterUserName(et.getText().toString());
-            }
-        });
+			@Override
+			public void onClick(DialogInterface dialogI, int id) {
+				Dialog dialog = (Dialog) dialogI;
+				EditText et = (EditText) dialog.findViewById(R.id.etUserName);
+				Settings s = new Settings(getActivity());
+				s.setReporterUserName(et.getText().toString());
+			}
+		});
 
-		
+
 		// Create the AlertDialog object and return it
 		Dialog dialog = builder.create();
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -130,7 +130,7 @@ LocationServiceUpdateListener
 		setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme_Light);
 		return dialog;
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
@@ -140,7 +140,7 @@ LocationServiceUpdateListener
 		locationService.registerLocationServiceAddressUpdateListener(this);
 		locationService.registerLocationServiceUpdateListener(this);
 	}
-	
+
 	@Override
 	public void onDestroyView()
 	{
@@ -166,7 +166,7 @@ LocationServiceUpdateListener
 		getDialog().findViewById(R.id.spinSky).setEnabled(en);
 		if(!en)
 			Toast.makeText(getActivity(), R.string.reportMustInsertUserName, Toast.LENGTH_LONG).show();
-		
+
 	}
 
 	@Override
@@ -176,34 +176,36 @@ LocationServiceUpdateListener
 		TextView titleTV = (TextView) mDialogView.findViewById(R.id.tvTitle);
 		titleTV.setText(mDialogView.getContext().getString(R.string.reportDialogTitle) + ": " + locality);
 		mLocality = locality;
+		LocationService locationService = ((OsmerActivity) getActivity()).getLocationService();
+		locationService.removeLocationServiceAddressUpdateListener(this);
 	}
 
 	@Override
 	public void onLocationChanged(Location myLocation) 
 	{
-		LatLng myLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+		if(myLocation != null)
 		{
-			if(myLocation != null)
-			{
-				float minDist = 0;
-				LocationNamesMap locationNamesMap = new LocationNamesMap();
-				ArrayList<LatLng> points = new ArrayList<LatLng>(locationNamesMap.getMap().values());
-				NearLocationFinder nearLocationFinder = new NearLocationFinder();
-				LatLng nearestLocation = nearLocationFinder.nearestLocation(myLatLng, points);
-				String nearestLocationName = locationNamesMap.getLocationName(nearestLocation);
-				Toast.makeText(getActivity().getApplicationContext(), "Nearest location is " + nearestLocationName + " min dist " + minDist,
-								Toast.LENGTH_LONG).show();
-			}
+			LatLng myLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+			LocationNamesMap locationNamesMap = new LocationNamesMap();
+			ArrayList<LatLng> points = new ArrayList<LatLng>(locationNamesMap.getMap().values());
+			NearLocationFinder nearLocationFinder = new NearLocationFinder();
+			LatLng nearestLocation = nearLocationFinder.nearestLocation(myLatLng, points);
+			String nearestLocationName = locationNamesMap.getLocationName(nearestLocation);
+			Toast.makeText(getActivity().getApplicationContext(), "Nearest location is " + nearestLocationName,
+					Toast.LENGTH_LONG).show();
+
+			LocationService locationService = ((OsmerActivity) getActivity()).getLocationService();
+			locationService.removeLocationServiceUpdateListener(this);
 		}
-		
+
 	}
 
 	@Override
 	public void onLocationServiceError(String message) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	public String getLocality()
 	{
 		return mLocality;
