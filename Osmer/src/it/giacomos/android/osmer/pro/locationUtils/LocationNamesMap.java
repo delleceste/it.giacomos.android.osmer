@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Vector;
 import java.lang.String;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 
 public class LocationNamesMap {
@@ -77,7 +79,6 @@ public class LocationNamesMap {
 		mMap.put("GoriziaVento", new LatLng(45.982236,13.788278));
 		mMap.put("UdineVento", new LatLng(46.154711,13.066864)); /* Majano */
 		
-		
 	}
 	
 	public Vector<String> locationsForLevel(int level)
@@ -133,12 +134,55 @@ public class LocationNamesMap {
 		return locations;
 	}
 	
+	/** Returns, among all the locations, the ones with 
+	 *  associated observations, leaving the other locations out.
+	 *  
+	 * @return
+	 */
+	private Vector<String> mGetLocationsWithObservations()
+	{
+		Vector<String> locations = new Vector<String>();
+		locations.add("Chievolis");
+		locations.add("M.Matajur");
+		locations.add("Brugnera");
+		locations.add("Talmassons");
+		locations.add("Monfalcone");
+		locations.add("Coritis");
+		locations.add("Piancavallo");
+		locations.add("Faedis");
+		locations.add("Gradisca d'Is.");
+		locations.add("Fagagna");
+		locations.add("Enemonzo");
+		locations.add("Claut");
+		locations.add("Ligosullo");
+		locations.add("S.Vito al Tgl.");
+		locations.add("Vivaro");
+		locations.add("Paluzza");
+		locations.add("Pontebba");
+		locations.add("Borgo Grotta Gigante");
+		locations.add("Cividale d.F.");
+		locations.add("M.Zoncolan");
+		locations.add("Grado");
+		locations.add("Barcis");
+		locations.add("Forni di Sopra");
+		locations.add("Gemona d.F.");
+		locations.add("Lignano");
+		locations.add("Tolmezzo");
+		locations.add("Udine");
+		locations.add("Trieste");
+		locations.add("Gorizia");
+		locations.add("Pordenone");
+		locations.add("Tarvisio");
+		locations.add("Capriva d.F.");
+		return locations;
+	}
+	
 	public String getLocationName(LatLng point)
 	{
-		for(Map.Entry<String, LatLng> entry: mMap.entrySet())
+		for(String location : mGetLocationsWithObservations())
 		{
-			if(point == entry.getValue())
-				return entry.getKey();
+			if(point.equals(mMap.get(location)))
+ 				return location;
 		}
 		return null;
 	}

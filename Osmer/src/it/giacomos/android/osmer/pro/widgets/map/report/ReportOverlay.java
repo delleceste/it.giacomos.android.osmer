@@ -97,6 +97,7 @@ OnMarkerClickListener
 			ArrayList<MarkerOptions> markerOptionsArray) 
 	{
 		Log.e("onReportOverlayTaskFinished", "got " + markerOptionsArray.size());
+		mRemoveMarkers();
 		for(MarkerOptions markerOptions : markerOptionsArray)
 		{
 			mMarkers.add(mMapFrag.getMap().addMarker(markerOptions));

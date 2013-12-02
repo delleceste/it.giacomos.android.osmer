@@ -10,6 +10,7 @@ import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.pro.locationUtils.LocationNamesMap;
 import it.giacomos.android.osmer.pro.locationUtils.LocationService;
 import it.giacomos.android.osmer.pro.locationUtils.LocationServiceAddressUpdateListener;
+import it.giacomos.android.osmer.pro.locationUtils.LocationServiceUpdateListener;
 import it.giacomos.android.osmer.pro.locationUtils.NearLocationFinder;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 import android.app.AlertDialog;
@@ -34,7 +35,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ReportDialogFragment extends DialogFragment 
-implements OnClickListener, LocationServiceAddressUpdateListener
+implements OnClickListener, LocationServiceAddressUpdateListener,
+LocationServiceUpdateListener
 {
 	private View mDialogView;
 	private String mLocality;
@@ -133,28 +135,10 @@ implements OnClickListener, LocationServiceAddressUpdateListener
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-		/* register for locality name updates */
+		/* register for locality name updates and location updates */
 		LocationService locationService = ((OsmerActivity) getActivity()).getLocationService();
 		locationService.registerLocationServiceAddressUpdateListener(this);
-		Location myLocation = locationService.getCurrentLocation();
-		LatLng myLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-		{
-			if(myLocation != null)
-			{
-				LocationNamesMap locationNamesMap = new LocationNamesMap();
-				ArrayList<LatLng> points = new ArrayList<LatLng>(locationNamesMap.getMap().values());
-				NearLocationFinder nearLocationFinder = new NearLocationFinder();
-				LatLng nearestLocation = nearLocationFinder.nearestLocation(myLatLng, points);
-				String nearestLocationName = locationNamesMap.getLocationName(nearestLocation);
-				Toast.makeText(getActivity().getApplicationContext(), "Nearest location is " + nearestLocationName,
-								Toast.LENGTH_LONG).show();
-			}
-		}
-	}
-	
-	public String getLocality()
-	{
-		return mLocality;
+		locationService.registerLocationServiceUpdateListener(this);
 	}
 	
 	@Override
@@ -163,6 +147,7 @@ implements OnClickListener, LocationServiceAddressUpdateListener
 		Log.e("ReportDialogFragment.onDestroyView", "removing location service address update listener");
 		LocationService locationService = ((OsmerActivity) getActivity()).getLocationService();
 		locationService.removeLocationServiceAddressUpdateListener(this);
+		locationService.removeLocationServiceUpdateListener(this);
 		super.onDestroyView();
 	}
 
@@ -193,4 +178,34 @@ implements OnClickListener, LocationServiceAddressUpdateListener
 		mLocality = locality;
 	}
 
+	@Override
+	public void onLocationChanged(Location myLocation) 
+	{
+		LatLng myLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+		{
+			if(myLocation != null)
+			{
+				float minDist = 0;
+				LocationNamesMap locationNamesMap = new LocationNamesMap();
+				ArrayList<LatLng> points = new ArrayList<LatLng>(locationNamesMap.getMap().values());
+				NearLocationFinder nearLocationFinder = new NearLocationFinder();
+				LatLng nearestLocation = nearLocationFinder.nearestLocation(myLatLng, points);
+				String nearestLocationName = locationNamesMap.getLocationName(nearestLocation);
+				Toast.makeText(getActivity().getApplicationContext(), "Nearest location is " + nearestLocationName + " min dist " + minDist,
+								Toast.LENGTH_LONG).show();
+			}
+		}
+		
+	}
+
+	@Override
+	public void onLocationServiceError(String message) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public String getLocality()
+	{
+		return mLocality;
+	}
 }

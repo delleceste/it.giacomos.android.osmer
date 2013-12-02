@@ -58,13 +58,16 @@ public class NearLocationFinder
 			dist = distanceBetween(llng, in);
 			if(dist < minDist)
 			{
+				Log.e("nearestLocation ", "dist " + dist + " minDist " + minDist);
 				minDist = dist; /* save min dist */
 				/* prepare return value in case this is the minimum distance */
 				ll = new LatLng(llng.latitude, llng.longitude);
 			}
 		}
 		long endT = System.nanoTime();
-		Log.e("NearLocationFinder.nearestLocation", "took " + ((endT - startT)/ 1e6) + " millis ");
+		Log.e("NearLocationFinder.nearestLocation", "took " + ((endT - startT)/ 1e6) + " millis to parse "
+				+ points.size() + "points, min dist " + minDist + " returning " + ll.latitude + ", "
+				+ ll.longitude);
 		return ll;
 	}
 	
