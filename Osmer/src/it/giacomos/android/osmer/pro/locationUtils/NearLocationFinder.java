@@ -7,11 +7,11 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class NearLocalityFinder 
+public class NearLocationFinder 
 {
 	private float mTolerance;
 	
-	public NearLocalityFinder()
+	public NearLocationFinder()
 	{
 		mTolerance = 5000f; /* 5 km */
 	}
@@ -30,11 +30,11 @@ public class NearLocalityFinder
 	public float distanceBetween(LatLng pt1, LatLng pt2)
 	{
 		float dist = 0.0f;
-		Location l1 = new Location("NearLocalityFinder");
+		Location l1 = new Location("NearLocationFinder");
 		l1.setLatitude(pt1.latitude);
 		l1.setLongitude(pt1.longitude);
 		
-		Location l2 = new Location("NearLocalityFinder");
+		Location l2 = new Location("NearLocationFinder");
 		l2.setLatitude(pt2.latitude);
 		l2.setLongitude(pt2.longitude);
 		
@@ -64,7 +64,7 @@ public class NearLocalityFinder
 			}
 		}
 		long endT = System.nanoTime();
-		Log.e("NearLocalityFinder.nearestLocation", "took " + ((endT - startT)/ 1e6) + " millis ");
+		Log.e("NearLocationFinder.nearestLocation", "took " + ((endT - startT)/ 1e6) + " millis ");
 		return ll;
 	}
 	

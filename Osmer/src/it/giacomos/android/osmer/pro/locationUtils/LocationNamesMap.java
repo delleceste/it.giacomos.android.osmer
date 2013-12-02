@@ -1,12 +1,19 @@
 package it.giacomos.android.osmer.pro.locationUtils;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 import java.lang.String;
+
 import com.google.android.gms.maps.model.LatLng;
 
 public class LocationNamesMap {
 
+	public HashMap<String, LatLng> getMap()
+	{
+		return mMap;
+	}
+	
 	public LocationNamesMap()
 	{
 		mMap = new HashMap<String, LatLng>();
@@ -124,6 +131,16 @@ public class LocationNamesMap {
 		}
 		
 		return locations;
+	}
+	
+	public String getLocationName(LatLng point)
+	{
+		for(Map.Entry<String, LatLng> entry: mMap.entrySet())
+		{
+			if(point == entry.getValue())
+				return entry.getKey();
+		}
+		return null;
 	}
 	
 	public LatLng get(String location)

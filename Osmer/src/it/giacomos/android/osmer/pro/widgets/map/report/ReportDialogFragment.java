@@ -1,9 +1,16 @@
 package it.giacomos.android.osmer.pro.widgets.map.report;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import com.google.android.gms.maps.model.LatLng;
+
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.OsmerActivity;
+import it.giacomos.android.osmer.pro.locationUtils.LocationNamesMap;
 import it.giacomos.android.osmer.pro.locationUtils.LocationService;
 import it.giacomos.android.osmer.pro.locationUtils.LocationServiceAddressUpdateListener;
+import it.giacomos.android.osmer.pro.locationUtils.NearLocationFinder;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,6 +19,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -128,6 +136,20 @@ implements OnClickListener, LocationServiceAddressUpdateListener
 		/* register for locality name updates */
 		LocationService locationService = ((OsmerActivity) getActivity()).getLocationService();
 		locationService.registerLocationServiceAddressUpdateListener(this);
+		Location myLocation = locationService.getCurrentLocation();
+		LatLng myLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+		{
+			if(myLocation != null)
+			{
+				LocationNamesMap locationNamesMap = new LocationNamesMap();
+				ArrayList<LatLng> points = new ArrayList<LatLng>(locationNamesMap.getMap().values());
+				NearLocationFinder nearLocationFinder = new NearLocationFinder();
+				LatLng nearestLocation = nearLocationFinder.nearestLocation(myLatLng, points);
+				String nearestLocationName = locationNamesMap.getLocationName(nearestLocation);
+				Toast.makeText(getActivity().getApplicationContext(), "Nearest location is " + nearestLocationName,
+								Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 	
 	public String getLocality()
