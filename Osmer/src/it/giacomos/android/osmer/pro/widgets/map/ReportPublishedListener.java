@@ -1,5 +1,5 @@
 package it.giacomos.android.osmer.pro.widgets.map;
 
 public interface ReportPublishedListener {
-	public void onReportPublished();
+	public void onReportPublished(boolean error, String errorMsg);
 }

@@ -43,9 +43,8 @@ public class DownloadStatus {
 
 	private static DownloadStatus _instance = null;
 
-	public static final int DOWNLOAD_OLD_TIMEOUT = 60000;
-	public static final int DOWNLOAD_OBSERVATIONS_OLD_TIMEOUT = 60;
-	public static final int DOWNLOAD_REPORT_OLD_TIMEOUT = 30;
+	public static final long DOWNLOAD_OLD_TIMEOUT = 60000;
+	public static final long DOWNLOAD_REPORT_OLD_TIMEOUT = 10000;
 
 	public boolean homeDownloaded() { return (state & HOME_DOWNLOADED) != 0; }
 	public boolean todayDownloaded() { return (state & TODAY_DOWNLOADED) != 0; }
@@ -72,6 +71,7 @@ public class DownloadStatus {
 	public void init() {
 		state = INIT;
 		m_lastUpdateCompletedAt = 0;
+		mLastReportUpdatedAt = 0;
 	}
 
 	/* suppose it is always necessary to refresh radar image.
@@ -86,7 +86,7 @@ public class DownloadStatus {
 	 */
 	public boolean reportUpToDate() 
 	{	
-		return System.currentTimeMillis() - mLastReportUpdatedAt > DOWNLOAD_REPORT_OLD_TIMEOUT;
+		return (System.currentTimeMillis() - mLastReportUpdatedAt) < DOWNLOAD_REPORT_OLD_TIMEOUT;
 	}
 	
 	public void setReportUpdatedNow()

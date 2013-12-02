@@ -23,12 +23,15 @@ public class MapViewUpdater {
 			if(mapMode.currentMode == MapMode.RADAR)
 			{
 				a.radar();
-				Toast.makeText(a.getApplicationContext(), R.string.radarUpdateToast, Toast.LENGTH_SHORT).show();
 			}
-			if(mapMode.currentMode == MapMode.WEBCAM)
+			else if(mapMode.currentMode == MapMode.WEBCAM)
 			{
 				a.updateWbcamList();
-				//Toast.makeText(a.getApplicationContext(), a.getString(R.string.webcamUpdateToast), Toast.LENGTH_SHORT).show();
+			}
+			else if(mapMode.currentMode == MapMode.REPORT)
+			{
+				Log.e("MapViewUpdater", "updating report from MapViewUpdater");
+				a.updateReport(false); /* false: do not force update if recently updated */
 			}
 		}
 	}

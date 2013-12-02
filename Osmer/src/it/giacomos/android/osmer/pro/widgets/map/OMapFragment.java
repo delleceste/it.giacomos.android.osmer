@@ -52,8 +52,7 @@ WebcamOverlayChangeListener,
 MeasureOverlayChangeListener,
 DataPoolBitmapListener,
 DataPoolErrorListener,
-RadarAnimationListener,
-ReportPublishedListener
+RadarAnimationListener
 {
 	public final int minLatitude = GeoCoordinates.bottomRight.getLatitudeE6();
 	public final int maxLatitude = GeoCoordinates.topLeft.getLatitudeE6();
@@ -417,7 +416,6 @@ ReportPublishedListener
 			radarTimestampText.hide();
 			mReportOverlay = new ReportOverlay(this);
 			mOverlays.add(mReportOverlay);
-			mReportOverlay.update(); /* trigger an update */
 		}
 		else if(m.currentMode != MapMode.HIDDEN)
 		{
@@ -634,14 +632,6 @@ ReportPublishedListener
 	{
 		mRadarAnimation.stop();
 	}
-
-	public void refreshUserReports()
-	{
-		if(mMode.currentMode == MapMode.REPORT && this.mReportOverlay != null)
-		{
-			mReportOverlay.update();
-		}
-	}
 	
 	@Override
 	public void onRadarAnimationStart() 
@@ -681,13 +671,6 @@ ReportPublishedListener
 	public void onRadarAnimationProgress(int step, int total) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public void onReportPublished() 
-	{
-		/* invoked when the user has successfully published its report */
-		refreshUserReports();
 	}
 
 }

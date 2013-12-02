@@ -249,7 +249,6 @@
     <string name="reportName">Name</string>
     <string name="reportSky">Sky</string>
     <string name="reportWind">Wind</string>
-    <string name="reportComment">Comment</string>
     <string name="reportTemp">Temperature</string>
 	<string name="reportOk">Report has been successfully published</string>
 	<string name="reportError">There was an error posting your report.</string>
@@ -257,6 +256,7 @@
 	<string name="reportNoneAvailable">No recent reports available</string>
 	<string name="reportComment">Comment</string>
 	<string name="reportUpdate">Refresh</string>
+	<string name="reportUpdateToast">Updating reports</string>
     
     <string-array name="report_sky_textitems">
         <item>don\'t report</item>

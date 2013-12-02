@@ -11,11 +11,14 @@ import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -31,6 +34,7 @@ implements OnClickListener, LocationServiceAddressUpdateListener
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) 
 	{
+		this.setStyle(STYLE_NO_FRAME, android.R.style.Theme_Holo_Light);
 		mLocality = "-";
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -108,12 +112,22 @@ implements OnClickListener, LocationServiceAddressUpdateListener
             }
         });
 
+		
+		// Create the AlertDialog object and return it
+		Dialog dialog = builder.create();
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		//dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+		setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme_Light);
+		return dialog;
+	}
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
 		/* register for locality name updates */
 		LocationService locationService = ((OsmerActivity) getActivity()).getLocationService();
 		locationService.registerLocationServiceAddressUpdateListener(this);
-		
-		// Create the AlertDialog object and return it
-		return builder.create();
 	}
 	
 	public String getLocality()

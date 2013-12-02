@@ -48,9 +48,8 @@ public class ReportDialogClickListener implements DialogInterface.OnClickListene
 			sky = sp.getSelectedItemPosition();
 			sp = (Spinner) d.findViewById(R.id.spinWind);
 			wind = sp.getSelectedItemPosition();
-			OMapFragment mapFragment = oActivity.getMapFragment();
 			new PostReport(user, locality, loc.getLatitude(), loc.getLongitude(), 
-					sky, wind, temp, comment, mapFragment);
+					sky, wind, temp, comment, oActivity);
 		}
 		else
 			Log.e("ReportDialogClickListener.onClick", "user name is empty");

@@ -2,10 +2,13 @@ package it.giacomos.android.osmer.pro.network.Data;
 
 import it.giacomos.android.osmer.pro.network.state.BitmapType;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 public class DataPool implements DownloadListener 
 {	
@@ -93,6 +96,7 @@ public class DataPool implements DownloadListener
 	
 	public void registerTextListener(ViewType vt, DataPoolTextListener txtL)
 	{
+		Log.e("registerTextListener", "registering " + vt);
 		mTextListeners.put(vt, txtL);
 		/* immediately notify if data is present */
 		if(mStringData.containsKey(vt))
@@ -103,6 +107,8 @@ public class DataPool implements DownloadListener
 			else
 				txtL.onTextError(sd.error, vt);
 		}
+		else
+			Log.e("registerTextListener", "StringData dont contains");
 	}
 	
 	public void registerBitmapListener(BitmapType bt, DataPoolBitmapListener bmpL)
@@ -122,6 +128,7 @@ public class DataPool implements DownloadListener
 	@Override
 	public void onTextBytesUpdate(byte[] bytes, ViewType vt) 
 	{
+		Log.e("DataPool.onTextBytesUpdate", "saving " + vt);
 		DataPoolCacheUtils dataPoolCUtils = new DataPoolCacheUtils();
 		dataPoolCUtils.saveToStorage(bytes, vt, mContext);
 	}

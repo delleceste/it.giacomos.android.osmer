@@ -39,6 +39,7 @@ import it.giacomos.android.osmer.pro.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.pro.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.pro.widgets.map.RadarOverlayUpdateListener;
+import it.giacomos.android.osmer.pro.widgets.map.ReportPublishedListener;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
 import it.giacomos.android.osmer.pro.widgets.map.report.IconTextSpinnerAdapter;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportDialogFragment;
@@ -93,7 +94,8 @@ OnDismissListener,
 MapFragmentListener,
 RadarOverlayUpdateListener,
 DataPoolErrorListener,
-RadarAnimationListener
+RadarAnimationListener,
+ReportPublishedListener
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
@@ -505,12 +507,17 @@ RadarAnimationListener
 
 	void radar()
 	{
+		Toast.makeText(this, R.string.radarUpdateToast, Toast.LENGTH_SHORT).show();
 		m_downloadManager.getRadarImage();
 	}
 
-	void updateReport()
+	void updateReport(boolean force)
 	{
-		m_downloadManager.updateReport();
+		if(!this.mDownloadStatus.reportUpToDate() || force)
+		{
+			Toast.makeText(this, R.string.reportUpdateToast, Toast.LENGTH_SHORT).show();
+			m_downloadManager.updateReport();
+		}
 	}
 	
 	void satellite()
@@ -591,6 +598,24 @@ RadarAnimationListener
 		oTypeGetter = null;
 	}
 
+	@Override
+	public void onReportPublished(boolean error, String message) 
+	{
+		if(!error)
+			Toast.makeText(this, R.string.reportOk, Toast.LENGTH_SHORT).show();
+		else
+		{
+			String m = this.getResources().getString(R.string.reportError) + "\n" + message;
+			Toast.makeText(this, m, Toast.LENGTH_LONG).show();
+		}
+		/* invoked when the user has successfully published its report */
+		if(mCurrentViewType == ViewType.REPORT)
+		{
+			Log.e("switchView", "updating report (forceth)");
+			updateReport(true);
+		}
+	}
+	
 	public void onSelectionDone(ObservationType observationType, MapMode mapMode) 
 	{
 		/* switch the working mode of the map view. Already in PAGE_MAP view flipper page */
@@ -643,7 +668,8 @@ RadarAnimationListener
 			popupReportDialog();
 			break;
 		case R.id.reportUpdateAction:
-			updateReport();
+			/* this forces an update, even if just updated */
+			updateReport(true); 
 			break;
 		default:
 			break;
@@ -847,7 +873,10 @@ RadarAnimationListener
 			else if(id == ViewType.WEBCAM)
 				updateWbcamList();
 			else if(id == ViewType.REPORT)
-				updateReport();
+			{
+				Log.e("switchView", "updating report");
+				updateReport(false);
+			}
 		}
 
 		if(mSettings.isZoneLongPressHintEnabled() && id == ViewType.TODAY)

@@ -30,7 +30,8 @@
     </LinearLayout>
     
     <include  layout="@layout/map"></include>
-    
+ 
+        
     </ViewFlipper>
     
     <!-- The navigation drawer -->
