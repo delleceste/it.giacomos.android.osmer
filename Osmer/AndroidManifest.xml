@@ -19,6 +19,8 @@
     </uses-permission>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" >
     </uses-permission>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    
     <uses-feature
   		android:glEsVersion="0x00020000"
   		android:required="false"/>
@@ -63,6 +65,21 @@
 		-->
        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyBhRcwqzgppnwzQApAHcV7-Rer1JhXiDQs"/>
         
+           <receiver android:enabled="true"
+              android:exported="true"
+              android:icon="@drawable/ic_launcher"
+              android:label="@string/app_broadcast_receiver"
+              android:name="it.giacomos.android.osmer.pro.bootReceiver.BootReceiver">
+            <!--   android:permission="string"
+              android:process="string" >  -->
+              
+              <intent-filter android:priority="500" >
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            
+    </receiver>
+        
+        <service android:name="it.giacomos.android.osmer.pro.bgService.BGService"/> 
         
     </application>
 

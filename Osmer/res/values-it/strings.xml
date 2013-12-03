@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Meteo.FVG</string>
+    <string name="app_broadcast_receiver">Meteo.FVG.BootReceiver</string>
     <string name="version">versione</string>
     <string name="data_source">Fonte dati: http://www.meteo.fvg.it</string>
     <string name="author">&#169; 2013</string>
