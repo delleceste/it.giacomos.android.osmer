@@ -1,7 +1,9 @@
 package it.giacomos.android.osmer.pro.widgets.map.report;
 
 import android.support.v4.app.DialogFragment;
+
 import com.google.android.gms.maps.model.LatLng;
+
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.pro.locationUtils.LocationService;
@@ -19,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,10 +52,10 @@ LocationServiceUpdateListener
 		// Inflate and set the layout for the dialog
 		// Pass null as the parent view because its going in the dialog layout
 		mDialogView = inflater.inflate(R.layout.report_request_dialog, null);
-		builder.setView(mDialogView);
+		builder = builder.setView(mDialogView);
 
 		/* Report! and Cangel buttons */
-		builder.setPositiveButton(R.string.reportDialogRequestSendButton, new ReportRequestDialogClickListener(this));
+		builder = builder.setPositiveButton(R.string.reportDialogRequestSendButton, new ReportRequestDialogClickListener(this));
 
 		TextView textView = (TextView) mDialogView.findViewById(R.id.tvDialogRequestTitle);
 		textView.setText(mDialogView.getContext().getString(R.string.reportDialogRequestTitle) + "-");
@@ -78,7 +81,7 @@ LocationServiceUpdateListener
 		});
 
 		/* negative button: save the user name */
-		builder.setNegativeButton(R.string.reportDialogCancelButton, new DialogInterface.OnClickListener() {
+		builder = builder.setNegativeButton(R.string.reportDialogCancelButton, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialogI, int id) {
 				Dialog dialog = (Dialog) dialogI;
@@ -152,7 +155,15 @@ LocationServiceUpdateListener
 			tv.setText(mLocality);
 			EditText et = (EditText) mDialogView.findViewById(R.id.etRequestName);
 			et.getText().toString();
-			((AlertDialog)getDialog()).getButton(Dialog.BUTTON_POSITIVE).setEnabled(et.getText().toString().length() > 0);
+			Log.e("len", "lungo " + et.getText().toString().length());
+			Button positiveButton = ((AlertDialog)getDialog()).getButton(Dialog.BUTTON_POSITIVE);
+			if(positiveButton != null)
+			{
+				positiveButton.setEnabled(et.getText().toString().length() > 0);
+				Log.e("CheckLocationLocalityAvailable", "dialog button is NOT null! --> no scandalo");
+			}
+			else
+				Log.e("mCheckLocationLocalityAvailable", "dialog is null! scandalo");
 		}
 		else
 			tv.setText(this.getResources().getString(R.string.reportDialogRequestLocationUnavailable));

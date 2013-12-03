@@ -17,7 +17,7 @@ public class ObservationDataExtractor
 		PIOGGIA	da 5 a 10 mm
 		PIOGGIA	da 10 a 30 mm
 		PIOGGIA	da 30 a 100 mm
-		PIOGGIA	più di 100 mm
+		PIOGGIA	piï¿½ di 100 mm
 		NEVE	debole
 		NEVE	moderata
 		NEVE	forte
@@ -125,7 +125,9 @@ public class ObservationDataExtractor
 
 	public String getTemperature()
 	{
-		String temp = mObservationData.temp.replaceAll("[A-Za-z_\\s<>=]*", "");;
+		/* C centigrades symbol */
+		String temp = mObservationData.temp.replace("\u00b0C", "");
+		temp =	temp.replaceAll("[A-Za-z_\\s<>=]*", "");
 		return temp;
 	}
 }

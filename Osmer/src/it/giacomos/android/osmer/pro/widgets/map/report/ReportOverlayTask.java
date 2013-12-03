@@ -179,6 +179,13 @@ public class ReportOverlayTask extends AsyncTask<ReportData, Integer, ArrayList<
 					iconId = R.drawable.weather_wind_26; /* moderato */
 				else if(windIdx == 4)
 					iconId = R.drawable.weather_wind2_red_34; /* moderato */
+				
+				if(iconId > -1)
+				{
+					BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(iconId);
+					if(bitmapDescriptor != null)
+						markerOptions.icon(bitmapDescriptor);
+				}
 				else
 					markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
 			}
