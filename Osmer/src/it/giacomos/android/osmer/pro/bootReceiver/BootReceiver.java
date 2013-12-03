@@ -23,7 +23,7 @@ public class BootReceiver extends BroadcastReceiver
         	cal.add(Calendar.SECOND, 60);
         	//registering our pending intent with alarmmanager
         	AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        	am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 3000, pii);
+        	am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 300000, pii);
         }
     }
 }
