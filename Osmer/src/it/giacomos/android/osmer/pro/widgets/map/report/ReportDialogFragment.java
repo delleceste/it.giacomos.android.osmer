@@ -2,6 +2,7 @@ package it.giacomos.android.osmer.pro.widgets.map.report;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -12,6 +13,8 @@ import it.giacomos.android.osmer.pro.locationUtils.LocationService;
 import it.giacomos.android.osmer.pro.locationUtils.LocationServiceAddressUpdateListener;
 import it.giacomos.android.osmer.pro.locationUtils.LocationServiceUpdateListener;
 import it.giacomos.android.osmer.pro.locationUtils.NearLocationFinder;
+import it.giacomos.android.osmer.pro.observations.ObservationData;
+import it.giacomos.android.osmer.pro.observations.ObservationsCache;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -44,6 +47,8 @@ LocationServiceUpdateListener
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) 
 	{
+
+		Log.e("ReportDialogFragment", "onCreateDialog");
 		this.setStyle(STYLE_NO_FRAME, android.R.style.Theme_Holo_Light);
 		mLocality = "-";
 		// Use the Builder class for convenient dialog construction
@@ -57,7 +62,7 @@ LocationServiceUpdateListener
 		mDialogView = inflater.inflate(R.layout.report_dialog, null);
 		builder.setView(mDialogView);
 
-		/* Report! and Cangel buttons */
+		/* Report! and Cancel buttons */
 		builder.setPositiveButton(R.string.reportDialogSendButton, new ReportDialogClickListener(this));
 
 		String[] textItems = getResources().getStringArray(R.array.report_sky_textitems);
@@ -134,6 +139,7 @@ LocationServiceUpdateListener
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
+		Log.e("ReportDialogFragment", "onActivityCreated");
 		super.onActivityCreated(savedInstanceState);
 		/* register for locality name updates and location updates */
 		LocationService locationService = ((OsmerActivity) getActivity()).getLocationService();
@@ -185,6 +191,7 @@ LocationServiceUpdateListener
 	{
 		if(myLocation != null)
 		{
+			long startT = System.nanoTime();
 			LatLng myLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
 			LocationNamesMap locationNamesMap = new LocationNamesMap();
 			ArrayList<LatLng> points = new ArrayList<LatLng>(locationNamesMap.getMap().values());
@@ -196,6 +203,23 @@ LocationServiceUpdateListener
 
 			LocationService locationService = ((OsmerActivity) getActivity()).getLocationService();
 			locationService.removeLocationServiceUpdateListener(this);
+
+			/* get the observations cache */
+			OsmerActivity oActivity = (OsmerActivity) getActivity();
+			ObservationsCache observationsCache = oActivity.getObservationsCache();
+			HashMap<String, ObservationData> latestObsData = observationsCache.getLatestObservationData();
+			ObservationData obsData = latestObsData.get(nearestLocationName);
+			Log.e("ReportDialogFragment.onLocationChanged", "observationData is " + obsData + " for " + nearestLocationName);
+			if(obsData != null)
+			{
+				ObservationDataExtractor observationDataExtractor = new ObservationDataExtractor(obsData);
+				((Spinner)mDialogView.findViewById(R.id.spinSky)).setSelection(observationDataExtractor.getSkyIndex(), true);
+				((Spinner)mDialogView.findViewById(R.id.spinWind)).setSelection(observationDataExtractor.getWindIndex(), true);
+				((EditText)mDialogView.findViewById(R.id.ettemp)).setText(observationDataExtractor.getTemperature());
+			}
+
+			long endT = System.nanoTime();
+			Log.e("NearLocationFinder.nearestLocation", "took " + ((endT - startT)/ 1e6) + " millis to init widgets");
 		}
 
 	}

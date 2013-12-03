@@ -43,6 +43,7 @@ import it.giacomos.android.osmer.pro.widgets.map.ReportPublishedListener;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
 import it.giacomos.android.osmer.pro.widgets.map.report.IconTextSpinnerAdapter;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportDialogFragment;
+import it.giacomos.android.osmer.pro.widgets.map.report.ReportRequestDialogFragment;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -602,7 +603,7 @@ ReportPublishedListener
 	public void onReportPublished(boolean error, String message) 
 	{
 		if(!error)
-			Toast.makeText(this, R.string.reportOk, Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, R.string.reportDataSentOk, Toast.LENGTH_SHORT).show();
 		else
 		{
 			String m = this.getResources().getString(R.string.reportError) + "\n" + message;
@@ -670,6 +671,9 @@ ReportPublishedListener
 		case R.id.reportUpdateAction:
 			/* this forces an update, even if just updated */
 			updateReport(true); 
+			break;
+		case R.id.reportRequestAction:
+			popupReportRequestDialog();
 			break;
 		default:
 			break;
@@ -742,6 +746,7 @@ ReportPublishedListener
 		/* report action */
 		menu.findItem(R.id.reportDialogAction).setVisible(mCurrentViewType == ViewType.REPORT);
 		menu.findItem(R.id.reportUpdateAction).setVisible(mCurrentViewType == ViewType.REPORT);
+		menu.findItem(R.id.reportRequestAction).setVisible(mCurrentViewType == ViewType.REPORT);
 		
 		switch(mCurrentViewType)
 		{
@@ -908,6 +913,12 @@ ReportPublishedListener
 	{
 		ReportDialogFragment reportDialog = new ReportDialogFragment();
 		reportDialog.show(getSupportFragmentManager(), "ReportDialogFragment");
+	}
+	
+	public void popupReportRequestDialog()
+	{
+		ReportRequestDialogFragment rrdf = new ReportRequestDialogFragment();
+		rrdf.show(getSupportFragmentManager(), "ReportRequestDialogFragment");
 	}
 	
 	public ObservationsCache getObservationsCache()

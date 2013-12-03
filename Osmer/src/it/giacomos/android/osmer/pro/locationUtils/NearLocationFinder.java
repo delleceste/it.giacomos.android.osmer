@@ -49,7 +49,7 @@ public class NearLocationFinder
 		float dist;
 		LatLng ll = null;
 		
-		long startT = System.nanoTime();
+		
 		/* scan all points looking for the point with minimum distance 
 		 * from the in input point.
 		 */
@@ -64,10 +64,6 @@ public class NearLocationFinder
 				ll = new LatLng(llng.latitude, llng.longitude);
 			}
 		}
-		long endT = System.nanoTime();
-		Log.e("NearLocationFinder.nearestLocation", "took " + ((endT - startT)/ 1e6) + " millis to parse "
-				+ points.size() + "points, min dist " + minDist + " returning " + ll.latitude + ", "
-				+ ll.longitude);
 		return ll;
 	}
 	

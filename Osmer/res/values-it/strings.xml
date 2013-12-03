@@ -230,13 +230,25 @@
     <string name="reportWind">Vento</string>
     <string name="reportTemp">Temperatura</string>
     <string name="reportOk">le tue osservazioni sono state pubblicate! Grazie.</string>
-	<string name="reportError">errore di rete durante la pubblicazione delle tue osservazioni :-(</string>
+	<string name="reportDataSentOk">Dati inviati correttamente</string>
+	<string name="reportError">errore di rete durante la pubblicazione :-(</string>
 	<string name="reportMustInsertUserName">Per iniziare, inserisci un nome</string>
 	<string name="reportNoneAvailable">Nessuna segnalazione recente</string>
 	<string name="reportComment">Commento</string>
 	<string name="reportUpdate">Aggiorna</string>
 	<string name="reportUpdateToast">Aggiornamento segnalazioni&#8230;</string>
+	<string name="reportAtMost1FieldFilled">Impossibile pubblicare una segnalazione se tutti i campi sono vuoti</string>
 
+	<!--  report request -->
+	<string name="reportRequestIncludeLocationName">Includi il nome della località</string>
+    <string name="reportDialogRequestSendButton">Invia richiesta</string>
+    <string name="reportDialogRequestTitle">Richiedi osservazioni per </string>
+    <string name="reportDialogRequestLocationUnavailable">-</string>
+    <string name="reportRequest">Richiedi segnalazione&#8230;</string>
+	
+	
+	
+	
     <string-array name="report_sky_textitems">
         <item>non segnalare il cielo</item>
         <item>cielo sereno</item>

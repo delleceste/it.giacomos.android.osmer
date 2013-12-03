@@ -32,7 +32,7 @@ public class ReportOverlayTask extends AsyncTask<ReportData, Integer, ArrayList<
 	protected ArrayList<MarkerOptions> doInBackground(ReportData... params) 
 	{
 		Log.e("doInBackground" , "params size " + params.length);
-		int sky, iconId  = -1;
+		int sky, windIdx, iconId  = -1;
 		int dataSiz = params.length;
 		String text = "";
 		String title = "";
@@ -166,6 +166,24 @@ public class ReportOverlayTask extends AsyncTask<ReportData, Integer, ArrayList<
 				if(bitmapDescriptor != null)
 					markerOptions.icon(bitmapDescriptor);
 			}
+			else
+			{
+				windIdx = rd.wind;
+				if(windIdx == 1)
+					iconId = R.drawable.weather_wind_calm;
+				else if(windIdx == 2) /* breeze */
+					iconId = R.drawable.weather_wind_35;
+				else if(windIdx == 3)
+					iconId = R.drawable.weather_wind_17; /* moderato */
+				else if(windIdx == 4)
+					iconId = R.drawable.weather_wind_26; /* moderato */
+				else if(windIdx == 4)
+					iconId = R.drawable.weather_wind2_red_34; /* moderato */
+				else
+					markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+			}
+
+				
 			markerOptionsList.add(markerOptions);
 		}
 		return markerOptionsList;

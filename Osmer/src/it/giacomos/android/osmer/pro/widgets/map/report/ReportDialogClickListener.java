@@ -9,8 +9,10 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.location.Location;
 import android.util.Log;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class ReportDialogClickListener implements DialogInterface.OnClickListener {
 
@@ -31,8 +33,15 @@ public class ReportDialogClickListener implements DialogInterface.OnClickListene
 		String locality = mDialogFragment.getLocality();
 		int sky = -1 , wind = -1;
 		Dialog d = (Dialog) dialogI;
-		EditText te = (EditText) d.findViewById(R.id.ettemp);
-		temp = te.getText().toString();
+		EditText te;
+		CheckBox cb = (CheckBox) d.findViewById(R.id.cbTemp);
+		if(cb.isChecked()) /* pick temperature only if cb is checked */
+		{
+			te = (EditText) d.findViewById(R.id.ettemp);
+			temp = te.getText().toString();
+		}
+		else
+			temp = "";
 		te = (EditText) d.findViewById(R.id.etUserName);
 		/* save the reporter user name if changed */
 		Settings se = new Settings(mDialogFragment.getActivity().getApplicationContext());
@@ -48,8 +57,13 @@ public class ReportDialogClickListener implements DialogInterface.OnClickListene
 			sky = sp.getSelectedItemPosition();
 			sp = (Spinner) d.findViewById(R.id.spinWind);
 			wind = sp.getSelectedItemPosition();
-			new PostReport(user, locality, loc.getLatitude(), loc.getLongitude(), 
+			if(comment.isEmpty() && wind == 0 && sky == 0 && !cb.isChecked())
+				Toast.makeText(oActivity, R.string.reportAtMost1FieldFilled, Toast.LENGTH_LONG).show();
+			else
+			{
+				new PostReport(user, locality, loc.getLatitude(), loc.getLongitude(), 
 					sky, wind, temp, comment, oActivity);
+			}
 		}
 		else
 			Log.e("ReportDialogClickListener.onClick", "user name is empty");

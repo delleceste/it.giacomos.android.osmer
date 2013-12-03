@@ -251,12 +251,21 @@
     <string name="reportWind">Wind</string>
     <string name="reportTemp">Temperature</string>
 	<string name="reportOk">Report has been successfully published</string>
-	<string name="reportError">There was an error posting your report.</string>
+	<string name="reportDataSentOk">Data has been correctly sent</string>
+	<string name="reportError">There was an error posting your request :-(</string>
 	<string name="reportMustInsertUserName">Insert a user name to start</string>
 	<string name="reportNoneAvailable">No recent reports available</string>
 	<string name="reportComment">Comment</string>
 	<string name="reportUpdate">Refresh</string>
 	<string name="reportUpdateToast">Updating reports</string>
+	<string name="reportAtMost1FieldFilled">Impossible to publish an empty report</string>
+	
+	<!--  report request -->
+	<string name="reportRequestIncludeLocationName">Include location name</string>
+    <string name="reportDialogRequestSendButton">Send request</string>
+    <string name="reportDialogRequestTitle">Request report for </string>
+    <string name="reportDialogRequestLocationUnavailable">-</string>
+    <string name="reportRequest">Report request&#8230;</string>
     
     <string-array name="report_sky_textitems">
         <item>don\'t report</item>

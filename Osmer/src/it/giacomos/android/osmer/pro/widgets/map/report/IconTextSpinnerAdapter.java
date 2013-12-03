@@ -45,8 +45,6 @@ public class IconTextSpinnerAdapter extends ArrayAdapter<String> {
 	
 	private int arr_images[];
 
-	
-	
 	public IconTextSpinnerAdapter(Context context, int resource,
 			String[] strings, Activity activity) 
 	{
@@ -92,7 +90,7 @@ public class IconTextSpinnerAdapter extends ArrayAdapter<String> {
 			arr_images = new int[] {  -1, 
 				R.drawable.weather_wind_calm,
 				R.drawable.weather_wind_35, R.drawable.weather_wind_17,
-				R.drawable.weather_wind_26, R.drawable.weather_wind_34 
+				R.drawable.weather_wind_26, R.drawable.weather_wind2_red_34 
 		};
 	}
 }

@@ -56,6 +56,8 @@ public class ReportDataFactory
 
 
 				}
+				if(rd == null) /* a parse error occurred: invalidate all document parsing */
+					return null;
 			}
 		}
 
