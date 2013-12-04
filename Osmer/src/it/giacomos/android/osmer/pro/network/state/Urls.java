@@ -92,6 +92,11 @@ public class Urls {
 		return "http://www.giacomos.it/meteo.fvg/report_request.php";
 	}
 	
+	public String getRequestsUrl()
+	{
+		return "http://www.giacomos.it/meteo.fvg/get_requests.php";
+	}
+	
 	public String minTempUrl()
 	{
 		return "";

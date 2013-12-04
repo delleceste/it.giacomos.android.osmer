@@ -8,6 +8,7 @@ import it.giacomos.android.osmer.pro.widgets.map.report.network.PostReport;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.location.Location;
+import android.provider.Settings.Secure;
 import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -61,7 +62,8 @@ public class ReportDialogClickListener implements DialogInterface.OnClickListene
 				Toast.makeText(oActivity, R.string.reportAtMost1FieldFilled, Toast.LENGTH_LONG).show();
 			else
 			{
-				new PostReport(user, locality, loc.getLatitude(), loc.getLongitude(), 
+				String deviceId = Secure.getString(mDialogFragment.getActivity().getContentResolver(), Secure.ANDROID_ID);
+				new PostReport(user, deviceId, locality, loc.getLatitude(), loc.getLongitude(), 
 					sky, wind, temp, comment, oActivity);
 			}
 		}

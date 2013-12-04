@@ -25,6 +25,7 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 	private String mErrorMsg;
 	private String mUser, mLocality;
 	double mLatitude, mLongitude;
+	private String mDeviceId;
 	
 	private static String CLI = "afe0983der38819073rxc1900lksjd";
 	
@@ -38,18 +39,23 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 		mReportPublishedListener = oActivity;
 	}
 
+	public void setDeviceId(String id)
+	{
+		mDeviceId = id;
+	}
+	
 	@Override
 	protected String doInBackground(String... urls) 
 	{
 		mErrorMsg = "";
 		if(mLocality.length() < 2)
 			mLocality="";
-		
 		HttpClient httpClient = new DefaultHttpClient();
         HttpPost request = new HttpPost(urls[0]);
         List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
         postParameters.add(new BasicNameValuePair("cli", CLI));
         postParameters.add(new BasicNameValuePair("n", mUser));
+        postParameters.add(new BasicNameValuePair("d", mDeviceId));
         postParameters.add(new BasicNameValuePair("l", mLocality));
         postParameters.add(new BasicNameValuePair("la", String.valueOf(mLatitude)));
         postParameters.add(new BasicNameValuePair("lo", String.valueOf(mLongitude)));

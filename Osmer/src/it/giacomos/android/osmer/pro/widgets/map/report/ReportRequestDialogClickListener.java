@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.provider.Settings.Secure;
 import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -52,6 +53,8 @@ public class ReportRequestDialogClickListener implements OnClickListener {
 		if(!user.isEmpty())
 		{
 			PostReportRequestTask postReportRequestTask = new PostReportRequestTask(user, locality, loc.getLatitude(), loc.getLongitude(), oActivity);
+			String deviceId = Secure.getString(mReportRequestDialogFragment.getActivity().getContentResolver(), Secure.ANDROID_ID);
+			postReportRequestTask.setDeviceId(deviceId);
 			postReportRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().getPostReportRequestUrl());
 		}
 		else

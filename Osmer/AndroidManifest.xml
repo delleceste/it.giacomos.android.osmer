@@ -69,17 +69,18 @@
               android:exported="true"
               android:icon="@drawable/ic_launcher"
               android:label="@string/app_broadcast_receiver"
-              android:name="it.giacomos.android.osmer.pro.bootReceiver.BootReceiver">
+              android:name="it.giacomos.android.osmer.pro.connectivityChangedReceiver.ConnectivityChangedReceiver">
             <!--   android:permission="string"
               android:process="string" >  -->
               
               <intent-filter android:priority="500" >
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <!-- action android:name="android.intent.action.BOOT_COMPLETED" / -->
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
             
     </receiver>
         
-        <service android:name="it.giacomos.android.osmer.pro.bgService.BGService"/> 
+        <service android:name="it.giacomos.android.osmer.pro.reportDataService.ReportDataService"/> 
         
     </application>
 

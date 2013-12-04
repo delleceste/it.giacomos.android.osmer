@@ -11,12 +11,12 @@ public class PostReport implements PostReportTaskListener
 {
 	private ReportPublishedListener mReportPublishedListener;
 	
-	public PostReport(String user, String locality, 
+	public PostReport(String user, String deviceId, String locality, 
 			double lat, double lng, int sky, int wind, 
 			String temp, String comment,  ReportPublishedListener lis)
 	{
 		mReportPublishedListener = lis;
-		PostReportTask reportTask = new PostReportTask(user, locality, lat, lng, sky, wind, temp, comment, this);
+		PostReportTask reportTask = new PostReportTask(user, deviceId, locality, lat, lng, sky, wind, temp, comment, this);
 		String url = new Urls().postReportUrl();
 		reportTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
 	}

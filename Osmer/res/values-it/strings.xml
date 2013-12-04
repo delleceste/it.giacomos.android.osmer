@@ -247,7 +247,9 @@
     <string name="reportDialogRequestLocationUnavailable">-</string>
     <string name="reportRequest">Richiedi segnalazione&#8230;</string>
 	
-	
+	 
+    <!-- notification area -->
+    <string name="notificatonNewReportRequest">Nuova richiesta segnalazione meteo da </string>
 	
 	
     <string-array name="report_sky_textitems">
