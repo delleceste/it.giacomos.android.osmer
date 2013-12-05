@@ -34,8 +34,8 @@ public class ReportRequestDialogClickListener implements OnClickListener {
 	{
 		Dialog d = (Dialog) dialogI;
 		OsmerActivity oActivity = (OsmerActivity) mReportRequestDialogFragment.getActivity();
-		Location loc = oActivity.getLocationService().getCurrentLocation();
-		if(loc == null) /* should not be null since the dialog waits for location before enabling the ok button */
+		LatLng llng = mReportRequestDialogFragment.getLatLng();
+		if(llng == null) /* should not be null since the dialog waits for location before enabling the ok button */
 			return;
 		String user;
 		String locality = "";
@@ -52,7 +52,7 @@ public class ReportRequestDialogClickListener implements OnClickListener {
 		
 		if(!user.isEmpty())
 		{
-			PostReportRequestTask postReportRequestTask = new PostReportRequestTask(user, locality, loc.getLatitude(), loc.getLongitude(), oActivity);
+			PostReportRequestTask postReportRequestTask = new PostReportRequestTask(user, locality, llng.latitude, llng.longitude, oActivity);
 			String deviceId = Secure.getString(mReportRequestDialogFragment.getActivity().getContentResolver(), Secure.ANDROID_ID);
 			postReportRequestTask.setDeviceId(deviceId);
 			postReportRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().getPostReportRequestUrl());

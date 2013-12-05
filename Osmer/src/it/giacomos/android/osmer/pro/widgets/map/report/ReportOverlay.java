@@ -201,7 +201,7 @@ OnMarkerClickListener, OnMapLongClickListener, OnInfoWindowClickListener, OnMapC
 		for(int i = 0; i < mMarkers.size(); i++)
 		{
 			Marker marker = mMarkers.get(i);
-			if(marker.getTitle() == mMapFrag.getString(R.string.reportRequest))
+			if(marker.getTitle().compareTo(mMapFrag.getString(R.string.reportRequest)) == 0)
 			{
 				if(marker.isInfoWindowShown())
 				{
@@ -235,7 +235,10 @@ OnMarkerClickListener, OnMapLongClickListener, OnInfoWindowClickListener, OnMapC
 	public void onInfoWindowClick(Marker marker) 
 	{
 		if(marker.getTitle().compareTo(mMapFrag.getString(R.string.reportRequest)) == 0)
+		{
+			Log.e("onInfoWindowClick", "clicked position " + marker.getPosition().toString());
 			mReportRequestListener.onReportRequest(marker.getPosition());
+		}
 	}
 
 	@Override
