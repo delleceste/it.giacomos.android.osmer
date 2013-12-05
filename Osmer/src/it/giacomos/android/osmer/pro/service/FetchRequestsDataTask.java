@@ -1,4 +1,4 @@
-package it.giacomos.android.osmer.pro.reportDataService;
+package it.giacomos.android.osmer.pro.service;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -20,16 +20,16 @@ import org.apache.http.util.EntityUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class ServiceDataTask extends AsyncTask<String, Integer, String> {
+public class FetchRequestsDataTask extends AsyncTask<String, Integer, String> {
 
 	private String mErrorMsg;
 	String mDeviceId;
-	private ServiceDataTaskListener mServiceDataTaskListener;
+	private FetchRequestsTaskListener mServiceDataTaskListener;
 	double mLatitude, mLongitude;
 	
 	private static String CLI = "afe0983der38819073rxc1900lksjd";
 	
-	public ServiceDataTask(ServiceDataTaskListener sdtl, String deviceId, double lat, double longit)
+	public FetchRequestsDataTask(FetchRequestsTaskListener sdtl, String deviceId, double lat, double longit)
 	{
 		mServiceDataTaskListener = sdtl;
 		mDeviceId = deviceId;
@@ -53,7 +53,7 @@ public class ServiceDataTask extends AsyncTask<String, Integer, String> {
 		try {
 			form = new UrlEncodedFormEntity(postParameters);
 	        request.setEntity(form);
-	        Log.e("ServiceDataTask.doInBackground", postParameters.toString());
+	        Log.e("FetchRequestsDataTask.doInBackground", postParameters.toString());
 	        HttpResponse response = httpClient.execute(request);
 	        StatusLine statusLine = response.getStatusLine();
 	        if(statusLine.getStatusCode() < 200 || statusLine.getStatusCode() >= 300)

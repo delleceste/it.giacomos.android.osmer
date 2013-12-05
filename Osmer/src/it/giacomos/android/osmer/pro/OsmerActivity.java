@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.model.LatLng;
 
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.fragments.MapFragmentListener;
@@ -40,6 +41,7 @@ import it.giacomos.android.osmer.pro.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.pro.widgets.map.RadarOverlayUpdateListener;
 import it.giacomos.android.osmer.pro.widgets.map.ReportPublishedListener;
+import it.giacomos.android.osmer.pro.widgets.map.ReportRequestListener;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
 import it.giacomos.android.osmer.pro.widgets.map.report.IconTextSpinnerAdapter;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportDialogFragment;
@@ -47,9 +49,11 @@ import it.giacomos.android.osmer.pro.widgets.map.report.ReportRequestDialogFragm
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
@@ -73,7 +77,6 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -96,7 +99,8 @@ MapFragmentListener,
 RadarOverlayUpdateListener,
 DataPoolErrorListener,
 RadarAnimationListener,
-ReportPublishedListener
+ReportPublishedListener,
+ReportRequestListener
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
@@ -309,6 +313,11 @@ ReportPublishedListener
 		/* show touch forecast icons hint until a MapWithForecastImage disables this */
 		if(mSettings.isForecastIconsHintEnabled())
 			Toast.makeText(getApplicationContext(), R.string.hint_forecast_icons, Toast.LENGTH_LONG).show();
+		
+		/* remove notifications from the notification bar */
+		NotificationManager mNotificationManager =
+				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.cancelAll();
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -617,6 +626,15 @@ ReportPublishedListener
 		}
 	}
 	
+
+	@Override
+	public void onReportRequest(LatLng pointOnMap) 
+	{
+		ReportRequestDialogFragment rrdf = new ReportRequestDialogFragment();
+		rrdf.setLatLng(pointOnMap);
+		rrdf.show(getSupportFragmentManager(), "ReportRequestDialogFragment");
+	}
+	
 	public void onSelectionDone(ObservationType observationType, MapMode mapMode) 
 	{
 		/* switch the working mode of the map view. Already in PAGE_MAP view flipper page */
@@ -671,9 +689,6 @@ ReportPublishedListener
 		case R.id.reportUpdateAction:
 			/* this forces an update, even if just updated */
 			updateReport(true); 
-			break;
-		case R.id.reportRequestAction:
-			popupReportRequestDialog();
 			break;
 		default:
 			break;
@@ -746,7 +761,6 @@ ReportPublishedListener
 		/* report action */
 		menu.findItem(R.id.reportDialogAction).setVisible(mCurrentViewType == ViewType.REPORT);
 		menu.findItem(R.id.reportUpdateAction).setVisible(mCurrentViewType == ViewType.REPORT);
-		menu.findItem(R.id.reportRequestAction).setVisible(mCurrentViewType == ViewType.REPORT);
 		
 		switch(mCurrentViewType)
 		{
@@ -915,12 +929,6 @@ ReportPublishedListener
 		reportDialog.show(getSupportFragmentManager(), "ReportDialogFragment");
 	}
 	
-	public void popupReportRequestDialog()
-	{
-		ReportRequestDialogFragment rrdf = new ReportRequestDialogFragment();
-		rrdf.show(getSupportFragmentManager(), "ReportRequestDialogFragment");
-	}
-	
 	public ObservationsCache getObservationsCache()
 	{
 		return m_observationsCache;
@@ -1057,6 +1065,4 @@ ReportPublishedListener
 
 
 	int availCnt = 0;
-
-	
 }

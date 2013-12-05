@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
@@ -14,6 +15,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -70,6 +72,11 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 	        	mErrorMsg = statusLine.getReasonPhrase();
 	        else if(statusLine.getStatusCode() < 0)
 	        	mErrorMsg = "Server error";
+	        /* check the echo result */
+	        HttpEntity entity = response.getEntity();
+	        String returnVal = EntityUtils.toString(entity);
+	        if(returnVal.compareTo("0") != 0)
+	        	mErrorMsg = "Server error: the server returned " + returnVal;
 		} 
 		catch (UnsupportedEncodingException e) 
 		{

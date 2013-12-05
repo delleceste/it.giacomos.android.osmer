@@ -1,18 +1,19 @@
-package it.giacomos.android.osmer.pro.reportDataService;
+package it.giacomos.android.osmer.pro.service.sharedData;
 
-public class ReportRequestNotification {
-
+public class ReportRequestNotification extends NotificationData
+{
 	public String datetime, username, locality;
-	double latitude = -1, longitude = -1;
 	private boolean mValidString;
 	
 	public boolean isValid()
 	{
-		return mValidString && latitude > 0 && longitude > 0;
+		return mValidString && latitude > 0 && longitude > 0 && getDate() != null;
 	}
 	
 	public ReportRequestNotification(String input)
 	{
+		super();
+		
 		String parts[] = input.split("::", -1);
 		mValidString = (parts.length == 5);
 		if(mValidString)
@@ -29,6 +30,13 @@ public class ReportRequestNotification {
 				
 			}
 			locality = parts[4];
+			makeDate(datetime);
 		}
+	}
+
+	@Override
+	public short getType() {
+		
+		return NotificationData.TYPE_REQUEST;
 	}
 }

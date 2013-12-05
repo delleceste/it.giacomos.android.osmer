@@ -1,4 +1,4 @@
-package it.giacomos.android.osmer.pro.connectivityChangedReceiver;
+package it.giacomos.android.osmer.pro.service;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Calendar;
 
-import it.giacomos.android.osmer.pro.reportDataService.ReportDataService;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -24,6 +23,7 @@ public class ConnectivityChangedReceiver extends BroadcastReceiver
 	@Override
     public void onReceive(Context context, Intent intent) 
 	{  
+				
 		final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -33,24 +33,19 @@ public class ConnectivityChangedReceiver extends BroadcastReceiver
     	
     	Calendar cal = Calendar.getInstance();
 		File f = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-		Log.e(">>>> ReportDataService <<<<<< ", "onHandleIntent" + cal.getTime().toLocaleString()
-				+ "log in " + f.getAbsolutePath() + "/Meteo.FVG.Service.log" );
-		PrintWriter out;
 		
-    	
-    	
-    	
     	if(netinfo != null && connMgr.getActiveNetworkInfo().isConnectedOrConnecting())
         {
         	Log.e(">>>>>>>>>>>> ConnectivityChangedReceiver", "+++++++++ net connecting");
         	cal.add(Calendar.SECOND, 5);
         	//registering our pending intent with alarmmanager
-        	am.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis(), 120000, myPendingIntent);
+        	am.set(AlarmManager.RTC, cal.getTimeInMillis(), myPendingIntent);
        
         	
         	/////////////////////////////////////// LOG TEST //////////////////////////////////////////////////
         	////////////////////////////////////////////////////////////////////////////////////////////////////
         	try {
+        		PrintWriter out;
     			out = new PrintWriter(new BufferedWriter(new FileWriter(f.getAbsolutePath() + "/Meteo.FVG.Service.log", true)));
     			out.append("+ ConnectivityChangedReceiver: network up on " + cal.getTime().toLocaleString() + "\n");
     			out.close();
@@ -69,12 +64,14 @@ public class ConnectivityChangedReceiver extends BroadcastReceiver
         else
         {
         	am.cancel(myPendingIntent);
+        	context.stopService(myIntent);
         	Log.e(">>>>>>>>>>>> ConnectivityChangedReceiver", "------------removing repeating intent");
         	
         	
         	/////////////////////////////////////// LOG TEST //////////////////////////////////////////////////
         	////////////////////////////////////////////////////////////////////////////////////////////////////
         	try {
+        		PrintWriter out;
     			out = new PrintWriter(new BufferedWriter(new FileWriter(f.getAbsolutePath() + "/Meteo.FVG.Service.log", true)));
     			out.append("- ConnectivityChangedReceiver: network down on " + cal.getTime().toLocaleString() + "\n");
     			out.close();

@@ -285,6 +285,20 @@ public class Settings
 		return res;
 	}
 	
+	public long minTimeBetweenReportRequestNotificationsMinutes()
+	{
+		long res = mSharedPreferences.getLong("MIN_TIME_BETWEEN_REPORT_REQUEST_NOTIFICATIONS", 5);
+		return res;
+	}
+	
+	public void setMinTimeBetweenReportRequestNotificationsMinutes(long minTime)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putLong("MIN_TIME_BETWEEN_REPORT_REQUEST_NOTIFICATIONS", minTime);
+		e.commit();
+	}
+	
+	
 	private final String PREFERENCES_NAME = "Osmer.conf";
 	private SharedPreferences mSharedPreferences;
 	

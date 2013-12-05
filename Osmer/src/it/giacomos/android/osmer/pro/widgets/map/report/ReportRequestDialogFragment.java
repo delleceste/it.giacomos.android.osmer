@@ -28,13 +28,17 @@ import android.widget.Toast;
 
 
 public class ReportRequestDialogFragment extends DialogFragment 
-implements  LocationServiceAddressUpdateListener,
-LocationServiceUpdateListener
+implements  LocationServiceAddressUpdateListener
 {
 	private View mDialogView;
 	private String mLocality;
 	private LatLng mLatLng;
 
+	public void setLatLng(LatLng llng)
+	{
+		mLatLng = llng;
+	}
+	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) 
 	{
@@ -42,7 +46,6 @@ LocationServiceUpdateListener
 		Log.e("ReportRequestDialogFragment", "onCreateDialog");
 		this.setStyle(STYLE_NO_FRAME, android.R.style.Theme_Holo_Light);
 		mLocality = "";
-		mLatLng = null;
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		//		builder.setMessage(R.string.reportDialogMessage)
@@ -111,7 +114,6 @@ LocationServiceUpdateListener
 		/* register for locality name updates and location updates */
 		LocationService locationService = ((OsmerActivity) getActivity()).getLocationService();
 		locationService.registerLocationServiceAddressUpdateListener(this);
-		locationService.registerLocationServiceUpdateListener(this);
 	}
 
 	@Override
@@ -120,7 +122,6 @@ LocationServiceUpdateListener
 		Log.e("ReportRequestDialogFragment.onDestroyView", "removing location service address update listener");
 		LocationService locationService = ((OsmerActivity) getActivity()).getLocationService();
 		locationService.removeLocationServiceAddressUpdateListener(this);
-		locationService.removeLocationServiceUpdateListener(this);
 		super.onDestroyView();
 	}
 
@@ -135,15 +136,6 @@ LocationServiceUpdateListener
 		mLocality = locality;
 		LocationService locationService = ((OsmerActivity) getActivity()).getLocationService();
 		locationService.removeLocationServiceAddressUpdateListener(this);
-		mCheckLocationLocalityAvailable();
-	}
-
-	@Override
-	public void onLocationChanged(Location myLocation) 
-	{
-		mLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-		LocationService locationService = ((OsmerActivity) getActivity()).getLocationService();
-		locationService.removeLocationServiceUpdateListener(this);
 		mCheckLocationLocalityAvailable();
 	}
 
@@ -167,12 +159,6 @@ LocationServiceUpdateListener
 		}
 		else
 			tv.setText(this.getResources().getString(R.string.reportDialogRequestLocationUnavailable));
-	}
-
-	@Override
-	public void onLocationServiceError(String message) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public LatLng getLatLng()

@@ -245,8 +245,12 @@
     <string name="reportDialogRequestSendButton">Invia richiesta</string>
     <string name="reportDialogRequestTitle">Richiedi osservazioni per </string>
     <string name="reportDialogRequestLocationUnavailable">-</string>
-    <string name="reportRequest">Richiedi segnalazione&#8230;</string>
-	
+    <string name="reportRequest">Richiedi una segnalazione&#8230;</string>
+    <string name="reportRequested">Richiesta di segnalazione</string>
+	<string name="reportLocality">Località</string>
+    <string name="reportTouchBaloonToRequest">Tocca il fumetto per inviare una richiesta o sposta il segnaposti per cambiare la posizione
+        \nAltrimenti tocca un altro punto della mappa per rimuovere il marker.</string>
+    
 	 
     <!-- notification area -->
     <string name="notificatonNewReportRequest">Nuova richiesta segnalazione meteo da </string>

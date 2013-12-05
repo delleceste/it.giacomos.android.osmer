@@ -415,6 +415,10 @@ RadarAnimationListener
 			mRadarAnimation.stop();
 			radarTimestampText.hide();
 			mReportOverlay = new ReportOverlay(this);
+			mReportOverlay.setOnReportRequestListener((OsmerActivity) getActivity());
+			mMap.setOnMapLongClickListener(mReportOverlay);
+			mMap.setOnInfoWindowClickListener(mReportOverlay);
+			mMap.setOnMapClickListener(mReportOverlay);
 			mOverlays.add(mReportOverlay);
 		}
 		else if(m.currentMode != MapMode.HIDDEN)
@@ -595,6 +599,7 @@ RadarAnimationListener
 			mMap.setOnMarkerClickListener(null);
 			mMap.setOnMarkerDragListener(null);
 			mMap.setOnInfoWindowClickListener(null);
+			mMap.setOnMapLongClickListener(null);
 		}
 		setOnZoomChangeListener(null);
 	}

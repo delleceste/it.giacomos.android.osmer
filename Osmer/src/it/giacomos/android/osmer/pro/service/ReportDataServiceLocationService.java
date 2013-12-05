@@ -1,4 +1,4 @@
-package it.giacomos.android.osmer.pro.reportDataService;
+package it.giacomos.android.osmer.pro.service;
 
 import java.util.ArrayList;
 

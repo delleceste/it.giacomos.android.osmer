@@ -266,7 +266,10 @@
     <string name="reportDialogRequestSendButton">Send request</string>
     <string name="reportDialogRequestTitle">Request report for </string>
     <string name="reportDialogRequestLocationUnavailable">-</string>
-    <string name="reportRequest">Report request&#8230;</string>
+    <string name="reportRequest">New report request&#8230;</string>
+    <string name="reportLocality">Locality</string>
+    <string name="reportRequested">Report request</string>
+    <string name="reportTouchBaloonToRequest">Touch this baloon to make a request.\nTouch on another point of the map to remove the marker</string>
     
     <!-- notification area -->
     <string name="notificatonNewReportRequest">New report request from </string>
