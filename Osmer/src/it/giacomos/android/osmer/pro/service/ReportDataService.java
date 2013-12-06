@@ -87,7 +87,12 @@ implements ServiceLocationUpdateListener, FetchRequestsTaskListener, Runnable
 	@Override
 	public void onLocationChanged(Location l) 
 	{
+		if(!l.equals(mLocation))
+			Toast.makeText(this, 
+"Meteo.FVG Service: location changed..." + l.getLatitude() + ", " 
+ + l.getLongitude(), Toast.LENGTH_LONG).show();
 		mLocation = l;
+		
 	}
 
 	@Override
@@ -222,8 +227,9 @@ implements ServiceLocationUpdateListener, FetchRequestsTaskListener, Runnable
 	public void run() 
 	{
 		Log.e("ReportDataService.run()", "run, entering");
-    	Toast.makeText(this.getApplicationContext(), "Meteo.FVG: updating reports...", Toast.LENGTH_SHORT).show();
-		if(mLocation != null)
+    	Toast.makeText(this.getApplicationContext(), "Meteo.FVG: updating reports...", Toast.LENGTH_LONG).show();
+		boolean taskStarted = false;
+    	if(mLocation != null)
 		{
 			final ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			final NetworkInfo netinfo = connMgr.getActiveNetworkInfo();
@@ -234,6 +240,7 @@ implements ServiceLocationUpdateListener, FetchRequestsTaskListener, Runnable
 
 				Log.e("ReportDataService.run()", "dataTask.execute() entering");
 				mServiceDataTask.execute(new Urls().getRequestsUrl());
+				taskStarted = true;
 			}
 			else
 				Log.e("Meteo.FVG.ReportDataService.run", "connection is unavailable");
@@ -243,7 +250,11 @@ implements ServiceLocationUpdateListener, FetchRequestsTaskListener, Runnable
 
 		/* next update is scheduled inside onServiceDataTaskComplete (i.e. when the download task
 		 * is complete) to ensure that download tasks never ovelap.
+		 * But if there is no location available here and/or no connectivity,
+		 * we must schedule an update here.
 		 */
+    	if(!taskStarted)
+    		mHandler.postDelayed(this, mSleepInterval);
 	}
 
 

@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="451"
-    android:versionName="2.6.0-dev2" >
+    android:versionCode="453"
+    android:versionName="2.6.0-dev7" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -81,7 +81,9 @@
     </receiver>
         
         <service android:name="it.giacomos.android.osmer.pro.service.ReportDataService"/> 
-        
+        <meta-data
+    android:name="com.google.android.gms.version"
+    android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>
