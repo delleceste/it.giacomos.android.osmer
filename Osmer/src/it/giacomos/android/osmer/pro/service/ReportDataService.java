@@ -39,6 +39,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.widget.Toast;
 
 public class ReportDataService extends Service 
 implements ServiceLocationUpdateListener, FetchRequestsTaskListener, Runnable
@@ -221,6 +222,7 @@ implements ServiceLocationUpdateListener, FetchRequestsTaskListener, Runnable
 	public void run() 
 	{
 		Log.e("ReportDataService.run()", "run, entering");
+    	Toast.makeText(this.getApplicationContext(), "Meteo.FVG: updating reports...", Toast.LENGTH_SHORT).show();
 		if(mLocation != null)
 		{
 			final ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
