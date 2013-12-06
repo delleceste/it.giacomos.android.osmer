@@ -31,6 +31,9 @@ public class ReportOverlayTask extends AsyncTask<ReportData, Integer, ArrayList<
 	@Override
 	protected ArrayList<MarkerOptions> doInBackground(ReportData... params) 
 	{
+		if(params == null)
+			return null;
+		
 		Log.e("doInBackground" , "params size " + params.length);
 		int sky, windIdx, iconId  = -1;
 		int dataSiz = params.length;

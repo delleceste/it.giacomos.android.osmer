@@ -183,14 +183,16 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 	}
 
 	@Override
-	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
+	public void onTextRefresh(String txt, ViewType t, boolean fromCache, boolean textChanged) 
 	{
-		//		Log.e("ForecastFragment.onTextChanged", "viewType " + t + " fromCache " + fromCache);
-		if(t == ViewType.TODAY || t == ViewType.TOMORROW || t == ViewType.TWODAYS)
-			mTextView.setData(txt);
-		else if(t == ViewType.TODAY_SYMTABLE || t == ViewType.TOMORROW_SYMTABLE || t == ViewType.TWODAYS_SYMTABLE)
-			mImageView.setSymTable(txt);
-
+		if(textChanged)
+		{
+			//		Log.e("ForecastFragment.onTextChanged", "viewType " + t + " fromCache " + fromCache);
+			if(t == ViewType.TODAY || t == ViewType.TOMORROW || t == ViewType.TWODAYS)
+				mTextView.setData(txt);
+			else if(t == ViewType.TODAY_SYMTABLE || t == ViewType.TOMORROW_SYMTABLE || t == ViewType.TWODAYS_SYMTABLE)
+				mImageView.setSymTable(txt);
+		}
 	}
 
 	@Override

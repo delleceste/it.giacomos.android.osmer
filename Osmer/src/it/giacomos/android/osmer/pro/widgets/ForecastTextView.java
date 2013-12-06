@@ -35,9 +35,10 @@ public class ForecastTextView extends OTextView implements AreaTouchListener
 	}
 	
 	@Override
-	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
+	public void onTextRefresh(String txt, ViewType t, boolean fromCache, boolean textChanged) 
 	{
-		setData(txt);
+		if(textChanged)
+			setData(txt);
 	}
 
 	@Override

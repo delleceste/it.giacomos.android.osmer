@@ -85,9 +85,10 @@ public class SituationFragment extends Fragment implements DataPoolTextListener
 	}
 
 	@Override
-	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
+	public void onTextRefresh(String txt, ViewType t, boolean fromCache, boolean textChanged) 
 	{
-		mHomeTextView.setHtml(txt);
+		if(textChanged)
+			mHomeTextView.setHtml(txt);
 	}
 
 	@Override

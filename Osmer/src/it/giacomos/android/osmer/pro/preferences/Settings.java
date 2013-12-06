@@ -298,9 +298,37 @@ public class Settings
 		e.commit();
 	}
 	
+	public void saveMyReportRequestMarkerAttributes(double latitude,
+			double longitude) 
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putFloat("MY_REPORT_REQUEST_MARKER_LAT", (float)latitude);
+		e.putFloat("MY_REPORT_REQUEST_MARKER_LONG", (float)longitude);
+		e.putLong("MY_REPORT_REQUEST_TIME_MILLIS", System.currentTimeMillis());
+		e.commit();
+		
+	}
+	
+	/** If marker older than 3 hours, throw it away */
+	public double getMyReportRequestMarkerLatitude()
+	{
+		long lastRequestTSMillis = mSharedPreferences.getLong("MY_REPORT_REQUEST_TIME_MILLIS", 0);
+		if(System.currentTimeMillis() - lastRequestTSMillis > 3 * 60 * 60 * 1000)
+			return -1.0;
+		float lat =  mSharedPreferences.getFloat("MY_REPORT_REQUEST_MARKER_LAT", -1.0f);
+		return (double) lat;
+	}
+	
+	public double getMyReportRequestMarkerLongitude()
+	{
+		long lastRequestTSMillis = mSharedPreferences.getLong("MY_REPORT_REQUEST_TIME_MILLIS", 0);
+		if(System.currentTimeMillis() - lastRequestTSMillis > 3 * 60 * 60 * 1000)
+			return -1.0;
+		float lat =  mSharedPreferences.getFloat("MY_REPORT_REQUEST_MARKER_LONG", -1.0f);
+		return (double) lat;
+	}
 	
 	private final String PREFERENCES_NAME = "Osmer.conf";
 	private SharedPreferences mSharedPreferences;
-	
 
 }

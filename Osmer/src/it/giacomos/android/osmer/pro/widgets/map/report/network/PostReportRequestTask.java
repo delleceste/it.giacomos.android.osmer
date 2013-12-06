@@ -19,7 +19,6 @@ import org.apache.http.util.EntityUtils;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import it.giacomos.android.osmer.pro.widgets.map.ReportPublishedListener;
 
 public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 
@@ -97,8 +96,8 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 	public void onPostExecute(String doc)
 	{
 		if(mErrorMsg.isEmpty())
-			mReportPublishedListener.onReportPublished(false, "");
+			mReportPublishedListener.onPostActionResult(false, false, "", PostType.REQUEST);
 		else
-			mReportPublishedListener.onReportPublished(true, mErrorMsg);
+			mReportPublishedListener.onPostActionResult(false, true, mErrorMsg, PostType.REQUEST);
 	}
 }

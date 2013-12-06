@@ -40,12 +40,13 @@ import it.giacomos.android.osmer.pro.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.pro.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.pro.widgets.map.RadarOverlayUpdateListener;
-import it.giacomos.android.osmer.pro.widgets.map.ReportPublishedListener;
-import it.giacomos.android.osmer.pro.widgets.map.ReportRequestListener;
+import it.giacomos.android.osmer.pro.widgets.map.MyReportRequestListener;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
 import it.giacomos.android.osmer.pro.widgets.map.report.IconTextSpinnerAdapter;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportDialogFragment;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportRequestDialogFragment;
+import it.giacomos.android.osmer.pro.widgets.map.report.network.PostType;
+import it.giacomos.android.osmer.pro.widgets.map.report.network.ReportPublishedListener;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -100,7 +101,7 @@ RadarOverlayUpdateListener,
 DataPoolErrorListener,
 RadarAnimationListener,
 ReportPublishedListener,
-ReportRequestListener
+MyReportRequestListener
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
@@ -302,11 +303,13 @@ ReportRequestListener
 		 * above. Situation image will register as LatestObservationCacheChangeListener
 		 * in SituationFragment.onActivityCreated. It will be immediately notified
 		 * inside ObservationsCache.setLatestObservationCacheChangeListener.
+		 * Last true indicates that the text has changed in order to make observationsCache 
+		 * load data.
 		 */
-		m_observationsCache.onTextChanged(dataPoolCacheUtils.loadFromStorage(ViewType.DAILY_TABLE, getApplicationContext()),
-				ViewType.DAILY_TABLE, true);
-		m_observationsCache.onTextChanged(dataPoolCacheUtils.loadFromStorage(ViewType.LATEST_TABLE, getApplicationContext()),
-				ViewType.LATEST_TABLE, true);
+		m_observationsCache.onTextRefresh(dataPoolCacheUtils.loadFromStorage(ViewType.DAILY_TABLE, getApplicationContext()),
+				ViewType.DAILY_TABLE, true, true);
+		m_observationsCache.onTextRefresh(dataPoolCacheUtils.loadFromStorage(ViewType.LATEST_TABLE, getApplicationContext()),
+				ViewType.LATEST_TABLE, true, true);
 		/* create the location update client and connect it to the location service */
 		mLocationService.connect();
 
@@ -443,8 +446,8 @@ ReportRequestListener
 	}
 
 	@Override
-	public void networkStatusChanged(boolean online) {
-		// TODO Auto-generated method stub
+	public void networkStatusChanged(boolean online) 
+	{
 		TitlebarUpdater titlebarUpdater = new TitlebarUpdater();
 		titlebarUpdater.update(this);
 		titlebarUpdater = null;
@@ -609,29 +612,45 @@ ReportRequestListener
 	}
 
 	@Override
-	public void onReportPublished(boolean error, String message) 
+	public void onPostActionResult(boolean canceled, boolean error, String message, PostType postType) 
 	{
-		if(!error)
+		if(!error && !canceled)
+		{
 			Toast.makeText(this, R.string.reportDataSentOk, Toast.LENGTH_SHORT).show();
-		else
+		}
+		else if(!canceled)
 		{
 			String m = this.getResources().getString(R.string.reportError) + "\n" + message;
 			Toast.makeText(this, m, Toast.LENGTH_LONG).show();
 		}
 		/* invoked when the user has successfully published its report */
-		if(mCurrentViewType == ViewType.REPORT)
+		if(mCurrentViewType == ViewType.REPORT && !canceled)
 		{
 			Log.e("switchView", "updating report (forceth)");
 			updateReport(true);
 		}
+		if(mCurrentViewType == ViewType.REPORT)
+		{
+			/* the Report overlay may need this information */
+			getMapFragment().onPostActionResult(canceled, error, message, postType);
+		}
 	}
 	
-
 	@Override
-	public void onReportRequest(LatLng pointOnMap) 
+	public void onMyReportLocalityChanged(String locality) 
+	{
+		Log.e("OsmerActivity.onMyReportLocalityChanged", "locality " + locality);
+		ReportRequestDialogFragment rrdf = (ReportRequestDialogFragment) 
+				getSupportFragmentManager().findFragmentByTag("ReportRequestDialogFragment");
+		if(rrdf != null)
+			rrdf.setLocality(locality);
+	}
+	
+	@Override
+	public void onMyReportRequestTriggered(LatLng pointOnMap, String locality) 
 	{
 		ReportRequestDialogFragment rrdf = new ReportRequestDialogFragment();
-		rrdf.setLatLng(pointOnMap);
+		rrdf.setData(pointOnMap, locality);
 		rrdf.show(getSupportFragmentManager(), "ReportRequestDialogFragment");
 	}
 	
@@ -688,7 +707,7 @@ ReportRequestListener
 			break;
 		case R.id.reportUpdateAction:
 			/* this forces an update, even if just updated */
-			updateReport(true); 
+			updateReport(true);
 			break;
 		default:
 			break;
@@ -999,32 +1018,32 @@ ReportRequestListener
 	}
 
 	@Override
-	public void onRadarAnimationStart() {
-		// TODO Auto-generated method stub
+	public void onRadarAnimationStart() 
+	{
 		
 	}
 
 	@Override
-	public void onRadarAnimationPause() {
-		// TODO Auto-generated method stub
+	public void onRadarAnimationPause() 
+	{
 		
 	}
 
 	@Override
-	public void onRadarAnimationStop() {
-		// TODO Auto-generated method stub
+	public void onRadarAnimationStop() 
+	{
 		
 	}
 
 	@Override
-	public void onRadarAnimationRestored() {
-		// TODO Auto-generated method stub
+	public void onRadarAnimationRestored() 
+	{
 		
 	}
 
 	@Override
-	public void onRadarAnimationResumed() {
-		// TODO Auto-generated method stub
+	public void onRadarAnimationResumed() 
+	{
 		
 	}
 	

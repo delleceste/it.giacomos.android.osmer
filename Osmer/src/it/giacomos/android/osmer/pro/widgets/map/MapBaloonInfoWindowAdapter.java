@@ -75,21 +75,6 @@ public class MapBaloonInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
 		iv.setBackgroundDrawable(dra);
 	}
 	
-//	public void setIcon(int id)
-//	{
-//		ImageView iv = (ImageView) mView.findViewById(R.id.baloon_icon);
-//		if(id > -1)
-//			iv.setBackgroundDrawable(mResources.getDrawable(id));
-//		else
-//		{
-//			/* put an icon to show on the baloon otherwise the layout is scrambled
-//			 * Also, this indicates the lack of data in that time.
-//		 	*/
-//
-//			iv.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.weather_none_available_map));
-//		}
-//	}
-	
 	private Type mType;
 
 

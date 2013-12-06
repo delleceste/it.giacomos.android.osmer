@@ -102,8 +102,12 @@ public class DataPool implements DownloadListener
 		if(mStringData.containsKey(vt))
 		{
 			StringData sd = mStringData.get(vt);
+			/* onTextRefresh called with a final true parameter to indicate that
+			 * the text has changed (which is true for a new text listener just 
+			 * registered)
+			 */
 			if(sd.isValid())
-				txtL.onTextChanged(sd.text, vt, sd.fromCache);
+				txtL.onTextRefresh(sd.text, vt, sd.fromCache, true);
 			else
 				txtL.onTextError(sd.error, vt);
 		}
@@ -123,7 +127,6 @@ public class DataPool implements DownloadListener
 				bmpL.onBitmapError(bd.error, bt);
 		}
 	}
-
 
 	@Override
 	public void onTextBytesUpdate(byte[] bytes, ViewType vt) 
@@ -231,12 +234,12 @@ public class DataPool implements DownloadListener
 	{
 		StringData sd = mStringData.get(t);
 		StringData newSd = new StringData(text);
-		if(!newSd.equals(sd))
-		{
+		boolean textChanged = !newSd.equals(sd);
+		if(textChanged)
 			mStringData.put(t, newSd); /* put in hash */
-			if(mTextListeners.containsKey(t))
-				mTextListeners.get(t).onTextChanged(text, t, false);
-		}
+		if(mTextListeners.containsKey(t))
+			mTextListeners.get(t).onTextRefresh(text, t, false, textChanged);
+		
 	}
 
 	@Override

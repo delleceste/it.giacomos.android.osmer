@@ -38,9 +38,10 @@ public class OTextView extends TextView implements DataPoolTextListener
 	}
 
 	@Override
-	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
+	public void onTextRefresh(String txt, ViewType t, boolean fromCache, boolean textChanged) 
 	{
-		setHtml(txt);
+		if(textChanged)
+			setHtml(txt);
 	}
 	
 	public void onTextError(String error, ViewType t)

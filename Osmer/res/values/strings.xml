@@ -270,6 +270,8 @@
     <string name="reportLocality">Locality</string>
     <string name="reportRequested">Report request</string>
     <string name="reportTouchBaloonToRequest">Touch this baloon to make a request.\nTouch on another point of the map to remove the marker</string>
+    <string name="reportRequestCorrectlySent">report request sent</string>
+    
     
     <!-- notification area -->
     <string name="notificatonNewReportRequest">New report request from </string>

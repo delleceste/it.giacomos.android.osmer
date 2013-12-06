@@ -2,12 +2,11 @@ package it.giacomos.android.osmer.pro.widgets.map.report.network;
 
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.network.state.Urls;
-import it.giacomos.android.osmer.pro.widgets.map.ReportPublishedListener;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-public class PostReport implements PostReportTaskListener
+public class PostReport implements PostReportTaskListener, PostInterface
 {
 	private ReportPublishedListener mReportPublishedListener;
 	
@@ -22,8 +21,13 @@ public class PostReport implements PostReportTaskListener
 	}
 
 	@Override
-	public void onTaskCompleted(boolean error, String message) 
+	public void onTaskCompleted( boolean error, String message) 
 	{
-		mReportPublishedListener.onReportPublished(error, message);
+		mReportPublishedListener.onPostActionResult(false, error, message, PostType.REPORT);
+	}
+
+	@Override
+	public PostType getType() {
+		return PostType.REPORT;
 	}
 }

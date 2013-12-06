@@ -108,9 +108,9 @@ DataPoolTextListener
 
 	/** Implements DataPoolTextListener onTextChanged  (for webcam list) */
 	@Override
-	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
+	public void onTextRefresh(String txt, ViewType t, boolean fromCache, boolean textChanged) 
 	{		
-		if(mIsActive)
+		if(mIsActive && textChanged)
 		{
 			if(!fromCache)
 			{

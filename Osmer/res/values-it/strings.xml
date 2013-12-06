@@ -250,6 +250,7 @@
 	<string name="reportLocality">Località</string>
     <string name="reportTouchBaloonToRequest">Tocca il fumetto per inviare una richiesta o sposta il segnaposti per cambiare la posizione
         \nAltrimenti tocca un altro punto della mappa per rimuovere il marker.</string>
+    <string name="reportRequestCorrectlySent">Richiesta di segnalazione inviata</string>
     
 	 
     <!-- notification area -->

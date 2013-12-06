@@ -35,6 +35,7 @@ import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimation;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationStatus;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportOverlay;
+import it.giacomos.android.osmer.pro.widgets.map.report.network.PostType;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -385,7 +386,10 @@ RadarAnimationListener
 		 * the last animation frame image overlay from the map.
 		 */
 		if(m.currentMode == MapMode.HIDDEN && mRadarAnimation != null)
+		{
+			mRemoveOverlays();
 			mRadarAnimation.stop();
+		}
 
 		if(m.currentMode == MapMode.RADAR) 
 		{
@@ -418,7 +422,7 @@ RadarAnimationListener
 			mReportOverlay.setOnReportRequestListener((OsmerActivity) getActivity());
 			mMap.setOnMapLongClickListener(mReportOverlay);
 			mMap.setOnInfoWindowClickListener(mReportOverlay);
-			mMap.setOnMapClickListener(mReportOverlay);
+			mMap.setOnMarkerDragListener(mReportOverlay);
 			mOverlays.add(mReportOverlay);
 		}
 		else if(m.currentMode != MapMode.HIDDEN)
@@ -600,6 +604,7 @@ RadarAnimationListener
 			mMap.setOnMarkerDragListener(null);
 			mMap.setOnInfoWindowClickListener(null);
 			mMap.setOnMapLongClickListener(null);
+			mMap.setOnMarkerDragListener(null);
 		}
 		setOnZoomChangeListener(null);
 	}
@@ -676,6 +681,13 @@ RadarAnimationListener
 	public void onRadarAnimationProgress(int step, int total) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/** please invoke when in REPORT mode */
+	public void onPostActionResult(boolean canceled, boolean error, String message, PostType postType) 
+	{
+		if(mReportOverlay != null)
+			mReportOverlay.onPostActionResult(canceled, error, message, postType);
 	}
 
 }
