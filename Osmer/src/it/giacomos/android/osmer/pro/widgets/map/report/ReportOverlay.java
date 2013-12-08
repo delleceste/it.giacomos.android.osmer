@@ -49,7 +49,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener
 	private MyReportRequestListener mReportRequestListener;
 	private String mMyRequestMarkerLocality;
 	private GeocodeAddressTask mGeocodeAddressTask;
-	private Marker mMyRequestMarker, mBuddyRequestMarker;
 
 	public ReportOverlay(OMapFragment oMapFragment) 
 	{
@@ -59,8 +58,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener
 		mMapBaloonInfoWindowAdapter = new MapBaloonInfoWindowAdapter(mMapFrag.getActivity());
 		mGeocodeAddressTask = null;
 		mMyRequestMarkerLocality = "-";
-		mMyRequestMarker = null;
-		mBuddyRequestMarker = null;
 		mMapFrag.getMap().setInfoWindowAdapter(mMapBaloonInfoWindowAdapter);
 		mMarkers = new ArrayList<Marker>();
 		/* register as DataPool text listener */
@@ -83,13 +80,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener
 		((OsmerActivity) mMapFrag.getActivity()).getDataPool().unregisterTextListener(ViewType.REPORT);
 		mCancelTasks();
 		mRemoveReportMarkers();
-		if(mMyRequestMarker != null)
-		{
-			mSaveMyRequestMarkerPosition();
-			mMyRequestMarker.remove();
-		}
-		if(mBuddyRequestMarker != null)
-			mBuddyRequestMarker.remove();
 	}
 
 	private void mRemoveReportMarkers()
@@ -118,10 +108,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener
 		// TODO Auto-generated method stub
 		for(int i = 0; i < mMarkers.size(); i++)
 			mMarkers.get(i).hideInfoWindow();
-		if(mBuddyRequestMarker != null)
-			mBuddyRequestMarker.hideInfoWindow();
-		if(mMyRequestMarker != null)
-			mMyRequestMarker.hideInfoWindow();
 	}
 
 	@Override
@@ -129,10 +115,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener
 		for(int i = 0; i < mMarkers.size(); i++)
 			if(mMarkers.get(i).isInfoWindowShown())
 				return true;
-		if(mBuddyRequestMarker != null && mBuddyRequestMarker.isInfoWindowShown())
-			return true;
-		if(mMyRequestMarker != null && mMyRequestMarker.isInfoWindowShown())
-			return true;
 		return false;
 	}
 
@@ -174,10 +156,17 @@ OnMarkerDragListener, GeocodeAddressUpdateListener
 		 */
 
 		/* ok start processing data */
-		ReportDataFactory reportDataFactory = new ReportDataFactory();
-		ReportData[] reportDataList = reportDataFactory.parse(txt);
+		DataParser reportDataFactory = new DataParser();
+		
+		ReportData reportDataList[] = reportDataFactory.parseReports(txt); /* reports */
+		RequestData requestDataList[] = reportDataFactory.parseRequests(txt);
+		DataInterface dataList[] = new DataInterface[reportDataList.length + requestDataList.length];
+		
+		System.arraycopy(reportDataList, 0, dataList, 0,  reportDataList.length);
+		System.arraycopy(requestDataList, 0, dataList, reportDataList.length, requestDataList.length);
+				
 		mReportOverlayTask = new ReportOverlayTask(mMapFrag.getActivity().getApplicationContext(), this);
-		mReportOverlayTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, reportDataList);
+		mReportOverlayTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataList));
 		
 		if(reportDataList == null)
 			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), R.string.reportNoneAvailable, Toast.LENGTH_LONG).show();
@@ -199,7 +188,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener
 		if(lastNotificationData != null && !lastNotificationData.isConsumed())
 		{
 			MarkerOptions buddyRequestMarkerOptions = mBuildBuddyRequestMarker(lastNotificationData);
-			mBuddyRequestMarker = mMapFrag.getMap().addMarker(buddyRequestMarkerOptions);
 		}
 	}
 

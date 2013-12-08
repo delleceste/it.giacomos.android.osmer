@@ -16,7 +16,7 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class ReportOverlayTask extends AsyncTask<ReportData, Integer, ArrayList<MarkerOptions> > 
+public class ReportOverlayTask extends AsyncTask<DataInterface, Integer, ArrayList<MarkerOptions> > 
 {
 	private Context mContext;
 	private ReportOverlayTaskListener mReportOverlayTaskListener;
@@ -29,7 +29,7 @@ public class ReportOverlayTask extends AsyncTask<ReportData, Integer, ArrayList<
 	}
 	
 	@Override
-	protected ArrayList<MarkerOptions> doInBackground(ReportData... params) 
+	protected ArrayList<MarkerOptions> doInBackground(DataInterface... params) 
 	{
 		if(params == null)
 			return null;
