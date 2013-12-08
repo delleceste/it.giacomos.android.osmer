@@ -78,7 +78,7 @@ FetchRequestsTaskListener, Runnable
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{
 		Log.e(">>>> ReportDataService <<<<<< ", "onStartCommand");
-		log("\nReportDataService.onStartCommand()");
+		log("\nservice startCmd");
 		Settings s = new Settings(this);
 		mSleepInterval = s.getServiceSleepIntervalMillis();
 		if(mLocationClient == null)
@@ -103,9 +103,20 @@ FetchRequestsTaskListener, Runnable
 	 */
 	public void run() 
 	{
-		/* when the location is available, we will update data */
 		if(!mLocationClient.isConnected())
+		{
+			log("run: loc cli disconn: connecting");
+			/* wait for connection and then get location and update data */
 			mLocationClient.connect();
+		}
+		else /* already connected, can get last known location and update data */
+		{
+			mLocation = mLocationClient.getLastLocation();
+			boolean taskStarted = startTask();
+			if(!taskStarted)
+				mHandler.postDelayed(this, mSleepInterval);
+			log("run: loc cli already conn: task started " + taskStarted);
+		}
 	}
 
 	/**
@@ -127,9 +138,19 @@ FetchRequestsTaskListener, Runnable
 	{
 		boolean taskStarted = false;
 		mLocation = mLocationClient.getLastLocation();
-		/* will connect on next run to update location before downloading up to date data */
-		mLocationClient.disconnect(); 
+		taskStarted = startTask();
+		/* next update is scheduled inside onServiceDataTaskComplete (i.e. when the download task
+		 * is complete) to ensure that download tasks never ovelap.
+		 * But if there is no location available here and/or no connectivity,
+		 * we must schedule an update here.
+		 */
+		if(!taskStarted)
+			mHandler.postDelayed(this, mSleepInterval);
+		log("onConnected: loc cli freshly conn: task started " + taskStarted);
+	}
 
+	private boolean startTask()
+	{
 		if(mLocation != null)
 		{
 			Toast.makeText(this.getApplicationContext(), "Meteo.FVG: updating reports...", Toast.LENGTH_LONG).show();
@@ -145,23 +166,15 @@ FetchRequestsTaskListener, Runnable
 				 */
 				mServiceDataTask = new FetchRequestsDataTask(this, deviceId, mLocation.getLatitude(), mLocation.getLongitude());
 
-				Log.e("ReportDataService.run()", "dataTask.execute() entering");
 				mServiceDataTask.execute(new Urls().getRequestsUrl());
-				taskStarted = true;
+				return true;
 			}
 			else
 				Log.e("Meteo.FVG.ReportDataService.run", "connection is unavailable");
 		}
-
-		/* next update is scheduled inside onServiceDataTaskComplete (i.e. when the download task
-		 * is complete) to ensure that download tasks never ovelap.
-		 * But if there is no location available here and/or no connectivity,
-		 * we must schedule an update here.
-		 */
-		if(!taskStarted)
-			mHandler.postDelayed(this, mSleepInterval);
+		return false;
 	}
-
+	
 	@Override
 	public void onDestroy()
 	{
@@ -183,7 +196,8 @@ FetchRequestsTaskListener, Runnable
 	@Override
 	public void onServiceDataTaskComplete(boolean error, String dataAsString) 
 	{
-		log("ReportDataService.onServiceDataTaskComplete: error " + error + ", data: " + dataAsString);
+		log("task ok: err " + error + ",d siz: " + dataAsString.length() + "la " + 
+				mLocation.getLatitude() + " lo " + mLocation.getLongitude());
 		Log.e(">>>> ReportDataService.onServiceDataTaskComplete", "data: " + dataAsString + " error " + error);
 
 		ServiceSharedData sharedData = ServiceSharedData.Instance();
@@ -285,7 +299,7 @@ FetchRequestsTaskListener, Runnable
 		PrintWriter out;
 		try {
 			out = new PrintWriter(new BufferedWriter(new FileWriter(f.getAbsolutePath() + "/Meteo.FVG.Service.log", true)));
-			out.append(message + ": " + Calendar.getInstance().getTime().toLocaleString() + "\n");
+			out.append(Calendar.getInstance().getTime().toLocaleString()+ ": " + message + "\n");
 			out.close();
 		} catch (FileNotFoundException e1) 
 		{
