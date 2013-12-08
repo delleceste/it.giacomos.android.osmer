@@ -328,7 +328,18 @@ public class Settings
 		return (double) lat;
 	}
 	
+	/** the service sleep interval in milliseconds between two subsequent updates of the 
+	 * data on the web server. Defaults to four minutes.
+	 * @return
+	 */
+	public long getServiceSleepIntervalMillis() 
+	{
+		long intmillis =  mSharedPreferences.getLong("SERVICE_SLEEP_INTERVAL_MILLIS", 240000);
+		return intmillis;
+	}
+	
 	private final String PREFERENCES_NAME = "Osmer.conf";
 	private SharedPreferences mSharedPreferences;
+	
 
 }

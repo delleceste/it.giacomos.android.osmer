@@ -2,8 +2,8 @@ package it.giacomos.android.osmer.pro.service;
 
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.OsmerActivity;
-import it.giacomos.android.osmer.pro.locationUtils.LocationService;
 import it.giacomos.android.osmer.pro.network.state.Urls;
+import it.giacomos.android.osmer.pro.preferences.Settings;
 import it.giacomos.android.osmer.pro.service.sharedData.NotificationData;
 import it.giacomos.android.osmer.pro.service.sharedData.ReportRequestNotification;
 import it.giacomos.android.osmer.pro.service.sharedData.ServiceSharedData;
@@ -11,18 +11,15 @@ import it.giacomos.android.osmer.pro.service.sharedData.ServiceSharedData;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
-import android.app.IntentService;
-import android.app.Notification;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
+
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -31,68 +28,138 @@ import android.content.Intent;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings.Secure;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.Toast;
 
 public class ReportDataService extends Service 
-implements ServiceLocationUpdateListener, FetchRequestsTaskListener, Runnable
+implements GooglePlayServicesClient.ConnectionCallbacks,
+GooglePlayServicesClient.OnConnectionFailedListener, 
+FetchRequestsTaskListener, Runnable
 {
 	public static String REPORT_REQUEST_NOTIFICATION_TAG = "ReportRequestNotification";
 	public static String REPORT_RECEIVED_NOTIFICATION_TAG = "ReportReceivedNotification";
 
 	private Location mLocation;
 	private Handler mHandler;
-	private ReportDataServiceLocationService mLocationService;
+	private LocationClient mLocationClient;
 	private FetchRequestsDataTask mServiceDataTask;
-	private final long mSleepInterval;
+	private long mSleepInterval;
+	private boolean mIsStarted;
 
 	public ReportDataService() 
 	{
 		super();
-		mLocationService = null;
-		mHandler = new Handler();
+		mHandler = null;
+		mLocationClient = null;
 		mLocation = null;
-		mSleepInterval = 120000; /* 2 mins */
 		mServiceDataTask = null;
+		mIsStarted = false;
 	}
 
 	@Override
 	public IBinder onBind(Intent arg0) 
 	{
-
 		return null;
 	}
 
+	/** If wi fi network is enabled, I noticed that turning on 3G network as well 
+	 * produces this method to be invoked another times. That is, the ConnectivityChangedReceiver
+	 * triggers a Service start command. In this case, we must avoid that the handler schedules
+	 * another execution of the timer.
+	 */
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-
+	public int onStartCommand(Intent intent, int flags, int startId) 
+	{
 		Log.e(">>>> ReportDataService <<<<<< ", "onStartCommand");
-		mLocationService = new ReportDataServiceLocationService(this.getApplicationContext(), this);
-		boolean success = mLocationService.connect();
-		log("\nReportDataService.onStartCommand(): connected to location service: success: " + success);
+		log("\nReportDataService.onStartCommand()");
+		Settings s = new Settings(this);
+		mSleepInterval = s.getServiceSleepIntervalMillis();
+		if(mLocationClient == null)
+			mLocationClient = new LocationClient(this, this, this);
+		
+		/* if onStartCommand is called multiple times,we must stop previously
+		 * scheduled runs.
+		 */
+		if(mHandler != null)
+			mHandler.removeCallbacks(this);
+		mHandler = new Handler();
+		mHandler.postDelayed(this, 3000);
+		mIsStarted = true;
 
 
-		boolean ret = mHandler.postDelayed(this, 3000);
-		Log.e("ReportDataService", "post delayed returned " + ret);
 		return Service.START_STICKY;
 	}
 
 	@Override
-	public void onLocationChanged(Location l) 
+	/** This method is executed when mSleepInterval time interval has elapsed 
+	 *  It connects the location client in order to wait for an available Location.
+	 */
+	public void run() 
 	{
-		if(!l.equals(mLocation))
-			Toast.makeText(this, 
-"Meteo.FVG Service: location changed..." + l.getLatitude() + ", " 
- + l.getLongitude(), Toast.LENGTH_LONG).show();
-		mLocation = l;
-		
+		/* when the location is available, we will update data */
+		if(!mLocationClient.isConnected())
+			mLocationClient.connect();
+	}
+
+	/**
+	 * Called by Location Services when the request to connect the
+	 * client finishes successfully. At this point, you can
+	 * request the current location or start periodic updates
+	 * The return value is the best, most recent location, based 
+	 * on the permissions your app requested and the currently-enabled 
+	 * location sensors.
+	 * 
+	 * After getting the last location, we can start the data fetch task.
+	 * If for some reason mLocation is null (should not happen!) or the network
+	 * is down (yes, we check again!), then no task is executed and a next
+	 * schedule takes place by means of postDelayed on the handler (see the end
+	 * of the method).
+	 */
+	@Override
+	public void onConnected(Bundle arg0) 
+	{
+		boolean taskStarted = false;
+		mLocation = mLocationClient.getLastLocation();
+		/* will connect on next run to update location before downloading up to date data */
+		mLocationClient.disconnect(); 
+
+		if(mLocation != null)
+		{
+			Toast.makeText(this.getApplicationContext(), "Meteo.FVG: updating reports...", Toast.LENGTH_LONG).show();
+			/* check that the network is still available */
+			final ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+			final NetworkInfo netinfo = connMgr.getActiveNetworkInfo();
+			if(netinfo != null && netinfo.isConnected())
+			{
+				/* get the device id */
+				String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+				/* start the service and execute it. When the thread finishes, onServiceDataTaskComplete()
+				 * will schedule the next task.
+				 */
+				mServiceDataTask = new FetchRequestsDataTask(this, deviceId, mLocation.getLatitude(), mLocation.getLongitude());
+
+				Log.e("ReportDataService.run()", "dataTask.execute() entering");
+				mServiceDataTask.execute(new Urls().getRequestsUrl());
+				taskStarted = true;
+			}
+			else
+				Log.e("Meteo.FVG.ReportDataService.run", "connection is unavailable");
+		}
+
+		/* next update is scheduled inside onServiceDataTaskComplete (i.e. when the download task
+		 * is complete) to ensure that download tasks never ovelap.
+		 * But if there is no location available here and/or no connectivity,
+		 * we must schedule an update here.
+		 */
+		if(!taskStarted)
+			mHandler.postDelayed(this, mSleepInterval);
 	}
 
 	@Override
@@ -105,15 +172,14 @@ implements ServiceLocationUpdateListener, FetchRequestsTaskListener, Runnable
 			mServiceDataTask.cancel(false);
 		if(mHandler != null)
 			mHandler.removeCallbacks(this);
-		if(mLocationService != null)
-			mLocationService.disconnect(); /* we disconnected in onLocationChanged, by the way */
+		if(mLocationClient != null && mLocationClient.isConnected())
+			mLocationClient.disconnect();
 
 		Log.e(">>>> ReportDataService.onDestroy <<<<<<", "--> disconnecting from location service");
 		super.onDestroy();
 		log("ReportDataService.onDestroy " );
 	}
 
-	/** stop the service */
 	@Override
 	public void onServiceDataTaskComplete(boolean error, String dataAsString) 
 	{
@@ -123,7 +189,7 @@ implements ServiceLocationUpdateListener, FetchRequestsTaskListener, Runnable
 		ServiceSharedData sharedData = ServiceSharedData.Instance();
 		NotificationManager mNotificationManager =
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		
+
 		/* a request has been withdrawn, remove notification, if present */
 		if(dataAsString.isEmpty())
 		{
@@ -133,7 +199,7 @@ implements ServiceLocationUpdateListener, FetchRequestsTaskListener, Runnable
 			{
 				Log.e("ReportDataService.onServiceDataTaskComplete", " removing notification with id " + currentNotification.makeId());
 				mNotificationManager.cancel(REPORT_REQUEST_NOTIFICATION_TAG, currentNotification.makeId());
-				
+
 				/* mark as consumed. The currentNotification is not removed from sharedData because sharedData
 				 * keeps it there in order not to bother us with possibly new notifications incoming in a near
 				 * future. currentNotification thus needs to be stored in order to be used by 
@@ -143,7 +209,7 @@ implements ServiceLocationUpdateListener, FetchRequestsTaskListener, Runnable
 				currentNotification.setConsumed(true);
 			}
 		}
-		
+
 		ReportRequestNotification notificationData = new ReportRequestNotification(dataAsString);
 		if(notificationData.isValid())
 		{
@@ -193,10 +259,22 @@ implements ServiceLocationUpdateListener, FetchRequestsTaskListener, Runnable
 			sharedData.updateCurrentRequest(notificationData);
 		}
 
-		/* schedule next update */
+		/* schedule next update only when all the work is finished */
+		mHandler.postDelayed(this, mSleepInterval);
+	}
 
-		boolean ret = mHandler.postDelayed(this, mSleepInterval);
-		Log.e("ReportDataService", "post delayed returned " + ret);
+	@Override
+	public void onConnectionFailed(ConnectionResult result) 
+	{
+		/* LocationClient.connect() failed. No onConnected callback will be executed,
+		 * so no task will be started. Just schedule another try:
+		 */
+		mHandler.postDelayed(this, mSleepInterval);
+	}
+
+	@Override
+	public void onDisconnected() 
+	{
 
 	}
 
@@ -220,42 +298,6 @@ implements ServiceLocationUpdateListener, FetchRequestsTaskListener, Runnable
 		}
 	}
 
-	@Override
-	/** This method is executed when mSleepInterval time interval has elapsed 
-	 * 
-	 */
-	public void run() 
-	{
-		Log.e("ReportDataService.run()", "run, entering");
-    	Toast.makeText(this.getApplicationContext(), "Meteo.FVG: updating reports...", Toast.LENGTH_LONG).show();
-		boolean taskStarted = false;
-    	if(mLocation != null)
-		{
-			final ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-			final NetworkInfo netinfo = connMgr.getActiveNetworkInfo();
-			if(netinfo != null && netinfo.isConnected())
-			{
-				String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
-				mServiceDataTask = new FetchRequestsDataTask(this, deviceId, mLocation.getLatitude(), mLocation.getLongitude());
-
-				Log.e("ReportDataService.run()", "dataTask.execute() entering");
-				mServiceDataTask.execute(new Urls().getRequestsUrl());
-				taskStarted = true;
-			}
-			else
-				Log.e("Meteo.FVG.ReportDataService.run", "connection is unavailable");
-		}
-		else
-			Log.e("Meteo.FVG.ReportDataService.run", "location information is null");
-
-		/* next update is scheduled inside onServiceDataTaskComplete (i.e. when the download task
-		 * is complete) to ensure that download tasks never ovelap.
-		 * But if there is no location available here and/or no connectivity,
-		 * we must schedule an update here.
-		 */
-    	if(!taskStarted)
-    		mHandler.postDelayed(this, mSleepInterval);
-	}
 
 
 }
