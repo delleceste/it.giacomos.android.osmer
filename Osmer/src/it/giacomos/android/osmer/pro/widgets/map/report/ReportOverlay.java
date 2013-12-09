@@ -43,11 +43,12 @@ import it.giacomos.android.osmer.pro.widgets.map.OverlayType;
 import it.giacomos.android.osmer.pro.widgets.map.MyReportRequestListener;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostType;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.ReportUpdater;
+import it.giacomos.android.osmer.pro.widgets.map.report.network.ReportUpdaterListener;
 
-public class ReportOverlay implements OOverlayInterface, DataPoolTextListener, 
+public class ReportOverlay implements OOverlayInterface, 
 ReportOverlayTaskListener, 
 OnMarkerClickListener, OnMapLongClickListener, OnInfoWindowClickListener, 
-OnMarkerDragListener, GeocodeAddressUpdateListener
+OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 {
 
 	private OMapFragment mMapFrag;
@@ -67,21 +68,17 @@ OnMarkerDragListener, GeocodeAddressUpdateListener
 		mReportOverlayTask = null;
 		mMapBaloonInfoWindowAdapter = new MapBaloonInfoWindowAdapter(mMapFrag.getActivity());
 		mGeocodeAddressTask = null;
-		mReportUpdater = new ReportUpdater(oMapFragment.getActivity().getApplicationContext());
+		mReportUpdater = new ReportUpdater(oMapFragment.getActivity().getApplicationContext(),  this);
 		mMapFrag.getMap().setInfoWindowAdapter(mMapBaloonInfoWindowAdapter);
 		mDataInterfaceHash = new HashMap<String, DataInterface>();
 		
 		/* register as DataPool text listener */
 		/* get data pool reference */
-		DataPool dataPool = ((OsmerActivity) mMapFrag.getActivity()).getDataPool();
 		DataPoolCacheUtils dataCacheUtils = new DataPoolCacheUtils(); /* cache utils reference */
-		if(!dataPool.isTextValid(ViewType.REPORT)) /* if data pool hasn't got up to date text yet */
 		{
 			String text = dataCacheUtils.loadFromStorage(ViewType.REPORT, mMapFrag.getActivity().getApplicationContext());
-			this.onTextChanged(text, ViewType.REPORT, true);
+			this.onReportUpdateDone(text);
 		}
-		/* if there already is data for the given ViewType, the listener is immediately called */
-		dataPool.registerTextListener(ViewType.REPORT, this);
 	}
 
 	@Override
@@ -168,10 +165,21 @@ OnMarkerDragListener, GeocodeAddressUpdateListener
 		return false;
 	}
 
+	public void update(Context ctx, boolean force) 
+	{
+		mReportUpdater.update(force);
+	}
+	
 	@Override
-	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
+	public void onReportUpdateError(String error)
+	{
+		Toast.makeText(mMapFrag.getActivity(), error, Toast.LENGTH_LONG).show();
+	}
+	
+	@Override
+	public void onReportUpdateDone(String txt) 
 	{		
-		Log.e("ReportOverlay.onTextChanged", "vtype" + t + " fromCache "  + fromCache + " : "  + txt);
+		Log.e("ReportOverlay.onTextChanged", " : "  + txt);
 		int reportDataLen = 0, requestDataLen = 0;
 		/* In this first implementation, let the markers be updated even if the text has not changed.
 		 * When the task has been completed, the buddy request notification marker is drawn if pertinent,
@@ -199,12 +207,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener
 
 		if(dataList == null || dataList.length == 0)
 			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), R.string.reportNoneAvailable, Toast.LENGTH_LONG).show();
-	}
-
-	@Override
-	public void onTextError(String error, ViewType t) {
-		Toast.makeText(mMapFrag.getActivity(), error, Toast.LENGTH_LONG).show();
-
 	}
 
 	@Override
@@ -342,11 +344,5 @@ OnMarkerDragListener, GeocodeAddressUpdateListener
 		}
 		
 	}
-
-	public void update(Context ctx, boolean force) 
-	{
-		mReportUpdater.update(force);
-	}
-
 
 }

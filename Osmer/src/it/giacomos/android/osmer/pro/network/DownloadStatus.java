@@ -44,7 +44,6 @@ public class DownloadStatus {
 	private static DownloadStatus _instance = null;
 
 	public static final long DOWNLOAD_OLD_TIMEOUT = 60000;
-	public static final long DOWNLOAD_REPORT_OLD_TIMEOUT = 10000;
 
 	public boolean homeDownloaded() { return (state & HOME_DOWNLOADED) != 0; }
 	public boolean todayDownloaded() { return (state & TODAY_DOWNLOADED) != 0; }
@@ -71,28 +70,12 @@ public class DownloadStatus {
 	public void init() {
 		state = INIT;
 		m_lastUpdateCompletedAt = 0;
-		mLastReportUpdatedAt = 0;
 	}
 
 	/* suppose it is always necessary to refresh radar image.
 	 * 
 	 */
 	public boolean radarImageDownloaded() { return false;	}
-
-
-	/** Evaluate if the report is old 
-	 * 
-	 * @return
-	 */
-	public boolean reportUpToDate() 
-	{	
-		return (System.currentTimeMillis() - mLastReportUpdatedAt) < DOWNLOAD_REPORT_OLD_TIMEOUT;
-	}
-	
-	public void setReportUpdatedNow()
-	{
-		mLastReportUpdatedAt = System.currentTimeMillis();
-	}
 	
 	/* webcam lists age is externally check in order not to download the 
 	 * webcam lists too frequently.
@@ -250,7 +233,7 @@ public class DownloadStatus {
 	public long state;
 	public boolean isOnline;
 	
-	private long m_lastUpdateCompletedAt, mLastReportUpdatedAt;
+	private long m_lastUpdateCompletedAt;
 
 	public  static final long INIT = 0x0;
 
