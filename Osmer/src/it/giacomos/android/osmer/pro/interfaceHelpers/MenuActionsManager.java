@@ -86,7 +86,7 @@ public class MenuActionsManager implements GeocodeAddressUpdateListener
 	}
 
 	@Override
-	public void onGeocodeAddressUpdate(LocationInfo locationInfo) 
+	public void onGeocodeAddressUpdate(LocationInfo locationInfo, String id_unused_here) 
 	{
 		String message = "";
 		Resources res = mActivity.getResources();

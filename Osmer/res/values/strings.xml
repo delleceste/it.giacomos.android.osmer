@@ -261,6 +261,7 @@
 	<string name="reportUpdate">Refresh</string>
 	<string name="reportUpdateToast">Updating reports</string>
 	<string name="reportAtMost1FieldFilled">Impossible to publish an empty report</string>
+	<string name="reportNeedToBeOnline">Internet connection unavailable</string>
 	
 	<!--  report request -->
 	<string name="reportRequestIncludeLocationName">Include location name</string>
@@ -274,6 +275,8 @@
     <string name="reportRequestCorrectlySent">report request sent</string>
     <string name="reportTouchBaloonToCancel">Touch the baloon to cancel this request.</string>
     <string name="reportRemoveConfirm">Are you sure you want to remove the request?</string>
+    <string name="thereAreNReports">Number of reports: </string>
+    <string name="reportTouchBaloonToRemove">Touch the baloon to remove the report</string>
     
     
     <!-- notification area -->

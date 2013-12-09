@@ -241,7 +241,8 @@
 	<string name="reportUpdate">Aggiorna</string>
 	<string name="reportUpdateToast">Aggiornamento segnalazioni&#8230;</string>
 	<string name="reportAtMost1FieldFilled">Impossibile pubblicare una segnalazione se tutti i campi sono vuoti</string>
-
+  	<string name="reportNeedToBeOnline">E\' necessario essere connessi alla rete</string>
+  	
 	<!--  report request -->
 	<string name="reportRequestIncludeLocationName">Includi il nome della località</string>
     <string name="reportDialogRequestSendButton">Invia richiesta</string>
@@ -255,8 +256,8 @@
         <string name="reportTouchBaloonToCancel">Tocca il fumetto per cancellare questa richiesta.</string>
     <string name="reportRequestCorrectlySent">Richiesta di segnalazione inviata</string>
     <string name="reportRemoveConfirm">Sei sicuro di cancellare la richiesta?</string>
-    
-	 
+    <string name="thereAreNReports">Numero di segnalazioni: </string>
+	 <string name="reportTouchBaloonToRemove">Tocca per rimuovere la tua segnalazione</string>
     <!-- notification area -->
     <string name="notificatonNewReportRequest">Nuova richiesta segnalazione meteo da </string>
 	

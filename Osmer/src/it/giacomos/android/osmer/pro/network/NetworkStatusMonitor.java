@@ -22,7 +22,8 @@ public class NetworkStatusMonitor extends BroadcastReceiver
 
 		NetworkInfo currentNetworkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
 
-		if(currentNetworkInfo.isConnected())
+		m_isConnected = currentNetworkInfo.isConnected();
+		if(m_isConnected)
 			m_networkStatusMonitorListener.onNetworkBecomesAvailable();
 		else 
 			m_networkStatusMonitorListener.onNetworkBecomesUnavailable();

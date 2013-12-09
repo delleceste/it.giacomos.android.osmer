@@ -15,10 +15,15 @@ import it.giacomos.android.osmer.pro.locationUtils.LocationInfo;
 
 public class GeocodeAddressTask extends AsyncTask<Location, Integer, LocationInfo>
 {
-	public GeocodeAddressTask(Context ctx, GeocodeAddressUpdateListener listener)
+	/** @param id a string that can be used to identify the address task.
+	 *  
+	 * The onGeocodeAddressUpdate passes the same id back to the GeocodeAddressUpdateListener
+	 */
+	public GeocodeAddressTask(Context ctx, GeocodeAddressUpdateListener listener, String id)
 	{
 		mContext = ctx;
 		mUpdateListener = listener;
+		mId = id;
 	}
 	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -32,6 +37,11 @@ public class GeocodeAddressTask extends AsyncTask<Location, Integer, LocationInf
 		{
 			return super.execute(location);
 		}
+	}
+	
+	public String getId()
+	{
+		return mId;
 	}
 	
 	protected LocationInfo doInBackground(Location... location)
@@ -79,9 +89,10 @@ public class GeocodeAddressTask extends AsyncTask<Location, Integer, LocationInf
 	
 	protected void onPostExecute(LocationInfo result)
 	{
-		mUpdateListener.onGeocodeAddressUpdate(result);
+		mUpdateListener.onGeocodeAddressUpdate(result, mId);
 	}
 	
 	private Context mContext;
 	private GeocodeAddressUpdateListener mUpdateListener;
+	private String mId;
 }

@@ -3,6 +3,7 @@ package it.giacomos.android.osmer.pro.widgets.map.report;
 import it.giacomos.android.osmer.R;
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -163,11 +164,11 @@ public class ReportData implements DataInterface
 			text += skystr + "\n";
 		
 		if(wind > 0)
-			text += ctx.getResources().getString(R.string.wind) + ": " + windtxtItems[wind] + "\n";
+			text += res.getString(R.string.wind) + ": " + windtxtItems[wind] + "\n";
 		
 		try{
 			Float.parseFloat(temperature);
-			text += ctx.getResources().getString(R.string.temp)  + ": " + temperature + "C\n";
+			text += res.getString(R.string.temp)  + ": " + temperature + "C\n";
 			
 		}
 		catch(NumberFormatException e)
@@ -175,7 +176,10 @@ public class ReportData implements DataInterface
 			
 		}
 		if(comment.length() > 0)
-			text += ctx.getResources().getString(R.string.reportComment) + ":\n" + comment;
+			text += res.getString(R.string.reportComment) + ":\n" + comment;
+		
+		if(isWritable())
+			text += "*" + res.getString(R.string.reportTouchBaloonToRemove);
 		
 		mMarkerOptions = new MarkerOptions();
 		mMarkerOptions.position(new LatLng(latitude, longitude));

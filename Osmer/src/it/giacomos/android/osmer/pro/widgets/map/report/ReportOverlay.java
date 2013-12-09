@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -18,6 +20,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -47,6 +50,7 @@ import it.giacomos.android.osmer.pro.widgets.map.report.network.ReportUpdaterLis
 
 public class ReportOverlay implements OOverlayInterface, 
 ReportOverlayTaskListener, 
+OnMapClickListener,
 OnMarkerClickListener, OnMapLongClickListener, OnInfoWindowClickListener, 
 OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 {
@@ -57,7 +61,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	private MyReportRequestListener mReportRequestListener;
 	private GeocodeAddressTask mGeocodeAddressTask;
 	private ReportUpdater mReportUpdater;
-	
+
 	/* maps the marker id (obtained with marker.getId()) with the associated marker data */
 	private HashMap<String , DataInterface> mDataInterfaceHash;
 
@@ -71,13 +75,14 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		mReportUpdater = new ReportUpdater(oMapFragment.getActivity().getApplicationContext(),  this);
 		mMapFrag.getMap().setInfoWindowAdapter(mMapBaloonInfoWindowAdapter);
 		mDataInterfaceHash = new HashMap<String, DataInterface>();
-		
+
 		/* register as DataPool text listener */
 		/* get data pool reference */
 		DataPoolCacheUtils dataCacheUtils = new DataPoolCacheUtils(); /* cache utils reference */
 		{
 			String text = dataCacheUtils.loadFromStorage(ViewType.REPORT, mMapFrag.getActivity().getApplicationContext());
-			this.onReportUpdateDone(text);
+			Log.e("----------- FROME CHAENC", "from chane!");
+			onReportUpdateDone(text);
 		}
 	}
 
@@ -88,6 +93,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		((OsmerActivity) mMapFrag.getActivity()).getDataPool().unregisterTextListener(ViewType.REPORT);
 		mCancelTasks();
 		mRemoveMarkers();
+		mReportUpdater.clear();
 	}
 
 	private void mRemoveMarkers()
@@ -114,8 +120,8 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	@Override
 	public void hideInfoWindow() 
 	{
-		for(int i = 0; i < mDataInterfaceHash.size(); i++)
-			mDataInterfaceHash.get(i).getMarker().hideInfoWindow();
+		for(String id : mDataInterfaceHash.keySet())
+			mDataInterfaceHash.get(id).getMarker().hideInfoWindow();
 	}
 
 	@Override
@@ -124,9 +130,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		for(String markerId : mDataInterfaceHash.keySet())
 		{
 			Marker m = mDataInterfaceHash.get(markerId).getMarker();
-			if(m == null)
-				Log.e("isInfoWindowVisible", "marker for " + mDataInterfaceHash.get(markerId).getLatitude() +  ","
-						+ mDataInterfaceHash.get(markerId).getLongitude() + " is null");
 			if(m.isInfoWindowShown())
 				return true;
 		}
@@ -139,6 +142,9 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	 */
 	public void onReportOverlayTaskFinished(DataInterface [] dataInterfaceList) 
 	{
+		Context ctx = mMapFrag.getActivity().getApplicationContext();
+		Resources res = ctx.getResources();
+		int reportCount = 0;
 		if(dataInterfaceList != null) /* the task may return null */
 		{
 			Log.e("onReportOverlayTaskFinished", "got " + dataInterfaceList.length);
@@ -151,10 +157,15 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 				dataI.setMarker(marker);
 				/* insert data into hash map for future use */
 				mDataInterfaceHash.put(marker.getId(), dataI);
+				if(dataI.getType() == DataInterface.TYPE_REPORT)
+					reportCount++;
 			}
 			/* do not need data interface list anymore, since it's been saved into hash */
 			dataInterfaceList = new DataInterface[0];
 		}
+		if(reportCount > 0)
+			Toast.makeText(ctx,  res.getString(R.string.thereAreNReports) +
+					reportCount, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -169,17 +180,16 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	{
 		mReportUpdater.update(force);
 	}
-	
+
 	@Override
 	public void onReportUpdateError(String error)
 	{
 		Toast.makeText(mMapFrag.getActivity(), error, Toast.LENGTH_LONG).show();
 	}
-	
+
 	@Override
 	public void onReportUpdateDone(String txt) 
 	{		
-		Log.e("ReportOverlay.onTextChanged", " : "  + txt);
 		int reportDataLen = 0, requestDataLen = 0;
 		/* In this first implementation, let the markers be updated even if the text has not changed.
 		 * When the task has been completed, the buddy request notification marker is drawn if pertinent,
@@ -195,7 +205,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 			reportDataLen = reportDataList.length;
 		if(requestDataList != null)
 			requestDataLen = requestDataList.length;
-		
+
 		DataInterface dataList[] = new DataInterface[reportDataLen + requestDataLen];
 		if(reportDataLen > 0) /* reportDataList not null */
 			System.arraycopy(reportDataList, 0, dataList, 0,  reportDataLen);
@@ -212,6 +222,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	@Override
 	public void onMapLongClick(LatLng point) 
 	{
+		mRemoveUnpublishedMyRequestMarkers();
 		Marker myRequestMarker = mCreateMyRequestMarker(point);
 		mStartGeocodeAddressTask(myRequestMarker);
 		myRequestMarker.showInfoWindow();
@@ -233,7 +244,8 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		Marker myRequestMarker = mMapFrag.getMap().addMarker(myRequestData.getMarkerOptions());
 		myRequestData.setMarker(myRequestMarker);
 		/* prepend "MyRequestMarker" to the id of my request marker */
-		mDataInterfaceHash.put("MyRequestMarker" + myRequestMarker.getId(), myRequestData);
+		mDataInterfaceHash.put(myRequestMarker.getId(), myRequestData);
+
 		return myRequestMarker;
 	}
 
@@ -245,7 +257,9 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	private void mStartGeocodeAddressTask(Marker marker)
 	{
 		Log.e("ReportOverlay.mStartGeocodeAddressTask", "starting geocode address task");
-		mGeocodeAddressTask = new GeocodeAddressTask(mMapFrag.getActivity().getApplicationContext(), this);
+		mGeocodeAddressTask = 
+				new GeocodeAddressTask(mMapFrag.getActivity().getApplicationContext(),
+						this, marker.getId());
 		LatLng ll = marker.getPosition();
 		Location location = new Location("");
 		location.setLatitude(ll.latitude);
@@ -257,6 +271,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	public void onInfoWindowClick(Marker marker) 
 	{
 		DataInterface dataI = mDataInterfaceHash.get(marker.getId());
+		Log.e("onInfoWindowClick", "dataI " + dataI);
 		/* retrieve my request marker, if present. If it's mine and not published, trigger the request dialog
 		 * execution.
 		 */
@@ -272,12 +287,15 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		{
 			mReportRequestListener.onMyReportRequestDialogCancelled(marker.getPosition());
 		}
+		else if(dataI == null) /* must build a new request */
+		{
+
+		}
 	}
 
 	@Override
 	public void onMarkerDrag(Marker arg0) {
 
-		Log.e("ReportOverlay.onMarkerDrag", "marker " + arg0.getTitle());
 	}
 
 	@Override
@@ -298,22 +316,17 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	}
 
 	@Override
-	public void onGeocodeAddressUpdate(LocationInfo locationInfo) 
+	public void onGeocodeAddressUpdate(LocationInfo locationInfo, String id) 
 	{	
-		Log.e("ReportOverlay.onGeocodeAddressUpdate", "got location info!");
-		for(DataInterface dataI : mDataInterfaceHash.values())
+		DataInterface dataI = mDataInterfaceHash.get(id);
+		if(dataI != null) /* may have been removed */
 		{
-			/* get, among all DataInterface entries, the requests and our request */
-			if(dataI.getType() == DataInterface.TYPE_REQUEST && dataI.isWritable() 
-					&& locationInfo.latitude == dataI.getLatitude() 
-					&& locationInfo.longitude == dataI.getLongitude())
-			{
-				RequestData rd = (RequestData) dataI;
-				rd.updateWithLocality(locationInfo.locality, mMapFrag.getActivity().getApplicationContext());
-				rd.getMarker().hideInfoWindow();
-				rd.getMarker().showInfoWindow();
-				mReportRequestListener.onMyReportLocalityChanged(locationInfo.locality);
-			}
+			RequestData rd = (RequestData) dataI;
+			rd.setLocality(locationInfo.locality);
+			rd.updateWithLocality(locationInfo.locality, mMapFrag.getActivity().getApplicationContext());
+			rd.getMarker().hideInfoWindow();
+			rd.getMarker().showInfoWindow();
+			mReportRequestListener.onMyReportLocalityChanged(locationInfo.locality);
 		}
 	}
 
@@ -322,14 +335,16 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		Log.e("onPostActionResult", " err " + error + " post type " + postType);
 		if(postType == PostType.REQUEST)
 		{
-			
+
 		}
 	}
 
 	public void removeMyPendingReportRequestMarker(LatLng position) 
 	{
-		for(DataInterface dataI : mDataInterfaceHash.values())
+		for(Iterator<Map.Entry<String, DataInterface>> it = mDataInterfaceHash.entrySet().iterator(); it.hasNext(); ) 
 		{
+			Map.Entry<String, DataInterface> entry = it.next();
+			DataInterface dataI = entry.getValue();
 			/* get, among all DataInterface entries, the requests and our request */
 			if(dataI.getType() == DataInterface.TYPE_REQUEST && dataI.isWritable() 
 					&& position.latitude == dataI.getLatitude() 
@@ -338,11 +353,36 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 				Log.e("removeMyPendingReportRequestMarker", "Cancel hit on dialog? removing maker "
 						+ dataI.getLocality() + dataI.getMarker().getTitle());
 				Marker toRemoveMarker = dataI.getMarker();
-				mDataInterfaceHash.remove(toRemoveMarker.getId());
 				toRemoveMarker.remove();
+				it.remove(); /* remove from hash */
 			}
 		}
-		
+
+	}
+
+	@Override
+	public void onMapClick(LatLng arg0) 
+	{
+		if(this.isInfoWindowVisible())
+			this.hideInfoWindow();
+		else
+			mRemoveUnpublishedMyRequestMarkers();
+
+	}
+
+	private void mRemoveUnpublishedMyRequestMarkers() 
+	{
+		for(Iterator<Map.Entry<String, DataInterface>> it = mDataInterfaceHash.entrySet().iterator(); it.hasNext(); ) 
+		{
+			Map.Entry<String, DataInterface> entry = it.next();
+
+			DataInterface di = entry.getValue();
+			if(di.getType() == DataInterface.TYPE_REQUEST && !di.isPublished() && di.isWritable())
+			{
+				di.getMarker().remove();
+				it.remove();
+			}
+		}
 	}
 
 }

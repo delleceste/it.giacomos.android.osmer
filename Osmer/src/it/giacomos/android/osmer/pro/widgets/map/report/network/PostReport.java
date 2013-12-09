@@ -1,10 +1,7 @@
 package it.giacomos.android.osmer.pro.widgets.map.report.network;
 
-import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.network.state.Urls;
-import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 public class PostReport implements PostReportTaskListener, PostInterface
 {

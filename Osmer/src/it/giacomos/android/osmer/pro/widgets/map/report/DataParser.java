@@ -29,7 +29,7 @@ public class DataParser
 				{
 					ReportData rd = null;
 					String [] parts = line.split("::", -1);
-					Log.e("DataParser.parseReports", line + ", " +parts.length);
+				//	Log.e("DataParser.parseReports", line + ", " +parts.length);
 
 					sky = wind = -1;
 					if(parts.length > 9) /* should be 10 */
@@ -97,7 +97,7 @@ public class DataParser
 				{
 					RequestData rd = null;
 					String [] parts = line.split("::", -1);
-					Log.e("DataParser.parseRequests", line + ", " +parts.length);
+				//	Log.e("DataParser.parseRequests", line + ", " +parts.length);
 
 					if(parts.length > 6) /* should be 7 */
 					{

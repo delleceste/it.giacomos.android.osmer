@@ -35,7 +35,6 @@ public class ReportOverlayTask extends AsyncTask<DataInterface, Integer, DataInt
 			return null;
 		
 		int dataSiz = params.length;
-		MarkerOptions markerOptions;
 		for(int i = 0; i < dataSiz; i++)
 		{
 			if(this.isCancelled())

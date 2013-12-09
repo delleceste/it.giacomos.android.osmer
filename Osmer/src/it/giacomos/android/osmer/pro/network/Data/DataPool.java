@@ -96,7 +96,6 @@ public class DataPool implements DownloadListener
 	
 	public void registerTextListener(ViewType vt, DataPoolTextListener txtL)
 	{
-		Log.e("registerTextListener", "registering " + vt);
 		mTextListeners.put(vt, txtL);
 		/* immediately notify if data is present */
 		if(mStringData.containsKey(vt))

@@ -65,6 +65,11 @@ public class RequestData implements DataInterface
 	public String getLocality() {
 		return locality;
 	}
+	
+	public void setLocality(String loc)
+	{
+		locality = loc;
+	}
 
 	@Override
 	public MarkerOptions buildMarkerOptions(Context ctx) 
@@ -72,22 +77,23 @@ public class RequestData implements DataInterface
 		Resources res = ctx.getResources();
 		String  title;
 
-		MarkerOptions reqMarkerO = new MarkerOptions();
-		reqMarkerO.position(new LatLng(latitude, longitude));
+		mMarkerOptions = new MarkerOptions();
+		mMarkerOptions.position(new LatLng(latitude, longitude));
 		if(!isWritable())
 		{
 			title = res.getString(R.string.reportRequested);
-			reqMarkerO.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+			mMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 		}
 		else
 		{
 			title = res.getString(R.string.reportRequest);
-			reqMarkerO.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-			reqMarkerO.draggable(true);
+			mMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+			if(!mIsPublished)
+				mMarkerOptions.draggable(true);
 		}
 
-		reqMarkerO.title(title);
-		reqMarkerO.snippet(mMakeSnippet(locality, ctx));
+		mMarkerOptions.title(title);
+		mMarkerOptions.snippet(mMakeSnippet(locality, ctx));
 
 		return mMarkerOptions;
 	}
@@ -99,8 +105,7 @@ public class RequestData implements DataInterface
 
 	@Override
 	public Marker getMarker() {
-		// TODO Auto-generated method stub
-		return null;
+		return mMarker;
 	}
 
 	@Override

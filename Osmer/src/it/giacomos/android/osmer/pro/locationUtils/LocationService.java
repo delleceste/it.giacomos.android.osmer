@@ -182,7 +182,7 @@ GeocodeAddressUpdateListener
 
 	public void updateGeocodeAddress()
 	{
-		GeocodeAddressTask geocodeAddressTask = new GeocodeAddressTask(mContext, this);
+		GeocodeAddressTask geocodeAddressTask = new GeocodeAddressTask(mContext, this, "LocationService");
 		geocodeAddressTask.parallelExecute(mCurrentLocation);
 	}
 	
@@ -212,7 +212,7 @@ GeocodeAddressUpdateListener
 	@Override
 	/* executed when a new locality / address becomes available.
 	 */
-	public void onGeocodeAddressUpdate(LocationInfo locInfo)
+	public void onGeocodeAddressUpdate(LocationInfo locInfo, String id_unused_here)
 	{
 		if(locInfo.error.isEmpty())
 		{

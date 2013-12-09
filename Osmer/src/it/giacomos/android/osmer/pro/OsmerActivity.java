@@ -931,7 +931,7 @@ MyReportRequestListener
 			else if(id == ViewType.REPORT)
 			{
 				Log.e("switchView", "updating report");
-				updateReport(false);
+			//	updateReport(false);
 			}
 		}
 
