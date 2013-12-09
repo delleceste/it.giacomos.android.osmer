@@ -9,6 +9,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 
 import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.R;
@@ -684,10 +685,24 @@ RadarAnimationListener
 	}
 
 	/** please invoke when in REPORT mode */
-	public void onPostActionResult(boolean canceled, boolean error, String message, PostType postType) 
+	public void onPostActionResult(boolean error, String message, PostType postType) 
 	{
 		if(mReportOverlay != null)
-			mReportOverlay.onPostActionResult(canceled, error, message, postType);
+			mReportOverlay.onPostActionResult(error, message, postType);
+	}
+
+	public void myReportRequestDialogCancelled(LatLng position) {
+		if(mMode.currentMode == MapMode.REPORT && mReportOverlay != null)
+			mReportOverlay.removeMyPendingReportRequestMarker(position);
+			
+		
+	}
+
+	public void updateReport(boolean force) 
+	{
+		if(mMode.currentMode == MapMode.REPORT && mReportOverlay != null)
+			mReportOverlay.update(this.getActivity().getApplicationContext(), force);
+		
 	}
 
 }

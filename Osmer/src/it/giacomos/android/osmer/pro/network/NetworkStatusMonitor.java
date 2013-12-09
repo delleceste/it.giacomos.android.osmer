@@ -7,7 +7,8 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-public class NetworkStatusMonitor extends BroadcastReceiver {
+public class NetworkStatusMonitor extends BroadcastReceiver 
+{
 	public NetworkStatusMonitor(NetworkStatusMonitorListener networkStatusMonitorListener)
 	{
 		m_networkStatusMonitorListener = networkStatusMonitorListener;

@@ -60,13 +60,13 @@ public class DelayedWebcamOverlayInitializer implements Runnable {
 			/* load from cache */
 			webcamStr = dpcu.loadFromStorage(ViewType.WEBCAMLIST_OSMER, mContext);
 			/* the last true parameters is textChanged and triggers an update */
-			mWebcamOverlay.onTextRefresh(webcamStr, ViewType.WEBCAMLIST_OSMER, true, true);
+			mWebcamOverlay.onTextChanged(webcamStr, ViewType.WEBCAMLIST_OSMER, true);
 		}
 		
 		if(!mDataPool.isTextValid(ViewType.WEBCAMLIST_OTHER))
 		{
 			webcamStr = dpcu.loadFromStorage(ViewType.WEBCAMLIST_OTHER, mContext);
-			mWebcamOverlay.onTextRefresh(webcamStr, ViewType.WEBCAMLIST_OTHER, true, true);
+			mWebcamOverlay.onTextChanged(webcamStr, ViewType.WEBCAMLIST_OTHER, true);
 		}
 	}
 }

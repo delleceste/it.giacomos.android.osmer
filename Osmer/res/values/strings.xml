@@ -21,6 +21,7 @@
     <string name="title_webcam">Webcam</string>
     
     <string name="yes">yes</string>
+    <string name="no">no</string>
     <string name="reliability">Reliability</string>
     <string name="emission_date">Emission date: </string>
     <string name="hours">ore</string>
@@ -271,6 +272,8 @@
     <string name="reportRequested">Report request</string>
     <string name="reportTouchBaloonToRequest">Touch this baloon to make a request.\nTouch on another point of the map to remove the marker</string>
     <string name="reportRequestCorrectlySent">report request sent</string>
+    <string name="reportTouchBaloonToCancel">Touch the baloon to cancel this request.</string>
+    <string name="reportRemoveConfirm">Are you sure you want to remove the request?</string>
     
     
     <!-- notification area -->

@@ -96,8 +96,8 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 	public void onPostExecute(String doc)
 	{
 		if(mErrorMsg.isEmpty())
-			mReportPublishedListener.onPostActionResult(false, false, "", PostType.REQUEST);
+			mReportPublishedListener.onPostActionResult(false, "", PostType.REQUEST);
 		else
-			mReportPublishedListener.onPostActionResult(false, true, mErrorMsg, PostType.REQUEST);
+			mReportPublishedListener.onPostActionResult(true, mErrorMsg, PostType.REQUEST);
 	}
 }

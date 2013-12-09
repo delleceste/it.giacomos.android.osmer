@@ -25,7 +25,7 @@ public class OTextView extends TextView implements DataPoolTextListener
 		mStringType = ViewType.HOME;
 		mHtml  = null;
 	}
-	
+
 	/* invoked after that the TextTask has completed */
 	public final void setHtml(String html)
 	{
@@ -38,27 +38,26 @@ public class OTextView extends TextView implements DataPoolTextListener
 	}
 
 	@Override
-	public void onTextRefresh(String txt, ViewType t, boolean fromCache, boolean textChanged) 
+	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
 	{
-		if(textChanged)
-			setHtml(txt);
+		setHtml(txt);
 	}
-	
+
 	public void onTextError(String error, ViewType t)
 	{
-		
+
 	}
-	
+
 	public void setViewType(ViewType t)
 	{
 		mStringType = t;
 	}
-	
+
 	public ViewType getViewType()
 	{
 		return mStringType;
 	}
-	
+
 	public String getHtml() {
 		return mHtml;
 	}

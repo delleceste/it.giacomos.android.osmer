@@ -8,6 +8,8 @@
     <string name="author">&#169; 2013</string>
     <string name="author_web">http://www.giacomos.it</string>
     <string name="yes">sì</string>
+    <string name="no">no</string>
+    
     <string name="home_title">Situazione</string>
     <string name="today_title">Oggi</string>
     <string name="tomorrow_title">Domani</string>
@@ -250,7 +252,9 @@
 	<string name="reportLocality">Località</string>
     <string name="reportTouchBaloonToRequest">Tocca il fumetto per inviare una richiesta o sposta il segnaposti per cambiare la posizione
         \nAltrimenti tocca un altro punto della mappa per rimuovere il marker.</string>
+        <string name="reportTouchBaloonToCancel">Tocca il fumetto per cancellare questa richiesta.</string>
     <string name="reportRequestCorrectlySent">Richiesta di segnalazione inviata</string>
+    <string name="reportRemoveConfirm">Sei sicuro di cancellare la richiesta?</string>
     
 	 
     <!-- notification area -->

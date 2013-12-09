@@ -42,6 +42,8 @@ public class GeocodeAddressTask extends AsyncTask<Location, Integer, LocationInf
 			LocationInfo locationInfo = new LocationInfo();
 			if(location[0] != null)
 			{
+				locationInfo.latitude = location[0].getLatitude();
+				locationInfo.longitude = location[0].getLongitude();
 				Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
 				try{
 					locationInfo.provider = location[0].getProvider();

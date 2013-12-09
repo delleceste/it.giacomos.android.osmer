@@ -61,7 +61,10 @@ public class DataParser
 						}
 					}
 					if(rd == null) /* a parse error occurred: invalidate all document parsing */
-						return null;
+					{
+						tmpArray.clear();
+						break;
+					}
 				}
 			}
 		}
@@ -102,8 +105,8 @@ public class DataParser
 							lat = Float.parseFloat(parts[4]);
 							lon = Float.parseFloat(parts[5]);
 							/* parts[1] is writable */
-							/* RequestData(String d, String user, double la, double lo, String wri) */
-							rd = new RequestData(parts[2], parts[3], lat, lon, parts[1]);
+							/* RequestData(String d, String user, double la, double lo, String wri, boolean isSatisfied) */
+							rd = new RequestData(parts[2], parts[3], parts[6], lat, lon, parts[1], true);
 							tmpArray.add(rd);
 						}
 						catch(NumberFormatException e)

@@ -107,7 +107,7 @@ public class DataPool implements DownloadListener
 			 * registered)
 			 */
 			if(sd.isValid())
-				txtL.onTextRefresh(sd.text, vt, sd.fromCache, true);
+				txtL.onTextChanged(sd.text, vt, sd.fromCache);
 			else
 				txtL.onTextError(sd.error, vt);
 		}
@@ -238,7 +238,7 @@ public class DataPool implements DownloadListener
 		if(textChanged)
 			mStringData.put(t, newSd); /* put in hash */
 		if(mTextListeners.containsKey(t))
-			mTextListeners.get(t).onTextRefresh(text, t, false, textChanged);
+			mTextListeners.get(t).onTextChanged(text, t, false);
 		
 	}
 

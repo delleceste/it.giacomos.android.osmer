@@ -6,4 +6,6 @@ public interface MyReportRequestListener
 {
 	public void onMyReportRequestTriggered(LatLng pointOnMap, String mMyRequestMarkerLocality);
 	public void onMyReportLocalityChanged(String locality);
+	public void onMyReportRequestDialogCancelled(LatLng position);
+	public void onMyReportRequestRemove(LatLng position);
 }

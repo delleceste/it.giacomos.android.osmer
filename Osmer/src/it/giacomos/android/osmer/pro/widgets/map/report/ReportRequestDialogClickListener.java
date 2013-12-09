@@ -32,11 +32,12 @@ public class ReportRequestDialogClickListener implements OnClickListener {
 	{
 		Dialog d = (Dialog) dialogI;
 		OsmerActivity oActivity = (OsmerActivity) mReportRequestDialogFragment.getActivity();
+		LatLng llng = mReportRequestDialogFragment.getLatLng();
+		if(llng == null) /* should not be null since the dialog waits for location before enabling the ok button */
+			return;
+		
 		if(whichButton == AlertDialog.BUTTON_POSITIVE)
 		{
-			LatLng llng = mReportRequestDialogFragment.getLatLng();
-			if(llng == null) /* should not be null since the dialog waits for location before enabling the ok button */
-				return;
 			String user;
 			String locality = "";
 			CheckBox cb = (CheckBox) d.findViewById(R.id.cbIncludeLocationName);
@@ -59,7 +60,7 @@ public class ReportRequestDialogClickListener implements OnClickListener {
 			}
 			else
 			{
-				oActivity.onPostActionResult(false, true, oActivity.getResources().getString(R.string.reportMustInsertUserName), PostType.REQUEST);
+				oActivity.onPostActionResult(true, oActivity.getResources().getString(R.string.reportMustInsertUserName), PostType.REQUEST);
 			}
 		}
 		else
@@ -67,7 +68,7 @@ public class ReportRequestDialogClickListener implements OnClickListener {
 			EditText et = (EditText) d.findViewById(R.id.etRequestName);
 			Settings s = new Settings(oActivity);
 			s.setReporterUserName(et.getText().toString());
-			oActivity.onPostActionResult(true, false, "", PostType.REQUEST);
+			oActivity.onMyReportRequestDialogCancelled(llng);
 		}
 	}
 

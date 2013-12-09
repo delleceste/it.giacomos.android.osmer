@@ -127,10 +127,10 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 		}
 	}
 	
-	public void getReport()
+	public void getReport(String url)
 	{
 		if(!mIsTextTaskExecuting(ViewType.REPORT))
-			startTextTask(m_urls.getReportUrl(), ViewType.REPORT);
+			startTextTask(url, ViewType.REPORT);
 	}
 
 	/* for now, webcam list is obtained by a couple of files
@@ -188,12 +188,6 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			
 			if(!mIsTextTaskExecuting(ViewType.DAILY_TABLE))
 				mGetObservationsTable(MapMode.DAILY_OBSERVATIONS);
-		}
-
-		if(vt == ViewType.REPORT)
-		{
-			Log.e("Online.onTextUpdate", "marking report is updataed now");
-			dDownloadStatus.setReportUpdatedNow();
 		}
 		
 		dDownloadStatus.updateState(vt, errorMessage.isEmpty());

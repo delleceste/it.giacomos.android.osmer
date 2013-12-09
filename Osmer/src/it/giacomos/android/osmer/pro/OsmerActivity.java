@@ -44,7 +44,9 @@ import it.giacomos.android.osmer.pro.widgets.map.MyReportRequestListener;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
 import it.giacomos.android.osmer.pro.widgets.map.report.IconTextSpinnerAdapter;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportDialogFragment;
+import it.giacomos.android.osmer.pro.widgets.map.report.ReportRequestCancelConfirmDialog;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportRequestDialogFragment;
+import it.giacomos.android.osmer.pro.widgets.map.report.UsersReportUrlBuilder;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostType;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.ReportPublishedListener;
 import android.app.ActionBar;
@@ -303,13 +305,11 @@ MyReportRequestListener
 		 * above. Situation image will register as LatestObservationCacheChangeListener
 		 * in SituationFragment.onActivityCreated. It will be immediately notified
 		 * inside ObservationsCache.setLatestObservationCacheChangeListener.
-		 * Last true indicates that the text has changed in order to make observationsCache 
-		 * load data.
 		 */
-		m_observationsCache.onTextRefresh(dataPoolCacheUtils.loadFromStorage(ViewType.DAILY_TABLE, getApplicationContext()),
-				ViewType.DAILY_TABLE, true, true);
-		m_observationsCache.onTextRefresh(dataPoolCacheUtils.loadFromStorage(ViewType.LATEST_TABLE, getApplicationContext()),
-				ViewType.LATEST_TABLE, true, true);
+		m_observationsCache.onTextChanged(dataPoolCacheUtils.loadFromStorage(ViewType.DAILY_TABLE, getApplicationContext()),
+				ViewType.DAILY_TABLE, true);
+		m_observationsCache.onTextChanged(dataPoolCacheUtils.loadFromStorage(ViewType.LATEST_TABLE, getApplicationContext()),
+				ViewType.LATEST_TABLE, true);
 		/* create the location update client and connect it to the location service */
 		mLocationService.connect();
 
@@ -526,11 +526,17 @@ MyReportRequestListener
 
 	void updateReport(boolean force)
 	{
-		if(!this.mDownloadStatus.reportUpToDate() || force)
-		{
-			Toast.makeText(this, R.string.reportUpdateToast, Toast.LENGTH_SHORT).show();
-			m_downloadManager.updateReport();
-		}
+		getMapFragment().updateReport(force);
+//		if(!this.mDownloadStatus.reportUpToDate() || force)
+//		{
+//			Toast.makeText(this, R.string.reportUpdateToast, Toast.LENGTH_SHORT).show();
+//			/* the url for get_report.php requires the Android device id, the latitude and the longitude
+//			 * of the current location. So we use the UsersReportUrlBuilder class to build the correct
+//			 * URL.
+//			 */
+//			m_downloadManager.updateUserReports(new UsersReportUrlBuilder().build(mLocationService, 
+//					getApplicationContext()));
+//		}
 	}
 	
 	void satellite()
@@ -612,27 +618,23 @@ MyReportRequestListener
 	}
 
 	@Override
-	public void onPostActionResult(boolean canceled, boolean error, String message, PostType postType) 
+	public void onPostActionResult(boolean error, String message, PostType postType) 
 	{
-		if(!error && !canceled)
+		if(!error)
 		{
 			Toast.makeText(this, R.string.reportDataSentOk, Toast.LENGTH_SHORT).show();
 		}
-		else if(!canceled)
+		else
 		{
 			String m = this.getResources().getString(R.string.reportError) + "\n" + message;
 			Toast.makeText(this, m, Toast.LENGTH_LONG).show();
 		}
 		/* invoked when the user has successfully published its report */
-		if(mCurrentViewType == ViewType.REPORT && !canceled)
-		{
-			Log.e("switchView", "updating report (forceth)");
-			updateReport(true);
-		}
 		if(mCurrentViewType == ViewType.REPORT)
 		{
-			/* the Report overlay may need this information */
-			getMapFragment().onPostActionResult(canceled, error, message, postType);
+			Log.e("switchView", "updating report (forceth)");
+			getMapFragment().onPostActionResult(error, message, postType);
+			updateReport(true);
 		}
 	}
 	
@@ -651,7 +653,23 @@ MyReportRequestListener
 	{
 		ReportRequestDialogFragment rrdf = new ReportRequestDialogFragment();
 		rrdf.setData(pointOnMap, locality);
+		rrdf.setShowsDialog(false);
 		rrdf.show(getSupportFragmentManager(), "ReportRequestDialogFragment");
+	}
+	
+	@Override
+	public void onMyReportRequestRemove(LatLng position) 
+	{
+		ReportRequestCancelConfirmDialog rrccd = new ReportRequestCancelConfirmDialog();
+		rrccd.setLatLng(position);
+		rrccd.show(getSupportFragmentManager(), "ReportRequestCancelConfirmDialog");
+	}
+	
+
+	@Override
+	public void onMyReportRequestDialogCancelled(LatLng position) 
+	{
+		getMapFragment().myReportRequestDialogCancelled(position);
 	}
 	
 	public void onSelectionDone(ObservationType observationType, MapMode mapMode) 
@@ -1084,4 +1102,5 @@ MyReportRequestListener
 
 
 	int availCnt = 0;
+
 }

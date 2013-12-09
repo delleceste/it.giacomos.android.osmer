@@ -1,5 +1,7 @@
 package it.giacomos.android.osmer.pro.network.state;
 
+import java.net.URL;
+
 import it.giacomos.android.osmer.pro.network.DownloadManagerUpdateListener;
 import it.giacomos.android.osmer.pro.network.DownloadStatus;
 import it.giacomos.android.osmer.pro.observations.MapMode;
@@ -58,7 +60,7 @@ public abstract class State
 		
 	}
 
-	public void getReport() 
+	public void getReport(String url) 
 	{
 		
 	}

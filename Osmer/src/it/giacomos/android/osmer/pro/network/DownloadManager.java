@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.pro.network;
 
 import java.io.InputStream;
+import java.net.URL;
 
 import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.pro.network.Data.DownloadListener;
@@ -102,9 +103,12 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 		m_state.getWebcamList();
 	}
 	
-	public void updateReport()
+	public void updateUserReports(String url)
 	{
-		m_state.getReport();
+		if(url != null)
+			m_state.getReport(url);
+		else
+			Log.e("DownloadManager, url is null", "YEA, NULL");
 	}
 	
 	public void getObservationsTable(MapMode mapMode) 

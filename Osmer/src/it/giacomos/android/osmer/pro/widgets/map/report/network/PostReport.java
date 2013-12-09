@@ -23,7 +23,7 @@ public class PostReport implements PostReportTaskListener, PostInterface
 	@Override
 	public void onTaskCompleted( boolean error, String message) 
 	{
-		mReportPublishedListener.onPostActionResult(false, error, message, PostType.REPORT);
+		mReportPublishedListener.onPostActionResult(error, message, PostType.REPORT);
 	}
 
 	@Override
