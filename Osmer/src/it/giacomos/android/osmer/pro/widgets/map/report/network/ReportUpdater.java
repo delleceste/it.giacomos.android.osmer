@@ -56,6 +56,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 		mContext = ctx;
 		mLocationClient = new LocationClient(ctx, this, this);
 		mNetworkStatusMonitor = new NetworkStatusMonitor(this);
+		mContext.registerReceiver(mNetworkStatusMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 		mReportUpdaterListener = rul;
 		mLastReportUpdatedAt = 0;
 	}
@@ -65,12 +66,13 @@ GooglePlayServicesClient.OnConnectionFailedListener
 		if(mLocationClient != null)
 			mLocationClient.disconnect();
 		mContext.unregisterReceiver(mNetworkStatusMonitor);
+		/* cancel thread if running */
+		this.cancel(false);
 	}
 	
 	public void update(boolean force)
 	{
 		Toast.makeText(mContext, "ReportUpdater.update: registering status monitor", Toast.LENGTH_LONG).show();
-		mContext.registerReceiver(mNetworkStatusMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 	}
 	
 	@Override
@@ -125,7 +127,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 		try {
 			form = new UrlEncodedFormEntity(postParameters);
 	        request.setEntity(form);
-	        Log.e("ReportUpdater.doInBackground", postParameters.toString());
+	        Log.e("ReportUpdater.doInBackground", "thread " + Thread.currentThread());
 	        HttpResponse response = httpClient.execute(request);
 	        StatusLine statusLine = response.getStatusLine();
 	        if(statusLine.getStatusCode() < 200 || statusLine.getStatusCode() >= 300)
@@ -160,6 +162,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	public void onConnected(Bundle arg0) 
 	{
 		Toast.makeText(mContext, "onConnected: location avail. would start update", Toast.LENGTH_LONG).show();
+		Log.e("ReportUpdater.onConnected", "thread "+ Thread.currentThread());
 		this.execute(new Urls().getReportUrl());
 	}
 
