@@ -11,6 +11,8 @@ public interface DataInterface
 	public static int TYPE_REQUEST = 1;
 	public double getLatitude();
 	public double getLongitude();
+	public void setLatitude(double d);
+	public void setLongitude(double lon);
 	public int getType();
 	public String getLocality();
 	

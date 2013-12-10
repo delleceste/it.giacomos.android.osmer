@@ -1,7 +1,6 @@
 package it.giacomos.android.osmer.pro.widgets.map.report;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,7 +13,6 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -24,26 +22,20 @@ import android.content.res.Resources;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.util.SparseArray;
 import android.widget.Toast;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.pro.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.pro.locationUtils.GeocodeAddressUpdateListener;
 import it.giacomos.android.osmer.pro.locationUtils.LocationInfo;
-import it.giacomos.android.osmer.pro.network.Data.DataPool;
 import it.giacomos.android.osmer.pro.network.Data.DataPoolCacheUtils;
-import it.giacomos.android.osmer.pro.network.Data.DataPoolTextListener;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
 import it.giacomos.android.osmer.pro.preferences.Settings;
-import it.giacomos.android.osmer.pro.service.sharedData.NotificationData;
-import it.giacomos.android.osmer.pro.service.sharedData.ReportRequestNotification;
-import it.giacomos.android.osmer.pro.service.sharedData.ServiceSharedData;
 import it.giacomos.android.osmer.pro.widgets.map.MapBaloonInfoWindowAdapter;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.pro.widgets.map.OOverlayInterface;
 import it.giacomos.android.osmer.pro.widgets.map.OverlayType;
-import it.giacomos.android.osmer.pro.widgets.map.MyReportRequestListener;
+import it.giacomos.android.osmer.pro.widgets.map.ReportRequestListener;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostType;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.ReportUpdater;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.ReportUpdaterListener;
@@ -58,7 +50,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	private OMapFragment mMapFrag;
 	private ReportOverlayTask mReportOverlayTask;
 	private MapBaloonInfoWindowAdapter mMapBaloonInfoWindowAdapter;
-	private MyReportRequestListener mReportRequestListener;
+	private ReportRequestListener mMyReportRequestListener; /* OsmerActivity */
 	private GeocodeAddressTask mGeocodeAddressTask;
 	private ReportUpdater mReportUpdater;
 
@@ -68,7 +60,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	public ReportOverlay(OMapFragment oMapFragment) 
 	{
 		mMapFrag = oMapFragment;
-		mReportRequestListener = null;
+		mMyReportRequestListener = null; /* OsmerActivity */
 		mReportOverlayTask = null;
 		mMapBaloonInfoWindowAdapter = new MapBaloonInfoWindowAdapter(mMapFrag.getActivity());
 		mGeocodeAddressTask = null;
@@ -148,6 +140,10 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		if(dataInterfaceList != null) /* the task may return null */
 		{
 			Log.e("onReportOverlayTaskFinished", "got " + dataInterfaceList.length);
+			/* save my request markers that haven't been published yet in order not to lose them
+			 * when the update takes place. Actually, mRemoveMarkers below clears all markers.
+			 */
+			ArrayList<DataInterface> myRequestsYetUnpublishedBackup = mSaveYetUnpublishedMyRequestData();
 			mRemoveMarkers();
 			for(DataInterface dataI : dataInterfaceList)
 			{
@@ -162,6 +158,8 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 			}
 			/* do not need data interface list anymore, since it's been saved into hash */
 			dataInterfaceList = new DataInterface[0];
+			/* restore yet unpublished markers that the user was just placing into the map */
+			mRestoreYetUnpublishedMyRequestData(myRequestsYetUnpublishedBackup);
 		}
 		if(reportCount > 0)
 			Toast.makeText(ctx,  res.getString(R.string.thereAreNReports) +
@@ -187,6 +185,16 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		Toast.makeText(mMapFrag.getActivity(), error, Toast.LENGTH_LONG).show();
 	}
 
+	/** This is invoked when the report data in textual form has completed downloading.
+	 * @param txt the downloaded data in simple text format.
+	 * 
+	 * This method parses the textual data and creates two lists, using DataParser class:
+	 * 1) the published reports (of type ReportData)
+	 * 2) the pending request list (of type RequestData).
+	 * The two lists are merged together and sent to an async task that creates the data
+	 * structures used to afterwards build markers and place them on the map.
+	 * When the async task finishes, onReportOverlayTaskFinished() method is invoked.
+	 */
 	@Override
 	public void onReportUpdateDone(String txt) 
 	{		
@@ -249,9 +257,9 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		return myRequestMarker;
 	}
 
-	public void setOnReportRequestListener(MyReportRequestListener rrl)
+	public void setOnReportRequestListener(ReportRequestListener rrl)
 	{
-		mReportRequestListener = rrl;
+		mMyReportRequestListener = rrl;  /* OsmerActivity */
 	}
 
 	private void mStartGeocodeAddressTask(Marker marker)
@@ -268,6 +276,27 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	}
 
 	@Override
+	public void onGeocodeAddressUpdate(LocationInfo locationInfo, String id) 
+	{	
+		Log.e("ReportOverlay.onGeocodeAddressUpdate", "-> " + locationInfo.locality);
+		DataInterface dataI = mDataInterfaceHash.get(id);
+		if(dataI != null) /* may have been removed */
+		{
+			RequestData rd = (RequestData) dataI;
+			rd.setLocality(locationInfo.locality);
+			rd.updateWithLocality(locationInfo.locality, mMapFrag.getActivity().getApplicationContext());
+			rd.getMarker().hideInfoWindow();
+			rd.getMarker().showInfoWindow();
+			mMyReportRequestListener.onMyReportLocalityChanged(locationInfo.locality);
+		}
+	}
+	
+	/** OsmerActivity implements ReportRequestListener.
+	 *  onInfoWindowClick invokes OsmerActivity callbacks in order to perform
+	 *  specific actions such as show dialog fragments which are appropriate for
+	 *  the action represented by the baloon.
+	 */
+	@Override
 	public void onInfoWindowClick(Marker marker) 
 	{
 		DataInterface dataI = mDataInterfaceHash.get(marker.getId());
@@ -278,14 +307,20 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		if(dataI != null && dataI.getType() == DataInterface.TYPE_REQUEST &&
 				dataI.isWritable() && !dataI.isPublished())
 		{
-			Log.e("onInfoWindowClick", "got My request marker; clicked position  " + marker.getPosition().toString());
-			mReportRequestListener.onMyReportRequestTriggered(marker.getPosition(), dataI.getLocality());
+			Log.e("onInfoWindowClick", "got My request marker; clicked position  " + marker.getPosition().toString() + " loc " + dataI.getLocality());
+			mMyReportRequestListener.onMyReportRequestTriggered(marker.getPosition(), dataI.getLocality());
 			marker.hideInfoWindow();
 		}
 		/* if the marker is mine, be it my request or my report, it is possible to remove it */
 		else if(dataI != null && dataI.isWritable() && dataI.isPublished())
 		{
-			mReportRequestListener.onMyReportRequestDialogCancelled(marker.getPosition());
+			PostType postType = null;
+			if(dataI.getType() == DataInterface.TYPE_REQUEST)
+				postType = PostType.REQUEST_REMOVE;
+			else  if(dataI.getType() == DataInterface.TYPE_REPORT)
+				postType = PostType.REPORT_REMOVE;
+			if(postType != null)
+				mMyReportRequestListener.onMyPostRemove(marker.getPosition(), postType);
 		}
 		else if(dataI == null) /* must build a new request */
 		{
@@ -301,7 +336,15 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	@Override
 	public void onMarkerDragEnd(Marker marker) 
 	{
-		mStartGeocodeAddressTask(marker);
+		/* must update data into data interface */
+		DataInterface di = mDataInterfaceHash.get(marker.getId());
+		if(di != null && di.getType() == DataInterface.TYPE_REQUEST) /* must be */
+		{
+			RequestData reqD = (RequestData) di;
+			reqD.setLatitude(marker.getPosition().latitude);
+			reqD.setLongitude(marker.getPosition().longitude);
+			mStartGeocodeAddressTask(marker);
+		}
 	}
 
 	@Override
@@ -315,27 +358,12 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		}
 	}
 
-	@Override
-	public void onGeocodeAddressUpdate(LocationInfo locationInfo, String id) 
-	{	
-		DataInterface dataI = mDataInterfaceHash.get(id);
-		if(dataI != null) /* may have been removed */
-		{
-			RequestData rd = (RequestData) dataI;
-			rd.setLocality(locationInfo.locality);
-			rd.updateWithLocality(locationInfo.locality, mMapFrag.getActivity().getApplicationContext());
-			rd.getMarker().hideInfoWindow();
-			rd.getMarker().showInfoWindow();
-			mReportRequestListener.onMyReportLocalityChanged(locationInfo.locality);
-		}
-	}
-
 	public void onPostActionResult(boolean error, String message, PostType postType) 
 	{
 		Log.e("onPostActionResult", " err " + error + " post type " + postType);
 		if(postType == PostType.REQUEST)
 		{
-
+			
 		}
 	}
 
@@ -360,6 +388,38 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 
 	}
 
+	private void mRestoreYetUnpublishedMyRequestData(ArrayList<DataInterface> backupData)
+	{
+		for(DataInterface di : backupData)
+		{
+			Log.e("mRestoreYetUnpublishedMyRequestData", "restoring " + di.getLocality() +  " id " + di.getMarker().getId());
+			/* must rebuild marker options because locality may have not been set in the memorized marker options.
+			 * onGeocodeAddressTask actually updates the locality by changing the snippet on the marker rather 
+			 * than regenerating a MarkerOptions.
+			 */
+			MarkerOptions mo = ((RequestData) di).buildMarkerOptions(mMapFrag.getActivity().getApplicationContext());
+			Marker myRestoredRequestMarker = mMapFrag.getMap().addMarker(mo);
+			di.setMarker(myRestoredRequestMarker); /* replace old marker with new one */
+			myRestoredRequestMarker.showInfoWindow();
+			/* restore data in the hash now! */
+			mDataInterfaceHash.put(myRestoredRequestMarker.getId(), di);
+		}
+	}
+	
+	private ArrayList<DataInterface> mSaveYetUnpublishedMyRequestData() 
+	{
+		ArrayList<DataInterface> myRequestsYetUnpublished = new ArrayList<DataInterface>();
+		for(DataInterface di : mDataInterfaceHash.values())
+		{
+			if(di.getType() == DataInterface.TYPE_REQUEST && di.isWritable() && !di.isPublished())
+			{
+				Log.e("mSaveYetUnpublishedMyRequestData", "saving " + di.getLocality() +  " id " + di.getMarker().getId());
+				myRequestsYetUnpublished.add(di);
+			}
+		}
+		return myRequestsYetUnpublished;
+	}
+	
 	@Override
 	public void onMapClick(LatLng arg0) 
 	{

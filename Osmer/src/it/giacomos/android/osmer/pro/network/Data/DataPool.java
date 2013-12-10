@@ -110,8 +110,6 @@ public class DataPool implements DownloadListener
 			else
 				txtL.onTextError(sd.error, vt);
 		}
-		else
-			Log.e("registerTextListener", "StringData dont contains");
 	}
 	
 	public void registerBitmapListener(BitmapType bt, DataPoolBitmapListener bmpL)
@@ -130,7 +128,6 @@ public class DataPool implements DownloadListener
 	@Override
 	public void onTextBytesUpdate(byte[] bytes, ViewType vt) 
 	{
-		Log.e("DataPool.onTextBytesUpdate", "saving " + vt);
 		DataPoolCacheUtils dataPoolCUtils = new DataPoolCacheUtils();
 		dataPoolCUtils.saveToStorage(bytes, vt, mContext);
 	}

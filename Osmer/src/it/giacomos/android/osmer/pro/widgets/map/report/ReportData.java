@@ -40,7 +40,19 @@ public class ReportData implements DataInterface
 	{
 		return (writable.compareTo("w") == 0);
 	}
-
+	
+	@Override
+	public void setLatitude(double l)
+	{
+		latitude = l;
+	}
+	
+	@Override
+	public void setLongitude(double l)
+	{
+		longitude = l;
+	}
+	
 	@Override
 	public double getLatitude() {
 		return latitude;

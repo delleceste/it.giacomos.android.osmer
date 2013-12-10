@@ -4,6 +4,7 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.service.sharedData.ReportRequestNotification;
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -47,6 +48,18 @@ public class RequestData implements DataInterface
 	}
 
 	@Override
+	public void setLatitude(double l)
+	{
+		latitude = l;
+	}
+	
+	@Override
+	public void setLongitude(double l)
+	{
+		longitude = l;
+	}
+	
+	@Override
 	public double getLatitude() {
 		return latitude;
 	}
@@ -82,14 +95,21 @@ public class RequestData implements DataInterface
 		if(!isWritable())
 		{
 			title = res.getString(R.string.reportRequested);
-			mMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+			mMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
 		}
 		else
 		{
-			title = res.getString(R.string.reportRequest);
-			mMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
 			if(!mIsPublished)
+			{
+				title = res.getString(R.string.reportRequest);
 				mMarkerOptions.draggable(true);
+				mMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+			}
+			else
+			{
+				title = res.getString(R.string.reportRequestPublished);
+				mMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+			}
 		}
 
 		mMarkerOptions.title(title);
@@ -137,14 +157,17 @@ public class RequestData implements DataInterface
 		String snippet = username;
 		if(locality.length() > 0)
 			snippet += "\n" + res.getString(R.string.reportLocality) + ": " + locality;
-		snippet += "\nlat. " + latitude + ", long. " + longitude;
+		//snippet += "\nlat. " + latitude + ", long. " + longitude;
 
 		if(isWritable())
 		{
 			if(!mIsPublished)
 				snippet += "\n" + res.getString(R.string.reportTouchBaloonToRequest);
 			else
+			{
+				snippet += "\n" + res.getString(R.string.reportRequestPublishedOn) + " " + datetime;
 				snippet += "\n" + res.getString(R.string.reportTouchBaloonToCancel);
+			}
 		}
 		return snippet;
 	}

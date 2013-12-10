@@ -270,13 +270,16 @@
     <string name="reportDialogRequestLocationUnavailable">-</string>
     <string name="reportRequest">New report request&#8230;</string>
     <string name="reportLocality">Locality</string>
-    <string name="reportRequested">Report request</string>
+    <string name="reportRequested">Report requested</string>
+    <string name="reportRequestPublished">Report request published</string>
     <string name="reportTouchBaloonToRequest">Touch this baloon to make a request.\nTouch on another point of the map to remove the marker</string>
     <string name="reportRequestCorrectlySent">report request sent</string>
     <string name="reportTouchBaloonToCancel">Touch the baloon to cancel this request.</string>
     <string name="reportRemoveConfirm">Are you sure you want to remove the request?</string>
     <string name="thereAreNReports">Number of reports: </string>
     <string name="reportTouchBaloonToRemove">Touch the baloon to remove the report</string>
+    <string name="reportRequestPublishedOn">Report request published on </string>
+    <string name="reportLookingForLocality">searching for locality name&#8230;</string>
     
     
     <!-- notification area -->

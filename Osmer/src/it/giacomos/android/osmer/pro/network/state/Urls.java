@@ -97,6 +97,11 @@ public class Urls {
 		return "http://www.giacomos.it/meteo.fvg/get_requests.php";
 	}
 	
+	public String getRemovePostUrl() 
+	{
+		return "http://www.giacomos.it/meteo.fvg/remove_post.php";
+	}
+	
 	public String minTempUrl()
 	{
 		return "";
@@ -145,6 +150,8 @@ public class Urls {
 	{
 		return "http://www.osmer.fvg.it/GOOGLE/WebcamsList.xml";
 	}
+
+	
 
 	
 	

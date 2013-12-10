@@ -20,51 +20,52 @@ import org.apache.http.util.EntityUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
+public class RemovePostTask extends AsyncTask<String, Integer, String> {
 
-	private PostActionResultListener mReportPublishedListener;
-	private String mErrorMsg;
-	private String mUser, mLocality;
-	double mLatitude, mLongitude;
-	private String mDeviceId;
-	
 	private static String CLI = "afe0983der38819073rxc1900lksjd";
+	private PostType mType;
 	
-	public PostReportRequestTask(String user, String locality, double latitude,
-			double longitude, PostActionResultListener oActivity) 
+	/* RemovePostConfirmDialog implements RemovePostTaskListener */
+	private RemovePostTaskListener mRemovePostTaskListener;
+	
+	private String mErrorMsg, mDeviceId;
+	private double mLatitude, mLongitude;
+	
+	public RemovePostTask(PostType type, String devid, double latitude, double longitude, RemovePostTaskListener li)
 	{
-		mUser = user;
-		mLocality = locality;
+		mType = type;
+		mRemovePostTaskListener = li;
+		mDeviceId = devid;
 		mLatitude = latitude;
 		mLongitude = longitude;
-		mReportPublishedListener = oActivity;
-	}
-
-	public void setDeviceId(String id)
-	{
-		mDeviceId = id;
 	}
 	
 	@Override
 	protected String doInBackground(String... urls) 
 	{
+		String returnVal = "";
 		mErrorMsg = "";
-		if(mLocality.length() < 2)
-			mLocality="";
+		
 		HttpClient httpClient = new DefaultHttpClient();
         HttpPost request = new HttpPost(urls[0]);
         List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
         postParameters.add(new BasicNameValuePair("cli", CLI));
-        postParameters.add(new BasicNameValuePair("n", mUser));
+        if(mType == PostType.REQUEST_REMOVE)
+        	postParameters.add(new BasicNameValuePair("t", "q"));
+        else if(mType == PostType.REPORT_REMOVE)
+        	postParameters.add(new BasicNameValuePair("t", "r"));
+        else
+        	return "-1";
+        
         postParameters.add(new BasicNameValuePair("d", mDeviceId));
-        postParameters.add(new BasicNameValuePair("l", mLocality));
         postParameters.add(new BasicNameValuePair("la", String.valueOf(mLatitude)));
         postParameters.add(new BasicNameValuePair("lo", String.valueOf(mLongitude)));
+        // postParameters.add(new BasicNameValuePair("loc", mLocality));
         UrlEncodedFormEntity form;
 		try {
 			form = new UrlEncodedFormEntity(postParameters);
 	        request.setEntity(form);
-	        Log.e("PostReportRequestTask.doInBackground", postParameters.toString());
+	        Log.e("RemovePostTask.doInBackground", postParameters.toString());
 	        HttpResponse response = httpClient.execute(request);
 	        StatusLine statusLine = response.getStatusLine();
 	        if(statusLine.getStatusCode() < 200 || statusLine.getStatusCode() >= 300)
@@ -73,7 +74,7 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 	        	mErrorMsg = "Server error";
 	        /* check the echo result */
 	        HttpEntity entity = response.getEntity();
-	        String returnVal = EntityUtils.toString(entity);
+	        returnVal = EntityUtils.toString(entity);
 	        if(returnVal.compareTo("0") != 0)
 	        	mErrorMsg = "Server error: the server returned " + returnVal;
 		} 
@@ -88,16 +89,18 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 			mErrorMsg = e.getLocalizedMessage();
 			e.printStackTrace();
 		}
-		return null;
-		
+
+        Log.e("PostReportTask", "server returneth " + returnVal + "error " + mErrorMsg);
+		return returnVal;
 	}
 
 	@Override
 	public void onPostExecute(String doc)
 	{
+		Log.e("RemovePostTask.onPostExecute", "doc " + doc + "error " + mErrorMsg);
 		if(mErrorMsg.isEmpty())
-			mReportPublishedListener.onPostActionResult(false, "", PostType.REQUEST);
+			mRemovePostTaskListener.onRemovePostTaskCompleted(false, "", mType);
 		else
-			mReportPublishedListener.onPostActionResult(true, mErrorMsg, PostType.REQUEST);
+			mRemovePostTaskListener.onRemovePostTaskCompleted(true, mErrorMsg, mType);
 	}
 }

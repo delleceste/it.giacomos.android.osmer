@@ -40,15 +40,15 @@ import it.giacomos.android.osmer.pro.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.pro.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.pro.widgets.map.RadarOverlayUpdateListener;
-import it.giacomos.android.osmer.pro.widgets.map.MyReportRequestListener;
+import it.giacomos.android.osmer.pro.widgets.map.ReportRequestListener;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
 import it.giacomos.android.osmer.pro.widgets.map.report.IconTextSpinnerAdapter;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportDialogFragment;
-import it.giacomos.android.osmer.pro.widgets.map.report.ReportRequestCancelConfirmDialog;
+import it.giacomos.android.osmer.pro.widgets.map.report.RemovePostConfirmDialog;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportRequestDialogFragment;
 import it.giacomos.android.osmer.pro.widgets.map.report.UsersReportUrlBuilder;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostType;
-import it.giacomos.android.osmer.pro.widgets.map.report.network.ReportPublishedListener;
+import it.giacomos.android.osmer.pro.widgets.map.report.network.PostActionResultListener;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -61,6 +61,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -102,8 +103,8 @@ MapFragmentListener,
 RadarOverlayUpdateListener,
 DataPoolErrorListener,
 RadarAnimationListener,
-ReportPublishedListener,
-MyReportRequestListener
+PostActionResultListener,
+ReportRequestListener
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
@@ -617,19 +618,23 @@ MyReportRequestListener
 		oTypeGetter = null;
 	}
 
+	/** implemented from PostActionResultListener.
+	 * This method is invoked after a http post has been executed and returned, with or without
+	 * errors as indicated in the method parameters.
+	 */
 	@Override
 	public void onPostActionResult(boolean error, String message, PostType postType) 
 	{
-		if(!error)
-		{
+		if(!error && (postType == PostType.REPORT || postType == PostType.REQUEST))
 			Toast.makeText(this, R.string.reportDataSentOk, Toast.LENGTH_SHORT).show();
-		}
-		else
+		else if(error)
 		{
 			String m = this.getResources().getString(R.string.reportError) + "\n" + message;
 			Toast.makeText(this, m, Toast.LENGTH_LONG).show();
 		}
-		/* invoked when the user has successfully published its report */
+		/* invoked when the user has successfully published its report or cancelled one of his reports
+		 * also.
+		 */
 		if(mCurrentViewType == ViewType.REPORT)
 		{
 			Log.e("switchView", "updating report (forceth)");
@@ -638,6 +643,9 @@ MyReportRequestListener
 		}
 	}
 	
+	/** implements ReportRequestListener interface
+	 * 
+	 */
 	@Override
 	public void onMyReportLocalityChanged(String locality) 
 	{
@@ -646,30 +654,53 @@ MyReportRequestListener
 				getSupportFragmentManager().findFragmentByTag("ReportRequestDialogFragment");
 		if(rrdf != null)
 			rrdf.setLocality(locality);
+		else
+			Log.e("OsmerActivity.onMyReportLocalityChanged", "FRAGMENT NULL!");
 	}
 	
+	/** implements ReportRequestListener interface
+	 * 
+	 */
 	@Override
 	public void onMyReportRequestTriggered(LatLng pointOnMap, String locality) 
 	{
-		ReportRequestDialogFragment rrdf = new ReportRequestDialogFragment();
+		ReportRequestDialogFragment rrdf = ReportRequestDialogFragment.newInstance(locality);
 		rrdf.setData(pointOnMap, locality);
-		rrdf.setShowsDialog(false);
 		rrdf.show(getSupportFragmentManager(), "ReportRequestDialogFragment");
+		/* tell map fragment that the report request dialog has been closed.
+		 * The true parameter means the dialog was accepted.
+		 */
+		getMapFragment().myReportRequestDialogClosed(false, pointOnMap);
 	}
 	
+	/** implements ReportRequestListener.onMyPostRemove method interface
+	 * 
+	 */
 	@Override
-	public void onMyReportRequestRemove(LatLng position) 
+	public void onMyPostRemove(LatLng position, PostType type) 
 	{
-		ReportRequestCancelConfirmDialog rrccd = new ReportRequestCancelConfirmDialog();
+		RemovePostConfirmDialog rrccd = new RemovePostConfirmDialog();
+		/* the following in order to be notified when the dialog is cancelled or the remove post 
+		 * task has been accomplished, successfully or not, according to the results contained 
+		 * in the onPostActionResult() method.
+		 */
+		rrccd.setPostActionResultListener(this);
 		rrccd.setLatLng(position);
-		rrccd.show(getSupportFragmentManager(), "ReportRequestCancelConfirmDialog");
+		rrccd.setType(type);
+		rrccd.setDeviceId(Secure.getString(getContentResolver(), Secure.ANDROID_ID));
+		rrccd.show(getSupportFragmentManager(), "RemovePostConfirmDialog");
 	}
 	
-
+	/** implements ReportRequestListener.onMyReportRequestDialogCancelled method interface
+	 * 
+	 */
 	@Override
 	public void onMyReportRequestDialogCancelled(LatLng position) 
 	{
-		getMapFragment().myReportRequestDialogCancelled(position);
+		/* tell map fragment that the report request dialog has been closed.
+		 * The false parameter means the dialog was canceled.
+		 */
+		getMapFragment().myReportRequestDialogClosed(false, position);
 	}
 	
 	public void onSelectionDone(ObservationType observationType, MapMode mapMode) 

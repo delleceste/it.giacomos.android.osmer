@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,10 +34,18 @@ public class ReportRequestDialogFragment extends DialogFragment
 	private String mLocality;
 	private LatLng mLatLng;
 
+	public static final ReportRequestDialogFragment newInstance(String locality)
+	{
+		ReportRequestDialogFragment f = new ReportRequestDialogFragment();
+	    Bundle bdl = new Bundle(1);
+	    bdl.putString("locality", locality);
+	    f.setArguments(bdl);
+	    return f;
+	}
+	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) 
 	{
-
 		Log.e("ReportRequestDialogFragment", "onCreateDialog");
 		this.setStyle(STYLE_NO_FRAME, android.R.style.Theme_Holo_Light);
 		// Use the Builder class for convenient dialog construction
@@ -83,8 +92,11 @@ public class ReportRequestDialogFragment extends DialogFragment
 
 		});
 
+		mLocality = getArguments().getString("locality");
 		setLocality(mLocality);
 
+		CheckBox cb = (CheckBox) mDialogView.findViewById(R.id.cbIncludeLocationName);
+		cb.requestFocus();
 		if(userName.isEmpty())
 			Toast.makeText(getActivity(), R.string.reportMustInsertUserName, Toast.LENGTH_LONG).show();
 
@@ -110,7 +122,7 @@ public class ReportRequestDialogFragment extends DialogFragment
 
 	public void setLocality(String locality) 
 	{
-		if(mDialogView != null)
+		if(mDialogView != null && mDialogView.getContext() != null)
 		{
 			TextView textView = (TextView) mDialogView.findViewById(R.id.tvDialogRequestTitle);
 			textView.setText(mDialogView.getContext().getString(R.string.reportDialogRequestTitle) + " " + locality);

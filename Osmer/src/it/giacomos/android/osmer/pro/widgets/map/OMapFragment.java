@@ -692,7 +692,7 @@ RadarAnimationListener
 			mReportOverlay.onPostActionResult(error, message, postType);
 	}
 
-	public void myReportRequestDialogCancelled(LatLng position) {
+	public void myReportRequestDialogClosed(boolean accepted, LatLng position) {
 		if(mMode.currentMode == MapMode.REPORT && mReportOverlay != null)
 			mReportOverlay.removeMyPendingReportRequestMarker(position);
 			

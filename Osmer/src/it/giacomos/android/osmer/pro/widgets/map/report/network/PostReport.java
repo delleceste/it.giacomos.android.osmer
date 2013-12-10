@@ -5,11 +5,11 @@ import android.os.AsyncTask;
 
 public class PostReport implements PostReportTaskListener, PostInterface
 {
-	private ReportPublishedListener mReportPublishedListener;
+	private PostActionResultListener mReportPublishedListener;
 	
 	public PostReport(String user, String deviceId, String locality, 
 			double lat, double lng, int sky, int wind, 
-			String temp, String comment,  ReportPublishedListener lis)
+			String temp, String comment,  PostActionResultListener lis)
 	{
 		mReportPublishedListener = lis;
 		PostReportTask reportTask = new PostReportTask(user, deviceId, locality, lat, lng, sky, wind, temp, comment, this);
