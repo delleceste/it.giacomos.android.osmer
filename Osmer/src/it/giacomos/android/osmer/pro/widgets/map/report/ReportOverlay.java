@@ -70,22 +70,21 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 
 		/* register as DataPool text listener */
 		/* get data pool reference */
-		DataPoolCacheUtils dataCacheUtils = new DataPoolCacheUtils(); /* cache utils reference */
-		{
-			String text = dataCacheUtils.loadFromStorage(ViewType.REPORT, mMapFrag.getActivity().getApplicationContext());
-			Log.e("----------- FROME CHAENC", "from chane!");
-			onReportUpdateDone(text);
-		}
+//		DataPoolCacheUtils dataCacheUtils = new DataPoolCacheUtils(); /* cache utils reference */
+//		{
+//			String text = dataCacheUtils.loadFromStorage(ViewType.REPORT, mMapFrag.getActivity().getApplicationContext());
+//			Log.e("----------- FROME CHAENC", "from chane!");
+//			onReportUpdateDone(text);
+//		}
 	}
 
 	@Override
 	public void clear() 
 	{
-		Log.e("ReportOverlay: clear called", "maerkers size " + mDataInterfaceHash.size());
-		((OsmerActivity) mMapFrag.getActivity()).getDataPool().unregisterTextListener(ViewType.REPORT);
+		Log.e("****************************************** ReportOverlay: clear called", "maerkers size " + mDataInterfaceHash.size());
+		mReportUpdater.clear();
 		mCancelTasks();
 		mRemoveMarkers();
-		mReportUpdater.clear();
 	}
 
 	private void mRemoveMarkers()
@@ -220,6 +219,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		if(requestDataLen > 0) /* requestDataList not null */
 			System.arraycopy(requestDataList, 0, dataList, reportDataLen, requestDataLen);
 
+		Log.e("onReportUpdateDone", "activity nyll? " + mMapFrag.getActivity());
 		mReportOverlayTask = new ReportOverlayTask(mMapFrag.getActivity().getApplicationContext(), this);
 		mReportOverlayTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataList);
 

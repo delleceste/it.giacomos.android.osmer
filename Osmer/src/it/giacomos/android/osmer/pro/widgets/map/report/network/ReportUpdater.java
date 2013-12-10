@@ -46,11 +46,11 @@ ReportUpdateTaskListener
 	
 	public void clear()
 	{
+		mContext.unregisterReceiver(mNetworkStatusMonitor);
+		mLocationClient.disconnect();
 		/* cancel thread if running */
 		if(mReportUpdateTask != null)
 			mReportUpdateTask.cancel(false);
-		mLocationClient.disconnect();
-		mContext.unregisterReceiver(mNetworkStatusMonitor);
 	}
 	
 	public void update(boolean force)
@@ -132,5 +132,7 @@ ReportUpdateTaskListener
 		
 		mLocationClient.disconnect();
 	}
+	
+	
 
 }

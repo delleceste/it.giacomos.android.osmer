@@ -31,14 +31,23 @@ public class ReportUpdateTask extends AsyncTask<String, Integer, String>
 	public ReportUpdateTask(ReportUpdateTaskListener reportUpdateTaskListener,
 			Location l, String androidId)
 	{
+		super();
 		mReportUpdateTaskListener = reportUpdateTaskListener;
 		mLastLocation = l;
 		mAndroidId = androidId;
 	}
 	
+	@Override
 	public void onPostExecute(String doc)
 	{
+		
 		mReportUpdateTaskListener.onReportUpdateTaskComplete(!mErrorMsg.isEmpty(), doc);
+	}
+	
+	@Override
+	public void onCancelled(String doc)
+	{
+		Log.e("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ReportUpdateTask.onCancelled", "TASK CANCELLED!!");
 	}
 	
 	@Override
