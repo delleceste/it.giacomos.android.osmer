@@ -66,7 +66,10 @@ ReportUpdateTaskListener
 	public void onNetworkBecomesAvailable() 
 	{
 		Toast.makeText(mContext, "ReportUpdater.onNetworkBecomesAvailable: net avail. connecting location cli", Toast.LENGTH_SHORT).show();
-		mLocationClient.connect();
+		if(!mLocationClient.isConnected())
+			mLocationClient.connect();
+		else
+			onConnected(null);
 	}
 
 	@Override
@@ -92,6 +95,11 @@ ReportUpdateTaskListener
 		Toast.makeText(mContext, "onConnected: location avail. would start update", Toast.LENGTH_SHORT).show();
 		Log.e("ReportUpdater.onConnected", "thread "+ Thread.currentThread());
 		String deviceId = Secure.getString(mContext.getContentResolver(), Secure.ANDROID_ID);
+		if(mReportUpdateTask != null && mReportUpdateTask.getStatus() != AsyncTask.Status.FINISHED)
+		{
+			Log.e("%%%%%%%%%%%%%%%%%%%%%% CANCEL IN onConnected", "cancelling task was " + mReportUpdateTask.getStatus());
+			mReportUpdateTask.cancel(false);
+		}
 		mReportUpdateTask = new ReportUpdateTask(this, mLocationClient.getLastLocation(), deviceId);
 		mReportUpdateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().getReportUrl());
 	}

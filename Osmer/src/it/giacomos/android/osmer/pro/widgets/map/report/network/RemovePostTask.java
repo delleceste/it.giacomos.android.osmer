@@ -20,6 +20,15 @@ import org.apache.http.util.EntityUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
+/** 
+ * This class uses PostReportAsyncTaskPool in order to be cancelled when the Activity
+ * is destroyed.
+ * It is important to register on creation and unregister in onCancelled and in
+ * onPostExecute
+ * 
+ * @author giacomo
+ *
+ */
 public class RemovePostTask extends AsyncTask<String, Integer, String> {
 
 	private static String CLI = "afe0983der38819073rxc1900lksjd";
@@ -38,6 +47,8 @@ public class RemovePostTask extends AsyncTask<String, Integer, String> {
 		mDeviceId = devid;
 		mLatitude = latitude;
 		mLongitude = longitude;
+		
+		PostReportAsyncTaskPool.Instance().registerTask(this);
 	}
 	
 	@Override
@@ -95,6 +106,13 @@ public class RemovePostTask extends AsyncTask<String, Integer, String> {
 	}
 
 	@Override
+	protected void onCancelled (String result)
+	{
+		/* unregister the task from the PostReportAsyncTaskPool when finished */
+		PostReportAsyncTaskPool.Instance().unregisterTask(this);
+	}
+	
+	@Override
 	public void onPostExecute(String doc)
 	{
 		Log.e("RemovePostTask.onPostExecute", "doc " + doc + "error " + mErrorMsg);
@@ -102,5 +120,7 @@ public class RemovePostTask extends AsyncTask<String, Integer, String> {
 			mRemovePostTaskListener.onRemovePostTaskCompleted(false, "", mType);
 		else
 			mRemovePostTaskListener.onRemovePostTaskCompleted(true, mErrorMsg, mType);
+		
+		PostReportAsyncTaskPool.Instance().unregisterTask(this);
 	}
 }

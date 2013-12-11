@@ -36,6 +36,7 @@ import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimation;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationStatus;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportOverlay;
+import it.giacomos.android.osmer.pro.widgets.map.report.network.PostReportAsyncTaskPool;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostType;
 import android.app.Activity;
 import android.content.Context;
@@ -163,6 +164,15 @@ RadarAnimationListener
 			mWebcamOverlay.clear();
 
 		mRadarAnimation.onDestroy();
+		
+		/* report packages make use of PostReportAsyncTaskPool to register AsyncTasks that
+		 * are launched to make a post (without waiting for a readback) and are not associated
+		 * to objects that are destruction aware (they are launched by a dialog and not connected
+		 * to a destruction aware object, such as this or OsmerActivity).
+		 * So ask the PostReportAsyncTaskPool to cancel all pending tasks.
+		 */
+		PostReportAsyncTaskPool.Instance().cancelAll();
+		
 		super.onDestroy();
 	}
 

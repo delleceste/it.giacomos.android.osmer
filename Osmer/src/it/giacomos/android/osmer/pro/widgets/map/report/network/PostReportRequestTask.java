@@ -20,6 +20,15 @@ import org.apache.http.util.EntityUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
+/** 
+ * This class uses PostReportAsyncTaskPool in order to be cancelled when the Activity
+ * is destroyed.
+ * It is important to register on creation and unregister in onCancelled and in
+ * onPostExecute
+ * 
+ * @author giacomo
+ *
+ */
 public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 
 	private PostActionResultListener mReportPublishedListener;
@@ -38,6 +47,8 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 		mLatitude = latitude;
 		mLongitude = longitude;
 		mReportPublishedListener = oActivity;
+		
+		PostReportAsyncTaskPool.Instance().registerTask(this);
 	}
 
 	public void setDeviceId(String id)
@@ -93,11 +104,20 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 	}
 
 	@Override
+	protected void onCancelled (String result)
+	{
+		/* unregister the task from the PostReportAsyncTaskPool when finished */
+		PostReportAsyncTaskPool.Instance().unregisterTask(this);
+	}
+	
+	@Override
 	public void onPostExecute(String doc)
 	{
 		if(mErrorMsg.isEmpty())
 			mReportPublishedListener.onPostActionResult(false, "", PostType.REQUEST);
 		else
 			mReportPublishedListener.onPostActionResult(true, mErrorMsg, PostType.REQUEST);
+		
+		PostReportAsyncTaskPool.Instance().unregisterTask(this);
 	}
 }
