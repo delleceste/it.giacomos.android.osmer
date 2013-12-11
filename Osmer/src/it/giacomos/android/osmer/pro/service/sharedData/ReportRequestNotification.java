@@ -3,6 +3,7 @@ package it.giacomos.android.osmer.pro.service.sharedData;
 public class ReportRequestNotification extends NotificationData
 {
 	public String datetime, username, locality;
+	public boolean isRequest;
 	private boolean mValidString;
 	
 	public boolean isValid()
@@ -15,21 +16,22 @@ public class ReportRequestNotification extends NotificationData
 		super();
 		
 		String parts[] = input.split("::", -1);
-		mValidString = (parts.length == 5);
+		mValidString = (parts.length == 7);
 		if(mValidString)
 		{
-			datetime = parts[0];
-			username = parts[1];
+			isRequest = (parts[0].compareTo("Q") == 0);
+			datetime = parts[2];
+			username = parts[3];
 			try
 			{
-				latitude = Double.parseDouble(parts[2]);
-				longitude = Double.parseDouble(parts[3]);
+				latitude = Double.parseDouble(parts[4]);
+				longitude = Double.parseDouble(parts[5]);
 			}
 			catch(NumberFormatException e)
 			{
 				
 			}
-			locality = parts[4];
+			locality = parts[6];
 			makeDate(datetime);
 		}
 	}

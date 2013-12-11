@@ -437,7 +437,21 @@ ReportRequestListener
 
 	public void onGoogleMapReady()
 	{
-
+		Log.e("onGoogleMapRead", "intent is null? " + getIntent());
+		Intent intent = getIntent();
+		if(intent != null)
+		{
+			Bundle extras = intent.getExtras();
+			if(extras != null)
+			{
+				boolean reportRequestPending = extras.getBoolean("NotificationReportRequest");
+				if(reportRequestPending)
+				{
+					Log.e("onGoogleMapReady", "switching to report");
+					switchView(ViewType.REPORT);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -899,6 +913,7 @@ ReportRequestListener
 		} 
 		else 
 		{
+			Log.e("OsmerActivity.swithciee", "displayting child 1");
 			viewFlipper.setDisplayedChild(1);
 		}
 
@@ -962,7 +977,7 @@ ReportRequestListener
 			else if(id == ViewType.REPORT)
 			{
 				Log.e("switchView", "updating report");
-			//	updateReport(false);
+				updateReport(false);
 			}
 		}
 

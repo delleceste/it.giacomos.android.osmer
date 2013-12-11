@@ -236,7 +236,6 @@ RadarAnimationListener
 		 */
 		mOverlays.add(mRadarOverlay);
 
-		mMapFragmentListener.onGoogleMapReady();
 		mMapClickOnBaloonImageHintEnabled = mSettings.isMapClickOnBaloonImageHintEnabled();
 
 		/* register for radar image bitmap updates, and get updates even if the
@@ -258,6 +257,8 @@ RadarAnimationListener
 		 */
 		if(savedInstanceState != null)
 			mRadarAnimation.restoreState(savedInstanceState);
+		
+		mMapFragmentListener.onGoogleMapReady();
 	}
 
 	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

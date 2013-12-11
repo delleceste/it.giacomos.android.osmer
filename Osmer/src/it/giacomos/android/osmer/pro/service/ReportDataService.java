@@ -246,6 +246,7 @@ FetchRequestsTaskListener, Runnable
 
 				// Creates an explicit intent for an Activity in your app
 				Intent resultIntent = new Intent(this, OsmerActivity.class);
+				resultIntent.putExtra("NotificationReportRequest", notificationData.isRequest);
 				// The stack builder object will contain an artificial back stack for the
 				// started Activity.
 				// This ensures that navigating backward from the Activity leads out of
@@ -261,6 +262,7 @@ FetchRequestsTaskListener, Runnable
 								0,
 								PendingIntent.FLAG_UPDATE_CURRENT
 								);
+				
 				notificationBuilder.setContentIntent(resultPendingIntent);
 				notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
 				// mId allows you to update the notification later on.

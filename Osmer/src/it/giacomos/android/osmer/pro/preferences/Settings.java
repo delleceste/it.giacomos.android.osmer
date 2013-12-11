@@ -287,7 +287,7 @@ public class Settings
 	
 	public long minTimeBetweenReportRequestNotificationsMinutes()
 	{
-		long res = mSharedPreferences.getLong("MIN_TIME_BETWEEN_REPORT_REQUEST_NOTIFICATIONS", 5);
+		long res = mSharedPreferences.getLong("MIN_TIME_BETWEEN_REPORT_REQUEST_NOTIFICATIONS", 1);
 		return res;
 	}
 	
