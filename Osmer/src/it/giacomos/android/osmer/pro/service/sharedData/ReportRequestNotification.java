@@ -35,6 +35,17 @@ public class ReportRequestNotification extends NotificationData
 			makeDate(datetime);
 		}
 	}
+	
+	public ReportRequestNotification(String datet, String user, double lat, double lon, String loc)
+	{
+		datetime = datet;
+		username = user;
+		latitude = lat;
+		longitude = lon;
+		locality = loc;
+		makeDate(datetime);
+		mValidString = true; /* for is valid */
+	}
 
 	@Override
 	public short getType() {

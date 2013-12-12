@@ -593,10 +593,12 @@ ReportRequestListener
 			String m = this.getResources().getString(R.string.reportError) + "\n" + message;
 			Toast.makeText(this, m, Toast.LENGTH_LONG).show();
 		}
-		/* invoked when the user has successfully published its report or cancelled one of his reports
-		 * also.
+		/* invoked when the user has successfully published its request or cancelled one of his reports
+		 * also. Since the PostType.REPORT is realized through another Activity, when this activity
+		 * is resumed, it performs an update of the report automatically (see onNetworkBecomesAvailable,
+		 * which calls MapViewUpdater.
 		 */
-		if(mCurrentViewType == ViewType.REPORT)
+		if(mCurrentViewType == ViewType.REPORT && postType != PostType.REPORT)
 		{
 			Log.e("switchView", "updating report (forceth)");
 			getMapFragment().onPostActionResult(error, message, postType);
@@ -978,6 +980,7 @@ ReportRequestListener
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{
+		Log.e("onActivityResult", "result " + resultCode);
 		if(requestCode == REPORT_ACTIVITY_FOR_RESULT_ID)
 		{
 			if(resultCode == Activity.RESULT_OK)

@@ -52,7 +52,8 @@
         
          <activity
             android:name=".pro.widgets.map.report.ReportActivity"
-            android:label="@string/report_activity_name" >
+            android:label="@string/report_activity_name" 
+             android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.LAUNCHER" />
  

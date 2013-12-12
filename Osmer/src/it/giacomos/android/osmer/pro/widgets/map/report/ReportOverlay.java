@@ -31,6 +31,8 @@ import it.giacomos.android.osmer.pro.locationUtils.LocationInfo;
 import it.giacomos.android.osmer.pro.network.Data.DataPoolCacheUtils;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
 import it.giacomos.android.osmer.pro.preferences.Settings;
+import it.giacomos.android.osmer.pro.service.sharedData.ReportRequestNotification;
+import it.giacomos.android.osmer.pro.service.sharedData.ServiceSharedData;
 import it.giacomos.android.osmer.pro.widgets.map.MapBaloonInfoWindowAdapter;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.pro.widgets.map.OOverlayInterface;
@@ -154,6 +156,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 				mDataInterfaceHash.put(marker.getId(), dataI);
 				if(dataI.getType() == DataInterface.TYPE_REPORT)
 					reportCount++;
+				 
 			}
 			/* do not need data interface list anymore, since it's been saved into hash */
 			dataInterfaceList = new DataInterface[0];
@@ -163,6 +166,32 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		if(reportCount > 0)
 			Toast.makeText(ctx,  res.getString(R.string.thereAreNReports) +
 					reportCount, Toast.LENGTH_SHORT).show();
+		
+		mCheckForFreshNotifications();
+	}
+
+	private void mCheckForFreshNotifications() 
+	{
+		for(DataInterface di : mDataInterfaceHash.values())
+		{
+			if(di.getType() == DataInterface.TYPE_REQUEST && !di.isWritable())
+			{
+				// ReportRequestNotification(String datet, String user, double lat, double lon, String loc)
+				RequestData rd = (RequestData) di;
+				ReportRequestNotification repReqN = new ReportRequestNotification(rd.datetime,
+						rd.username, rd.getLatitude(), rd.getLongitude(), rd.locality);
+				/* put the report request notification into the data shared with the service,
+				 * so that the service does not trigger a notification.
+				 */
+				ServiceSharedData ssd = ServiceSharedData.Instance();
+				ssd.updateCurrentRequest(repReqN);
+				Toast.makeText(mMapFrag.getActivity().getApplicationContext(), 
+						"A notification is canceled (the service won't notify it)\n" +
+						"because we are in the report page." + rd.datetime + ", " + rd.locality, Toast.LENGTH_LONG).show();
+						
+			}
+		}
+		
 	}
 
 	@Override
