@@ -3,6 +3,7 @@ package it.giacomos.android.osmer.pro.pager;
 import android.app.ActionBar;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SpinnerAdapter;
@@ -55,7 +56,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	/* called after restore instance state, initializes the application according
 	 * to the saved state of the action bar in the previous execution.
 	 */
-	public void init(Bundle savedInstanceState) 
+	public void init(Bundle savedInstanceState, int forceDrawerItem) 
 	{
 		boolean actionBarTabs = false;
 		ActionBar actionBar = mActivity.getActionBar();
@@ -64,7 +65,9 @@ public class ActionBarManager implements ActionBarTabChangeListener
 		if(selectedDrawerItem < 0)
 			selectedDrawerItem = 0;
 		
-		drawerItemChanged(selectedDrawerItem);
+		Log.e("init(Bundle savedInstanceState) ", "drawerItemChanged");
+		if(forceDrawerItem < 0) /* otherwise call drawerItemChange afterwards */
+			drawerItemChanged(selectedDrawerItem);
 		if(savedInstanceState != null && actionBar.getNavigationMode() == ActionBar.NAVIGATION_MODE_TABS)
 			actionBarTabs = true;
 		else if(savedInstanceState == null)
@@ -78,6 +81,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 			else
 				selectedTabIndex = 0;
 			/* switch to correct tab */
+			Log.e("init(Bundle savedInstanceState) ", "calling onActionBarTabChanged");
 			onActionBarTabChanged(selectedTabIndex);
 			/* check the first item of the drawer */
 			drawer.setItemChecked(0, true);
@@ -91,10 +95,13 @@ public class ActionBarManager implements ActionBarTabChangeListener
 				actionBar.setSelectedNavigationItem(selected);
 			} 
 		}
+		if(forceDrawerItem > 0) 
+			drawerItemChanged(forceDrawerItem);
 	}
 	
 	public void drawerItemChanged(int id)
 	{
+		Log.e("drawerItemChanged", "id " + id);
 		mSpinnerAdapter = null;
 		ActionBar actionBar = mActivity.getActionBar();
 		switch(id)
@@ -166,6 +173,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	@Override
 	public void onActionBarTabChanged(int tab) 
 	{
+		Log.e("onActionBartabChanged ", "tab is " + tab);
 		ViewType viewType = ViewType.HOME;
 		if(tab == 1) /* i == 0 -> ViewType.HOME, but already initialized */
         	viewType = ViewType.TODAY;

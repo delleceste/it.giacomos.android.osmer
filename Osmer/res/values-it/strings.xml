@@ -79,6 +79,7 @@
     <string name="measure_mode">Modalità misura</string>
     <string name="radar_help">Informazioni radar</string>
     <string name="radar_animation">Animazione</string>
+    <string name="info">Informazione</string>
 
     <!-- hint toasts -->
     <string name="hint_forecast_icons">Suggerimento: tocca un\'icona e leggi i dettagli in basso a sinistra, da oggi anche sulla cartina delle previsioni!</string>
@@ -151,7 +152,7 @@
     <string name="meters">m</string>
     <string name="km">km</string>
     <string name="my_location_layer_not_enabled">my-location non abilitato</string>
-
+    <string name="location_not_available">La posizione corrente non è disponibile</string>
     <!-- xml symbol map -->
     <string name="sky">cielo</string>
     <string name="sky0">sereno</string>
@@ -242,8 +243,11 @@
 	<string name="reportUpdateToast">Aggiornamento segnalazioni&#8230;</string>
 	<string name="reportAtMost1FieldFilled">Impossibile pubblicare una segnalazione se tutti i campi sono vuoti</string>
   	<string name="reportNeedToBeOnline">E\' necessario essere connessi alla rete</string>
+  	<string name="reportMovedTooFar">Ti sei spostato troppo da quando hai iniziato la procedura di segnalazione</string>
+  	
   	
 	<!--  report request -->
+    <string name="report_activity_name">Segnala il tempo</string>
 	<string name="reportRequestIncludeLocationName">Includi il nome della località</string>
     <string name="reportDialogRequestSendButton">Invia richiesta</string>
     <string name="reportDialogRequestTitle">Richiedi osservazioni per </string>

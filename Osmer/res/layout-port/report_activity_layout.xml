@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-    
-<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mainScrollView"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:fillViewport="true"
     android:scrollbars="vertical" >
     
@@ -127,7 +126,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="184dp"
+        android:layout_height="0dp"
+        android:layout_weight="3"
         android:orientation="vertical"
         android:padding="3dp" >
 
@@ -147,10 +147,11 @@
 
     </LinearLayout>
 
-     <!--   LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="bottom"
+         android:orientation="horizontal" >
 
             <Button
                 android:id="@+id/bCancel"
@@ -166,11 +167,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/reportDialogSendButton" /> 
-                
-                
-
+                android:text="@string/reportDialogSendButton" />
         </LinearLayout>
-        -->
 </LinearLayout>
 </ScrollView>

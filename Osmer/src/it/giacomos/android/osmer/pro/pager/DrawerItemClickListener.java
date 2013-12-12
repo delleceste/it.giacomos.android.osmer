@@ -21,7 +21,7 @@ public class DrawerItemClickListener implements ListView.OnItemClickListener
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
 	{
-//		Log.e("onItemClick drawer listener", "clicekd at pos " + id);
+		Log.e("onItemClick drawer listener", "clicekd at pos " + id);
 		ListView drawerListView = mOsmerActivity.getDrawerListView();
 		String[] drawerItems = mOsmerActivity.getDrawerItems();
 		drawerListView.setItemChecked(position, true);

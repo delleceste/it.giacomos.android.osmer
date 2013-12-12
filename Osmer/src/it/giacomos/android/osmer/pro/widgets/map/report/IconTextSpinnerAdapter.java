@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 public class IconTextSpinnerAdapter extends ArrayAdapter<String> {
 
-	private FragmentActivity mActivity;
+	private Activity mActivity;
 	
 	
 	static final int SPINNER_SKY = 0;
@@ -49,7 +49,7 @@ public class IconTextSpinnerAdapter extends ArrayAdapter<String> {
 			String[] strings, Activity activity) 
 	{
 		super(context, resource, strings);
-		mActivity = (FragmentActivity) activity;
+		mActivity = (Activity) activity;
 	}
 
 	@Override

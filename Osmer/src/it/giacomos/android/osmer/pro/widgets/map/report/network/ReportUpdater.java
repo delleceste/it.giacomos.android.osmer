@@ -42,6 +42,8 @@ ReportUpdateTaskListener
 		mReportUpdaterListener = rul;
 		mLastReportUpdatedAt = 0;
 		mReportUpdateTask = null;
+		DataPoolCacheUtils dpcu = new DataPoolCacheUtils();
+		onReportUpdateTaskComplete(false, dpcu.loadFromStorage(ViewType.REPORT, ctx));
 	}
 	
 	public void clear()
@@ -55,9 +57,22 @@ ReportUpdateTaskListener
 	
 	public void update(boolean force)
 	{
-		Toast.makeText(mContext, "ReportUpdater.update: activating location client", Toast.LENGTH_SHORT).show();
+		/* if a task is already running or about to run, do not do anything, because an update is on
+		 * the way.
+		 */
+		if(mReportUpdateTask != null && (mReportUpdateTask.getStatus() == AsyncTask.Status.PENDING 
+				|| mReportUpdateTask.getStatus() == AsyncTask.Status.RUNNING))
+				return;
+
 		if(mNetworkStatusMonitor.isConnected())
-			mLocationClient.connect();
+		{
+			if(mLocationClient.isConnecting())
+				return; /* wait for onConnected() */
+			else if(mLocationClient.isConnected())
+				onConnected(null);
+			else
+				mLocationClient.connect();
+		}
 		else
 			Toast.makeText(mContext, R.string.reportNeedToBeOnline, Toast.LENGTH_SHORT).show();
 	}
@@ -65,11 +80,12 @@ ReportUpdateTaskListener
 	@Override
 	public void onNetworkBecomesAvailable() 
 	{
-		Toast.makeText(mContext, "ReportUpdater.onNetworkBecomesAvailable: net avail. connecting location cli", Toast.LENGTH_SHORT).show();
-		if(!mLocationClient.isConnected())
-			mLocationClient.connect();
-		else
+		if(mLocationClient.isConnected())
 			onConnected(null);
+		else if(mLocationClient.isConnecting())
+			return; /* wait for onConnected() */
+		else
+			mLocationClient.connect();
 	}
 
 	@Override
@@ -92,6 +108,13 @@ ReportUpdateTaskListener
 	 */
 	public void onConnected(Bundle arg0) 
 	{
+		/* if a task is already running or about to run, do not do anything, because an update is on
+		 * the way.
+		 */
+		if(mReportUpdateTask != null && (mReportUpdateTask.getStatus() == AsyncTask.Status.PENDING 
+				|| mReportUpdateTask.getStatus() == AsyncTask.Status.RUNNING))
+				return;
+		
 		Toast.makeText(mContext, "onConnected: location avail. would start update", Toast.LENGTH_SHORT).show();
 		Log.e("ReportUpdater.onConnected", "thread "+ Thread.currentThread());
 		String deviceId = Secure.getString(mContext.getContentResolver(), Secure.ANDROID_ID);
@@ -102,6 +125,11 @@ ReportUpdateTaskListener
 		}
 		mReportUpdateTask = new ReportUpdateTask(this, mLocationClient.getLastLocation(), deviceId);
 		mReportUpdateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().getReportUrl());
+		
+		/* no more interested in location updates, the task has been starting with the last known
+		 * location.
+		 */
+		mLocationClient.disconnect();
 	}
 
 	@Override
@@ -137,8 +165,6 @@ ReportUpdateTaskListener
 		}
 		else
 			mReportUpdaterListener.onReportUpdateError(data);
-		
-		mLocationClient.disconnect();
 	}
 	
 	

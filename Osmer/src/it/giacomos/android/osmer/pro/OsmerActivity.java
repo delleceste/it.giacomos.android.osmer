@@ -13,6 +13,7 @@ import it.giacomos.android.osmer.pro.interfaceHelpers.NetworkGuiErrorManager;
 import it.giacomos.android.osmer.pro.interfaceHelpers.ObservationTypeGetter;
 import it.giacomos.android.osmer.pro.interfaceHelpers.RadarImageTimestampTextBuilder;
 import it.giacomos.android.osmer.pro.interfaceHelpers.TitlebarUpdater;
+import it.giacomos.android.osmer.pro.locationUtils.LocationInfo;
 import it.giacomos.android.osmer.pro.locationUtils.LocationService;
 import it.giacomos.android.osmer.pro.network.DownloadManager;
 import it.giacomos.android.osmer.pro.network.DownloadReason;
@@ -26,6 +27,8 @@ import it.giacomos.android.osmer.pro.network.state.StateName;
 import it.giacomos.android.osmer.pro.network.state.Urls;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
 import it.giacomos.android.osmer.pro.observations.MapMode;
+import it.giacomos.android.osmer.pro.observations.NearestObservationData;
+import it.giacomos.android.osmer.pro.observations.ObservationData;
 import it.giacomos.android.osmer.pro.observations.ObservationType;
 import it.giacomos.android.osmer.pro.observations.ObservationsCache;
 import it.giacomos.android.osmer.pro.pager.ActionBarManager;
@@ -43,10 +46,12 @@ import it.giacomos.android.osmer.pro.widgets.map.RadarOverlayUpdateListener;
 import it.giacomos.android.osmer.pro.widgets.map.ReportRequestListener;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
 import it.giacomos.android.osmer.pro.widgets.map.report.IconTextSpinnerAdapter;
-import it.giacomos.android.osmer.pro.widgets.map.report.ReportDialogFragment;
+import it.giacomos.android.osmer.pro.widgets.map.report.ObservationDataExtractor;
+import it.giacomos.android.osmer.pro.widgets.map.report.ReportActivity;
 import it.giacomos.android.osmer.pro.widgets.map.report.RemovePostConfirmDialog;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportRequestDialogFragment;
 import it.giacomos.android.osmer.pro.widgets.map.report.UsersReportUrlBuilder;
+import it.giacomos.android.osmer.pro.widgets.map.report.network.PostReport;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostType;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostActionResultListener;
 import android.app.ActionBar;
@@ -158,7 +163,7 @@ ReportRequestListener
 		if(!mGoogleServicesAvailable)
 			return;
 
-//		Log.e("OsmerActivity.onPause", "stopping pending tasks");
+		//		Log.e("OsmerActivity.onPause", "stopping pending tasks");
 		/* cancel async tasks that may be running when the application is destroyed */
 		m_downloadManager.stopPendingTasks();
 		/* unregisters network status monitor broadcast receiver (for this it needs `this')
@@ -176,10 +181,16 @@ ReportRequestListener
 		super.onPostCreate(savedInstanceState);
 		if(!mGoogleServicesAvailable)
 			return;
+		int forceDrawerItem = -1;
 		// Sync the toggle state after onRestoreInstanceState has occurred.
 		mDrawerToggle.syncState();
 
-		mActionBarManager.init(savedInstanceState);
+		Intent intent = getIntent();
+		Bundle extras = intent.getExtras();
+		/* force to switch to Reports mode */
+		if(extras != null && extras.getBoolean("NotificationReportRequest"))
+			forceDrawerItem = mDrawerItems.length - 1;
+		mActionBarManager.init(savedInstanceState, forceDrawerItem);
 	}
 
 	@Override
@@ -271,7 +282,7 @@ ReportRequestListener
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 
-		mActionBarManager.drawerItemChanged(0);
+		//mActionBarManager.drawerItemChanged(0);
 
 		mMenuActionsManager = null;
 		mCurrentLocation = null;
@@ -317,11 +328,14 @@ ReportRequestListener
 		/* show touch forecast icons hint until a MapWithForecastImage disables this */
 		if(mSettings.isForecastIconsHintEnabled())
 			Toast.makeText(getApplicationContext(), R.string.hint_forecast_icons, Toast.LENGTH_LONG).show();
-		
+
 		/* remove notifications from the notification bar */
 		NotificationManager mNotificationManager =
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancelAll();
+		
+		/* to show alerts inside onPostResume, after onActivityResult */
+		mMyPendingAlertDialog = null;
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -409,49 +423,10 @@ ReportRequestListener
 		return super.onCreateDialog(id, args);
 	}
 
-	/*
-	 * Handle results returned to the FragmentActivity
-	 * by Google Play services
-	 */
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
-	{
-		// Decide what to do based on the original request code
-		switch (requestCode) 
-		{
-		case LocationService.CONNECTION_FAILURE_RESOLUTION_REQUEST :
-			/*
-			 * If the result code is Activity.RESULT_OK, try
-			 * to connect again
-			 */
-			switch (resultCode) 
-			{
-			case Activity.RESULT_OK :
-				/*
-				 * Try the request again
-				 */
-				break;
-			}
-		}
-	}
-
 	public void onGoogleMapReady()
 	{
 		Log.e("onGoogleMapRead", "intent is null? " + getIntent());
-		Intent intent = getIntent();
-		if(intent != null)
-		{
-			Bundle extras = intent.getExtras();
-			if(extras != null)
-			{
-				boolean reportRequestPending = extras.getBoolean("NotificationReportRequest");
-				if(reportRequestPending)
-				{
-					Log.e("onGoogleMapReady", "switching to report");
-					switchView(ViewType.REPORT);
-				}
-			}
-		}
+
 	}
 
 	@Override
@@ -488,29 +463,11 @@ ReportRequestListener
 		super.onSaveInstanceState(outState);
 		if(getActionBar().getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST)
 			outState.putInt("spinnerPosition", getActionBar().getSelectedNavigationIndex());
-		/* used to save the download status data. Since it's been converted into a singleton,
-		 * data is preserved as long as the process is running.
-		 * The class and file shall be removed.
-		 */
-		//		SnapshotManager snapManager = new SnapshotManager();
-		//		snapManager.save(outState, this);
-		//		snapManager = null;
 	}
 
 	protected void onRestoreInstanceState(Bundle inState)
 	{
 		super.onRestoreInstanceState(inState);
-		/* This method used to restore the DownloadStatus state.
-		 * Since 2.3.0, the DownloadStatus is a singleton thus preserving
-		 * its state through orientation changes and application put in background,
-		 * generally until the process is running.
-		 */
-		//		/* restores from the bundle if the bundle creation timestamp is reasonably
-		//		 * close to current timestamp
-		//		 */
-		//		SnapshotManager snapManager = new SnapshotManager();
-		//		snapManager.restore(inState, this);
-		//		snapManager = null;
 	}
 
 	public void getSituation()
@@ -542,18 +499,8 @@ ReportRequestListener
 	void updateReport(boolean force)
 	{
 		getMapFragment().updateReport(force);
-//		if(!this.mDownloadStatus.reportUpToDate() || force)
-//		{
-//			Toast.makeText(this, R.string.reportUpdateToast, Toast.LENGTH_SHORT).show();
-//			/* the url for get_report.php requires the Android device id, the latitude and the longitude
-//			 * of the current location. So we use the UsersReportUrlBuilder class to build the correct
-//			 * URL.
-//			 */
-//			m_downloadManager.updateUserReports(new UsersReportUrlBuilder().build(mLocationService, 
-//					getApplicationContext()));
-//		}
 	}
-	
+
 	void satellite()
 	{
 		//TextView textView = (TextView) findViewById(R.id.mainTextView);
@@ -578,7 +525,7 @@ ReportRequestListener
 		double progressValue = ProgressBarParams.MAX_PB_VALUE * step /  total;
 		setProgress((int) progressValue);
 		ProgressBarParams.currentValue = progressValue;
-//		Log.e("onDownloadProgressUpdate", "step " + step + "/" + total);
+		//		Log.e("onDownloadProgressUpdate", "step " + step + "/" + total);
 		if(mRefreshAnimatedImageView != null && ProgressBarParams.currentValue == ProgressBarParams.MAX_PB_VALUE)
 			mRefreshAnimatedImageView.hide(); /* stops and hides */
 		else if(mRefreshAnimatedImageView != null)
@@ -656,7 +603,7 @@ ReportRequestListener
 			updateReport(true);
 		}
 	}
-	
+
 	/** implements ReportRequestListener interface
 	 * 
 	 */
@@ -671,7 +618,7 @@ ReportRequestListener
 		else
 			Log.e("OsmerActivity.onMyReportLocalityChanged", "FRAGMENT NULL!");
 	}
-	
+
 	/** implements ReportRequestListener interface
 	 * 
 	 */
@@ -686,7 +633,7 @@ ReportRequestListener
 		 */
 		getMapFragment().myReportRequestDialogClosed(false, pointOnMap);
 	}
-	
+
 	/** implements ReportRequestListener.onMyPostRemove method interface
 	 * 
 	 */
@@ -704,7 +651,7 @@ ReportRequestListener
 		rrccd.setDeviceId(Secure.getString(getContentResolver(), Secure.ANDROID_ID));
 		rrccd.show(getSupportFragmentManager(), "RemovePostConfirmDialog");
 	}
-	
+
 	/** implements ReportRequestListener.onMyReportRequestDialogCancelled method interface
 	 * 
 	 */
@@ -716,7 +663,7 @@ ReportRequestListener
 		 */
 		getMapFragment().myReportRequestDialogClosed(false, position);
 	}
-	
+
 	public void onSelectionDone(ObservationType observationType, MapMode mapMode) 
 	{
 		/* switch the working mode of the map view. Already in PAGE_MAP view flipper page */
@@ -766,7 +713,7 @@ ReportRequestListener
 			startRadarAnimation();
 			break;
 		case R.id.reportDialogAction:
-			popupReportDialog();
+			startReportActivity();
 			break;
 		case R.id.reportUpdateAction:
 			/* this forces an update, even if just updated */
@@ -843,7 +790,7 @@ ReportRequestListener
 		/* report action */
 		menu.findItem(R.id.reportDialogAction).setVisible(mCurrentViewType == ViewType.REPORT);
 		menu.findItem(R.id.reportUpdateAction).setVisible(mCurrentViewType == ViewType.REPORT);
-		
+
 		switch(mCurrentViewType)
 		{
 		case HOME: case TODAY: case TOMORROW: case TWODAYS:
@@ -873,10 +820,11 @@ ReportRequestListener
 
 	public void switchView(ViewType id) 
 	{
+		Log.e("switchView", "swticihc to " + id);
 		mCurrentViewType = id;
 		ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 		OMapFragment mapFragment = getMapFragment();
-		
+
 		if (id == ViewType.HOME) 
 		{
 			viewFlipper.setDisplayedChild(0);
@@ -1006,10 +954,76 @@ ReportRequestListener
 		omv.stopRadarAnimation();
 	}
 
-	public void popupReportDialog()
+	public void startReportActivity()
 	{
-		ReportDialogFragment reportDialog = new ReportDialogFragment();
-		reportDialog.show(getSupportFragmentManager(), "ReportDialogFragment");
+		Location loc = this.mLocationService.getCurrentLocation();
+		if(loc == null)
+			 MyAlertDialogFragment.MakeGenericError(R.string.location_not_available, this);
+		else if(!mDownloadStatus.isOnline)
+			MyAlertDialogFragment.MakeGenericInfo(R.string.reportNeedToBeOnline, this);
+		else
+		{
+			ObservationData obsData = new NearestObservationData().get(loc, m_observationsCache);
+			ObservationDataExtractor oex = new ObservationDataExtractor(obsData);
+			Intent i = new Intent(this, ReportActivity.class);
+			i.putExtra("sky", oex.getSkyIndex());
+			i.putExtra("temp", oex.getTemperature());
+			i.putExtra("wind", oex.getWindIndex());
+			i.putExtra("latitude", loc.getLatitude());
+			i.putExtra("longitude", loc.getLongitude());
+			this.startActivityForResult(i, REPORT_ACTIVITY_FOR_RESULT_ID);
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+	{
+		if(requestCode == REPORT_ACTIVITY_FOR_RESULT_ID)
+		{
+			if(resultCode == Activity.RESULT_OK)
+			{
+				/* check if the user hasn't moved too far since she started the report activity */
+				Location currentLoc = mLocationService.getCurrentLocation();
+				String locality = "";
+				LocationInfo loi = mLocationService.getCurrentLocationInfo();
+				if(loi != null)
+					locality = loi.locality;
+				if(currentLoc != null) /* otherwise assume we can't determine */
+				{
+					Location reportLocation = new Location("");
+					reportLocation.setLatitude(data.getDoubleExtra("latitude", 0));
+					reportLocation.setLongitude(data.getDoubleExtra("longitude", 0));
+					if(currentLoc.distanceTo(reportLocation) <= 3000)
+					{
+						/* ok */
+						String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+						new PostReport(data.getStringExtra("user"), deviceId, 
+								locality, reportLocation.getLatitude(), reportLocation.getLongitude(), 
+								data.getIntExtra("sky", 0), data.getIntExtra("wind", 0), 
+								data.getStringExtra("temp"), data.getStringExtra("comment"), this);
+					}
+					else
+					{
+						Log.e("onActivityresutl" , "spostato di " +currentLoc.distanceTo(reportLocation) );
+						/* need pending alert dialog helper because the dialog cannot be shown inside 
+						 * onActivityResult, but instead the transaction (being it a Fragment) can be
+						 * made only in onPostResume().
+						 */
+						mMyPendingAlertDialog = new MyPendingAlertDialog(MyAlertDialogType.ERROR,  R.string.reportMovedTooFar);
+					}
+				}
+				else
+					mMyPendingAlertDialog = new MyPendingAlertDialog(MyAlertDialogType.ERROR,  R.string.location_not_available);
+			}
+		}
+	}
+	
+	@Override
+	public void onPostResume()
+	{
+		super.onPostResume();
+		if(mMyPendingAlertDialog != null && mMyPendingAlertDialog.isShowPending())
+			mMyPendingAlertDialog.showPending(this);
 	}
 	
 	public ObservationsCache getObservationsCache()
@@ -1067,7 +1081,7 @@ ReportRequestListener
 		OMapFragment mapFrag = (OMapFragment)getSupportFragmentManager().findFragmentById(R.id.mapview);
 		return mapFrag;
 	}
-	
+
 	@Override
 	public void onRadarImageUpdated() 
 	{
@@ -1084,39 +1098,39 @@ ReportRequestListener
 	@Override
 	public void onRadarAnimationStart() 
 	{
-		
+
 	}
 
 	@Override
 	public void onRadarAnimationPause() 
 	{
-		
+
 	}
 
 	@Override
 	public void onRadarAnimationStop() 
 	{
-		
+
 	}
 
 	@Override
 	public void onRadarAnimationRestored() 
 	{
-		
+
 	}
 
 	@Override
 	public void onRadarAnimationResumed() 
 	{
-		
+
 	}
-	
+
 	@Override
 	public void onRadarAnimationProgress(int step, int total) 
 	{
-		
+
 	}
-	
+
 	/* private members */
 	int mTapOnMarkerHintCount;
 	private Location mCurrentLocation;
@@ -1138,13 +1152,17 @@ ReportRequestListener
 
 	private DataPool mDataPool;
 	private LocationService mLocationService;
-	
+
 	private int mProgressBarStep, mProgressBarTotSteps;
 	private int mAdditionalProgressBarStep, mProgressBarAdditionalSteps;
 
 	ViewPager mViewPager;
 	TabsAdapter mTabsAdapter;
 	LinearLayout mMainLayout;
+	
+	public static final int REPORT_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 100;
+	
+	private MyPendingAlertDialog mMyPendingAlertDialog;
 
 
 	int availCnt = 0;

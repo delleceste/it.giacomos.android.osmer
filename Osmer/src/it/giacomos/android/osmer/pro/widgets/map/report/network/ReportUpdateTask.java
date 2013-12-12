@@ -47,7 +47,7 @@ public class ReportUpdateTask extends AsyncTask<String, Integer, String>
 	@Override
 	public void onCancelled(String doc)
 	{
-		Log.e("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ReportUpdateTask.onCancelled", "TASK CANCELLED!!");
+		Log.e("XXXXX ReportUpdateTask.onCancelled", "TASK CANCELLED!!");
 	}
 	
 	@Override

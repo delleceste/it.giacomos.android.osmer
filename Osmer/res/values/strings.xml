@@ -48,6 +48,7 @@
     <string name="webcam_updating">Downloading webcams list</string>
     <string name="webcam_list_error">Error downloading webcam list</string>
     <string name="lcation_service_error">There was an error obtaining the location service</string>
+    <string name="location_not_available">The current location is not available</string>
     <string name="data_missing">Data missing</string>
     <string name="min_temp">Minimum Temperature</string>
     <string name="max_temp">Maximum Temperature</string>
@@ -82,6 +83,7 @@
     <string name="measure_mode">Measure mode</string>
     <string name="radar_help">Radar info</string>
     <string name="radar_animation">Animation</string>
+    <string name="info">Information</string>
     
     
     
@@ -243,7 +245,8 @@
     <string name="radarAnimationLocalTimeFromUTC">Local time = UTC +</string>
     
     
-    <!--  report dialog fragment -->
+    <!--  report activity -->
+    <string name="report_activity_name">Report the weather</string>
     <string name="reportDialogTitle">Report the weather</string>
     <string name="reportDialogMessage">Report the weather in your area</string>
     <string name="reportDialogSendButton">Report!</string>
@@ -262,6 +265,8 @@
 	<string name="reportUpdateToast">Updating reports</string>
 	<string name="reportAtMost1FieldFilled">Impossible to publish an empty report</string>
 	<string name="reportNeedToBeOnline">Internet connection unavailable</string>
+	<string name="reportMovedTooFar">You moved too far from the point where you started the report procedure</string>
+	
 	
 	<!--  report request -->
 	<string name="reportRequestIncludeLocationName">Include location name</string>

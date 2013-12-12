@@ -50,6 +50,11 @@ GeocodeAddressUpdateListener
 		return mCurrentLocation;
 	}
 	
+	public LocationInfo getCurrentLocationInfo()
+	{
+		return mCurrentLocationInfo;
+	}
+	
 	public boolean isConnected()
 	{
 		Log.e("isConnected", "client null? " + (mLocationClient != null) + ", " + mLocationClient.isConnected());

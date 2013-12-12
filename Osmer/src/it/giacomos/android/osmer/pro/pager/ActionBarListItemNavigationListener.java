@@ -24,8 +24,8 @@ public class ActionBarListItemNavigationListener implements OnNavigationListener
 	@Override
 	public boolean onNavigationItemSelected(int position, long itemId) 
 	{
-//		Log.e("ActionBarListItemNavigationListener", "onNavigationItemSelected " + position
-//				+ "itemID " + itemId);
+		Log.e("ActionBarListItemNavigationListener", "onNavigationItemSelected " + position
+				+ "itemID " + itemId);
 		if(mMode == ViewType.DAILY_TABLE)
 		{
 			if (position == 0) {
