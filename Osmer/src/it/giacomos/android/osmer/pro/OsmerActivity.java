@@ -50,7 +50,6 @@ import it.giacomos.android.osmer.pro.widgets.map.report.ObservationDataExtractor
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportActivity;
 import it.giacomos.android.osmer.pro.widgets.map.report.RemovePostConfirmDialog;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportRequestDialogFragment;
-import it.giacomos.android.osmer.pro.widgets.map.report.UsersReportUrlBuilder;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostReport;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostType;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostActionResultListener;

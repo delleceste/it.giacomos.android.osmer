@@ -266,7 +266,7 @@
     <string name="thereAreNReports">Numero di segnalazioni: </string>
 	 <string name="reportTouchBaloonToRemove">Tocca per rimuovere la tua segnalazione</string>
     <!-- notification area -->
-    <string name="notificatonNewReportRequest">Nuova richiesta segnalazione meteo da </string>
+    <string name="notificatonNewReportRequest">Richiesta segnalazione da </string>
     <string name="reportRequestPublishedOn">Richiesta pubblicata in data </string>
 	<string name="reportLookingForLocality">cerco il nome della località&#8230;</string>
 	

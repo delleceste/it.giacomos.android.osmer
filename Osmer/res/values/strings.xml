@@ -288,7 +288,7 @@
     
     
     <!-- notification area -->
-    <string name="notificatonNewReportRequest">New report request from </string>
+    <string name="notificatonNewReportRequest">Report request from </string>
     
     <string-array name="report_sky_textitems">
         <item>don\'t report</item>

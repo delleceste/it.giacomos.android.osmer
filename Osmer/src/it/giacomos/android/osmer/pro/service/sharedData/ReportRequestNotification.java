@@ -38,13 +38,15 @@ public class ReportRequestNotification extends NotificationData
 	
 	public ReportRequestNotification(String datet, String user, double lat, double lon, String loc)
 	{
+		super();
 		datetime = datet;
 		username = user;
 		latitude = lat;
 		longitude = lon;
 		locality = loc;
-		makeDate(datetime);
 		mValidString = true; /* for is valid */
+		isRequest = true;
+		makeDate(datetime);
 	}
 
 	@Override

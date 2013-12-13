@@ -166,7 +166,7 @@ FetchRequestsTaskListener, Runnable
 				 */
 				mServiceDataTask = new FetchRequestsDataTask(this, deviceId, mLocation.getLatitude(), mLocation.getLongitude());
 
-				mServiceDataTask.execute(new Urls().getRequestsUrl());
+				mServiceDataTask.execute(new Urls().getReportsAndRequestUpdatesForMyLocationUrl());
 				return true;
 			}
 			else
@@ -229,6 +229,7 @@ FetchRequestsTaskListener, Runnable
 		{
 			if(sharedData.canBeConsideredNew(notificationData, this))
 			{
+				Log.e("onServiceDataTaskComplete", "notification can be considereth new " + notificationData.username);
 				/* replace the previous notification data (if any) with the new one.
 				 * This updates the sharedData timestamp of the last notification
 				 */
@@ -258,10 +259,7 @@ FetchRequestsTaskListener, Runnable
 				stackBuilder.addNextIntent(resultIntent);
 
 				PendingIntent resultPendingIntent =
-						stackBuilder.getPendingIntent(
-								0,
-								PendingIntent.FLAG_UPDATE_CURRENT
-								);
+						stackBuilder.getPendingIntent( 0, PendingIntent.FLAG_UPDATE_CURRENT);
 				
 				notificationBuilder.setContentIntent(resultPendingIntent);
 				notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
@@ -269,11 +267,16 @@ FetchRequestsTaskListener, Runnable
 
 				mNotificationManager.notify(ReportDataService.REPORT_REQUEST_NOTIFICATION_TAG, notificationData.makeId(),  notificationBuilder.build());
 			}
+			else
+				Log.e("onServiceDataTaskComplete", "notification IS NOT NEW " + notificationData.username);
 			/* just update the shared data notification data with the most up to date 
 			 * values of latitude, longitude, username...
 			 */
 			sharedData.updateCurrentRequest(notificationData);
 		}
+		else
+			Toast.makeText(this, "Is this a notification of a report for you? " + 
+					dataAsString, Toast.LENGTH_LONG).show();
 
 		/* schedule next update only when all the work is finished */
 		mHandler.postDelayed(this, mSleepInterval);

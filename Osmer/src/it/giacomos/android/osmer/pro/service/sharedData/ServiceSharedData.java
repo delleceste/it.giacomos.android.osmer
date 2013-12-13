@@ -72,7 +72,7 @@ public class ServiceSharedData {
 		Log.e("dates are inHas ", "difftime ms = " + diffTimeMs + " min millis " + minMillis);
 		if(diffTimeMs < minMillis)
 		{
-			Log.e("ServiceSharedData", "diffTimeMillis < minimum");
+			Log.e("ServiceSharedData", "diffTimeMillis < minimum CANNOT BE CONSIDERETH NEW");
 			return false; /* not new */
 		}
 		

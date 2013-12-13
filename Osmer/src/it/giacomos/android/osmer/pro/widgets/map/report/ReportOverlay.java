@@ -176,6 +176,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		{
 			if(di.getType() == DataInterface.TYPE_REQUEST && !di.isWritable())
 			{
+				Log.e("ReportOverlay.mCheckForFresh..", "ok is writable is request");
 				// ReportRequestNotification(String datet, String user, double lat, double lon, String loc)
 				RequestData rd = (RequestData) di;
 				ReportRequestNotification repReqN = new ReportRequestNotification(rd.datetime,
@@ -184,11 +185,14 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 				 * so that the service does not trigger a notification.
 				 */
 				ServiceSharedData ssd = ServiceSharedData.Instance();
-				ssd.updateCurrentRequest(repReqN);
-				Toast.makeText(mMapFrag.getActivity().getApplicationContext(), 
+				if(ssd.canBeConsideredNew(repReqN, mMapFrag.getActivity().getApplicationContext()))
+				{
+					ssd.updateCurrentRequest(repReqN);
+					ssd.setWasNotified(repReqN);
+					Toast.makeText(mMapFrag.getActivity().getApplicationContext(), 
 						"A notification is canceled (the service won't notify it)\n" +
 						"because we are in the report page." + rd.datetime + ", " + rd.locality, Toast.LENGTH_LONG).show();
-						
+				}	
 			}
 		}
 		
