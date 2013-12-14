@@ -155,7 +155,7 @@ FetchRequestsTaskListener, Runnable
 	{
 		if(mLocation != null)
 		{
-			Toast.makeText(this.getApplicationContext(), "Meteo.FVG: updating reports...", Toast.LENGTH_LONG).show();
+		//	Toast.makeText(this.getApplicationContext(), "Meteo.FVG: updating reports...", Toast.LENGTH_LONG).show();
 			/* check that the network is still available */
 			final ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			final NetworkInfo netinfo = connMgr.getActiveNetworkInfo();
@@ -241,9 +241,12 @@ FetchRequestsTaskListener, Runnable
 					/* and notify */
 					String message;
 					int iconId;
+					// Creates an explicit intent for an Activity in your app
+					Intent resultIntent = new Intent(this, OsmerActivity.class);
 					
 					if(notificationData.isRequest())
 					{
+						resultIntent.putExtra("NotificationReportRequest", true);
 						ReportRequestNotification rrnd = (ReportRequestNotification) notificationData;
 						message = getResources().getString(R.string.notificatonNewReportRequest) 
 									+ " " + notificationData.username;
@@ -253,6 +256,7 @@ FetchRequestsTaskListener, Runnable
 					}
 					else
 					{
+						resultIntent.putExtra("NotificationReport", true);
 						message = getResources().getString(R.string.notificationNewReportArrived) 
 								+ " "  + notificationData.username;
 						iconId = R.drawable.ic_launcher_satusbar_report;
@@ -264,9 +268,6 @@ FetchRequestsTaskListener, Runnable
 					.setContentTitle(getResources().getString(R.string.app_name))
 					.setContentText(message);
 
-					// Creates an explicit intent for an Activity in your app
-					Intent resultIntent = new Intent(this, OsmerActivity.class);
-					resultIntent.putExtra("NotificationReportRequest", notificationData.isRequest());
 					// The stack builder object will contain an artificial back stack for the
 					// started Activity.
 					// This ensures that navigating backward from the Activity leads out of

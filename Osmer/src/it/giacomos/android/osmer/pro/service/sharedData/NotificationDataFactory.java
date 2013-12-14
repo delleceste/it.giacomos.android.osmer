@@ -14,8 +14,8 @@ public class NotificationDataFactory
 			if(parts.length == 7)
 				nDataArray.add(new ReportRequestNotification(line));
 			else if(parts.length == 3)
-				/* ReportNotificationData */
-				;
+				nDataArray.add(new ReportNotification(line));
+				
 			else
 				/* nothing to do here */
 				;

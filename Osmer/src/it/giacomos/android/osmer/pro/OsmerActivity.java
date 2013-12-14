@@ -187,7 +187,8 @@ ReportRequestListener
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
 		/* force to switch to Reports mode */
-		if(extras != null && extras.getBoolean("NotificationReportRequest"))
+		if(extras != null && (extras.getBoolean("NotificationReportRequest")
+				|| extras.getBoolean("NotificationReport")))
 			forceDrawerItem = mDrawerItems.length - 1;
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
 	}

@@ -41,7 +41,7 @@ public class ConnectivityChangedReceiver extends BroadcastReceiver
         	cal.add(Calendar.SECOND, 5);
         	//registering our pending intent with alarmmanager
         	am.set(AlarmManager.RTC, cal.getTimeInMillis(), myPendingIntent);
-        	Toast.makeText(context, "Network up. Meteo.FVG service started", Toast.LENGTH_SHORT).show();
+//        	Toast.makeText(context, "Network up. Meteo.FVG service started", Toast.LENGTH_SHORT).show();
        
         	
         	/////////////////////////////////////// LOG TEST //////////////////////////////////////////////////
@@ -68,7 +68,7 @@ public class ConnectivityChangedReceiver extends BroadcastReceiver
         	am.cancel(myPendingIntent);
         	context.stopService(myIntent);
         	Log.e(">>>>>>>>>>>> ConnectivityChangedReceiver", "------------removing repeating intent");
-        	Toast.makeText(context, "Network down. Meteo.FVG service stopped", Toast.LENGTH_SHORT).show();
+//        	Toast.makeText(context, "Network down. Meteo.FVG service stopped", Toast.LENGTH_SHORT).show();
         	
         	
         	/////////////////////////////////////// LOG TEST //////////////////////////////////////////////////
