@@ -2,7 +2,7 @@ package it.giacomos.android.osmer.pro.service.sharedData;
 
 public class ReportRequestNotification extends NotificationData
 {
-	public String datetime, username, locality;
+    public String locality;
 	public boolean isRequest;
 	private boolean mValidString;
 	

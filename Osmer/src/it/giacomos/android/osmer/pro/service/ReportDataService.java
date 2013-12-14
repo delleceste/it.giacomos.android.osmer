@@ -5,6 +5,7 @@ import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.pro.network.state.Urls;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 import it.giacomos.android.osmer.pro.service.sharedData.NotificationData;
+import it.giacomos.android.osmer.pro.service.sharedData.NotificationDataFactory;
 import it.giacomos.android.osmer.pro.service.sharedData.ReportRequestNotification;
 import it.giacomos.android.osmer.pro.service.sharedData.ServiceSharedData;
 
@@ -14,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -83,7 +85,7 @@ FetchRequestsTaskListener, Runnable
 		mSleepInterval = s.getServiceSleepIntervalMillis();
 		if(mLocationClient == null)
 			mLocationClient = new LocationClient(this, this, this);
-		
+
 		/* if onStartCommand is called multiple times,we must stop previously
 		 * scheduled runs.
 		 */
@@ -174,7 +176,7 @@ FetchRequestsTaskListener, Runnable
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void onDestroy()
 	{
@@ -224,59 +226,77 @@ FetchRequestsTaskListener, Runnable
 			}
 		}
 
-		ReportRequestNotification notificationData = new ReportRequestNotification(dataAsString);
-		if(notificationData.isValid())
+		ArrayList<NotificationData> notifications = new NotificationDataFactory().get(dataAsString);
+		for(NotificationData notificationData : notifications)
 		{
-			if(sharedData.canBeConsideredNew(notificationData, this))
+			if(notificationData.isValid())
 			{
-				Log.e("onServiceDataTaskComplete", "notification can be considereth new " + notificationData.username);
-				/* replace the previous notification data (if any) with the new one.
-				 * This updates the sharedData timestamp of the last notification
+				if(sharedData.canBeConsideredNew(notificationData, this))
+				{
+					Log.e("onServiceDataTaskComplete", "notification can be considereth new " + notificationData.username);
+					/* replace the previous notification data (if any) with the new one.
+					 * This updates the sharedData timestamp of the last notification
+					 */
+					sharedData.setWasNotified(notificationData);
+					/* and notify */
+					String message;
+					int iconId;
+					
+					if(notificationData.isRequest())
+					{
+						ReportRequestNotification rrnd = (ReportRequestNotification) notificationData;
+						message = getResources().getString(R.string.notificatonNewReportRequest) 
+									+ " " + notificationData.username;
+						if(rrnd.locality.length() > 0)
+							message += " - " + rrnd.locality;
+						iconId = R.drawable.ic_launcher_satusbar_request;
+					}
+					else
+					{
+						message = getResources().getString(R.string.notificationNewReportArrived) 
+								+ " "  + notificationData.username;
+						iconId = R.drawable.ic_launcher_satusbar_report;
+					}
+
+					NotificationCompat.Builder notificationBuilder =
+							new NotificationCompat.Builder(this)
+					.setSmallIcon(iconId)
+					.setContentTitle(getResources().getString(R.string.app_name))
+					.setContentText(message);
+
+					// Creates an explicit intent for an Activity in your app
+					Intent resultIntent = new Intent(this, OsmerActivity.class);
+					resultIntent.putExtra("NotificationReportRequest", notificationData.isRequest());
+					// The stack builder object will contain an artificial back stack for the
+					// started Activity.
+					// This ensures that navigating backward from the Activity leads out of
+					// your application to the Home screen.
+					TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+					// Adds the back stack for the Intent (but not the Intent itself)
+					stackBuilder.addParentStack(OsmerActivity.class);
+					// Adds the Intent that starts the Activity to the top of the stack
+					stackBuilder.addNextIntent(resultIntent);
+
+					PendingIntent resultPendingIntent =
+							stackBuilder.getPendingIntent( 0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+					notificationBuilder.setContentIntent(resultPendingIntent);
+					notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+					// mId allows you to update the notification later on.
+
+					mNotificationManager.notify(ReportDataService.REPORT_REQUEST_NOTIFICATION_TAG, notificationData.makeId(),  notificationBuilder.build());
+				}
+				else
+					Log.e("onServiceDataTaskComplete", "notification IS NOT NEW " + notificationData.username);
+				/* just update the shared data notification data with the most up to date 
+				 * values of latitude, longitude, username...
 				 */
-				sharedData.setWasNotified(notificationData);
-				/* and notify */
-				String message = getResources().getString(R.string.notificatonNewReportRequest) + " " + notificationData.username;
-				if(notificationData.locality.length() > 0)
-					message += " - " + notificationData.locality;
-
-				NotificationCompat.Builder notificationBuilder =
-						new NotificationCompat.Builder(this)
-				.setSmallIcon(R.drawable.ic_launcher)
-				.setContentTitle(getResources().getString(R.string.app_name))
-				.setContentText(message);
-
-				// Creates an explicit intent for an Activity in your app
-				Intent resultIntent = new Intent(this, OsmerActivity.class);
-				resultIntent.putExtra("NotificationReportRequest", notificationData.isRequest);
-				// The stack builder object will contain an artificial back stack for the
-				// started Activity.
-				// This ensures that navigating backward from the Activity leads out of
-				// your application to the Home screen.
-				TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-				// Adds the back stack for the Intent (but not the Intent itself)
-				stackBuilder.addParentStack(OsmerActivity.class);
-				// Adds the Intent that starts the Activity to the top of the stack
-				stackBuilder.addNextIntent(resultIntent);
-
-				PendingIntent resultPendingIntent =
-						stackBuilder.getPendingIntent( 0, PendingIntent.FLAG_UPDATE_CURRENT);
-				
-				notificationBuilder.setContentIntent(resultPendingIntent);
-				notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-				// mId allows you to update the notification later on.
-
-				mNotificationManager.notify(ReportDataService.REPORT_REQUEST_NOTIFICATION_TAG, notificationData.makeId(),  notificationBuilder.build());
+				sharedData.updateCurrentRequest(notificationData);
 			}
 			else
-				Log.e("onServiceDataTaskComplete", "notification IS NOT NEW " + notificationData.username);
-			/* just update the shared data notification data with the most up to date 
-			 * values of latitude, longitude, username...
-			 */
-			sharedData.updateCurrentRequest(notificationData);
+				Toast.makeText(this, "Notification not valid! " + 
+						dataAsString, Toast.LENGTH_LONG).show();
 		}
-		else
-			Toast.makeText(this, "Is this a notification of a report for you? " + 
-					dataAsString, Toast.LENGTH_LONG).show();
 
 		/* schedule next update only when all the work is finished */
 		mHandler.postDelayed(this, mSleepInterval);

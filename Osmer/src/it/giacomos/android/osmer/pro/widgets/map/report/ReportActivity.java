@@ -106,20 +106,20 @@ public class ReportActivity extends Activity implements OnClickListener
 	@Override
 	public void onClick(View view)
 	{
-		EditText te;
-		te = (EditText) findViewById(R.id.etUserName);
+		EditText etTemp = null, teUserName, etComment;
+		teUserName = (EditText) findViewById(R.id.etUserName);
 
 		if(view.getId() == R.id.cbTemp)
 		{
 			CheckBox check = (CheckBox) view;
-			View editTextTemp = findViewById(R.id.ettemp);
-			editTextTemp.setEnabled(check.isChecked());
+			etTemp = (EditText) findViewById(R.id.ettemp);
+			etTemp.setEnabled(check.isChecked());
 		}
 		else if(view.getId() == R.id.bSend || view.getId() == R.id.bCancel)
 		{
 			Settings se = new Settings(this);
-			if(se.getReporterUserName().compareTo(te.getText().toString()) != 0)
-				se.setReporterUserName(te.getText().toString());
+			if(se.getReporterUserName().compareTo(teUserName.getText().toString()) != 0)
+				se.setReporterUserName(teUserName.getText().toString());
 		}
 
 		if(view.getId() == R.id.bSend)
@@ -133,16 +133,16 @@ public class ReportActivity extends Activity implements OnClickListener
 			CheckBox cb = (CheckBox) findViewById(R.id.cbTemp);
 			if(cb.isChecked()) /* pick temperature only if cb is checked */
 			{
-				te = (EditText) findViewById(R.id.ettemp);
-				temp = te.getText().toString();
+				etTemp = (EditText) findViewById(R.id.ettemp);
+				temp = etTemp.getText().toString();
 			}
 			else
 				temp = "";
 
 
-			user = te.getText().toString();
-			te = (EditText) findViewById(R.id.etComment);
-			comment = te.getText().toString();
+			user = teUserName.getText().toString();
+			etComment = (EditText) findViewById(R.id.etComment);
+			comment = etComment.getText().toString();
 			Spinner sp = (Spinner) findViewById(R.id.spinSky);
 			sky = sp.getSelectedItemPosition();
 			sp = (Spinner) findViewById(R.id.spinWind);
@@ -159,6 +159,7 @@ public class ReportActivity extends Activity implements OnClickListener
 			intent.putExtra("user", user);
 			intent.putExtra("sky", sky);
 			intent.putExtra("wind", wind);
+			intent.putExtra("temperature", temp);
 			intent.putExtra("latitude", mLatitude);
 			intent.putExtra("longitude", mLongitude);
 

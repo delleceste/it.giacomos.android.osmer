@@ -10,7 +10,7 @@ public abstract class NotificationData
 {
 	public static short TYPE_REQUEST = 0;
 	public static short TYPE_REPORT = 1;
-	
+	public String datetime, username;
 	public double latitude, longitude;
 	
 	protected Date date;
@@ -22,7 +22,14 @@ public abstract class NotificationData
 	 */
 	private boolean mIsConsumed;
 	
+	public boolean isRequest()
+	{
+		return getType() == NotificationData.TYPE_REQUEST;
+	}
+	
 	public abstract short getType();
+	
+	public abstract boolean isValid();
 	
 	public Date getDate()
 	{
@@ -65,15 +72,17 @@ public abstract class NotificationData
 		return id;
 	}
 	
-	public void makeDate(String datestr)
+	public boolean makeDate(String datestr)
 	{
 		try{
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 			date = formatter.parse(datestr);
+			return true;
 		} 
 		catch(Exception e)
 		{
 			Log.e("NotificationData.makeDate", e.getLocalizedMessage());
+			return false;
 		}
 	}
 	

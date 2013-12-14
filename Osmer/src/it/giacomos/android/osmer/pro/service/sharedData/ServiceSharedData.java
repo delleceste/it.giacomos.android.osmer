@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.pro.service.sharedData;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -46,7 +47,7 @@ public class ServiceSharedData {
 		 * Remember that only one notificationData per type can be considered.
 		 */
 		mNotificationDataHash.put(type, notificationData);
-		mLastNotifiedDate = notificationData.getDate();
+		mLastNotifiedDate = Calendar.getInstance().getTime(); /* now */
 	}
 
 	public boolean canBeConsideredNew(NotificationData notificationData, Context ctx) 
@@ -81,7 +82,7 @@ public class ServiceSharedData {
 
 	}
 
-	public void updateCurrentRequest(ReportRequestNotification notificationData) 
+	public void updateCurrentRequest(NotificationData notificationData) 
 	{
 		short type = notificationData.getType();
 		/* replace old notificationData for the specified type.

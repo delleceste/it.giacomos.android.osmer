@@ -1002,7 +1002,7 @@ ReportRequestListener
 						new PostReport(data.getStringExtra("user"), deviceId, 
 								locality, reportLocation.getLatitude(), reportLocation.getLongitude(), 
 								data.getIntExtra("sky", 0), data.getIntExtra("wind", 0), 
-								data.getStringExtra("temp"), data.getStringExtra("comment"), this);
+								data.getStringExtra("temperature"), data.getStringExtra("comment"), this);
 					}
 					else
 					{
