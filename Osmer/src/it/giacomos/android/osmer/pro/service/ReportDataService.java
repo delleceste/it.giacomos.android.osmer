@@ -252,7 +252,7 @@ FetchRequestsTaskListener, Runnable
 									+ " " + notificationData.username;
 						if(rrnd.locality.length() > 0)
 							message += " - " + rrnd.locality;
-						iconId = R.drawable.ic_launcher_satusbar_request;
+						iconId = R.drawable.ic_launcher_statusbar_request;
 						log("service task ok. REQUEST: new notif " + notificationData.username + "la " + 
 								mLocation.getLatitude() + " lo " + mLocation.getLongitude());
 					}
@@ -261,7 +261,7 @@ FetchRequestsTaskListener, Runnable
 						resultIntent.putExtra("NotificationReport", true);
 						message = getResources().getString(R.string.notificationNewReportArrived) 
 								+ " "  + notificationData.username;
-						iconId = R.drawable.ic_launcher_satusbar_report;
+						iconId = R.drawable.ic_launcher_statusbar_report;
 						log("service task ok. REPORT: new notif " + notificationData.username + "la " + 
 								mLocation.getLatitude() + " lo " + mLocation.getLongitude());
 					}
