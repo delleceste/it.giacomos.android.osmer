@@ -80,7 +80,6 @@ FetchRequestsTaskListener, Runnable
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{
 		Log.e(">>>> ReportDataService <<<<<< ", "onStartCommand");
-		log("\nservice startCmd");
 		Settings s = new Settings(this);
 		mSleepInterval = s.getServiceSleepIntervalMillis();
 		if(mLocationClient == null)
@@ -107,7 +106,6 @@ FetchRequestsTaskListener, Runnable
 	{
 		if(!mLocationClient.isConnected())
 		{
-			log("run: loc cli disconn: connecting");
 			/* wait for connection and then get location and update data */
 			mLocationClient.connect();
 		}
@@ -117,7 +115,6 @@ FetchRequestsTaskListener, Runnable
 			boolean taskStarted = startTask();
 			if(!taskStarted)
 				mHandler.postDelayed(this, mSleepInterval);
-			log("run: loc cli already conn: task started " + taskStarted);
 		}
 	}
 
@@ -148,7 +145,6 @@ FetchRequestsTaskListener, Runnable
 		 */
 		if(!taskStarted)
 			mHandler.postDelayed(this, mSleepInterval);
-		log("onConnected: loc cli freshly conn: task started " + taskStarted);
 	}
 
 	private boolean startTask()
@@ -198,8 +194,9 @@ FetchRequestsTaskListener, Runnable
 	@Override
 	public void onServiceDataTaskComplete(boolean error, String dataAsString) 
 	{
-		log("task ok: err " + error + ",d siz: " + dataAsString.length() + "la " + 
-				mLocation.getLatitude() + " lo " + mLocation.getLongitude());
+		if(error)
+			log("task error: " + dataAsString);
+		
 		Log.e(">>>> ReportDataService.onServiceDataTaskComplete", "data: " + dataAsString + " error " + error);
 
 		ServiceSharedData sharedData = ServiceSharedData.Instance();
@@ -209,6 +206,8 @@ FetchRequestsTaskListener, Runnable
 		/* a request has been withdrawn, remove notification, if present */
 		if(dataAsString.isEmpty())
 		{
+			log("service: removing notif (empty data). la " + 
+					mLocation.getLatitude() + " lo " + mLocation.getLongitude());
 			/* remove notification, if present */
 			NotificationData currentNotification = sharedData.getNotificationData(NotificationData.TYPE_REQUEST);
 			if(currentNotification != null) /* a notification is present */
@@ -233,6 +232,7 @@ FetchRequestsTaskListener, Runnable
 			{
 				if(sharedData.canBeConsideredNew(notificationData, this))
 				{
+					
 					Log.e("onServiceDataTaskComplete", "notification can be considereth new " + notificationData.username);
 					/* replace the previous notification data (if any) with the new one.
 					 * This updates the sharedData timestamp of the last notification
@@ -253,6 +253,8 @@ FetchRequestsTaskListener, Runnable
 						if(rrnd.locality.length() > 0)
 							message += " - " + rrnd.locality;
 						iconId = R.drawable.ic_launcher_satusbar_request;
+						log("service task ok. REQUEST: new notif " + notificationData.username + "la " + 
+								mLocation.getLatitude() + " lo " + mLocation.getLongitude());
 					}
 					else
 					{
@@ -260,6 +262,8 @@ FetchRequestsTaskListener, Runnable
 						message = getResources().getString(R.string.notificationNewReportArrived) 
 								+ " "  + notificationData.username;
 						iconId = R.drawable.ic_launcher_satusbar_report;
+						log("service task ok. REPORT: new notif " + notificationData.username + "la " + 
+								mLocation.getLatitude() + " lo " + mLocation.getLongitude());
 					}
 
 					NotificationCompat.Builder notificationBuilder =
@@ -288,15 +292,22 @@ FetchRequestsTaskListener, Runnable
 					mNotificationManager.notify(ReportDataService.REPORT_REQUEST_NOTIFICATION_TAG, notificationData.makeId(),  notificationBuilder.build());
 				}
 				else
+				{
+					log("service task ok. notif not new " + notificationData.username + "la " + 
+							mLocation.getLatitude() + " lo " + mLocation.getLongitude());
 					Log.e("onServiceDataTaskComplete", "notification IS NOT NEW " + notificationData.username);
+				}
 				/* just update the shared data notification data with the most up to date 
 				 * values of latitude, longitude, username...
 				 */
 				sharedData.updateCurrentRequest(notificationData);
 			}
 			else
+			{
+				log("service task: notification not valid: " + dataAsString);
 				Toast.makeText(this, "Notification not valid! " + 
 						dataAsString, Toast.LENGTH_LONG).show();
+			}
 		}
 
 		/* schedule next update only when all the work is finished */

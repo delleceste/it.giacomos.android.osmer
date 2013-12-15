@@ -40,16 +40,14 @@ public class ConnectivityChangedReceiver extends BroadcastReceiver
         	Log.e(">>>>>>>>>>>> ConnectivityChangedReceiver", "+++++++++ net connecting");
         	cal.add(Calendar.SECOND, 5);
         	//registering our pending intent with alarmmanager
-        	am.set(AlarmManager.RTC, cal.getTimeInMillis(), myPendingIntent);
-//        	Toast.makeText(context, "Network up. Meteo.FVG service started", Toast.LENGTH_SHORT).show();
-       
+        	am.set(AlarmManager.RTC, cal.getTimeInMillis(), myPendingIntent);       
         	
         	/////////////////////////////////////// LOG TEST //////////////////////////////////////////////////
         	////////////////////////////////////////////////////////////////////////////////////////////////////
         	try {
         		PrintWriter out;
     			out = new PrintWriter(new BufferedWriter(new FileWriter(f.getAbsolutePath() + "/Meteo.FVG.Service.log", true)));
-    			out.append("+ ConnectivityChangedReceiver: network up on " + cal.getTime().toLocaleString() + "\n");
+    			out.append("+ receiver: net up on " + cal.getTime().toLocaleString() + "\n");
     			out.close();
     		} catch (FileNotFoundException e1) 
     		{
@@ -76,7 +74,7 @@ public class ConnectivityChangedReceiver extends BroadcastReceiver
         	try {
         		PrintWriter out;
     			out = new PrintWriter(new BufferedWriter(new FileWriter(f.getAbsolutePath() + "/Meteo.FVG.Service.log", true)));
-    			out.append("- ConnectivityChangedReceiver: network down on " + cal.getTime().toLocaleString() + "\n");
+    			out.append("- receiver: net down on " + cal.getTime().toLocaleString() + "\n");
     			out.close();
     		} catch (FileNotFoundException e1) 
     		{
