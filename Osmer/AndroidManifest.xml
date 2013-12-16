@@ -38,7 +38,7 @@
         android:debuggable="false"
         android:icon="@drawable/ic_launcher"
         android:label="Meteo.FVG"
-        android:theme="@android:style/Theme.Holo.Light.DarkActionBar" >
+        android:theme="@android:style/Theme.Holo.Light" >
 
         <activity
             android:name=".pro.OsmerActivity"

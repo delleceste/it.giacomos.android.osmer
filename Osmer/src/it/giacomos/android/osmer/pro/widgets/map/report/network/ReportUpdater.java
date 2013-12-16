@@ -57,12 +57,16 @@ ReportUpdateTaskListener
 	
 	public void update(boolean force)
 	{
+		Log.e("update,", " force " + force);
 		/* if a task is already running or about to run, do not do anything, because an update is on
 		 * the way.
 		 */
 		if(mReportUpdateTask != null && (mReportUpdateTask.getStatus() == AsyncTask.Status.PENDING 
 				|| mReportUpdateTask.getStatus() == AsyncTask.Status.RUNNING))
+		{
+			Log.e("update", "reportUpdateTask is running or pending");
 				return;
+		}
 
 		if(mNetworkStatusMonitor.isConnected())
 		{
