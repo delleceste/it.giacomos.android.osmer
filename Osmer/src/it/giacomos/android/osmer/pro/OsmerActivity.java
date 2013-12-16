@@ -130,7 +130,6 @@ ReportRequestListener
 		requestWindowFeature(Window.FEATURE_PROGRESS);
 		this.setProgressBarVisibility(true);
 
-
 		/* create the location update client and connect it to the location service */
 		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 		if(resultCode == ConnectionResult.SUCCESS)
@@ -333,7 +332,7 @@ ReportRequestListener
 		NotificationManager mNotificationManager =
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancelAll();
-		
+
 		/* to show alerts inside onPostResume, after onActivityResult */
 		mMyPendingAlertDialog = null;
 	}
@@ -425,7 +424,6 @@ ReportRequestListener
 
 	public void onGoogleMapReady()
 	{
-		Log.e("onGoogleMapRead", "intent is null? " + getIntent());
 
 	}
 
@@ -627,13 +625,22 @@ ReportRequestListener
 	@Override
 	public void onMyReportRequestTriggered(LatLng pointOnMap, String locality) 
 	{
-		ReportRequestDialogFragment rrdf = ReportRequestDialogFragment.newInstance(locality);
-		rrdf.setData(pointOnMap, locality);
-		rrdf.show(getSupportFragmentManager(), "ReportRequestDialogFragment");
-		/* tell map fragment that the report request dialog has been closed.
-		 * The true parameter means the dialog was accepted.
-		 */
-		getMapFragment().myReportRequestDialogClosed(false, pointOnMap);
+		OMapFragment omf = getMapFragment();
+		Location myLocation = getLocationService().getCurrentLocation();
+		if(myLocation == null || omf.pointTooCloseToMyLocation(myLocation, pointOnMap))
+		{
+			MyAlertDialogFragment.MakeGenericError(R.string.reportPointTooCloseToMyLocation, this);
+		}
+		else
+		{
+			ReportRequestDialogFragment rrdf = ReportRequestDialogFragment.newInstance(locality);
+			rrdf.setData(pointOnMap, locality);
+			rrdf.show(getSupportFragmentManager(), "ReportRequestDialogFragment");
+			/* tell map fragment that the report request dialog has been closed.
+			 * The true parameter means the dialog was accepted.
+			 */
+			getMapFragment().myReportRequestDialogClosed(false, pointOnMap);
+		}
 	}
 
 	/** implements ReportRequestListener.onMyPostRemove method interface
@@ -654,6 +661,15 @@ ReportRequestListener
 		rrccd.show(getSupportFragmentManager(), "RemovePostConfirmDialog");
 	}
 
+	/** implements ReportRequestListener.onMyReportPublish method interface.
+	 *  This is invoked when a user touches a baloon on a ReporOverlay request marker.
+	 * 
+	 */
+	public void onMyReportPublish()
+	{
+		startReportActivity();
+	}
+	
 	/** implements ReportRequestListener.onMyReportRequestDialogCancelled method interface
 	 * 
 	 */
@@ -960,7 +976,7 @@ ReportRequestListener
 	{
 		Location loc = this.mLocationService.getCurrentLocation();
 		if(loc == null)
-			 MyAlertDialogFragment.MakeGenericError(R.string.location_not_available, this);
+			MyAlertDialogFragment.MakeGenericError(R.string.location_not_available, this);
 		else if(!mDownloadStatus.isOnline)
 			MyAlertDialogFragment.MakeGenericInfo(R.string.reportNeedToBeOnline, this);
 		else
@@ -1020,7 +1036,7 @@ ReportRequestListener
 			}
 		}
 	}
-	
+
 	@Override
 	public void onPostResume()
 	{
@@ -1028,7 +1044,7 @@ ReportRequestListener
 		if(mMyPendingAlertDialog != null && mMyPendingAlertDialog.isShowPending())
 			mMyPendingAlertDialog.showPending(this);
 	}
-	
+
 	public ObservationsCache getObservationsCache()
 	{
 		return m_observationsCache;
@@ -1162,9 +1178,9 @@ ReportRequestListener
 	ViewPager mViewPager;
 	TabsAdapter mTabsAdapter;
 	LinearLayout mMainLayout;
-	
+
 	public static final int REPORT_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 100;
-	
+
 	private MyPendingAlertDialog mMyPendingAlertDialog;
 
 

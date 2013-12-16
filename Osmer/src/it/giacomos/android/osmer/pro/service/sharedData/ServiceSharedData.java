@@ -68,12 +68,12 @@ public class ServiceSharedData {
 		 * desired by the user.
 		 */
 		long minMillis = new Settings(ctx).minTimeBetweenReportRequestNotificationsMinutes() * 60 * 1000;
-		long diffTimeMs =  notificationData.getDate().getTime() - mLastNotifiedDate.getTime() ;
-		Log.e("dates are inHase " , mLastNotifiedDate.toLocaleString() +", new " + notificationData.getDate().toLocaleString());
+		long diffTimeMs =  Calendar.getInstance().getTime().getTime() - mLastNotifiedDate.getTime() ;
+		Log.e("dates are inHase " , mLastNotifiedDate.toLocaleString() +", now " + Calendar.getInstance().getTime().toLocaleString());
 		Log.e("dates are inHas ", "difftime ms = " + diffTimeMs + " min millis " + minMillis);
 		if(diffTimeMs < minMillis)
 		{
-			Log.e("ServiceSharedData", "diffTimeMillis < minimum CANNOT BE CONSIDERETH NEW");
+			Log.e("ServiceSharedData", "diffTimeMillis < minMillis CANNOT BE CONSIDERETH NEW");
 			return false; /* not new */
 		}
 		

@@ -11,7 +11,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class RequestData implements DataInterface
+public class RequestData extends DataInterface
 {
 	private double latitude, longitude;
 	private String writable;
@@ -169,6 +169,11 @@ public class RequestData implements DataInterface
 				snippet += "\n" + res.getString(R.string.reportTouchBaloonToCancel);
 			}
 		}
+		else
+		{
+			snippet += "\n" + res.getString(R.string.reportRequestPublishedOn) + " " + datetime;
+			snippet += "\n* " + res.getString(R.string.reportTouchBaloonToReport) + " " + username;
+ 		}
 		return snippet;
 	}
 }

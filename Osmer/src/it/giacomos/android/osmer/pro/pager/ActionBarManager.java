@@ -96,7 +96,10 @@ public class ActionBarManager implements ActionBarTabChangeListener
 			} 
 		}
 		if(forceDrawerItem > 0) 
+		{
+			drawer.setItemChecked(forceDrawerItem, true);
 			drawerItemChanged(forceDrawerItem);
+		}
 	}
 	
 	public void drawerItemChanged(int id)

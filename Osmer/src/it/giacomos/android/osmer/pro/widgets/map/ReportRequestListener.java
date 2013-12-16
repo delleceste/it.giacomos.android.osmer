@@ -15,4 +15,6 @@ public interface ReportRequestListener
 	public void onMyReportLocalityChanged(String locality);
 	public void onMyReportRequestDialogCancelled(LatLng position);
 	public void onMyPostRemove(LatLng position, PostType type);
+	/* the following one will start the report activity */
+	public void onMyReportPublish();
 }

@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -54,6 +55,9 @@ FetchRequestsTaskListener, Runnable
 	private FetchRequestsDataTask mServiceDataTask;
 	private long mSleepInterval;
 	private boolean mIsStarted;
+	/* timestamp updated when the AsyncTask completes, successfully or not */
+	private long mLastTaskStartedTimeMillis;
+	private int mCheckIfNeedRunIntervalMillis;
 
 	public ReportDataService() 
 	{
@@ -63,6 +67,8 @@ FetchRequestsTaskListener, Runnable
 		mLocation = null;
 		mServiceDataTask = null;
 		mIsStarted = false;
+		mLastTaskStartedTimeMillis = 0;
+		mCheckIfNeedRunIntervalMillis = 20000;
 	}
 
 	@Override
@@ -82,6 +88,7 @@ FetchRequestsTaskListener, Runnable
 		Log.e(">>>> ReportDataService <<<<<< ", "onStartCommand");
 		Settings s = new Settings(this);
 		mSleepInterval = s.getServiceSleepIntervalMillis();
+		
 		if(mLocationClient == null)
 			mLocationClient = new LocationClient(this, this, this);
 
@@ -89,7 +96,10 @@ FetchRequestsTaskListener, Runnable
 		 * scheduled runs.
 		 */
 		if(mHandler != null)
+		{
+			Log.e("onStartCommand.onStartCommadn", "handler active removing callbacks");
 			mHandler.removeCallbacks(this);
+		}
 		mHandler = new Handler();
 		mHandler.postDelayed(this, 3000);
 		mIsStarted = true;
@@ -99,23 +109,46 @@ FetchRequestsTaskListener, Runnable
 	}
 
 	@Override
-	/** This method is executed when mSleepInterval time interval has elapsed 
+	/** This method is executed when mCheckIfNeedRunIntervalMillis time interval has elapsed.
+	 *  The mCheckIfNeedRunIntervalMillis is an interval shorter than mSleepInterval used to
+	 *  check whether it is time to update or not. If the device goes to sleep, the timers 
+	 *  are suspended and mSleepInterval may result too long in order to get an update in a 
+	 *  reasonable time. Checking often with a simple comparison should be lightweight and 
+	 *  a good compromise to provide a quick update when the phone wakes up.
 	 *  It connects the location client in order to wait for an available Location.
 	 */
 	public void run() 
 	{
-		if(!mLocationClient.isConnected())
+		Log.e("ReportDataService.run", Calendar.getInstance().getTime().toLocaleString());
+		long currentTimeMillis = System.currentTimeMillis();
+		/* do we need to actually proceed with update task? */
+		if(currentTimeMillis - mLastTaskStartedTimeMillis >= mSleepInterval)
 		{
-			/* wait for connection and then get location and update data */
-			mLocationClient.connect();
+			Log.e("ReportDataService.run", "time to get updates... " + 
+					(currentTimeMillis - mLastTaskStartedTimeMillis) + " >= " + mSleepInterval);
+			
+			if(!mLocationClient.isConnected())
+			{
+				/* wait for connection and then get location and update data */
+				Log.e("ReportDataService.run", "trying to connect... ");
+				mLocationClient.connect();
+			}
+			else /* already connected, can get last known location and update data */
+			{
+				mLocation = mLocationClient.getLastLocation();
+				/* startTask starts the AsyncTask if the location is not null.
+				 */
+				if(!startTask()) /* wait an entire mSleepInterval before retrying */
+					mHandler.postDelayed(this, mSleepInterval);
+			}
 		}
-		else /* already connected, can get last known location and update data */
+		else /* check in a while */
 		{
-			mLocation = mLocationClient.getLastLocation();
-			boolean taskStarted = startTask();
-			if(!taskStarted)
-				mHandler.postDelayed(this, mSleepInterval);
+			Log.e("ReportDataService.run", "not yet time to get updates... " + 
+					(currentTimeMillis - mLastTaskStartedTimeMillis) + " < " + mSleepInterval);
+			mHandler.postDelayed(this, mCheckIfNeedRunIntervalMillis);
 		}
+			
 	}
 
 	/**
@@ -135,15 +168,9 @@ FetchRequestsTaskListener, Runnable
 	@Override
 	public void onConnected(Bundle arg0) 
 	{
-		boolean taskStarted = false;
+		Log.e("ReportDataService.onConnected", "getting last location");
 		mLocation = mLocationClient.getLastLocation();
-		taskStarted = startTask();
-		/* next update is scheduled inside onServiceDataTaskComplete (i.e. when the download task
-		 * is complete) to ensure that download tasks never ovelap.
-		 * But if there is no location available here and/or no connectivity,
-		 * we must schedule an update here.
-		 */
-		if(!taskStarted)
+		if(!startTask()) /* wait an entire mSleepInterval before retrying */
 			mHandler.postDelayed(this, mSleepInterval);
 	}
 
@@ -151,25 +178,34 @@ FetchRequestsTaskListener, Runnable
 	{
 		if(mLocation != null)
 		{
-		//	Toast.makeText(this.getApplicationContext(), "Meteo.FVG: updating reports...", Toast.LENGTH_LONG).show();
+			Log.e("Meteo.FVG.ReportDataService.run", "location is available :-)");
+			//	Toast.makeText(this.getApplicationContext(), "Meteo.FVG: updating reports...", Toast.LENGTH_LONG).show();
 			/* check that the network is still available */
 			final ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			final NetworkInfo netinfo = connMgr.getActiveNetworkInfo();
 			if(netinfo != null && netinfo.isConnected())
 			{
+				/* if a task is still running, cancel it before starting a new one */
+				if(mServiceDataTask != null && mServiceDataTask.getStatus() != AsyncTask.Status.FINISHED)
+					mServiceDataTask.cancel(false);
 				/* get the device id */
 				String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
 				/* start the service and execute it. When the thread finishes, onServiceDataTaskComplete()
 				 * will schedule the next task.
 				 */
 				mServiceDataTask = new FetchRequestsDataTask(this, deviceId, mLocation.getLatitude(), mLocation.getLongitude());
-
 				mServiceDataTask.execute(new Urls().getReportsAndRequestUpdatesForMyLocationUrl());
+				/* mark the last execution complete timestamp */
+				mLastTaskStartedTimeMillis = System.currentTimeMillis();
+				/* when the task is started, we start the short time check */
+				mHandler.postDelayed(this, mCheckIfNeedRunIntervalMillis);
 				return true;
 			}
 			else
-				Log.e("Meteo.FVG.ReportDataService.run", "connection is unavailable");
+				Log.e("Meteo.FVG.ReportDataService.run", "connection is unavailable :-(");
 		}
+		else
+			Log.e("Meteo.FVG.ReportDataService.run", "location is unavailable");
 		return false;
 	}
 
@@ -180,7 +216,10 @@ FetchRequestsTaskListener, Runnable
 		 * location service.
 		 */
 		if(mServiceDataTask != null)
+		{
+			mServiceDataTask.removeFetchRequestTaskListener();
 			mServiceDataTask.cancel(false);
+		}
 		if(mHandler != null)
 			mHandler.removeCallbacks(this);
 		if(mLocationClient != null && mLocationClient.isConnected())
@@ -193,11 +232,9 @@ FetchRequestsTaskListener, Runnable
 
 	@Override
 	public void onServiceDataTaskComplete(boolean error, String dataAsString) 
-	{
+	{	
 		if(error)
 			log("task error: " + dataAsString);
-		
-		Log.e(">>>> ReportDataService.onServiceDataTaskComplete", "data: " + dataAsString + " error " + error);
 
 		ServiceSharedData sharedData = ServiceSharedData.Instance();
 		NotificationManager mNotificationManager =
@@ -232,7 +269,7 @@ FetchRequestsTaskListener, Runnable
 			{
 				if(sharedData.canBeConsideredNew(notificationData, this))
 				{
-					
+
 					Log.e("onServiceDataTaskComplete", "notification can be considereth new " + notificationData.username);
 					/* replace the previous notification data (if any) with the new one.
 					 * This updates the sharedData timestamp of the last notification
@@ -243,13 +280,13 @@ FetchRequestsTaskListener, Runnable
 					int iconId;
 					// Creates an explicit intent for an Activity in your app
 					Intent resultIntent = new Intent(this, OsmerActivity.class);
-					
+
 					if(notificationData.isRequest())
 					{
 						resultIntent.putExtra("NotificationReportRequest", true);
 						ReportRequestNotification rrnd = (ReportRequestNotification) notificationData;
 						message = getResources().getString(R.string.notificatonNewReportRequest) 
-									+ " " + notificationData.username;
+								+ " " + notificationData.username;
 						if(rrnd.locality.length() > 0)
 							message += " - " + rrnd.locality;
 						iconId = R.drawable.ic_launcher_statusbar_request;
@@ -310,16 +347,18 @@ FetchRequestsTaskListener, Runnable
 			}
 		}
 
-		/* schedule next update only when all the work is finished */
-		mHandler.postDelayed(this, mSleepInterval);
+		Log.e(">>>> ReportDataService.onServiceDataTaskComplete", "data: " + dataAsString + " error " + error);
 	}
 
 	@Override
 	public void onConnectionFailed(ConnectionResult result) 
 	{
 		/* LocationClient.connect() failed. No onConnected callback will be executed,
-		 * so no task will be started. Just schedule another try:
+		 * so no task will be started. Just schedule another try, but directly sleep for
+		 * mSleepInterval, do not try to reconnect too fast, so do not postDelayed of 
+		 * mCheckIfNeedRunIntervalMillis.
 		 */
+		Log.e("ReportDataService.onConnectionFailed", "connection to location failed sleeping for "  + mSleepInterval);
 		mHandler.postDelayed(this, mSleepInterval);
 	}
 

@@ -261,6 +261,7 @@
         sposta il segnaposti per cambiare la posizione.
         \nAltrimenti tocca un altro punto della mappa per\nrimuovere il marker.</string>
         <string name="reportTouchBaloonToCancel">Tocca il fumetto per cancellare questa richiesta.</string>
+    <string name="reportTouchBaloonToReport">Tocca il fumetto per rispondere a </string>
     <string name="reportRequestCorrectlySent">Richiesta di segnalazione inviata</string>
     <string name="reportRemoveConfirm">Sei sicuro di cancellare la richiesta?</string>
     <string name="thereAreNReports">Numero di segnalazioni: </string>
@@ -270,6 +271,7 @@
     <string name="notificationNewReportArrived">Nuova segnalazione da </string>
     <string name="reportRequestPublishedOn">Richiesta pubblicata in data </string>
 	<string name="reportLookingForLocality">cerco il nome della località&#8230;</string>
+    <string name="reportPointTooCloseToMyLocation">Non puoi fare una richiesta in un punto entro 500m dalla tua posizione</string>
 	
 	
     <string-array name="report_sky_textitems">

@@ -46,6 +46,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import android.location.Location;
 import android.os.Bundle;
 
 public class OMapFragment extends SupportMapFragment 
@@ -715,6 +716,14 @@ RadarAnimationListener
 		if(mMode.currentMode == MapMode.REPORT && mReportOverlay != null)
 			mReportOverlay.update(this.getActivity().getApplicationContext(), force);
 		
+	}
+	
+	public boolean pointTooCloseToMyLocation(Location myLocation, LatLng pointOnMap)
+	{
+		Location pt = new Location("");
+		pt.setLatitude(pointOnMap.latitude);
+		pt.setLongitude(pointOnMap.longitude);
+		return myLocation.distanceTo(pt) < 500;
 	}
 
 }

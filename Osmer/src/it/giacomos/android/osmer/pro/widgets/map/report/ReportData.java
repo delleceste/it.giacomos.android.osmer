@@ -11,7 +11,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class ReportData implements DataInterface
+public class ReportData extends DataInterface
 {
 	public String username, datetime, locality, comment, temperature, writable;
 	public int sky, wind;
