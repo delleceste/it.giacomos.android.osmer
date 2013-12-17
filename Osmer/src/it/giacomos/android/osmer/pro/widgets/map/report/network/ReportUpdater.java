@@ -25,7 +25,7 @@ GooglePlayServicesClient.OnConnectionFailedListener,
 ReportUpdateTaskListener
 {
 	private static final long DOWNLOAD_REPORT_OLD_TIMEOUT = 10000;
-	
+
 	private Context mContext;
 	private ReportUpdaterListener mReportUpdaterListener;
 	private LocationClient mLocationClient;
@@ -45,7 +45,7 @@ ReportUpdateTaskListener
 		DataPoolCacheUtils dpcu = new DataPoolCacheUtils();
 		onReportUpdateTaskComplete(false, dpcu.loadFromStorage(ViewType.REPORT, ctx));
 	}
-	
+
 	public void clear()
 	{
 		mContext.unregisterReceiver(mNetworkStatusMonitor);
@@ -54,33 +54,32 @@ ReportUpdateTaskListener
 		if(mReportUpdateTask != null)
 			mReportUpdateTask.cancel(false);
 	}
-	
+
 	public void update(boolean force)
 	{
-		Log.e("update,", " force " + force);
-		/* if a task is already running or about to run, do not do anything, because an update is on
-		 * the way.
-		 */
-		if(mReportUpdateTask != null && (mReportUpdateTask.getStatus() == AsyncTask.Status.PENDING 
-				|| mReportUpdateTask.getStatus() == AsyncTask.Status.RUNNING))
+		if((System.currentTimeMillis() - mLastReportUpdatedAt > DOWNLOAD_REPORT_OLD_TIMEOUT) || force)
 		{
-			Log.e("update", "reportUpdateTask is running or pending");
+			Log.e("update,", " force " + force);
+			/* if a task is already running or about to run, do not do anything, because an update is on
+			 * the way.
+			 */
+			if(mReportUpdateTask != null && (mReportUpdateTask.getStatus() == AsyncTask.Status.PENDING 
+					|| mReportUpdateTask.getStatus() == AsyncTask.Status.RUNNING))
+			{
+				Log.e("update", "reportUpdateTask is running or pending");
 				return;
-		}
+			}
 
-		if(mNetworkStatusMonitor.isConnected())
-		{
-			if(mLocationClient.isConnecting())
-				return; /* wait for onConnected() */
-			else if(mLocationClient.isConnected())
-				onConnected(null);
-			else
+			if(mNetworkStatusMonitor.isConnected())
+			{
+				mLocationClient.disconnect();
 				mLocationClient.connect();
+			}
+			else /* offline */
+				Toast.makeText(mContext, R.string.reportNeedToBeOnline, Toast.LENGTH_SHORT).show();
 		}
-		else
-			Toast.makeText(mContext, R.string.reportNeedToBeOnline, Toast.LENGTH_SHORT).show();
 	}
-	
+
 	@Override
 	public void onNetworkBecomesAvailable() 
 	{
@@ -117,20 +116,17 @@ ReportUpdateTaskListener
 		 */
 		if(mReportUpdateTask != null && (mReportUpdateTask.getStatus() == AsyncTask.Status.PENDING 
 				|| mReportUpdateTask.getStatus() == AsyncTask.Status.RUNNING))
-				return;
-		
-		Toast.makeText(mContext, "onConnected: location avail. would start update", Toast.LENGTH_SHORT).show();
-		Log.e("ReportUpdater.onConnected", "thread "+ Thread.currentThread());
+			return;
+
 		String deviceId = Secure.getString(mContext.getContentResolver(), Secure.ANDROID_ID);
+		
 		if(mReportUpdateTask != null && mReportUpdateTask.getStatus() != AsyncTask.Status.FINISHED)
-		{
-			Log.e("%%%%%%%%%%%%%%%%%%%%%% CANCEL IN onConnected", "cancelling task was " + mReportUpdateTask.getStatus());
 			mReportUpdateTask.cancel(false);
-		}
+		
 		mReportUpdateTask = new ReportUpdateTask(this, mLocationClient.getLastLocation(), deviceId);
 		/* "http://www.giacomos.it/meteo.fvg/get_report.php" */
 		mReportUpdateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().getReportUrl());
-		
+
 		/* no more interested in location updates, the task has been starting with the last known
 		 * location.
 		 */
@@ -145,7 +141,7 @@ ReportUpdateTaskListener
 	{
 		Toast.makeText(mContext, "ReportUpdater.onDisconnected", Toast.LENGTH_SHORT).show();
 	}
-	
+
 	/** Evaluate if the report is old 
 	 * 
 	 * @return
@@ -169,9 +165,9 @@ ReportUpdateTaskListener
 			mLastReportUpdatedAt = System.currentTimeMillis();
 		}
 		else
-			mReportUpdaterListener.onReportUpdateError(data);
+			mReportUpdaterListener.onReportUpdateError(mReportUpdateTask.getError());
 	}
-	
-	
+
+
 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.data.e;
 import com.google.android.gms.maps.model.LatLng;
 
 import it.giacomos.android.osmer.R;
@@ -186,9 +187,13 @@ ReportRequestListener
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
 		/* force to switch to Reports mode */
-		if(extras != null && (extras.getBoolean("NotificationReportRequest")
-				|| extras.getBoolean("NotificationReport")))
-			forceDrawerItem = mDrawerItems.length - 1;
+		if(extras != null)
+		{
+			if(extras.getBoolean("NotificationReportRequest")
+					|| extras.getBoolean("NotificationReport"))
+				forceDrawerItem = mDrawerItems.length - 1;
+		}
+
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
 	}
 
@@ -425,6 +430,18 @@ ReportRequestListener
 	public void onGoogleMapReady()
 	{
 
+	}
+	
+	public void onCameraReady()
+	{
+		Intent i = getIntent();
+		Bundle extras = i.getExtras();
+		if(extras != null && extras.containsKey("ptLatitude") && extras.containsKey("ptLongitude"))
+		{
+			getMapFragment().moveTo(extras.getDouble("ptLatitude"), extras.getDouble("ptLongitude"));
+			i.removeExtra("ptLatitude");
+			i.removeExtra("ptLongitude");
+		}
 	}
 
 	@Override
@@ -669,7 +686,7 @@ ReportRequestListener
 	{
 		startReportActivity();
 	}
-	
+
 	/** implements ReportRequestListener.onMyReportRequestDialogCancelled method interface
 	 * 
 	 */

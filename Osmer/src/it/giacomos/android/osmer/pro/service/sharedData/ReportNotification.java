@@ -9,12 +9,23 @@ public class ReportNotification extends NotificationData
 	{
 		super();
 		String parts[] = input.split("::");
-
-		if(parts.length == 3 && parts[0].compareTo("N") == 0)
+		latitude = -1;
+		longitude = -1;
+		if(parts.length == 5 && parts[0].compareTo("N") == 0)
 		{
+			try
+			{
+				latitude = Double.parseDouble(parts[3]);
+				longitude = Double.parseDouble(parts[4]);
+			}
+			catch(NumberFormatException nfe)
+			{
+				
+			}
 			username = parts[2];
 			datetime = parts[1];
-			mIsValid = makeDate(datetime);
+			mIsValid = makeDate(datetime) && latitude > 0 && longitude > 0;
+			
 		}
 		else
 			mIsValid = false;

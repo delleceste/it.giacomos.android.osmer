@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -177,7 +178,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		{
 			if(di.getType() == DataInterface.TYPE_REQUEST && !di.isWritable())
 			{
-				Log.e("ReportOverlay.mCheckForFresh..", "ok is writable is request");
 				// ReportRequestNotification(String datet, String user, double lat, double lon, String loc)
 				RequestData rd = (RequestData) di;
 				ReportRequestNotification repReqN = new ReportRequestNotification(rd.datetime,
@@ -188,11 +188,12 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 				ServiceSharedData ssd = ServiceSharedData.Instance();
 				if(ssd.canBeConsideredNew(repReqN, mMapFrag.getActivity().getApplicationContext()))
 				{
+					Log.e("mCheckForFreshNotifications", "can be considered new!");
 					ssd.updateCurrentRequest(repReqN);
 					ssd.setWasNotified(repReqN);
-					Toast.makeText(mMapFrag.getActivity().getApplicationContext(), 
-							"A notification is canceled (the service won't notify it)\n" +
-									"because we are in the report page." + rd.datetime + ", " + rd.locality, Toast.LENGTH_LONG).show();
+					/* animate camera to new request */
+					mMapFrag.moveTo(rd.getLatitude(), rd.getLongitude());
+					rd.getMarker().showInfoWindow();
 				}	
 			}
 		}
@@ -215,7 +216,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	@Override
 	public void onReportUpdateError(String error)
 	{
-		Toast.makeText(mMapFrag.getActivity(), error, Toast.LENGTH_LONG).show();
+		MyAlertDialogFragment.MakeGenericError(error, mMapFrag.getActivity());
 	}
 
 	/** This is invoked when the report data in textual form has completed downloading.

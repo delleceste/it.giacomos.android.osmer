@@ -13,7 +13,7 @@ public class NotificationDataFactory
 			String parts[] = line.split("::", -1);
 			if(parts.length == 7)
 				nDataArray.add(new ReportRequestNotification(line));
-			else if(parts.length == 3)
+			else if(parts.length == 5)
 				nDataArray.add(new ReportNotification(line));
 				
 			else

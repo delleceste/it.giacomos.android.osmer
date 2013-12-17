@@ -122,9 +122,6 @@ RadarAnimationListener
 				radarUpdateTimestampText.animateHide();	
 		}
 
-		if(!mMapReady)
-			mMapReady = true;
-
 		if(mSavedCameraPosition != null)
 		{
 			mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mSavedCameraPosition));
@@ -135,6 +132,12 @@ RadarAnimationListener
 			if(mOldZoomLevel != cameraPosition.zoom && mZoomChangeListener != null)
 				mZoomChangeListener.onZoomLevelChanged(cameraPosition.zoom);
 			mOldZoomLevel = cameraPosition.zoom;
+		}
+
+		if(!mMapReady)
+		{
+			mMapReady = true;
+			mMapFragmentListener.onCameraReady();
 		}
 
 	} 
@@ -189,6 +192,8 @@ RadarAnimationListener
 
 		if(mRadarAnimation.getState().animationInProgress())
 			mRadarAnimation.restore();
+		if(mMode.currentMode == MapMode.REPORT && mReportOverlay != null)
+			mReportOverlay.update(getActivity().getApplicationContext(), false);
 	}
 
 	public void onPause()
@@ -332,6 +337,15 @@ RadarAnimationListener
 		}
 	}
 
+	public void moveTo(double latitude, double longitude)
+	{
+		if(mMapReady)
+		{
+			CameraUpdate cu = CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude));
+			mMap.moveCamera(cu);
+		}
+	}
+	
 	@Override
 	public void onObservationsCacheUpdate(HashMap<String, ObservationData> map, ViewType t) 
 	{

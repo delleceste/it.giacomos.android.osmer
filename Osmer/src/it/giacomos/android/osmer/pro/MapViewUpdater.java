@@ -31,7 +31,7 @@ public class MapViewUpdater {
 			else if(mapMode.currentMode == MapMode.REPORT)
 			{
 				Log.e("MapViewUpdater", "updating report from MapViewUpdater");
-				a.updateReport(false); /* false: do not force update if recently updated */
+				a.updateReport(true);
 			}
 		}
 	}

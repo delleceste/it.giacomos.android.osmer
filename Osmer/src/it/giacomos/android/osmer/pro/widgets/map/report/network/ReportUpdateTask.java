@@ -40,7 +40,6 @@ public class ReportUpdateTask extends AsyncTask<String, Integer, String>
 	@Override
 	public void onPostExecute(String doc)
 	{
-		
 		mReportUpdateTaskListener.onReportUpdateTaskComplete(!mErrorMsg.isEmpty(), doc);
 	}
 	
@@ -48,6 +47,11 @@ public class ReportUpdateTask extends AsyncTask<String, Integer, String>
 	public void onCancelled(String doc)
 	{
 		Log.e("XXXXX ReportUpdateTask.onCancelled", "TASK CANCELLED!!");
+	}
+	
+	public String getError()
+	{
+		return mErrorMsg;
 	}
 	
 	@Override
