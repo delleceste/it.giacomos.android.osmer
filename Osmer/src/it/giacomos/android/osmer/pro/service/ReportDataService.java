@@ -85,6 +85,7 @@ FetchRequestsTaskListener, Runnable
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{
+		Log.e("ReportDataService.onStartCommand", "service started");
 		Settings s = new Settings(this);
 		mSleepInterval = s.getServiceSleepIntervalMillis();
 

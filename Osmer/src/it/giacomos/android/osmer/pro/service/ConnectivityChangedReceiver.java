@@ -27,7 +27,6 @@ public class ConnectivityChangedReceiver extends BroadcastReceiver
 				
 		final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent myIntent = new Intent(context, ReportDataService.class);
     	PendingIntent myPendingIntent = PendingIntent.getService(context, 0, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);  
     	NetworkInfo netinfo = connMgr.getActiveNetworkInfo();
@@ -38,10 +37,7 @@ public class ConnectivityChangedReceiver extends BroadcastReceiver
     	if(netinfo != null && connMgr.getActiveNetworkInfo().isConnectedOrConnecting())
         {
         	Log.e(">>>>>>>>>>>> ConnectivityChangedReceiver", "+++++++++ net connecting");
-        	cal.add(Calendar.SECOND, 5);
-        	//registering our pending intent with alarmmanager
-        	am.set(AlarmManager.RTC, cal.getTimeInMillis(), myPendingIntent);       
-        	
+        	context.startService(myIntent);
         	/////////////////////////////////////// LOG TEST //////////////////////////////////////////////////
         	////////////////////////////////////////////////////////////////////////////////////////////////////
         	try {
@@ -63,7 +59,6 @@ public class ConnectivityChangedReceiver extends BroadcastReceiver
         }
         else
         {
-        	am.cancel(myPendingIntent);
         	context.stopService(myIntent);
         	Log.e(">>>>>>>>>>>> ConnectivityChangedReceiver", "------------removing repeating intent");
 //        	Toast.makeText(context, "Network down. Meteo.FVG service stopped", Toast.LENGTH_SHORT).show();
