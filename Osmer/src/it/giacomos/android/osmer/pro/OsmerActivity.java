@@ -153,6 +153,8 @@ ReportRequestListener
 		if(!mGoogleServicesAvailable)
 			return;
 
+		/* (re)connect the location update client */
+		mLocationService.connect();
 		m_downloadManager.onResume(this);
 	}
 
@@ -326,8 +328,6 @@ ReportRequestListener
 				ViewType.DAILY_TABLE, true);
 		m_observationsCache.onTextChanged(dataPoolCacheUtils.loadFromStorage(ViewType.LATEST_TABLE, getApplicationContext()),
 				ViewType.LATEST_TABLE, true);
-		/* create the location update client and connect it to the location service */
-		mLocationService.connect();
 
 		/* show touch forecast icons hint until a MapWithForecastImage disables this */
 		if(mSettings.isForecastIconsHintEnabled())

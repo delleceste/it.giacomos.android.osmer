@@ -38,6 +38,11 @@ ReportUpdateTaskListener
 		mContext = ctx;
 		mLocationClient = new LocationClient(ctx, this, this);
 		mNetworkStatusMonitor = new NetworkStatusMonitor(this);
+		/* when the map switches mode, a new ReportUpdater is created, and it must be registered.
+		 * onResume is not called when map switches mode. Instead, when the activity is paused, 
+		 * the onPause method of ReportUpdater unregisters from NetworkStatusMonitor.
+		 */
+		Log.e("ReportUpdater", "registering network status monitor in CONSTRUCTOR");
 		mContext.registerReceiver(mNetworkStatusMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 		mReportUpdaterListener = rul;
 		mLastReportUpdatedAt = 0;
@@ -46,8 +51,29 @@ ReportUpdateTaskListener
 		onReportUpdateTaskComplete(false, dpcu.loadFromStorage(ViewType.REPORT, ctx));
 	}
 
+
+	public void onPause() 
+	{
+		/* when the activity is paused, disconnect from network status monitor and 
+		 * from location client. We can also cancel the report update task, since 
+		 * when the activity is resumed an update is performed.
+		 */
+		Log.e("ReportUpdater.onPause", "calling clear()");
+		clear();
+	}
+	
+	public void onResume()
+	{
+		Log.e("onResume", "registering network status monitor in onResume");
+		/* must (re)connect with the network status monitor in order to be notified when the network 
+		 * goes up or down
+		 */
+		mContext.registerReceiver(mNetworkStatusMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+	}
+	
 	public void clear()
 	{
+		Log.e("ReportUpdater.clear()", "unregistering network status monitor receiver and location client");
 		mContext.unregisterReceiver(mNetworkStatusMonitor);
 		mLocationClient.disconnect();
 		/* cancel thread if running */
@@ -167,6 +193,7 @@ ReportUpdateTaskListener
 		else
 			mReportUpdaterListener.onReportUpdateError(mReportUpdateTask.getError());
 	}
+
 
 
 

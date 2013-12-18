@@ -193,7 +193,10 @@ RadarAnimationListener
 		if(mRadarAnimation.getState().animationInProgress())
 			mRadarAnimation.restore();
 		if(mMode.currentMode == MapMode.REPORT && mReportOverlay != null)
+		{
+			mReportOverlay.onResume();
 			mReportOverlay.update(getActivity().getApplicationContext(), false);
+		}
 	}
 
 	public void onPause()
@@ -201,6 +204,11 @@ RadarAnimationListener
 		super.onPause();
 		mMap.setMyLocationEnabled(false);
 		mRadarAnimation.onPause();
+		/* call onPause only if current mode is REPORT. Otherwise, the mode switch
+		 * causes the overlay to be clear and the resources to be released.
+		 */
+		if(mReportOverlay != null && mMode.currentMode == MapMode.REPORT )
+			mReportOverlay.onPause();
 	}
 
 	@Override

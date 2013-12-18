@@ -78,14 +78,23 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
         		byteBuffer.flush();
 
         		mBitmapBytes = byteBuffer.toByteArray();
-        		bitmap = BitmapFactory.decodeByteArray(mBitmapBytes, 0, mBitmapBytes.length);
+        		BitmapFactory.Options o2 = new BitmapFactory.Options();
+        		o2.inDither = true;
+                o2.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        		bitmap = BitmapFactory.decodeByteArray(mBitmapBytes, 0, mBitmapBytes.length, o2);
         		/* a network error may determine decodeByteArray to return a null bitmap (for instance connecting
         		 * to a unauthenticated wireless network... it happened at Elettra...)
         		 */
         		if(bitmap == null) /* prevent from calling onBitmapBytesUpdate */
         		{
+        			Log.e("Bitmap doInBackground", "bitmap is null");
         			mBitmapBytes = null;
         			m_errorMessage = "BitmapTask: error decoding bitmap: invalid bitmap data";
+        		}
+        		else
+        		{
+        			Log.e("Bitmap doInBackground", "bitmap is NOT null seteting hasAlpha");
+            		bitmap.setHasAlpha(true);
         		}
         	}
         	catch(IOException e)

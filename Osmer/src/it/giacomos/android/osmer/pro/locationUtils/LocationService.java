@@ -85,6 +85,7 @@ GeocodeAddressUpdateListener
 			/* google maps requests location updates. Make this service a passive listener */
 			mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 			mLocationClient = new LocationClient(mContext, this,  this);
+			Log.e("connect()", "connecting to location client");
 			mLocationClient.connect();
 		}
 		return result;
@@ -171,6 +172,7 @@ GeocodeAddressUpdateListener
 	{
 		if(mLocationClient != null)
 		{
+			Log.e("onConnected", "connected to loc cli");
 			Location lastKnownLocation = mLocationClient.getLastLocation();
 			mLocationClient.requestLocationUpdates(mLocationRequest, this);
 			if(lastKnownLocation != null)

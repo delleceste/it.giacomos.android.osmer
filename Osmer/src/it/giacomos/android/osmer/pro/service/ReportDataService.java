@@ -57,7 +57,7 @@ FetchRequestsTaskListener, Runnable
 	private boolean mIsStarted;
 	/* timestamp updated when the AsyncTask completes, successfully or not */
 	private long mLastTaskStartedTimeMillis;
-	private int mCheckIfNeedRunIntervalMillis;
+	private long mCheckIfNeedRunIntervalMillis;
 
 	public ReportDataService() 
 	{
@@ -85,9 +85,10 @@ FetchRequestsTaskListener, Runnable
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{
-		Log.e("ReportDataService.onStartCommand", "service started");
+		// Log.e("ReportDataService.onStartCommand", "service started");
 		Settings s = new Settings(this);
 		mSleepInterval = s.getServiceSleepIntervalMillis();
+		mCheckIfNeedRunIntervalMillis = mSleepInterval / 5;
 
 		if(mLocationClient == null)
 			mLocationClient = new LocationClient(this, this, this);
@@ -120,12 +121,12 @@ FetchRequestsTaskListener, Runnable
 		if(currentTimeMillis - mLastTaskStartedTimeMillis >= mSleepInterval)
 		{
 			/* wait for connection and then get location and update data */
-			log("I: run: connectin to loc cli");
+		//	log("I: run: connectin to loc cli");
 			mLocationClient.connect();
 		}
 		else /* check in a while */
 		{
-			log("I: run: not yet time");
+			// log("I: run: not yet time");
 			mHandler.postDelayed(this, mCheckIfNeedRunIntervalMillis);
 		}
 
@@ -148,7 +149,7 @@ FetchRequestsTaskListener, Runnable
 	@Override
 	public void onConnected(Bundle arg0) 
 	{
-		Log.e("ReportDataService.onConnected", "getting last location");
+		// Log.e("ReportDataService.onConnected", "getting last location");
 		mLocation = mLocationClient.getLastLocation();
 		mLocationClient.disconnect(); /* immediately */
 		if(mLocation != null)
@@ -201,14 +202,14 @@ FetchRequestsTaskListener, Runnable
 			mLocationClient.disconnect();
 
 		super.onDestroy();
-		log("x: service destroyed" );
+		// log("x: service destroyed" );
 	}
 
 	@Override
 	public void onServiceDataTaskComplete(boolean error, String dataAsString) 
 	{	
-		if(error)
-			log("task error: " + dataAsString);
+	//	if(error)
+	//		log("task error: " + dataAsString);
 
 		ServiceSharedData sharedData = ServiceSharedData.Instance();
 		NotificationManager mNotificationManager =
@@ -217,12 +218,12 @@ FetchRequestsTaskListener, Runnable
 		/* a request has been withdrawn, remove notification, if present */
 		if(dataAsString.isEmpty())
 		{
-			log("task: removing notif (empty data)");
+			// log("task: removing notif (empty data)");
 			/* remove notification, if present */
 			NotificationData currentNotification = sharedData.getNotificationData(NotificationData.TYPE_REQUEST);
 			if(currentNotification != null) /* a notification is present */
 			{
-				Log.e("ReportDataService.onServiceDataTaskComplete", " removing notification with id " + currentNotification.makeId());
+				// Log.e("ReportDataService.onServiceDataTaskComplete", " removing notification with id " + currentNotification.makeId());
 				mNotificationManager.cancel(REPORT_REQUEST_NOTIFICATION_TAG, currentNotification.makeId());
 
 				/* mark as consumed. The currentNotification is not removed from sharedData because sharedData
@@ -243,7 +244,7 @@ FetchRequestsTaskListener, Runnable
 				if(sharedData.canBeConsideredNew(notificationData, this))
 				{
 
-					Log.e("onServiceDataTaskComplete", "notification can be considereth new " + notificationData.username);
+					// Log.e("onServiceDataTaskComplete", "notification can be considereth new " + notificationData.username);
 					/* replace the previous notification data (if any) with the new one.
 					 * This updates the sharedData timestamp of the last notification
 					 */
@@ -265,7 +266,7 @@ FetchRequestsTaskListener, Runnable
 						if(rrnd.locality.length() > 0)
 							message += " - " + rrnd.locality;
 						iconId = R.drawable.ic_launcher_statusbar_request;
-						log("task ok.new req. " + notificationData.username);
+						// log("task ok.new req. " + notificationData.username);
 					}
 					else
 					{
@@ -273,7 +274,7 @@ FetchRequestsTaskListener, Runnable
 						message = getResources().getString(R.string.notificationNewReportArrived) 
 								+ " "  + notificationData.username;
 						iconId = R.drawable.ic_launcher_statusbar_report;
-						log("task ok.new report " + notificationData.username);
+						// log("task ok.new report " + notificationData.username);
 					}
 
 					NotificationCompat.Builder notificationBuilder =
@@ -303,8 +304,8 @@ FetchRequestsTaskListener, Runnable
 				}
 				else
 				{
-					log("task ok. notif not new " + notificationData.username);
-					Log.e("onServiceDataTaskComplete", "notification IS NOT NEW " + notificationData.username);
+					// log("task ok. notif not new " + notificationData.username);
+					// Log.e("onServiceDataTaskComplete", "notification IS NOT NEW " + notificationData.username);
 				}
 				/* just update the shared data notification data with the most up to date 
 				 * values of latitude, longitude, username...
@@ -313,15 +314,15 @@ FetchRequestsTaskListener, Runnable
 			}
 			else
 			{
-				log("service task: notification not valid: " + dataAsString);
+				// log("service task: notification not valid: " + dataAsString);
 				Toast.makeText(this, "Notification not valid! " + 
 						dataAsString, Toast.LENGTH_LONG).show();
 			}
 		}
-		if(notifications.size() == 0)
-			log("task: no notifications");
+	//	if(notifications.size() == 0)
+	//		log("task: no notifications");
 
-		Log.e(">>>> ReportDataService.onServiceDataTaskComplete", "data: " + dataAsString + " error " + error);
+		// Log.e(">>>> ReportDataService.onServiceDataTaskComplete", "data: " + dataAsString + " error " + error);
 	}
 
 	@Override
@@ -332,7 +333,7 @@ FetchRequestsTaskListener, Runnable
 		 * mSleepInterval, do not try to reconnect too fast, so do not postDelayed of 
 		 * mCheckIfNeedRunIntervalMillis.
 		 */
-		Log.e("ReportDataService.onConnectionFailed", "connection to location failed sleeping for "  + mSleepInterval);
+		// Log.e("ReportDataService.onConnectionFailed", "connection to location failed sleeping for "  + mSleepInterval);
 		mHandler.postDelayed(this, mSleepInterval);
 	}
 

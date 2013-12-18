@@ -91,6 +91,26 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		mRemoveMarkers();
 	}
 
+	/** ReportOverlay has a ReportUpdater which registers with the LocationClient and 
+	 *  with the  NetworkStatusMonitor to obtain location updates and to be notified 
+	 *  when the network goes up/down. When the activity is paused, it is necessary to
+	 *  release such resources.
+	 * 
+	 */
+	public void onPause()
+	{
+		mReportUpdater.onPause();
+		/* we can cancel report overlay tasks and geocode address tasks if paused, because
+		 * the activity, when resumed, updates data.
+		 */
+		mCancelTasks();
+	}
+	
+	public void onResume()
+	{
+		mReportUpdater.onResume();
+	}
+	
 	private void mRemoveMarkers()
 	{
 		for(String markerId : mDataInterfaceHash.keySet())
