@@ -88,7 +88,7 @@ FetchRequestsTaskListener, Runnable
 		// Log.e("ReportDataService.onStartCommand", "service started");
 		Settings s = new Settings(this);
 		mSleepInterval = s.getServiceSleepIntervalMillis();
-		mCheckIfNeedRunIntervalMillis = mSleepInterval / 5;
+		mCheckIfNeedRunIntervalMillis = mSleepInterval / 6;
 
 		if(mLocationClient == null)
 			mLocationClient = new LocationClient(this, this, this);
