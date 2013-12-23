@@ -130,37 +130,37 @@ public class ReportData extends DataInterface
 			iconId = R.drawable.weather_rain_cloud_9;
 			skystr += res.getString(R.string.rain) + " " + res.getString(R.string.rain9);
 		}
-		else if(sky == 9)
+		else if(sky == 10)
 		{
 			iconId = R.drawable.weather_rain_cloud_36;
 			skystr += res.getString(R.string.rain) + " " + res.getString(R.string.rain36);
 		}
-		else if(sky == 10)
+		else if(sky == 11)
 		{
 			iconId = R.drawable.weather_snow_10;
 			skystr += res.getString(R.string.snow) + " " + res.getString(R.string.snow10);
 		}
-		else if(sky == 11)
+		else if(sky == 12)
 		{
 			iconId = R.drawable.weather_snow_11;
 			skystr += res.getString(R.string.snow) + " " + res.getString(R.string.snow11);
 		}
-		else if(sky == 12)
+		else if(sky == 13)
 		{
 			iconId = R.drawable.weather_snow_12;
 			skystr += res.getString(R.string.snow) + " " + res.getString(R.string.snow12);
 		}
-		else if(sky == 13)
+		else if(sky == 14)
 		{
-			iconId = R.drawable.weather_particular_storm_50x50_13;
+			iconId = R.drawable.weather_storm_13;
 			skystr += res.getString(R.string.storm);
 		}
-		else if(sky == 14)
+		else if(sky == 15)
 		{
 			iconId = R.drawable.weather_mist_14;
 			skystr += res.getString(R.string.mist14);
 		}
-		else if(sky == 15)
+		else if(sky == 16)
 		{
 			iconId = R.drawable.weather_mist_15;
 			skystr += res.getString(R.string.mist15);

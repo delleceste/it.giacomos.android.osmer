@@ -615,7 +615,6 @@ ReportRequestListener
 		 */
 		if(mCurrentViewType == ViewType.REPORT && postType != PostType.REPORT)
 		{
-			Log.e("switchView", "updating report (forceth)");
 			getMapFragment().onPostActionResult(error, message, postType);
 			updateReport(true);
 		}

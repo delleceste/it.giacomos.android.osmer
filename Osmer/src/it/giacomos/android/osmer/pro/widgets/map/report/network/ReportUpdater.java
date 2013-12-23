@@ -74,7 +74,17 @@ ReportUpdateTaskListener
 	public void clear()
 	{
 		Log.e("ReportUpdater.clear()", "unregistering network status monitor receiver and location client");
-		mContext.unregisterReceiver(mNetworkStatusMonitor);
+		try
+		{
+			mContext.unregisterReceiver(mNetworkStatusMonitor);
+		}
+		catch(IllegalArgumentException iae)
+		{
+			/* when the activity is destroyed, onPause calls clear and then onDestroy in map fragment
+			 * calls clear() again. On the other side, we need to call clear even if only paused and 
+			 * not destroyed.
+			 */
+		}
 		mLocationClient.disconnect();
 		/* cancel thread if running */
 		if(mReportUpdateTask != null)

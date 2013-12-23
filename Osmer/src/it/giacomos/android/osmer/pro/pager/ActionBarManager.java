@@ -65,7 +65,6 @@ public class ActionBarManager implements ActionBarTabChangeListener
 		if(selectedDrawerItem < 0)
 			selectedDrawerItem = 0;
 		
-		Log.e("init(Bundle savedInstanceState) ", "drawerItemChanged");
 		if(forceDrawerItem < 0) /* otherwise call drawerItemChange afterwards */
 			drawerItemChanged(selectedDrawerItem);
 		if(savedInstanceState != null && actionBar.getNavigationMode() == ActionBar.NAVIGATION_MODE_TABS)
@@ -81,7 +80,6 @@ public class ActionBarManager implements ActionBarTabChangeListener
 			else
 				selectedTabIndex = 0;
 			/* switch to correct tab */
-			Log.e("init(Bundle savedInstanceState) ", "calling onActionBarTabChanged");
 			onActionBarTabChanged(selectedTabIndex);
 			/* check the first item of the drawer */
 			drawer.setItemChecked(0, true);
@@ -104,7 +102,6 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	
 	public void drawerItemChanged(int id)
 	{
-		Log.e("drawerItemChanged", "id " + id);
 		mSpinnerAdapter = null;
 		ActionBar actionBar = mActivity.getActionBar();
 		switch(id)
@@ -176,7 +173,6 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	@Override
 	public void onActionBarTabChanged(int tab) 
 	{
-		Log.e("onActionBartabChanged ", "tab is " + tab);
 		ViewType viewType = ViewType.HOME;
 		if(tab == 1) /* i == 0 -> ViewType.HOME, but already initialized */
         	viewType = ViewType.TODAY;

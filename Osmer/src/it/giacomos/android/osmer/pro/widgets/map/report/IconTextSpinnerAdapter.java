@@ -78,13 +78,23 @@ public class IconTextSpinnerAdapter extends ArrayAdapter<String> {
 	public void setType(int t)
 	{
 		if(t == SPINNER_SKY)
-			arr_images =  new int[] { -1, 
-				R.drawable.weather_sky_0, R.drawable.weather_few_clouds,
-				R.drawable.weather_clouds, R.drawable.weather_sky_3, R.drawable.weather_sky_4,
-				R.drawable.weather_rain_cloud_6, R.drawable.weather_rain_cloud_7, R.drawable.weather_rain_cloud_8,
-				R.drawable.weather_rain_cloud_9, R.drawable.weather_rain_cloud_36, R.drawable.weather_snow_10,
-				R.drawable.weather_snow_11, R.drawable.weather_snow_12, R.drawable.weather_storm_13,
-				R.drawable.weather_mist_14,R.drawable.weather_mist_15 
+			arr_images =  new int[] { -1, /* index 0 */
+				R.drawable.weather_sky_0, /* 1 */
+				R.drawable.weather_few_clouds, /* 2 */
+				R.drawable.weather_clouds,  /* 3 */
+				R.drawable.weather_sky_3,  /* 4 */
+				R.drawable.weather_sky_4, /* 5 */
+				R.drawable.weather_rain_cloud_6, 
+				R.drawable.weather_rain_cloud_7,
+				R.drawable.weather_rain_cloud_8,
+				R.drawable.weather_rain_cloud_9, 
+				R.drawable.weather_rain_cloud_36, /* 10 */
+				R.drawable.weather_snow_10, /* 11 */
+				R.drawable.weather_snow_11,  /* 12 */
+				R.drawable.weather_snow_12,  /* 13 */
+				R.drawable.weather_storm_13, /* 14 */
+				R.drawable.weather_mist_14,  /* 15 */
+				R.drawable.weather_mist_15  /* 16 */
 				};
 		else
 			arr_images = new int[] {  -1, 

@@ -114,8 +114,10 @@ public class ObservationDataExtractor
 		{
 			/* --- for example */
 		}
-		if(wind == 0.0) 
+		if(wind < 0.5) 
 			index = 1;
+		else if(wind < 4)
+			index = 2;
 		else if(wind < 6)
 			index = 3;
 		else if(wind > 6)

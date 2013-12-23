@@ -89,7 +89,6 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 	public void setSymTable(String symtab)
 	{
 		unbindDrawables();
-		Log.e("MapWithForecastImage.setSymtable", "unbnding drawables before setting new!");
 		ForecastDataFactory forecastDataFactory = new ForecastDataFactory(getResources());
 		ArrayList<ForecastDataInterface > forecastDataIfList =  forecastDataFactory.getForecastData(symtab);
 		for(ForecastDataInterface fdi : forecastDataIfList)
