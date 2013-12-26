@@ -26,6 +26,9 @@ GeocodeAddressUpdateListener
 	private LocationRequest mLocationRequest;
 	private Location mCurrentLocation;
 	private LocationInfo mCurrentLocationInfo;
+	
+	private int tmpUpdCnt;
+	
 	/* store location services available flag if servicesAvailable returns true */
 	
 	/* Define a request code to send to Google Play services
@@ -43,6 +46,8 @@ GeocodeAddressUpdateListener
 		mCurrentLocationInfo = null;
 		mLocationServiceUpdateListeners = new ArrayList<LocationServiceUpdateListener>();
 		mLocationServiceAddressUpdateListeners = new ArrayList<LocationServiceAddressUpdateListener>();
+	
+		tmpUpdCnt= 0;
 	}
 	
 	public Location getCurrentLocation()
@@ -82,7 +87,10 @@ GeocodeAddressUpdateListener
 			mLocationRequest = LocationRequest.create();
 			mLocationRequest.setInterval(Constants.LOCATION_UPDATE_INTERVAL);
 			mLocationRequest.setFastestInterval(Constants.LOCATION_FASTEST_UPDATE_INTERVAL);
-			/* google maps requests location updates. Make this service a passive listener */
+			/* smallestDisplacementMeters the smallest displacement 
+			 * in meters the user must move between location updates
+			 */
+			mLocationRequest.setSmallestDisplacement(100.0f);
 			mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 			mLocationClient = new LocationClient(mContext, this,  this);
 			Log.e("connect()", "connecting to location client");
@@ -196,6 +204,9 @@ GeocodeAddressUpdateListener
 	@Override
 	public void onLocationChanged(Location location) 
 	{
+		tmpUpdCnt++;
+		Log.e("onLocationChanged", "lat "+ location.getLatitude() + " long " + 
+				location.getLongitude() + " count " + tmpUpdCnt);
 		for(LocationServiceUpdateListener l : mLocationServiceUpdateListeners)
 			l.onLocationChanged(location);
 		

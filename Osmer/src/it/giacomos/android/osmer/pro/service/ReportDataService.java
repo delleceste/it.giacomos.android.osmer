@@ -209,7 +209,7 @@ FetchRequestsTaskListener, Runnable
 	public void onServiceDataTaskComplete(boolean error, String dataAsString) 
 	{	
 	//	if(error)
-	//		log("task error: " + dataAsString);
+		log("task complete: " + dataAsString);
 
 		ServiceSharedData sharedData = ServiceSharedData.Instance();
 		NotificationManager mNotificationManager =

@@ -1,8 +1,8 @@
 package it.giacomos.android.osmer.pro.locationUtils;
 
 public class Constants {
-	public static final long LOCATION_UPDATE_INTERVAL = 15000L;
-	public static final long LOCATION_FASTEST_UPDATE_INTERVAL = 10000L;
+	public static final long LOCATION_UPDATE_INTERVAL = 25000L;
+	public static final long LOCATION_FASTEST_UPDATE_INTERVAL = 20000L;
 	
 	public  static final long LOCATION_UPDATES_GPS_MIN_TIME = 12000l;
 	
