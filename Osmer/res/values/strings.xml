@@ -248,6 +248,7 @@
     <!--  report activity -->
     <string name="report_activity_name">Report the weather</string>
     <string name="reportDialogTitle">Report the weather</string>
+    <string name="reportNotificationService">Notification service</string>
     <string name="reportDialogMessage">Report the weather in your area</string>
     <string name="reportDialogSendButton">Report!</string>
     <string name="reportDialogCancelButton">Cancel</string>
@@ -289,7 +290,7 @@
     <string name="reportPointTooCloseToMyLocation">You cannot make a request in a range within 500m from your position</string>
     <string name="notificationServiceStarted">Notification service started</string>
 	<string name="notificationServiceStopped">Notification service stopped</string>
-	
+	<string name="notificationServiceWillStartOnNetworkAvailable">Notification service will be started upon network connection</string>
     
     <!-- notification area -->
     <string name="notificationNewReportRequest">Report request from </string>

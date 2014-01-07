@@ -230,6 +230,8 @@ ReportRequestListener
 			if(mRefreshAnimatedImageView != null)
 				mRefreshAnimatedImageView.hide();
 			mDataPool.clear();
+			if(mMapOptionsMenu != null)
+				mMapOptionsMenu.dismiss();
 		}
 		super.onDestroy();
 	}
@@ -748,8 +750,8 @@ ReportRequestListener
 			findViewById(R.id.radarTimestampTextView).setVisibility(View.GONE);
 			startRadarAnimation();
 			break;
-		case R.id.reportDialogAction:
-			startReportActivity();
+		case R.id.syncServiceAction:
+			mStartNotificationService(menuItem.isChecked());
 			break;
 		case R.id.reportUpdateAction:
 			/* this forces an update, even if just updated */
@@ -759,6 +761,21 @@ ReportRequestListener
 			break;
 		}
 		return false;
+	}
+
+	private void mStartNotificationService(boolean startService) 
+	{
+		ServiceManager serviceManager = new ServiceManager();
+		Log.e("OsmerActivity.onClick", "enabling service: " + startService +
+				" was running "+ serviceManager.isServiceRunning(this));
+		boolean ret = serviceManager.setEnabled(this, startService);
+		mSettings.setNotificationServiceEnabled(startService);
+		if(ret && startService)
+			Toast.makeText(this, R.string.notificationServiceStarted, Toast.LENGTH_LONG).show();
+		else if(ret && !startService)
+			Toast.makeText(this, R.string.notificationServiceStopped, Toast.LENGTH_LONG).show();
+		else if(!ret && startService)
+			Toast.makeText(this, R.string.notificationServiceWillStartOnNetworkAvailable, Toast.LENGTH_LONG).show();
 	}
 
 	@Override
@@ -772,20 +789,6 @@ ReportRequestListener
 		else if(v.getId() == R.id.actionNewReport)
 		{
 			startReportActivity();	
-		}
-		else if(v.getId() == R.id.actionSyncService)
-		{
-			ToggleButton tb = (ToggleButton) v;
-			boolean startService = tb.isChecked();
-			ServiceManager serviceManager = new ServiceManager();
-			Log.e("OsmerActivity.onClick", "enabling service: " + tb.isChecked() +
-					" was running "+ serviceManager.isServiceRunning(this));
-			boolean ret = serviceManager.setEnabled(this, startService);
-			mSettings.setNotificationServiceEnabled(tb.isChecked());
-			if(ret && tb.isChecked())
-				Toast.makeText(this, R.string.notificationServiceStarted, Toast.LENGTH_LONG).show();
-			else if(ret && !tb.isChecked())
-				Toast.makeText(this, R.string.notificationServiceStopped, Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -809,12 +812,9 @@ ReportRequestListener
 		/* button for maps menu */
 		ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
 		Button newReportButton = (Button) mButtonsActionView.findViewById(R.id.actionNewReport);
-		ToggleButton notificationServiceToggleButton = (ToggleButton)  mButtonsActionView.findViewById(R.id.actionSyncService);
 
 		if(newReportButton != null)
 			newReportButton.setVisibility(View.GONE);
-		if(notificationServiceToggleButton != null)
-			notificationServiceToggleButton.setVisibility(View.GONE);
 		switch(mCurrentViewType)
 		{
 		case HOME:
@@ -826,10 +826,7 @@ ReportRequestListener
 			break;
 		case REPORT:
 			newReportButton.setVisibility(View.VISIBLE);
-			notificationServiceToggleButton.setVisibility(View.VISIBLE);
-			notificationServiceToggleButton.setChecked(mSettings.notificationServiceEnabled());
 			newReportButton.setOnClickListener(this);
-			notificationServiceToggleButton.setOnClickListener(this);
 		default:
 			buttonMapsOveflowMenu.setOnClickListener(this);
 			buttonMapsOveflowMenu.setVisibility(View.VISIBLE);
@@ -841,9 +838,9 @@ ReportRequestListener
 	{
 		OMapFragment map = getMapFragment();
 		ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
-		PopupMenu mapOptionsMenu = new PopupMenu(this, buttonMapsOveflowMenu);
-		Menu menu = mapOptionsMenu.getMenu();
-		mapOptionsMenu.getMenuInflater().inflate(R.menu.map_options_popup_menu, menu);
+		mMapOptionsMenu = new PopupMenu(this, buttonMapsOveflowMenu);
+		Menu menu = mMapOptionsMenu.getMenu();
+		mMapOptionsMenu.getMenuInflater().inflate(R.menu.map_options_popup_menu, menu);
 		menu.findItem(R.id.measureToggleButton).setVisible(mCurrentViewType == ViewType.RADAR);
 		menu.findItem(R.id.radarInfoButton).setVisible(mCurrentViewType == ViewType.RADAR);
 		menu.findItem(R.id.measureToggleButton).setChecked(map.isMeasureEnabled());
@@ -851,9 +848,11 @@ ReportRequestListener
 		/* animation available only in radar mode */
 		menu.findItem(R.id.radarAnimationAction).setVisible(mCurrentViewType == ViewType.RADAR);
 		/* report action */
-		menu.findItem(R.id.reportDialogAction).setVisible(mCurrentViewType == ViewType.REPORT);
 		menu.findItem(R.id.reportUpdateAction).setVisible(mCurrentViewType == ViewType.REPORT);
-
+		/* enable sync action */
+		menu.findItem(R.id.syncServiceAction).setVisible(mCurrentViewType == ViewType.REPORT);
+		menu.findItem(R.id.syncServiceAction).setChecked(mSettings.notificationServiceEnabled());
+		
 		switch(mCurrentViewType)
 		{
 		case HOME: case TODAY: case TOMORROW: case TWODAYS:
@@ -875,9 +874,9 @@ ReportRequestListener
 
 		if(show)
 		{
-			mapOptionsMenu.setOnMenuItemClickListener(this);
-			mapOptionsMenu.setOnDismissListener(this);
-			mapOptionsMenu.show();
+			mMapOptionsMenu.setOnMenuItemClickListener(this);
+			mMapOptionsMenu.setOnDismissListener(this);
+			mMapOptionsMenu.show();
 		}
 	}
 
@@ -1221,6 +1220,7 @@ ReportRequestListener
 
 	private DataPool mDataPool;
 	private LocationService mLocationService;
+	private PopupMenu mMapOptionsMenu;
 
 	private int mProgressBarStep, mProgressBarTotSteps;
 	private int mAdditionalProgressBarStep, mProgressBarAdditionalSteps;

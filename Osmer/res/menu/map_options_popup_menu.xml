@@ -13,7 +13,7 @@
 				android:textOn="@string/radar_help" 
     
      -->
- 
+  
 <item 
          	    android:layout_width="wrap_content"
         		android:layout_height="wrap_content"       		
@@ -21,13 +21,18 @@
         		android:layout_marginRight="2dp"
 				android:title="@string/radar_animation"
         		android:id="@+id/radarAnimationAction" />	 
+        		
+
+
  <item 
          	    android:layout_width="wrap_content"
         		android:layout_height="wrap_content"       		
 				android:layout_marginLeft="2dp"
         		android:layout_marginRight="2dp"
-				android:title="@string/reportDialogTitle"
-        		android:id="@+id/reportDialogAction" />	     
+				android:title="@string/reportNotificationService"
+        		android:id="@+id/syncServiceAction" 
+        		android:checkable="true"
+        		/>	     
         		
  <item 
          	    android:layout_width="wrap_content"

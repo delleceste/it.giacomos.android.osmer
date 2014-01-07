@@ -89,27 +89,27 @@ FetchRequestsTaskListener, Runnable
 	{
 		if(!mIsStarted)
 		{
-		// Log.e("ReportDataService.onStartCommand", "service started");
-		Settings s = new Settings(this);
-		mSleepInterval = s.getServiceSleepIntervalMillis();
-		mCheckIfNeedRunIntervalMillis = mSleepInterval / 6;
+			// Log.e("ReportDataService.onStartCommand", "service started");
+			Settings s = new Settings(this);
+			mSleepInterval = s.getServiceSleepIntervalMillis();
+			mCheckIfNeedRunIntervalMillis = mSleepInterval / 6;
 
-		if(mLocationClient == null)
-			mLocationClient = new LocationClient(this, this, this);
+			if(mLocationClient == null)
+				mLocationClient = new LocationClient(this, this, this);
 
-		/* if onStartCommand is called multiple times,we must stop previously
-		 * scheduled runs.
-		 */
-		if(mHandler != null)
-			mHandler.removeCallbacks(this);
-		mHandler = new Handler();
-		mHandler.postDelayed(this, 3000);
-		mIsStarted = true;
+			/* if onStartCommand is called multiple times,we must stop previously
+			 * scheduled runs.
+			 */
+			if(mHandler != null)
+				mHandler.removeCallbacks(this);
+			mHandler = new Handler();
+			mHandler.postDelayed(this, 3000);
+			mIsStarted = true;
 
 		}
 		else
 		{
-			Log.e("ReportDataService.onStartCommand", "service is already running");
+			Log.e("ReportDataService.onStartCommand", "* service is already running");
 		}
 		return Service.START_STICKY;
 	}
@@ -130,7 +130,7 @@ FetchRequestsTaskListener, Runnable
 		if(currentTimeMillis - mLastTaskStartedTimeMillis >= mSleepInterval)
 		{
 			/* wait for connection and then get location and update data */
-		//	log("I: run: connectin to loc cli");
+			//	log("I: run: connectin to loc cli");
 			mLocationClient.connect();
 		}
 		else /* check in a while */
@@ -206,12 +206,12 @@ FetchRequestsTaskListener, Runnable
 		}
 		if(mHandler != null)
 			mHandler.removeCallbacks(this);
-		
+
 		if(mLocationClient != null && mLocationClient.isConnected())
 			mLocationClient.disconnect();
 
 		mIsStarted = false;
-		
+
 		super.onDestroy();
 		// log("x: service destroyed" );
 	}
@@ -219,7 +219,7 @@ FetchRequestsTaskListener, Runnable
 	@Override
 	public void onServiceDataTaskComplete(boolean error, String dataAsString) 
 	{	
-	//	if(error)
+		//	if(error)
 		log("task complete: " + dataAsString);
 
 		ServiceSharedData sharedData = ServiceSharedData.Instance();
@@ -338,8 +338,8 @@ FetchRequestsTaskListener, Runnable
 						dataAsString, Toast.LENGTH_LONG).show();
 			}
 		}
-	//	if(notifications.size() == 0)
-	//		log("task: no notifications");
+		//	if(notifications.size() == 0)
+		//		log("task: no notifications");
 
 		// Log.e(">>>> ReportDataService.onServiceDataTaskComplete", "data: " + dataAsString + " error " + error);
 	}

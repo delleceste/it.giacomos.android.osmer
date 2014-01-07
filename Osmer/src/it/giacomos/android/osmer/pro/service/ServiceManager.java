@@ -38,8 +38,6 @@ public class ServiceManager
 		{
 			Log.e(" ServiceManager", "enabled "  + enabled + " starting service ReportDataService");
 			ComponentName cn = context.startService(myIntent);
-			Log.e("ServiceManager.setEnabled", "class ReportDataService, componente.getClassName: " + 
-					cn.getClassName());
 			return cn.getClassName().endsWith("ReportDataService");
 		}
 		else

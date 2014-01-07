@@ -226,6 +226,7 @@
     <string name="radarAnimationImageUnavailable">Immagine non disponibile</string>
     <string name="radarAnimationLocalTimeFromUTC">ora locale = UTC+</string>
     <string name="reportDialogTitle">Segnala il tempo</string>
+    <string name="reportNotificationService">Servizio notifiche</string>
     <string name="reportDialogMessage">Segnala la situazione meteo nella tua zona</string>
     <string name="reportDialogSendButton">Invia!</string>
     <string name="reportDialogCancelButton">Annulla</string>
@@ -274,7 +275,8 @@
     <string name="reportPointTooCloseToMyLocation">Non puoi fare una richiesta in un punto entro 500m dalla tua posizione</string>
 	<string name="notificationServiceStarted">Servizio di notifica segnalazioni correttamente abilitato</string>
 	<string name="notificationServiceStopped">Servizio di notifica segnalazioni correttamente disattivato</string>
-	
+	<string name="notificationServiceWillStartOnNetworkAvailable">La notifica delle segnalazioni verrà attivata quando la rete sarà disponibile</string>
+    
     <string-array name="report_sky_textitems">
         <item>non segnalare il cielo</item>
         <item>cielo sereno</item>

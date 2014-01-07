@@ -4,18 +4,6 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal|center_vertical"
     android:orientation="horizontal" >
-
- 
-    <ToggleButton 
-         	    android:layout_width="32dp"
-        		android:layout_height="32dp"       		
-				android:layout_marginLeft="2dp"
-				android:textOff=""
-				android:textOn=""
-        		android:background="@drawable/ic_sync_service" 
-        		android:layout_marginRight="2dp"
-	    		android:layout_gravity="center_horizontal|center_vertical"
-        		android:id="@+id/actionSyncService" />
     
      <Button 
          	    android:layout_width="32dp"

@@ -95,7 +95,6 @@ ReportUpdateTaskListener
 	{
 		if((System.currentTimeMillis() - mLastReportUpdatedAt > DOWNLOAD_REPORT_OLD_TIMEOUT) || force)
 		{
-			Log.e("update,", " force " + force);
 			/* if a task is already running or about to run, do not do anything, because an update is on
 			 * the way.
 			 */
@@ -130,7 +129,6 @@ ReportUpdateTaskListener
 	@Override
 	public void onNetworkBecomesUnavailable() 
 	{
-		Toast.makeText(mContext, "ReportUpdater.onNetworkBecomesUnavailable: disconnecting location cli", Toast.LENGTH_SHORT).show();
 		mLocationClient.disconnect();
 	}
 

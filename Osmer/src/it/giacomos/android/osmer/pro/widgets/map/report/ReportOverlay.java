@@ -274,7 +274,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		if(requestDataLen > 0) /* requestDataList not null */
 			System.arraycopy(requestDataList, 0, dataList, reportDataLen, requestDataLen);
 
-		Log.e("onReportUpdateDone", "activity nyll? " + mMapFrag.getActivity());
 		mReportOverlayTask = new ReportOverlayTask(mMapFrag.getActivity().getApplicationContext(), this);
 		mReportOverlayTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataList);
 

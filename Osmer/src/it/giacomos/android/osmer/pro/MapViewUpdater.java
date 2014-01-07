@@ -16,7 +16,6 @@ public class MapViewUpdater {
 		int displayedChild = ((ViewFlipper)a.findViewById(R.id.viewFlipper)).getDisplayedChild();
 		if(displayedChild == FlipperChildren.PAGE_MAP)
 		{		
-			Log.e("MapViewUpdater.update", "updating radar or webcam: " + displayedChild);
 			OMapFragment mapView = (OMapFragment) a.getSupportFragmentManager().findFragmentById(R.id.mapview); 
 			MapViewMode mapMode = mapView.getMode();
 			/* update radar if mapview is showing the radar */
@@ -30,7 +29,6 @@ public class MapViewUpdater {
 			}
 			else if(mapMode.currentMode == MapMode.REPORT)
 			{
-				Log.e("MapViewUpdater", "updating report from MapViewUpdater");
 				a.updateReport(true);
 			}
 		}
