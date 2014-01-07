@@ -287,7 +287,9 @@
     <string name="reportRequestPublishedOn">Report request published on </string>
     <string name="reportLookingForLocality">searching for locality name&#8230;</string>
     <string name="reportPointTooCloseToMyLocation">You cannot make a request in a range within 500m from your position</string>
-    
+    <string name="notificationServiceStarted">Notification service started</string>
+	<string name="notificationServiceStopped">Notification service stopped</string>
+	
     
     <!-- notification area -->
     <string name="notificationNewReportRequest">Report request from </string>

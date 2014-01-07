@@ -38,6 +38,7 @@ import it.giacomos.android.osmer.pro.pager.MyActionBarDrawerToggle;
 import it.giacomos.android.osmer.pro.pager.TabsAdapter;
 import it.giacomos.android.osmer.pro.pager.ViewPagerPages;
 import it.giacomos.android.osmer.pro.preferences.*;
+import it.giacomos.android.osmer.pro.service.ServiceManager;
 import it.giacomos.android.osmer.pro.webcams.WebcamDataHelper;
 import it.giacomos.android.osmer.pro.widgets.AnimatedImageView;
 import it.giacomos.android.osmer.pro.widgets.OAnimatedTextView;
@@ -81,6 +82,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -767,9 +769,23 @@ ReportRequestListener
 			stopRadarAnimation();
 			mCreateMapOptionsPopupMenu(true);
 		} 
-		else 
+		else if(v.getId() == R.id.actionNewReport)
 		{
-
+			startReportActivity();	
+		}
+		else if(v.getId() == R.id.actionSyncService)
+		{
+			ToggleButton tb = (ToggleButton) v;
+			boolean startService = tb.isChecked();
+			ServiceManager serviceManager = new ServiceManager();
+			Log.e("OsmerActivity.onClick", "enabling service: " + tb.isChecked() +
+					" was running "+ serviceManager.isServiceRunning(this));
+			boolean ret = serviceManager.setEnabled(this, startService);
+			mSettings.setNotificationServiceEnabled(tb.isChecked());
+			if(ret && tb.isChecked())
+				Toast.makeText(this, R.string.notificationServiceStarted, Toast.LENGTH_LONG).show();
+			else if(ret && !tb.isChecked())
+				Toast.makeText(this, R.string.notificationServiceStopped, Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -792,6 +808,13 @@ ReportRequestListener
 
 		/* button for maps menu */
 		ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
+		Button newReportButton = (Button) mButtonsActionView.findViewById(R.id.actionNewReport);
+		ToggleButton notificationServiceToggleButton = (ToggleButton)  mButtonsActionView.findViewById(R.id.actionSyncService);
+
+		if(newReportButton != null)
+			newReportButton.setVisibility(View.GONE);
+		if(notificationServiceToggleButton != null)
+			notificationServiceToggleButton.setVisibility(View.GONE);
 		switch(mCurrentViewType)
 		{
 		case HOME:
@@ -801,6 +824,12 @@ ReportRequestListener
 			if(buttonMapsOveflowMenu != null)
 				buttonMapsOveflowMenu.setVisibility(View.GONE);
 			break;
+		case REPORT:
+			newReportButton.setVisibility(View.VISIBLE);
+			notificationServiceToggleButton.setVisibility(View.VISIBLE);
+			notificationServiceToggleButton.setChecked(mSettings.notificationServiceEnabled());
+			newReportButton.setOnClickListener(this);
+			notificationServiceToggleButton.setOnClickListener(this);
 		default:
 			buttonMapsOveflowMenu.setOnClickListener(this);
 			buttonMapsOveflowMenu.setVisibility(View.VISIBLE);
@@ -1053,6 +1082,11 @@ ReportRequestListener
 		}
 	}
 
+	public void makePendingAlertErrorDialog(String error)
+	{
+		mMyPendingAlertDialog = new MyPendingAlertDialog(MyAlertDialogType.ERROR,  error);
+	}
+	
 	@Override
 	public void onPostResume()
 	{

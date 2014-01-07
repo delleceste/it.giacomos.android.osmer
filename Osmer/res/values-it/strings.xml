@@ -272,7 +272,8 @@
     <string name="reportRequestPublishedOn">Richiesta pubblicata in data </string>
 	<string name="reportLookingForLocality">cerco il nome della località&#8230;</string>
     <string name="reportPointTooCloseToMyLocation">Non puoi fare una richiesta in un punto entro 500m dalla tua posizione</string>
-	
+	<string name="notificationServiceStarted">Servizio di notifica segnalazioni correttamente abilitato</string>
+	<string name="notificationServiceStopped">Servizio di notifica segnalazioni correttamente disattivato</string>
 	
     <string-array name="report_sky_textitems">
         <item>non segnalare il cielo</item>

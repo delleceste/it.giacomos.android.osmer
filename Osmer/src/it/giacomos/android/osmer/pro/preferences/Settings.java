@@ -338,8 +338,22 @@ public class Settings
 		return intmillis;
 	}
 	
+	public boolean notificationServiceEnabled() 
+	{
+		boolean ret = mSharedPreferences.getBoolean("NOTIFICATION_SERVICE_ENABLED", true);
+		return ret;
+	}
+	
+	public void setNotificationServiceEnabled(boolean en)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putBoolean("NOTIFICATION_SERVICE_ENABLED", en);
+		e.commit();
+	}
+	
 	private final String PREFERENCES_NAME = "Osmer.conf";
 	private SharedPreferences mSharedPreferences;
+	
 	
 
 }

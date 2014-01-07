@@ -10,11 +10,19 @@ public class MyPendingAlertDialog
 	
 	private MyAlertDialogType mType;
 	private int mMsgId;
+	private String mMsgStr;
 	
 	public MyPendingAlertDialog(MyAlertDialogType t, int id)
 	{
 		mType = t;
 		mMsgId = id;
+	}
+	
+	public MyPendingAlertDialog(MyAlertDialogType t, String msg)
+	{
+		mType = t;
+		mMsgId = -1;
+		mMsgStr = msg;
 	}
 	
 	public boolean isShowPending()
@@ -24,10 +32,12 @@ public class MyPendingAlertDialog
 	
 	public void showPending(FragmentActivity a)
 	{
-		if(mType == MyAlertDialogType.ERROR)
+		if(mMsgId > -1 && mType == MyAlertDialogType.ERROR)
 			MyAlertDialogFragment.MakeGenericError(mMsgId, a);
-		else if(mType == MyAlertDialogType.INFO)
+		else if(mMsgId > -1 && mType == MyAlertDialogType.INFO)
 			MyAlertDialogFragment.MakeGenericInfo(mMsgId, a);
+		else if(mMsgId < 0 && mType == MyAlertDialogType.ERROR)
+			MyAlertDialogFragment.MakeGenericError(mMsgStr, a);
 		
 		mMsgId = -1; /* cancels isShowPending */
 	}

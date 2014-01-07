@@ -236,7 +236,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	@Override
 	public void onReportUpdateError(String error)
 	{
-		MyAlertDialogFragment.MakeGenericError(error, mMapFrag.getActivity());
+		((OsmerActivity) mMapFrag.getActivity()).makePendingAlertErrorDialog(error);
 	}
 
 	/** This is invoked when the report data in textual form has completed downloading.

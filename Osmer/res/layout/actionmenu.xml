@@ -5,17 +5,29 @@
     android:layout_gravity="center_horizontal|center_vertical"
     android:orientation="horizontal" >
 
-    <it.giacomos.android.osmer.pro.widgets.AnimatedImageView 
+ 
+    <ToggleButton 
+         	    android:layout_width="32dp"
+        		android:layout_height="32dp"       		
+				android:layout_marginLeft="2dp"
+				android:textOff=""
+				android:textOn=""
+        		android:background="@drawable/ic_sync_service" 
+        		android:layout_marginRight="2dp"
+	    		android:layout_gravity="center_horizontal|center_vertical"
+        		android:id="@+id/actionSyncService" />
     
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/refresh_animation"
-    android:layout_width="32dp"
-    android:layout_height="32dp"
-    android:layout_gravity="center_horizontal|center_vertical"
-     >
+     <Button 
+         	    android:layout_width="32dp"
+        		android:layout_height="32dp"       		
+				android:layout_marginLeft="2dp"
+				android:textOff=""
+				android:textOn=""
+        		android:background="@drawable/ic_menu_edit" 
+        		android:layout_marginRight="2dp"
+	    		android:layout_gravity="center_horizontal|center_vertical"
+        		android:id="@+id/actionNewReport" />
     
-</it.giacomos.android.osmer.pro.widgets.AnimatedImageView >
-
     <ToggleButton 
          	    android:layout_width="32dp"
         		android:layout_height="32dp"       		
@@ -26,4 +38,17 @@
         		android:layout_marginRight="2dp"
 	    		android:layout_gravity="center_horizontal|center_vertical"
         		android:id="@+id/actionOverflow" />	
+        		
+       <it.giacomos.android.osmer.pro.widgets.AnimatedImageView 
+    
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/refresh_animation"
+    android:layout_width="32dp"
+    android:layout_height="32dp"
+    android:layout_gravity="center_horizontal|center_vertical"
+     >
+    
+</it.giacomos.android.osmer.pro.widgets.AnimatedImageView >
+    
+       
 </LinearLayout>

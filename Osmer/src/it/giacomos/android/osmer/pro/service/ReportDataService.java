@@ -22,11 +22,13 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -85,6 +87,8 @@ FetchRequestsTaskListener, Runnable
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{
+		if(!mIsStarted)
+		{
 		// Log.e("ReportDataService.onStartCommand", "service started");
 		Settings s = new Settings(this);
 		mSleepInterval = s.getServiceSleepIntervalMillis();
@@ -102,6 +106,11 @@ FetchRequestsTaskListener, Runnable
 		mHandler.postDelayed(this, 3000);
 		mIsStarted = true;
 
+		}
+		else
+		{
+			Log.e("ReportDataService.onStartCommand", "service is already running");
+		}
 		return Service.START_STICKY;
 	}
 
@@ -201,6 +210,8 @@ FetchRequestsTaskListener, Runnable
 		if(mLocationClient != null && mLocationClient.isConnected())
 			mLocationClient.disconnect();
 
+		mIsStarted = false;
+		
 		super.onDestroy();
 		// log("x: service destroyed" );
 	}
@@ -251,7 +262,7 @@ FetchRequestsTaskListener, Runnable
 					sharedData.setWasNotified(notificationData);
 					/* and notify */
 					String message;
-					int iconId;
+					int iconId, ledColor;
 					// Creates an explicit intent for an Activity in your app
 					Intent resultIntent = new Intent(this, OsmerActivity.class);
 					resultIntent.putExtra("ptLatitude", notificationData.latitude);
@@ -266,6 +277,7 @@ FetchRequestsTaskListener, Runnable
 						if(rrnd.locality.length() > 0)
 							message += " - " + rrnd.locality;
 						iconId = R.drawable.ic_launcher_statusbar_request;
+						ledColor = Color.argb(255, 5, 220, 246); /* cyan notification */
 						// log("task ok.new req. " + notificationData.username);
 					}
 					else
@@ -274,14 +286,17 @@ FetchRequestsTaskListener, Runnable
 						message = getResources().getString(R.string.notificationNewReportArrived) 
 								+ " "  + notificationData.username;
 						iconId = R.drawable.ic_launcher_statusbar_report;
+						ledColor = Color.argb(255, 56, 220, 5);
 						// log("task ok.new report " + notificationData.username);
 					}
 
+					int notificationFlags = Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS|
+							Notification.FLAG_SHOW_LIGHTS;
 					NotificationCompat.Builder notificationBuilder =
 							new NotificationCompat.Builder(this)
 					.setSmallIcon(iconId)
 					.setContentTitle(getResources().getString(R.string.app_name))
-					.setContentText(message);
+					.setContentText(message).setDefaults(notificationFlags);
 
 					// The stack builder object will contain an artificial back stack for the
 					// started Activity.
@@ -300,7 +315,11 @@ FetchRequestsTaskListener, Runnable
 					notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
 					// mId allows you to update the notification later on.
 
-					mNotificationManager.notify(ReportDataService.REPORT_REQUEST_NOTIFICATION_TAG, notificationData.makeId(),  notificationBuilder.build());
+					Notification notification = notificationBuilder.build();
+					notification.ledARGB = ledColor;
+					notification.ledOnMS = 800;
+					notification.ledOffMS = 2200;
+					mNotificationManager.notify(ReportDataService.REPORT_REQUEST_NOTIFICATION_TAG, notificationData.makeId(),  notification);
 				}
 				else
 				{

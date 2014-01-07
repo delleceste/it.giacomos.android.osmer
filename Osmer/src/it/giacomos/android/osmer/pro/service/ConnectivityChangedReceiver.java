@@ -1,5 +1,7 @@
 package it.giacomos.android.osmer.pro.service;
 
+import it.giacomos.android.osmer.pro.preferences.Settings;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,65 +24,20 @@ import android.widget.Toast;
 public class ConnectivityChangedReceiver extends BroadcastReceiver
 {
 	@Override
-    public void onReceive(Context context, Intent intent) 
+	public void onReceive(Context context, Intent intent) 
 	{  
-				
 		final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        
-        Intent myIntent = new Intent(context, ReportDataService.class);
-    	PendingIntent myPendingIntent = PendingIntent.getService(context, 0, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);  
-    	NetworkInfo netinfo = connMgr.getActiveNetworkInfo();
-    	
-    	Calendar cal = Calendar.getInstance();
-		File f = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+		NetworkInfo netinfo = connMgr.getActiveNetworkInfo();
 		
-    	if(netinfo != null && connMgr.getActiveNetworkInfo().isConnectedOrConnecting())
-        {
-        	Log.e(">>>>>>>>>>>> ConnectivityChangedReceiver", "+++++++++ net connecting");
-        	context.startService(myIntent);
-        	/////////////////////////////////////// LOG TEST //////////////////////////////////////////////////
-        	////////////////////////////////////////////////////////////////////////////////////////////////////
-        	try {
-        		PrintWriter out;
-    			out = new PrintWriter(new BufferedWriter(new FileWriter(f.getAbsolutePath() + "/Meteo.FVG.Service.log", true)));
-    			out.append("+ receiver: net up on " + cal.getTime().toLocaleString() + "\n");
-    			out.close();
-    		} catch (FileNotFoundException e1) 
-    		{
-    			// TODO Auto-generated catch block
-    			e1.printStackTrace();
-    		} 
-    		catch (IOException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-        	////////////////////////////////////////////////////////////////////////////////////////////////////
-        	
-        }
-        else
-        {
-        	context.stopService(myIntent);
-        	Log.e(">>>>>>>>>>>> ConnectivityChangedReceiver", "------------removing repeating intent");
-//        	Toast.makeText(context, "Network down. Meteo.FVG service stopped", Toast.LENGTH_SHORT).show();
-        	
-        	
-        	/////////////////////////////////////// LOG TEST //////////////////////////////////////////////////
-        	////////////////////////////////////////////////////////////////////////////////////////////////////
-        	try {
-        		PrintWriter out;
-    			out = new PrintWriter(new BufferedWriter(new FileWriter(f.getAbsolutePath() + "/Meteo.FVG.Service.log", true)));
-    			out.append("- receiver: net down on " + cal.getTime().toLocaleString() + "\n");
-    			out.close();
-    		} catch (FileNotFoundException e1) 
-    		{
-    			// TODO Auto-generated catch block
-    			e1.printStackTrace();
-    		} 
-    		catch (IOException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-        	////////////////////////////////////////////////////////////////////////////////////////////////////
-        }
-    }
+		
+		if(netinfo!= null)
+			Log.e("ConnectivityChangedReceiver.onReceive", "connecting " + netinfo.isConnectedOrConnecting());
+		else
+			Log.e("ConnectivityChangedReceiver.onReceive", "net info null ");
+		
+		Settings s = new Settings(context);
+		boolean notificationServiceEnabled = s.notificationServiceEnabled();
+		if(notificationServiceEnabled)
+			new ServiceManager().setEnabled(context, true);
+	}
 }
