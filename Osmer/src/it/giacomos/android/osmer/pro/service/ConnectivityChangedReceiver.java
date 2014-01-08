@@ -31,7 +31,12 @@ public class ConnectivityChangedReceiver extends BroadcastReceiver
 		
 		
 		if(netinfo!= null)
-			Log.e("ConnectivityChangedReceiver.onReceive", "connecting " + netinfo.isConnectedOrConnecting());
+		{
+			Log.e("ConnectivityChangedReceiver.onReceive", "connecting or connected " + netinfo.isConnectedOrConnecting());
+			Log.e("ConnectivityChangedReceiver.onReceive", "connected " + netinfo.isConnected());
+			Log.e("ConnectivityChangedReceiver.onReceive", "isAvailable " + netinfo.isAvailable());
+			Log.e("ConnectivityChangedReceiver.onReceive", "network info type " + netinfo.getState());
+		}
 		else
 			Log.e("ConnectivityChangedReceiver.onReceive", "net info null ");
 		

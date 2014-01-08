@@ -34,7 +34,7 @@ public class ServiceManager
 		Intent myIntent = new Intent(context, ReportDataService.class);
 		NetworkInfo netinfo = connMgr.getActiveNetworkInfo();
 		
-		if(enabled && netinfo != null && connMgr.getActiveNetworkInfo().isConnectedOrConnecting())
+		if(enabled && netinfo != null && netinfo.isConnected())
 		{
 			Log.e(" ServiceManager", "enabled "  + enabled + " starting service ReportDataService");
 			ComponentName cn = context.startService(myIntent);
