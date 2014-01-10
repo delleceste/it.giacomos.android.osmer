@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="479"
-    android:versionName="2.6.0-alpha1" >
+    android:versionCode="481"
+    android:versionName="2.6.0-alpha2" >
 
     <uses-sdk
         android:minSdkVersion="14"
