@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.pro.widgets.map.report;
 
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.Logger;
 import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.pro.observations.ObservationData;
 import it.giacomos.android.osmer.pro.preferences.Settings;
@@ -34,6 +35,7 @@ public class ReportActivity extends Activity implements OnClickListener
 	{
 		super.onCreate(savedInstanceState);
 
+		Logger.log("ReportActivity.onCreate");
 		requestWindowFeature(Window.FEATURE_PROGRESS);
 		this.setProgressBarVisibility(true);
 
@@ -100,6 +102,7 @@ public class ReportActivity extends Activity implements OnClickListener
 	@Override
 	public void onDestroy()
 	{
+		Logger.log("ReportActivity.onDestroy");
 		super.onDestroy();
 	}
 
@@ -164,6 +167,8 @@ public class ReportActivity extends Activity implements OnClickListener
 			intent.putExtra("longitude", mLongitude);
 
 			setResult(Activity.RESULT_OK, intent);
+			Logger.log("ReportActivity.onCLick:  setResult with extras: lat "
+					+ mLatitude + ", long " + mLongitude + " user " + user);
 			finish();
 		}
 		else if(view.getId() == R.id.bCancel)

@@ -156,6 +156,7 @@ ReportRequestListener
 			return;
 
 		/* (re)connect the location update client */
+		Logger.log("OsmerActivity.onResume: connecting to location service");
 		mLocationService.connect();
 		m_downloadManager.onResume(this);
 	}
@@ -172,6 +173,7 @@ ReportRequestListener
 		/* unregisters network status monitor broadcast receiver (for this it needs `this')
 		 */
 		m_downloadManager.onPause(this);
+		Logger.log("OsmerActivity.onPause: paused: disconnecting from location service");
 		mLocationService.disconnect();
 	}
 
@@ -1047,6 +1049,7 @@ ReportRequestListener
 			{
 				/* check if the user hasn't moved too far since she started the report activity */
 				Location currentLoc = mLocationService.getCurrentLocation();
+				Logger.log("OsmerActivity.onActivityResult result OK: currentLocation " + mLocationService.getCurrentLocation());
 				String locality = "";
 				LocationInfo loi = mLocationService.getCurrentLocationInfo();
 				if(loi != null)
@@ -1076,7 +1079,10 @@ ReportRequestListener
 					}
 				}
 				else
+				{
 					mMyPendingAlertDialog = new MyPendingAlertDialog(MyAlertDialogType.ERROR,  R.string.location_not_available);
+					Logger.log("OsmerActivity.onActivityResult result OK: currentLocation null!? " + mLocationService.getCurrentLocation());
+				}
 			}
 		}
 	}

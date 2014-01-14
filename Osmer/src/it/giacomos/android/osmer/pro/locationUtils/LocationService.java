@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.pro.locationUtils;
 
 import java.util.ArrayList;
+
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
+import it.giacomos.android.osmer.pro.Logger;
 import it.giacomos.android.osmer.pro.network.DownloadStatus;
 
 public class LocationService implements   GooglePlayServicesClient.ConnectionCallbacks,
@@ -94,6 +96,7 @@ GeocodeAddressUpdateListener
 			mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 			mLocationClient = new LocationClient(mContext, this,  this);
 			Log.e("connect()", "connecting to location client");
+			Logger.log("location client.connect: currentLocation: " + mCurrentLocation);
 			mLocationClient.connect();
 		}
 		return result;
@@ -104,6 +107,7 @@ GeocodeAddressUpdateListener
 	 */
 	public void disconnect()
 	{
+		Logger.log("location client.disconnect: currentLocation: " + mCurrentLocation);
 		if(mLocationClient != null)
 		{
 			if(mLocationClient.isConnected())
@@ -181,13 +185,18 @@ GeocodeAddressUpdateListener
 		if(mLocationClient != null)
 		{
 			Log.e("onConnected", "connected to loc cli");
+			
 			Location lastKnownLocation = mLocationClient.getLastLocation();
 			mLocationClient.requestLocationUpdates(mLocationRequest, this);
 			if(lastKnownLocation != null)
 			{
+				Logger.log("location client.onConnected: lastKnownLocation not null");
 				mCurrentLocation = lastKnownLocation;
 				onLocationChanged(lastKnownLocation);
 			}
+			else
+				Logger.log("location client.onConnected: lastKnownLocation null");
+			Logger.log("location client.onConnected: currentLocation: " + mCurrentLocation);
 		}
 	}
 
@@ -213,6 +222,7 @@ GeocodeAddressUpdateListener
 		for(LocationServiceUpdateListener l : mLocationServiceUpdateListeners)
 			l.onLocationChanged(location);
 		mCurrentLocation = location;
+		Logger.log("location client.onLocationChanged: current location: " + mCurrentLocation);
 		
 		/* do we still need LocationComparer ? 
 		 * ... hope not
