@@ -184,7 +184,10 @@ GeocodeAddressUpdateListener
 			Location lastKnownLocation = mLocationClient.getLastLocation();
 			mLocationClient.requestLocationUpdates(mLocationRequest, this);
 			if(lastKnownLocation != null)
+			{
+				mCurrentLocation = lastKnownLocation;
 				onLocationChanged(lastKnownLocation);
+			}
 		}
 	}
 
@@ -209,13 +212,19 @@ GeocodeAddressUpdateListener
 				location.getLongitude() + " count " + tmpUpdCnt);
 		for(LocationServiceUpdateListener l : mLocationServiceUpdateListeners)
 			l.onLocationChanged(location);
+		mCurrentLocation = location;
 		
-		/* do we still need LocationComparer ? */
-		LocationComparer locationComparer = new LocationComparer();
+		/* do we still need LocationComparer ? 
+		 * ... hope not
+		 */
+		
+		/* 
+		 * LocationComparer locationComparer = new LocationComparer();
+		 
 		
 		if(locationComparer.isBetterLocation(location, mCurrentLocation))
 		{	
-			mCurrentLocation = location; /* save current location */
+			mCurrentLocation = location; // save current location
 			if(mDownloadStatus.isOnline)
 			{
 //				Log.e("LocationService.onLocationChanged", "we are online, starting geocode task");
@@ -225,6 +234,8 @@ GeocodeAddressUpdateListener
 //		else
 //			Log.e("LocationService.onLocationChanged", " !!!! new location is not better than old");
 		locationComparer = null;
+		*
+		*/
 	}
 
 	@Override
