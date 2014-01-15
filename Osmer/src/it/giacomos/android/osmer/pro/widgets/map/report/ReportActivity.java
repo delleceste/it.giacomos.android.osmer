@@ -18,12 +18,14 @@ import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 
 public class ReportActivity extends Activity implements OnClickListener
 {
 	private double mLatitude, mLongitude;
+	private String mLocality;
 	
 	public ReportActivity()
 	{
@@ -35,7 +37,6 @@ public class ReportActivity extends Activity implements OnClickListener
 	{
 		super.onCreate(savedInstanceState);
 
-		Logger.log("ReportActivity.onCreate");
 		requestWindowFeature(Window.FEATURE_PROGRESS);
 		this.setProgressBarVisibility(true);
 
@@ -69,6 +70,9 @@ public class ReportActivity extends Activity implements OnClickListener
 
 		CheckBox cb = (CheckBox) findViewById(R.id.cbTemp);
 		cb.setOnClickListener(this);
+		cb = (CheckBox) findViewById(R.id.cbReportIncludeLocality);
+		cb.setChecked(true);
+		cb.setOnClickListener(this);
 		findViewById(R.id.ettemp).setEnabled(false);
 
 		/* populate Name field with last value */
@@ -97,12 +101,17 @@ public class ReportActivity extends Activity implements OnClickListener
 		initByLocation(i.getStringExtra("temp"), i.getIntExtra("sky", 0), i.getIntExtra("wind", 0));
 		mLatitude = i.getDoubleExtra("latitude", 0);
 		mLongitude = i.getDoubleExtra("longitude", 0);
+		mLocality = i.getStringExtra("locality");
+		TextView localityTv = (TextView) findViewById(R.id.tvLocality);
+		if(mLocality != null)
+			localityTv.setText(mLocality);
+		else 
+			localityTv.setText(R.string.locality_unavailable);
 	}
 
 	@Override
 	public void onDestroy()
 	{
-		Logger.log("ReportActivity.onDestroy");
 		super.onDestroy();
 	}
 
@@ -123,6 +132,11 @@ public class ReportActivity extends Activity implements OnClickListener
 			Settings se = new Settings(this);
 			if(se.getReporterUserName().compareTo(teUserName.getText().toString()) != 0)
 				se.setReporterUserName(teUserName.getText().toString());
+		}
+		else if(view.getId() == R.id.cbReportIncludeLocality)
+		{
+			CheckBox cb = (CheckBox) view;
+			findViewById(R.id.tvLocality).setEnabled(cb.isChecked());
 		}
 
 		if(view.getId() == R.id.bSend)
@@ -165,10 +179,14 @@ public class ReportActivity extends Activity implements OnClickListener
 			intent.putExtra("temperature", temp);
 			intent.putExtra("latitude", mLatitude);
 			intent.putExtra("longitude", mLongitude);
-
+			
+			CheckBox cbIncludeLocationName = (CheckBox) findViewById(R.id.cbReportIncludeLocality);
+			if(cbIncludeLocationName.isChecked() && mLocality != null)
+				intent.putExtra("locality", mLocality);
+			else
+				intent.putExtra("locality", "-");
+			
 			setResult(Activity.RESULT_OK, intent);
-			Logger.log("ReportActivity.onCLick:  setResult with extras: lat "
-					+ mLatitude + ", long " + mLongitude + " user " + user);
 			finish();
 		}
 		else if(view.getId() == R.id.bCancel)

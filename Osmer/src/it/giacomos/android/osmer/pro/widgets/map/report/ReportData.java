@@ -167,7 +167,7 @@ public class ReportData extends DataInterface
 		}
 		
 		title = username;
-		if(locality.length() > 1)
+		if(locality.length() > 1) /* different from "-" */
 			title += " - " + locality;
 		
 		text = datetime + "\n";
@@ -191,7 +191,7 @@ public class ReportData extends DataInterface
 			text += res.getString(R.string.reportComment) + ":\n" + comment;
 		
 		if(isWritable())
-			text += "*" + res.getString(R.string.reportTouchBaloonToRemove);
+			text += "\n*" + res.getString(R.string.reportTouchBaloonToRemove);
 		
 		mMarkerOptions = new MarkerOptions();
 		mMarkerOptions.position(new LatLng(latitude, longitude));

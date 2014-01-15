@@ -32,7 +32,7 @@ public class DataParser
 				//	Log.e("DataParser.parseReports", line + ", " +parts.length);
 
 					sky = wind = -1;
-					if(parts.length > 9) /* should be 10 */
+					if(parts.length > 10) /* should be 11, since locality has been added */
 					{
 						try
 						{
@@ -52,7 +52,8 @@ public class DataParser
 							 */
 							/* a "-" for the locality for now */
 							/* parts[1] is writable */
-							rd = new ReportData(parts[3], parts[2], "-", parts[9], parts[8], sky, wind, lat, lon, parts[1]);
+							rd = new ReportData(parts[3], parts[2], parts[10], parts[9], parts[8], 
+									sky, wind, lat, lon, parts[1]);
 							tmpArray.add(rd);
 						}
 						catch(NumberFormatException e)

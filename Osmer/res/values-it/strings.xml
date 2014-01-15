@@ -306,6 +306,10 @@
         <item>molto forte</item>
     </string-array>
 
+    <string name="include_locality">Indica località</string>	
+	<string name="locality_unavailable">-</string>
+    
+    
     <!-- WEBCAM -->
     <string name="popup_data_update_info">
 <![CDATA[

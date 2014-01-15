@@ -292,6 +292,10 @@
 	<string name="notificationServiceStopped">Notification service stopped</string>
 	<string name="notificationServiceWillStartOnNetworkAvailable">Notification service will be started upon network connection</string>
     
+	
+	<string name="include_locality">Include locality</string>	
+	<string name="locality_unavailable">-</string>
+	
     <!-- notification area -->
     <string name="notificationNewReportRequest">Report request from </string>
     <string name="notificationNewReportArrived">New report from </string>
@@ -527,6 +531,8 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
 
 ]]>		
 </string>
+	
+	
 	
 	
 </resources>

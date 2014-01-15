@@ -47,7 +47,6 @@ import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.pro.widgets.map.RadarOverlayUpdateListener;
 import it.giacomos.android.osmer.pro.widgets.map.ReportRequestListener;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
-import it.giacomos.android.osmer.pro.widgets.map.report.IconTextSpinnerAdapter;
 import it.giacomos.android.osmer.pro.widgets.map.report.ObservationDataExtractor;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportActivity;
 import it.giacomos.android.osmer.pro.widgets.map.report.RemovePostConfirmDialog;
@@ -61,7 +60,6 @@ import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -127,7 +125,8 @@ ReportRequestListener
 
 	/** Called when the activity is first created. */
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) 
+	{
 		super.onCreate(savedInstanceState);
 
 		requestWindowFeature(Window.FEATURE_PROGRESS);
@@ -156,7 +155,6 @@ ReportRequestListener
 			return;
 
 		/* (re)connect the location update client */
-		Logger.log("OsmerActivity.onResume: connecting to location service");
 		mLocationService.connect();
 		m_downloadManager.onResume(this);
 	}
@@ -173,7 +171,6 @@ ReportRequestListener
 		/* unregisters network status monitor broadcast receiver (for this it needs `this')
 		 */
 		m_downloadManager.onPause(this);
-		Logger.log("OsmerActivity.onPause: paused: disconnecting from location service");
 		mLocationService.disconnect();
 	}
 
@@ -437,7 +434,7 @@ ReportRequestListener
 	{
 
 	}
-	
+
 	public void onCameraReady()
 	{
 		Intent i = getIntent();
@@ -854,7 +851,7 @@ ReportRequestListener
 		/* enable sync action */
 		menu.findItem(R.id.syncServiceAction).setVisible(mCurrentViewType == ViewType.REPORT);
 		menu.findItem(R.id.syncServiceAction).setChecked(mSettings.notificationServiceEnabled());
-		
+
 		switch(mCurrentViewType)
 		{
 		case HOME: case TODAY: case TOMORROW: case TWODAYS:
@@ -1020,7 +1017,9 @@ ReportRequestListener
 
 	public void startReportActivity()
 	{
+		Log.e("OsmerActivity.startReportActivity", "enter");
 		Location loc = this.mLocationService.getCurrentLocation();
+		LocationInfo loci = mLocationService.getCurrentLocationInfo();
 		if(loc == null)
 			MyAlertDialogFragment.MakeGenericError(R.string.location_not_available, this);
 		else if(!mDownloadStatus.isOnline)
@@ -1035,6 +1034,13 @@ ReportRequestListener
 			i.putExtra("wind", oex.getWindIndex());
 			i.putExtra("latitude", loc.getLatitude());
 			i.putExtra("longitude", loc.getLongitude());
+			if(loci != null)
+			{
+				Log.e("OsmerActivity.startReportActivity",  "startingActivity with locality" + loci.locality);
+				i.putExtra("locality", loci.locality);
+			}
+			else
+				Log.e("OsmerActivity.startReportActivity", "startingActivity without locality");
 			this.startActivityForResult(i, REPORT_ACTIVITY_FOR_RESULT_ID);
 		}
 	}
@@ -1047,51 +1053,29 @@ ReportRequestListener
 		{
 			if(resultCode == Activity.RESULT_OK)
 			{
-				/* check if the user hasn't moved too far since she started the report activity */
-				Location currentLoc = mLocationService.getCurrentLocation();
-				Logger.log("OsmerActivity.onActivityResult result OK: currentLocation " + mLocationService.getCurrentLocation());
-				String locality = "";
-				LocationInfo loi = mLocationService.getCurrentLocationInfo();
-				if(loi != null)
-					locality = loi.locality;
-				if(currentLoc != null) /* otherwise assume we can't determine */
-				{
-					Location reportLocation = new Location("");
-					reportLocation.setLatitude(data.getDoubleExtra("latitude", 0));
-					reportLocation.setLongitude(data.getDoubleExtra("longitude", 0));
-					if(currentLoc.distanceTo(reportLocation) <= 3000)
-					{
-						/* ok */
-						String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
-						new PostReport(data.getStringExtra("user"), deviceId, 
-								locality, reportLocation.getLatitude(), reportLocation.getLongitude(), 
-								data.getIntExtra("sky", 0), data.getIntExtra("wind", 0), 
-								data.getStringExtra("temperature"), data.getStringExtra("comment"), this);
-					}
-					else
-					{
-						Log.e("onActivityresutl" , "spostato di " +currentLoc.distanceTo(reportLocation) );
-						/* need pending alert dialog helper because the dialog cannot be shown inside 
-						 * onActivityResult, but instead the transaction (being it a Fragment) can be
-						 * made only in onPostResume().
-						 */
-						mMyPendingAlertDialog = new MyPendingAlertDialog(MyAlertDialogType.ERROR,  R.string.reportMovedTooFar);
-					}
-				}
-				else
-				{
-					mMyPendingAlertDialog = new MyPendingAlertDialog(MyAlertDialogType.ERROR,  R.string.location_not_available);
-					Logger.log("OsmerActivity.onActivityResult result OK: currentLocation null!? " + mLocationService.getCurrentLocation());
-				}
+				Bundle extras = data.getExtras();
+				String locality = extras.getString("locality");
+
+				Location reportLocation = new Location("");
+				reportLocation.setLatitude(data.getDoubleExtra("latitude", 0));
+				reportLocation.setLongitude(data.getDoubleExtra("longitude", 0));
+
+				/* ok */
+				String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+				new PostReport(data.getStringExtra("user"), deviceId, 
+						locality, reportLocation.getLatitude(), reportLocation.getLongitude(), 
+						data.getIntExtra("sky", 0), data.getIntExtra("wind", 0), 
+						data.getStringExtra("temperature"), data.getStringExtra("comment"), this);
 			}
 		}
 	}
+
 
 	public void makePendingAlertErrorDialog(String error)
 	{
 		mMyPendingAlertDialog = new MyPendingAlertDialog(MyAlertDialogType.ERROR,  error);
 	}
-	
+
 	@Override
 	public void onPostResume()
 	{

@@ -96,7 +96,6 @@ GeocodeAddressUpdateListener
 			mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 			mLocationClient = new LocationClient(mContext, this,  this);
 			Log.e("connect()", "connecting to location client");
-			Logger.log("location client.connect: currentLocation: " + mCurrentLocation);
 			mLocationClient.connect();
 		}
 		return result;
@@ -107,7 +106,6 @@ GeocodeAddressUpdateListener
 	 */
 	public void disconnect()
 	{
-		Logger.log("location client.disconnect: currentLocation: " + mCurrentLocation);
 		if(mLocationClient != null)
 		{
 			if(mLocationClient.isConnected())
@@ -190,13 +188,9 @@ GeocodeAddressUpdateListener
 			mLocationClient.requestLocationUpdates(mLocationRequest, this);
 			if(lastKnownLocation != null)
 			{
-				Logger.log("location client.onConnected: lastKnownLocation not null");
 				mCurrentLocation = lastKnownLocation;
 				onLocationChanged(lastKnownLocation);
 			}
-			else
-				Logger.log("location client.onConnected: lastKnownLocation null");
-			Logger.log("location client.onConnected: currentLocation: " + mCurrentLocation);
 		}
 	}
 
@@ -222,7 +216,6 @@ GeocodeAddressUpdateListener
 		for(LocationServiceUpdateListener l : mLocationServiceUpdateListeners)
 			l.onLocationChanged(location);
 		mCurrentLocation = location;
-		Logger.log("location client.onLocationChanged: current location: " + mCurrentLocation);
 		
 		/* do we still need LocationComparer ? 
 		 * ... hope not
