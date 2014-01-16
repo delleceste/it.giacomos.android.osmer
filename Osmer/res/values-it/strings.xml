@@ -247,6 +247,12 @@
   	<string name="reportMovedTooFar">Ti sei spostato troppo da quando hai iniziato la procedura di segnalazione</string>
   	
   	
+  	    <!-- report tutorial activity and terms and conditions -->
+    <string name="tutorial_publish_report">Pubblicare segnalazioni</string>
+    <string name="tutorial_publish_request">Richiedere una segnalazione</string>
+    <string name="tutorial_notification_service">Servizio di notifica</string>
+    <string name="tutorial_terms_conditions">Termini e condizioni d\'uso</string>
+  	
 	<!--  report request -->
     <string name="report_activity_name">Segnala il tempo</string>
 	<string name="reportRequestIncludeLocationName">Includi il nome della località</string>

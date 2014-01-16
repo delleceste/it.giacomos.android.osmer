@@ -54,6 +54,7 @@ import it.giacomos.android.osmer.pro.widgets.map.report.ReportRequestDialogFragm
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostReport;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostType;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostActionResultListener;
+import it.giacomos.android.osmer.pro.widgets.map.report.tutorialActivity.ScenarioListActivity;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -343,6 +344,7 @@ ReportRequestListener
 
 		/* to show alerts inside onPostResume, after onActivityResult */
 		mMyPendingAlertDialog = null;
+		mReportConditionsAccepted = mSettings.reportConditionsAccepted();
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -705,9 +707,17 @@ ReportRequestListener
 	{
 		/* switch the working mode of the map view. Already in PAGE_MAP view flipper page */
 		OMapFragment map = getMapFragment();
-		map.setMode(new MapViewMode(observationType, mapMode));
+		if((mapMode != MapMode.REPORT) || (mapMode == MapMode.REPORT && mReportConditionsAccepted))
+				map.setMode(new MapViewMode(observationType, mapMode));
+		else if(mapMode == MapMode.REPORT)
+		{
+			Intent i = new Intent(this, ScenarioListActivity.class);
+			i.putExtra("conditionsAccepted", false);
+			this.startActivityForResult(i, TUTORIAL_ACTIVITY_FOR_RESULT_ID);
+		}
 		if(mapMode == MapMode.DAILY_OBSERVATIONS || mapMode == MapMode.LATEST_OBSERVATIONS)
 			map.updateObservations(m_observationsCache.getObservationData(mapMode));
+
 	}
 
 	@Override
@@ -1068,6 +1078,25 @@ ReportRequestListener
 						data.getStringExtra("temperature"), data.getStringExtra("comment"), this);
 			}
 		}
+		else if(requestCode == TUTORIAL_ACTIVITY_FOR_RESULT_ID)
+		{
+			Log.e("OsmerActivity.onActivityResult", "resultCode " + resultCode);
+			if(resultCode == Activity.RESULT_OK)
+			{
+				mReportConditionsAccepted = mSettings.reportConditionsAccepted();
+				mDrawerList.setItemChecked(5, true);
+				mActionBarManager.drawerItemChanged(5);
+				mStartNotificationService(mSettings.notificationServiceEnabled());
+			}
+			else
+			{
+				mReportConditionsAccepted = false;
+				mSettings.setReportConditionsAccepted(false);
+				mDrawerList.setItemChecked(0, true);
+				mActionBarManager.drawerItemChanged(0);
+				mStartNotificationService(false);
+			}
+		}
 	}
 
 
@@ -1215,11 +1244,14 @@ ReportRequestListener
 	private int mProgressBarStep, mProgressBarTotSteps;
 	private int mAdditionalProgressBarStep, mProgressBarAdditionalSteps;
 
+	private boolean mReportConditionsAccepted;
+
 	ViewPager mViewPager;
 	TabsAdapter mTabsAdapter;
 	LinearLayout mMainLayout;
 
 	public static final int REPORT_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 100;
+	public static final int TUTORIAL_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 101;
 
 	private MyPendingAlertDialog mMyPendingAlertDialog;
 

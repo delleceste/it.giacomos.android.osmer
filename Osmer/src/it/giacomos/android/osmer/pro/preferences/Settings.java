@@ -351,6 +351,19 @@ public class Settings
 		e.commit();
 	}
 	
+	public boolean reportConditionsAccepted()
+	{
+		boolean ret = mSharedPreferences.getBoolean("REPORT_CONDITIONS_ACCEPTED", false);
+		return ret;
+	}
+	
+	public void setReportConditionsAccepted(boolean en)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putBoolean("REPORT_CONDITIONS_ACCEPTED", en);
+		e.commit();
+	}
+	
 	private final String PREFERENCES_NAME = "Osmer.conf";
 	private SharedPreferences mSharedPreferences;
 	

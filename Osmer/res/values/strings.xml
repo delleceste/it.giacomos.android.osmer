@@ -1,33 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Meteo.FVG</string>
     <string name="app_broadcast_receiver">Meteo.FVG.BootReceiver</string>
     <string name="version">version</string>
     <string name="data_source">Data source: http://www.meteo.fvg.it</string>
     <string name="author">&#169; 2013</string>
     <string name="author_web">http://www.giacomos.it</string>
- 
-
     <string name="home_title">Home</string>
     <string name="today_title">Today</string>
     <string name="tomorrow_title">Tomorrow</string>
     <string name="two_days_title">Two Days Forecast</string>
     <string name="radar_title">Radar</string>
-    <string name="forecast_title">Previsioni</string> 
-    
-    
-    <string name="observations_title_daily">Daily Observations</string>    
+    <string name="forecast_title">Previsioni</string>
+    <string name="observations_title_daily">Daily Observations</string>
     <string name="observations_title_latest">Latest Observations</string>
     <string name="title_webcam">Webcam</string>
-    
     <string name="yes">yes</string>
     <string name="no">no</string>
     <string name="reliability">Reliability</string>
     <string name="emission_date">Emission date: </string>
     <string name="hours">ore</string>
-    <string name="offline">Offline</string>  
-    <string name="forecast_map_avail_afternoon">Map available\nin the afternoon</string> 
-    <string name="forecast_map_error">Data download error</string> 
+    <string name="offline">Offline</string>
+    <string name="forecast_map_avail_afternoon">Map available\nin the afternoon</string>
+    <string name="forecast_map_error">Data download error</string>
     <string name="downloadingToast">Downloading data&#8230;</string>
     <string name="netUnavailableToast">Network is unavailable.\nData will be updated as\nsoon as network goes up</string>
     <string name="completingDownloadToast">Completing data download&#8230;</string>
@@ -84,16 +80,14 @@
     <string name="radar_help">Radar info</string>
     <string name="radar_animation">Animation</string>
     <string name="info">Information</string>
-    
-    
-    
-    <!--  hint toasts -->
+
+    <!-- hint toasts -->
     <string name="hint_forecast_icons">Touch an icon to read further details, also in today, tomorrow and two days forecast!</string>
     <string name="hint_tap_on_map_markers">Tap over an icon to get further details</string>
     <string name="hint_move_to_measure_on_map">Long click on a marker and move to start measure</string>
     <string name="hint_click_on_map_baloon_webcam_image">Tap on the image to open it on the image viewer</string>
     <string name="hint_zone_longpress">Long press on the map to see the evolution over the day</string>
-    
+
     <string-array name="observation_types">
         <item>Minimum Temperature</item>
         <item>Maximum Temperature</item>
@@ -101,23 +95,21 @@
         <item>Wind</item>
         <item>Rain</item>
     </string-array>
-    
-    <!--  MENU -->
+
+    <!-- MENU -->
     <string name="menu_info">Application info&#8230;</string>
-	<string name="menu_refresh">About data update&#8230;</string>
-	<string name="menu_online_guide">Online documentation</string>
-	<string name="menu_author_info">Author Info</string>
-	<string name="menu_config_info">Technical details</string>
-	<string name="locality_unavailable">Locality unavailable</string>
-	<string name="ok_button">@android:string/ok</string>
-	<string name="popup_position_title">About your position</string>
-	<string name="popup_info_title">App info and copyright</string>
-	<string name="popup_data_update_title">Data automatic refresh</string>
-	<string name="error_message">Error message</string>
-	
-    
-	 
-	<!--  Drawer -->
+    <string name="menu_refresh">About data update&#8230;</string>
+    <string name="menu_online_guide">Online documentation</string>
+    <string name="menu_author_info">Author Info</string>
+    <string name="menu_config_info">Technical details</string>
+    <string name="locality_unavailable">Locality unavailable</string>
+    <string name="ok_button">@android:string/ok</string>
+    <string name="popup_position_title">About your position</string>
+    <string name="popup_info_title">App info and copyright</string>
+    <string name="popup_data_update_title">Data automatic refresh</string>
+    <string name="error_message">Error message</string>
+
+    <!-- Drawer -->
     <string-array name="drawer_text_items">
         <item>Forecast</item>
         <item>Radar</item>
@@ -126,9 +118,7 @@
         <item>Webcam</item>
         <item>Reports</item>
     </string-array>
-
-    
-	<string-array name="dailyobs_text_items">
+    <string-array name="dailyobs_text_items">
         <item>Sky</item>
         <item>Minimum temperature</item>
         <item>Average temperature</item>
@@ -137,11 +127,8 @@
         <item>Average wind speed</item>
         <item>Maximum wind speed</item>
         <item>Rain</item>
-        
     </string-array>
-    
-
-	<string-array name="latestobs_text_items">
+    <string-array name="latestobs_text_items">
         <item>Sky</item>
         <item>Temperature</item>
         <item>Pressure</item>
@@ -151,75 +138,68 @@
         <item>Sea</item>
         <item>Humidity</item>
     </string-array>
-	
-	<string name="drawer_open">Select a view</string>
+
+    <string name="drawer_open">Select a view</string>
     <string name="drawer_close">Close drawer</string>
-	
-    <!--  MEASURE MARKERS -->
+
+    <!-- MEASURE MARKERS -->
     <string name="drag_p0">Long click and then move P0</string>
     <string name="drag_p1">Long click and then move P1</string>
     <string name="dist_from_p0">Distance from P0: </string>
     <string name="dist_from_p1">Distance from P1: </string>
     <string name="meters">mt</string>
     <string name="km">km</string>
-	<string name="my_location_layer_not_enabled">il livello my-location non è abilitato</string>
-	
-	<!--  xml symbol map -->
-	<string name="sky">sky</string>
-	<string name="sky0">clear</string>
-	<string name="sky1">few clouds</string>
-	<string name="sky2">variable</string>
-	<string name="sky3">cloudy</string>
-	<string name="sky4">covered</string>
-	<string name="sky5">misty</string>
-	
-	<string name="rain">rain</string>
-	<string name="rain6">weak</string>
-	<string name="rain7_abbrev">moder.</string>
-	<string name="rain8_abbrev">abund.</string>
-	<string name="rain9">intense</string>
-	<string name="rain36">very intense</string>
-	
-	<string name="snow">snow</string>
-	<string name="snow10">moderate</string>
-	<string name="snow11">abundant</string>
-	<string name="snow12">intense</string>
-	
-	<string name="storm">storm</string>
-	<string name="storms">storms</string>
-	
-	<string name="mist">mist</string>
-	<string name="mist14">fog</string>
-	<string name="mist15">mist</string>
-	
-	<string name="wind">wind</string>
-	<string name="wind16">N moderate</string>
-	<string name="wind17">NE moderate</string>
-	<string name="wind18">ENE moderate</string>
-	<string name="wind19">E moderate</string>
-	<string name="wind20">SE moderate</string>
-	<string name="wind21">S moderate</string>
-	<string name="wind22">SW moderate</string>
-	<string name="wind23">W moderate</string>
-	<string name="wind24">NW moderate</string>
-	<string name="wind25">N strong</string>
-	<string name="wind26">NE strong</string>
-	<string name="wind27">ENE strong</string>
-	<string name="wind28">E strong</string>
-	<string name="wind29">SE strong</string>
-	<string name="wind30">S strong</string>
-	<string name="wind31">SW strong</string>
-	<string name="wind32">W strong</string>
-	<string name="wind33">NW strong</string>
-	<string name="wind34">ENE very strong</string>
-	<string name="wind35">breeze</string>
-	
-	<string name="evolution">evolution</string>
-	<string name="evolution04">evolution 04h</string>
-	<string name="evolution12">evolution 12h</string>
-	<string name="evolution20">evolution 20h</string>
-	
-	<string name="evo0">clear</string>
+    <string name="my_location_layer_not_enabled">il livello my-location non è abilitato</string>
+
+    <!-- xml symbol map -->
+    <string name="sky">sky</string>
+    <string name="sky0">clear</string>
+    <string name="sky1">few clouds</string>
+    <string name="sky2">variable</string>
+    <string name="sky3">cloudy</string>
+    <string name="sky4">covered</string>
+    <string name="sky5">misty</string>
+    <string name="rain">rain</string>
+    <string name="rain6">weak</string>
+    <string name="rain7_abbrev">moder.</string>
+    <string name="rain8_abbrev">abund.</string>
+    <string name="rain9">intense</string>
+    <string name="rain36">very intense</string>
+    <string name="snow">snow</string>
+    <string name="snow10">moderate</string>
+    <string name="snow11">abundant</string>
+    <string name="snow12">intense</string>
+    <string name="storm">storm</string>
+    <string name="storms">storms</string>
+    <string name="mist">mist</string>
+    <string name="mist14">fog</string>
+    <string name="mist15">mist</string>
+    <string name="wind">wind</string>
+    <string name="wind16">N moderate</string>
+    <string name="wind17">NE moderate</string>
+    <string name="wind18">ENE moderate</string>
+    <string name="wind19">E moderate</string>
+    <string name="wind20">SE moderate</string>
+    <string name="wind21">S moderate</string>
+    <string name="wind22">SW moderate</string>
+    <string name="wind23">W moderate</string>
+    <string name="wind24">NW moderate</string>
+    <string name="wind25">N strong</string>
+    <string name="wind26">NE strong</string>
+    <string name="wind27">ENE strong</string>
+    <string name="wind28">E strong</string>
+    <string name="wind29">SE strong</string>
+    <string name="wind30">S strong</string>
+    <string name="wind31">SW strong</string>
+    <string name="wind32">W strong</string>
+    <string name="wind33">NW strong</string>
+    <string name="wind34">ENE very strong</string>
+    <string name="wind35">breeze</string>
+    <string name="evolution">evolution</string>
+    <string name="evolution04">evolution 04h</string>
+    <string name="evolution12">evolution 12h</string>
+    <string name="evolution20">evolution 20h</string>
+    <string name="evo0">clear</string>
     <string name="evo1">variable</string>
     <string name="evo2">covered</string>
     <string name="evo3">variable. mod. rain</string>
@@ -235,17 +215,16 @@
     <string name="evo13">covered with storms</string>
     <string name="evo14">covered abund.rain and snow</string>
     <string name="evo15">covered and snow</string>
-    
-    <!--  radar animation -->
+
+    <!-- radar animation -->
     <string name="radarAnimationTaskCancelled">task cancelled</string>
     <string name="radarAnimationBuffering">buffering data&#8230;</string>
     <string name="radarAnimationPausedAfterRotation">animation paused after rotation</string>
     <string name="radarAnimationOffline">offline animation may not be up to date</string>
     <string name="radarAnimationImageUnavailable">Image unavailable</string>
     <string name="radarAnimationLocalTimeFromUTC">Local time = UTC +</string>
-    
-    
-    <!--  report activity -->
+
+    <!-- report activity -->
     <string name="report_activity_name">Report the weather</string>
     <string name="reportDialogTitle">Report the weather</string>
     <string name="reportNotificationService">Notification service</string>
@@ -256,21 +235,20 @@
     <string name="reportSky">Sky</string>
     <string name="reportWind">Wind</string>
     <string name="reportTemp">Temperature</string>
-	<string name="reportOk">Report has been successfully published</string>
-	<string name="reportDataSentOk">Data has been correctly sent</string>
-	<string name="reportError">There was an error posting your request :-(</string>
-	<string name="reportMustInsertUserName">Insert a user name to start</string>
-	<string name="reportNoneAvailable">No recent reports available</string>
-	<string name="reportComment">Comment</string>
-	<string name="reportUpdate">Refresh</string>
-	<string name="reportUpdateToast">Updating reports</string>
-	<string name="reportAtMost1FieldFilled">Impossible to publish an empty report</string>
-	<string name="reportNeedToBeOnline">Internet connection unavailable</string>
-	<string name="reportMovedTooFar">You moved too far from the point where you started the report procedure</string>
-	
-	
-	<!--  report request -->
-	<string name="reportRequestIncludeLocationName">Include location name</string>
+    <string name="reportOk">Report has been successfully published</string>
+    <string name="reportDataSentOk">Data has been correctly sent</string>
+    <string name="reportError">There was an error posting your request :-(</string>
+    <string name="reportMustInsertUserName">Insert a user name to start</string>
+    <string name="reportNoneAvailable">No recent reports available</string>
+    <string name="reportComment">Comment</string>
+    <string name="reportUpdate">Refresh</string>
+    <string name="reportUpdateToast">Updating reports</string>
+    <string name="reportAtMost1FieldFilled">Impossible to publish an empty report</string>
+    <string name="reportNeedToBeOnline">Internet connection unavailable</string>
+    <string name="reportMovedTooFar">You moved too far from the point where you started the report procedure</string>
+
+    <!-- report request -->
+    <string name="reportRequestIncludeLocationName">Include location name</string>
     <string name="reportDialogRequestSendButton">Send request</string>
     <string name="reportDialogRequestTitle">Request report for </string>
     <string name="reportDialogRequestLocationUnavailable">-</string>
@@ -289,17 +267,23 @@
     <string name="reportLookingForLocality">searching for locality name&#8230;</string>
     <string name="reportPointTooCloseToMyLocation">You cannot make a request in a range within 500m from your position</string>
     <string name="notificationServiceStarted">Notification service started</string>
-	<string name="notificationServiceStopped">Notification service stopped</string>
-	<string name="notificationServiceWillStartOnNetworkAvailable">Notification service will be started upon network connection</string>
+    <string name="notificationServiceStopped">Notification service stopped</string>
+    <string name="notificationServiceWillStartOnNetworkAvailable">Notification service will be started upon network connection</string>
+    <string name="include_locality">Include locality</string>
+    <string name="locality_unavailable">-</string>
     
-	
-	<string name="include_locality">Include locality</string>	
-	<string name="locality_unavailable">-</string>
-	
+    <!-- report tutorial activity and terms and conditions -->
+    <string name="tutorial_publish_report">Publish report</string>
+    <string name="tutorial_publish_request">Publish request</string>
+    <string name="tutorial_notification_service">Notification service</string>
+    <string name="tutorial_terms_conditions">Terms and conditions</string>
+    
+    
+
     <!-- notification area -->
     <string name="notificationNewReportRequest">Report request from </string>
     <string name="notificationNewReportArrived">New report from </string>
-    
+
     <string-array name="report_sky_textitems">
         <item>don\'t report</item>
         <item>clear</item>
@@ -319,7 +303,6 @@
         <item>mist</item>
         <item>fog</item>
     </string-array>
-    
     <string-array name="report_wind_textitems">
         <item>don\'t report</item>
         <item>breeze</item>
@@ -327,9 +310,9 @@
         <item>strong</item>
         <item>very strong</item>
     </string-array>
-    
-<string name="popup_data_update_info">
-       <![CDATA[
+
+    <string name="popup_data_update_info">
+<![CDATA[
        <h6>Data update policy</h6>
         <p>
         Observations and forecast data is taken from 
@@ -367,14 +350,13 @@
          
          
         </p>
-			]]>		 
-        
-        </string>
-	
-	<!--  App info and copyright notes -->
-	
-	<string name="popup_app_info">
-		<![CDATA[
+			]]>
+    </string>
+
+    <!-- App info and copyright notes -->
+
+    <string name="popup_app_info">
+<![CDATA[
 	    <h6>Source of data</h6>
 	    <p>Graphical and textual information is provided by  
 	        <a href="http://www.meteo.fvg.it"> http://www.meteo.fvg.it</a>
@@ -505,12 +487,10 @@
 	    
 	    </p>
 	
-	]]>		    
-	</string>
-	
-	
-	<string name="radar_info">
-	    <![CDATA[
+	]]>
+    </string>
+    <string name="radar_info">
+<![CDATA[
 	    <h6>Radar map</h6>
 	    
 This radar map (VMI, acronym of Vertical Maximum Intensity) represents the maximum reflectivity value present on the vertical of every point.
@@ -529,10 +509,14 @@ is over 40 dBZ and very intense when the values reach and come through the 50 dB
 Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.meteo.fvg.it</a> 
 
 
-]]>		
-</string>
-	
-	
-	
-	
+]]>
+    </string>
+    <string name="title_scenario_list">Scenarios</string>
+    <string name="title_scenario_detail">Scenario Detail</string>
+    <string name="reports_terms_and_conditions">Weather reports terms and conditions</string>
+    <string name="report_terms_and_conditions_text">Terms and conditions are as follows</string>
+    <string name="report_accept_terms_and_conditions">I accept the terms and conditions</string>
+    <string name="tutorial_report_prev">&lt; Previous</string>
+    <string name="tutorial_report_next">Next ></string>
+
 </resources>
