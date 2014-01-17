@@ -40,4 +40,16 @@ public class ReportNotification extends NotificationData
 	{
 		return mIsValid;
 	}
+
+	@Override
+	public String toString() 
+	{
+		/* N::datetime::username::latitude::longitude */
+		
+		String ret = "N::";
+		ret += datetime + "::" + username + "::" + String.valueOf(latitude) + "::";
+		ret += String.valueOf(longitude);
+		
+		return ret;
+	}
 }

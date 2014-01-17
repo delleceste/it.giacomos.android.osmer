@@ -364,7 +364,7 @@ public class Settings
 		e.commit();
 	}
 	
-	private final String PREFERENCES_NAME = "Osmer.conf";
+	public static final String PREFERENCES_NAME = "Osmer.conf";
 	private SharedPreferences mSharedPreferences;
 	
 	

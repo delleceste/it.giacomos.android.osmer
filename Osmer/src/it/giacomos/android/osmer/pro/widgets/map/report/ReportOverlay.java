@@ -205,8 +205,9 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 				/* put the report request notification into the data shared with the service,
 				 * so that the service does not trigger a notification.
 				 */
-				ServiceSharedData ssd = ServiceSharedData.Instance();
-				if(ssd.canBeConsideredNew(repReqN, mMapFrag.getActivity().getApplicationContext()))
+				Context ctx = mMapFrag.getActivity().getApplicationContext();
+				ServiceSharedData ssd = ServiceSharedData.Instance(ctx);
+				if(ssd.canBeConsideredNew(repReqN, ctx))
 				{
 					Log.e("mCheckForFreshNotifications", "can be considered new!");
 					ssd.updateCurrentRequest(repReqN);

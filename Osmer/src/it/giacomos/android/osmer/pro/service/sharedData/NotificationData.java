@@ -47,11 +47,13 @@ public abstract class NotificationData
 		mIsConsumed = consumed;
 	}
 	
+	public abstract String toString();
+	
 	/**
 	 * @return true if this NotificationData has been consumed (i.e. a request
 	 * satisfied or a report visited).
 	 * 
-	 * This is used by the map view in order to show or not a marker in correspondance
+	 * This is used by the map view in order to show or not a marker in correspondence
 	 * of the location where this data is bound. 
 	 * Actually, the notification data is not removed from the service shared data 
 	 * until a new notification arrives. In other words, if a notification data for this 

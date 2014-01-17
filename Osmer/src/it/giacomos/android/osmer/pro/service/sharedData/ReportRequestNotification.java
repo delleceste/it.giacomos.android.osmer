@@ -5,6 +5,7 @@ public class ReportRequestNotification extends NotificationData
     public String locality;
 	public boolean isRequest;
 	private boolean mValidString;
+	private boolean mIsReadable;
 	
 	public boolean isValid()
 	{
@@ -20,6 +21,7 @@ public class ReportRequestNotification extends NotificationData
 		if(mValidString)
 		{
 			isRequest = (parts[0].compareTo("Q") == 0);
+			mIsReadable = (parts[1].compareTo("r") == 0);
 			datetime = parts[2];
 			username = parts[3];
 			try
@@ -53,5 +55,19 @@ public class ReportRequestNotification extends NotificationData
 	public short getType() {
 		
 		return NotificationData.TYPE_REQUEST;
+	}
+
+	@Override
+	public String toString() 
+	{
+		String ret = "Q::";
+		if(mIsReadable)
+			ret += "r::";
+		else
+			ret += "w::";
+		ret += datetime + "::" + username + "::" + String.valueOf(latitude) + "::";
+		ret += String.valueOf(longitude) + "::" + locality;
+		
+		return ret;
 	}
 }

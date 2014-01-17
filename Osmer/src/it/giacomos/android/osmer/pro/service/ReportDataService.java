@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.pro.service;
 
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.Logger;
 import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.pro.network.state.Urls;
 import it.giacomos.android.osmer.pro.preferences.Settings;
@@ -87,6 +88,7 @@ FetchRequestsTaskListener, Runnable
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{
+		Logger.log("RDS.onStartCmd: intent " + intent + "isStarted" + mIsStarted);
 		if(!mIsStarted)
 		{
 			// Log.e("ReportDataService.onStartCommand", "service started");
@@ -196,6 +198,7 @@ FetchRequestsTaskListener, Runnable
 	@Override
 	public void onDestroy()
 	{
+		Logger.log("RDS.onDestroy");
 		/* clean tasks, stop scheduled repetition of data task, disconnect from 
 		 * location service.
 		 */
@@ -220,9 +223,9 @@ FetchRequestsTaskListener, Runnable
 	public void onServiceDataTaskComplete(boolean error, String dataAsString) 
 	{	
 		//	if(error)
-		log("task complete: " + dataAsString);
+		Logger.log("task complete: " + dataAsString);
 
-		ServiceSharedData sharedData = ServiceSharedData.Instance();
+		ServiceSharedData sharedData = ServiceSharedData.Instance(this);
 		NotificationManager mNotificationManager =
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
