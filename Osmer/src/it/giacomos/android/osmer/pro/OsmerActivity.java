@@ -1,10 +1,7 @@
 package it.giacomos.android.osmer.pro;
 
-import java.util.List;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.data.e;
 import com.google.android.gms.maps.model.LatLng;
 
 import it.giacomos.android.osmer.R;
@@ -196,9 +193,26 @@ ReportRequestListener
 			if(extras.getBoolean("NotificationReportRequest")
 					|| extras.getBoolean("NotificationReport"))
 				forceDrawerItem = mDrawerItems.length - 1;
+			Log.e("OsmerActivity.onPostCreate", "switching to item " + forceDrawerItem);
 		}
 
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent)
+	{
+		int drawerItem = -1;
+		Bundle extras = intent.getExtras();
+		/* force to switch to Reports mode */
+		if(extras != null)
+		{
+			if(extras.getBoolean("NotificationReportRequest")
+					|| extras.getBoolean("NotificationReport"))
+				drawerItem = mDrawerItems.length - 1;
+			Log.e("OsmerActivity.onNewIntent", "switching to item " + drawerItem);
+			mActionBarManager.drawerItemChanged(drawerItem);
+		}
 	}
 
 	@Override
@@ -708,16 +722,20 @@ ReportRequestListener
 		/* switch the working mode of the map view. Already in PAGE_MAP view flipper page */
 		OMapFragment map = getMapFragment();
 		if((mapMode != MapMode.REPORT) || (mapMode == MapMode.REPORT && mReportConditionsAccepted))
-				map.setMode(new MapViewMode(observationType, mapMode));
+			map.setMode(new MapViewMode(observationType, mapMode));
 		else if(mapMode == MapMode.REPORT)
-		{
-			Intent i = new Intent(this, ScenarioListActivity.class);
-			i.putExtra("conditionsAccepted", false);
-			this.startActivityForResult(i, TUTORIAL_ACTIVITY_FOR_RESULT_ID);
-		}
+			mStartTutorialActivity();
 		if(mapMode == MapMode.DAILY_OBSERVATIONS || mapMode == MapMode.LATEST_OBSERVATIONS)
 			map.updateObservations(m_observationsCache.getObservationData(mapMode));
 
+	}
+
+	private void mStartTutorialActivity()
+	{
+		Intent i = new Intent(this, ScenarioListActivity.class);
+		i.putExtra("conditionsAccepted", mReportConditionsAccepted);
+		i.putExtra("startedFromMainActivity", true);
+		this.startActivityForResult(i, TUTORIAL_ACTIVITY_FOR_RESULT_ID);
 	}
 
 	@Override
@@ -761,10 +779,14 @@ ReportRequestListener
 			break;
 		case R.id.syncServiceAction:
 			mStartNotificationService(menuItem.isChecked());
+			mSettings.setNotificationServiceEnabled(menuItem.isChecked());
 			break;
 		case R.id.reportUpdateAction:
 			/* this forces an update, even if just updated */
 			updateReport(true);
+			break;
+		case R.id.reportHelpAction:
+			mStartTutorialActivity();
 			break;
 		default:
 			break;
@@ -778,7 +800,6 @@ ReportRequestListener
 		Log.e("OsmerActivity.onClick", "enabling service: " + startService +
 				" was running "+ serviceManager.isServiceRunning(this));
 		boolean ret = serviceManager.setEnabled(this, startService);
-		mSettings.setNotificationServiceEnabled(startService);
 		if(ret && startService)
 			Toast.makeText(this, R.string.notificationServiceStarted, Toast.LENGTH_LONG).show();
 		else if(ret && !startService)
@@ -858,6 +879,8 @@ ReportRequestListener
 		menu.findItem(R.id.radarAnimationAction).setVisible(mCurrentViewType == ViewType.RADAR);
 		/* report action */
 		menu.findItem(R.id.reportUpdateAction).setVisible(mCurrentViewType == ViewType.REPORT);
+		/* tutorial */
+		menu.findItem(R.id.reportHelpAction).setVisible(mCurrentViewType == ViewType.REPORT);
 		/* enable sync action */
 		menu.findItem(R.id.syncServiceAction).setVisible(mCurrentViewType == ViewType.REPORT);
 		menu.findItem(R.id.syncServiceAction).setChecked(mSettings.notificationServiceEnabled());
@@ -1080,22 +1103,29 @@ ReportRequestListener
 		}
 		else if(requestCode == TUTORIAL_ACTIVITY_FOR_RESULT_ID)
 		{
-			Log.e("OsmerActivity.onActivityResult", "resultCode " + resultCode);
-			if(resultCode == Activity.RESULT_OK)
+			Log.e("OsmerActivity.onActivityResult", "resultCode " + resultCode + " data " + data + " OK " +
+					RESULT_OK + " cancelled " + RESULT_CANCELED);
+
+			boolean conditionsAccepted = mSettings.reportConditionsAccepted();
+			if(conditionsAccepted != mReportConditionsAccepted)
 			{
-				mReportConditionsAccepted = mSettings.reportConditionsAccepted();
+				mReportConditionsAccepted = conditionsAccepted;
+				mSettings.setReportConditionsAccepted(conditionsAccepted);
+				mStartNotificationService(conditionsAccepted && mSettings.notificationServiceEnabled());
+			}
+
+
+			if(conditionsAccepted)
+			{
 				mDrawerList.setItemChecked(5, true);
 				mActionBarManager.drawerItemChanged(5);
-				mStartNotificationService(mSettings.notificationServiceEnabled());
 			}
 			else
 			{
-				mReportConditionsAccepted = false;
-				mSettings.setReportConditionsAccepted(false);
 				mDrawerList.setItemChecked(0, true);
 				mActionBarManager.drawerItemChanged(0);
-				mStartNotificationService(false);
 			}
+			findViewById(R.id.left_drawer).setVisibility(View.GONE);
 		}
 	}
 

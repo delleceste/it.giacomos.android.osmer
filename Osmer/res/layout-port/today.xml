@@ -16,16 +16,19 @@
             android:id="@+id/todayImageView"
             style="@style/ImageView"
             android:layout_width="match_parent"
-            android:layout_height="330dp"
+            android:layout_height="0dp"
+            android:layout_weight="2"
             android:src="@drawable/fvg_background2" />
 
         <it.giacomos.android.osmer.pro.widgets.ForecastTextView
             android:id="@+id/todayTextView"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="0dp"
             android:layout_margin="6dp"
+            android:layout_weight="1"
             android:background="@drawable/shape_textview"
             android:inputType="none" >
+
         </it.giacomos.android.osmer.pro.widgets.ForecastTextView>
     </LinearLayout>
 

@@ -19,9 +19,11 @@ import android.view.MenuItem;
  * This activity is mostly just a 'shell' activity containing nothing more than
  * a {@link ScenarioDetailFragment}.
  */
-public class ScenarioDetailActivity extends FragmentActivity {
+public class ScenarioDetailActivity extends FragmentActivity implements ReportConditionsAcceptedListener
+{
 
 	private ScenarioContent mContent;
+	private boolean mConditionsAccepted;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +47,19 @@ public class ScenarioDetailActivity extends FragmentActivity {
 			// Create the detail fragment and add it to the activity
 			// using a fragment transaction.
 			Bundle arguments = new Bundle();
-			boolean fromUpNavButton = getIntent() != null && 
-					getIntent().getBooleanExtra(ScenarioDetailFragment.ARG_NAVIGATED_UP, false);
+			Intent i = getIntent();
+			boolean forceShowTermsAndConditions = i != null && 
+					i.getBooleanExtra(ScenarioDetailFragment.ARG_FORCE_SHOW_TERMS_AND_CONDITIONS, false);
+			mConditionsAccepted = i != null && i.getBooleanExtra(ScenarioDetailFragment.ARG_CONDITIONS_ACCEPTED, false);
 			
 			arguments.putString(ScenarioDetailFragment.ARG_ITEM_ID, getIntent()
 					.getStringExtra(ScenarioDetailFragment.ARG_ITEM_ID));
+			
 			ScenarioDetailFragment fragment = new ScenarioDetailFragment();
-			arguments.putBoolean(ScenarioDetailFragment.ARG_NAVIGATED_UP, fromUpNavButton);
+			arguments.putBoolean(ScenarioDetailFragment.ARG_FORCE_SHOW_TERMS_AND_CONDITIONS, forceShowTermsAndConditions);
+			arguments.putBoolean(ScenarioDetailFragment.ARG_CONDITIONS_ACCEPTED, mConditionsAccepted);
 			fragment.setArguments(arguments);
+			fragment.setReportConditionsAcceptedListener(this);
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.scenario_detail_container, fragment).commit();
 		}
@@ -70,11 +77,21 @@ public class ScenarioDetailActivity extends FragmentActivity {
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			Intent parentIntent = new Intent(this, ScenarioListActivity.class);
-			Log.e("onOptionsItemSelected", "putting extra");
-			parentIntent.putExtra("navigatedUp", true);
+			Log.e("onOptionsItemSelected", "putting extra conditions accepted: " + mConditionsAccepted);
+			parentIntent.putExtra(ScenarioDetailFragment.ARG_CONDITIONS_ACCEPTED, mConditionsAccepted);
 			NavUtils.navigateUpTo(this, parentIntent);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+
+	@Override
+	public void onReportConditionsAccepted(boolean accepted) 
+	{
+		Intent i = new Intent();
+		i.putExtra("conditionsAccepted", accepted);
+		this.setResult(RESULT_OK, i);
+		mConditionsAccepted = accepted;
 	}
 }

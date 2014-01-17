@@ -242,6 +242,7 @@
     <string name="reportNoneAvailable">No recent reports available</string>
     <string name="reportComment">Comment</string>
     <string name="reportUpdate">Refresh</string>
+    <string name="reportHelp">Help on reports</string>
     <string name="reportUpdateToast">Updating reports</string>
     <string name="reportAtMost1FieldFilled">Impossible to publish an empty report</string>
     <string name="reportNeedToBeOnline">Internet connection unavailable</string>

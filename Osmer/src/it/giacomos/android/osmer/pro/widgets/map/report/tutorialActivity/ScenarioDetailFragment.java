@@ -29,7 +29,8 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 	 * represents.
 	 */
 	public static final String ARG_ITEM_ID = "item_id";
-	public static final String ARG_NAVIGATED_UP = "navigated_up";
+	public static final String ARG_FORCE_SHOW_TERMS_AND_CONDITIONS = "startedFromActivity";
+	public static final String ARG_CONDITIONS_ACCEPTED = "conditionsAccepted";
 
 	/**
 	 * The dummy content this fragment is presenting.
@@ -37,6 +38,7 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 	private ScenarioItem mItem;
 
 	private ScenarioContent mContent;
+	private ReportConditionsAcceptedListener mReportConditionsAcceptedListener;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -71,8 +73,9 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 		View rootView = inflater.inflate(R.layout.fragment_scenario_detail,
 				container, false);
 
-		boolean fromUpNavigation = this.getArguments() != null && getArguments().getBoolean(ARG_NAVIGATED_UP);
-		boolean conditionsAccepted = new Settings(getActivity()).reportConditionsAccepted() ;
+		Bundle extras = getArguments();
+		boolean forceShowTermsAndConditions = extras != null && extras.getBoolean(ARG_FORCE_SHOW_TERMS_AND_CONDITIONS);
+		boolean conditionsAccepted = extras != null && extras.getBoolean(ARG_CONDITIONS_ACCEPTED);
 		Button btPrev = (Button) rootView.findViewById(R.id.btTutorialReportPrevious);
 		Button btNext = (Button) rootView.findViewById(R.id.btTutorialReportNext);
 		CheckBox cb = (CheckBox) rootView.findViewById(R.id.cbAcceptTermsAndConditions);
@@ -81,16 +84,11 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 		cb.setChecked(conditionsAccepted);
 		cb.setOnCheckedChangeListener(this);
 		
-		
 		ViewFlipper vfMain = ((ViewFlipper) rootView.findViewById(R.id.vfMain));
-		/* show terms and conditions if conditions not yet accepted, but don't show that page if the user
-		 * is navigating back
-		 */
-		boolean showTermsAndConditions = !conditionsAccepted && !fromUpNavigation;
 		
 		if (mItem != null) 
 		{
-			if(showTermsAndConditions || mItem.id.compareTo("termsOfUse") == 0)
+			if(forceShowTermsAndConditions || mItem.id.compareTo("termsOfUse") == 0)
 				vfMain.setDisplayedChild(3);
 			else if(mItem.id.compareTo("publishReport") == 0)
 				vfMain.setDisplayedChild(0);
@@ -132,7 +130,16 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 		if(bt.getId() == R.id.cbAcceptTermsAndConditions)
 		{
 			Log.e("ScenarioDetailFragment.onCheckedChanged", "conditions accepted: " + checked);
-			new Settings(getActivity()).setReportConditionsAccepted(checked);
+			/* There are two kinds of listeners: ScenarioDetailActivity, which sets into the setResult
+			 * intent the value of this boolean, for the handset case, and the ScenarioListActivity,
+			 * that, in case of a two pane device, directly sets the result to return to OsmerActivity.
+			 */
+			mReportConditionsAcceptedListener.onReportConditionsAccepted(checked);
 		}
+	}
+
+	public void setReportConditionsAcceptedListener(ReportConditionsAcceptedListener l) 
+	{
+		mReportConditionsAcceptedListener = l;
 	}
 }

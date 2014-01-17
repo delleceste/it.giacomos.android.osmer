@@ -64,7 +64,7 @@ public class Urls {
 
 	public String radarImageUrl() 
 	{
-		return "http://www.meteo.fvg.it/COMMON/RAD/GOOGLE.gif";
+		return "http://www.giacomos.it/meteo.fvg/get_last_radar_image_png.php";
 	}
 	
 	public String radarHistoricalImagesFolderUrl()

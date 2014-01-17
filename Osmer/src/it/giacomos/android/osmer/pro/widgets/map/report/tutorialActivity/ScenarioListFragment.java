@@ -73,6 +73,7 @@ public class ScenarioListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		Log.e("ScenarioListFragment.onCreate", "onCreate");
 		mContent = new ScenarioContent();
 		mContent.addItem(new ScenarioItem("publishReport", getResources().getString(R.string.tutorial_publish_report)));
 		mContent.addItem(new ScenarioItem("requestReport", getResources().getString(R.string.tutorial_publish_request)));
@@ -101,10 +102,7 @@ public class ScenarioListFragment extends ListFragment {
 				Log.e("ScenarioListFragment.onViewCreated", "activating conditions page");
 				setActivatedPosition(3);
 			}
-			else
-				Log.e("ScenarioListFragment.onViewCreated", "conditions accepted");
 		}
-		Log.e("ScenarioListFragment.onViewCreated", "selected pos " + this.getListView().getCheckedItemPosition());
 			
 	}
 
@@ -158,20 +156,19 @@ public class ScenarioListFragment extends ListFragment {
 		getListView().setChoiceMode(
 				activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
 						: ListView.CHOICE_MODE_NONE);
+		setActivatedPosition(mActivatedPosition);
 	}
 
 	private void setActivatedPosition(int position) 
 	{
-		Log.e("ScenarioListFragment.setActivatedPosition", " position " + position);
 		if (position == ListView.INVALID_POSITION) 
 		{
 			getListView().setItemChecked(mActivatedPosition, false);
-		} else 
+		} 
+		else 
 		{
-			Log.e("ScenarioListFragment.setActivatedPosition", "valid position " + position);
 			getListView().setItemChecked(position, true);
 		}
-
 		mActivatedPosition = position;
 	}
 }

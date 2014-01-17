@@ -241,6 +241,7 @@
 	<string name="reportNoneAvailable">Nessuna segnalazione recente</string>
 	<string name="reportComment">Commento</string>
 	<string name="reportUpdate">Aggiorna</string>
+	<string name="reportHelp">Aiuto sulle segnalazioni</string>
 	<string name="reportUpdateToast">Aggiornamento segnalazioni&#8230;</string>
 	<string name="reportAtMost1FieldFilled">Impossibile pubblicare una segnalazione se tutti i campi sono vuoti</string>
   	<string name="reportNeedToBeOnline">E\' necessario essere connessi alla rete</string>
