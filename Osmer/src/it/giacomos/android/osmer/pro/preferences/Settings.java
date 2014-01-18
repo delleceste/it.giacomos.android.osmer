@@ -364,8 +364,22 @@ public class Settings
 		e.commit();
 	}
 	
+	public long getLastReportDataServiceStartedTimeMillis() 
+	{
+		long intmillis =  mSharedPreferences.getLong("LAST_REPORT_DATA_SERVICE_STARTED_TIME_MILLIS", 0);
+		return intmillis;
+	}
+	
+	public void setLastReportDataServiceStartedTimeMillis(long timeMillis)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putLong("LAST_REPORT_DATA_SERVICE_STARTED_TIME_MILLIS", timeMillis);
+		e.commit();
+	}
+	
 	public static final String PREFERENCES_NAME = "Osmer.conf";
 	private SharedPreferences mSharedPreferences;
+	
 	
 	
 

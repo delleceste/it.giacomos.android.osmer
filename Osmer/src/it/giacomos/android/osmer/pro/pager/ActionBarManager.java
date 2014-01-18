@@ -65,7 +65,11 @@ public class ActionBarManager implements ActionBarTabChangeListener
 		if(selectedDrawerItem < 0)
 			selectedDrawerItem = 0;
 		
-		if(forceDrawerItem < 0) /* otherwise call drawerItemChange afterwards */
+		/* avoid calling drawerItemChanged if selectedDrawerItem is 0 because
+		 * drawerItemChanged has already been called by OsmerActivity.init at 
+		 * this point.
+		 */
+		if(forceDrawerItem < 0 && selectedDrawerItem != 0) /* otherwise call drawerItemChange afterwards */
 			drawerItemChanged(selectedDrawerItem);
 		if(savedInstanceState != null && actionBar.getNavigationMode() == ActionBar.NAVIGATION_MODE_TABS)
 			actionBarTabs = true;
@@ -76,9 +80,13 @@ public class ActionBarManager implements ActionBarTabChangeListener
 			int selectedTabIndex;
 			ActionBar.Tab selectedTab = actionBar.getSelectedTab();
 			if(selectedTab  != null)
+			{
+				Log.e("ActionBarManager.init", "selected tab not null");
 				selectedTabIndex = actionBar.getSelectedTab().getPosition();
+			}
 			else
 				selectedTabIndex = 0;
+			Log.e("ActionBarManager.init", "tab idx " + selectedTabIndex);
 			/* switch to correct tab */
 			onActionBarTabChanged(selectedTabIndex);
 			/* check the first item of the drawer */

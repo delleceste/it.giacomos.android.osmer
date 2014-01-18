@@ -20,7 +20,7 @@ public abstract class NotificationData
 	 * When the get_requests.php returns an empty document, it means that
 	 * any request concerning our location has been consumed.
 	 */
-	private boolean mIsConsumed;
+	protected boolean mIsConsumed;
 	
 	public boolean isRequest()
 	{

@@ -11,7 +11,7 @@ public class ReportNotification extends NotificationData
 		String parts[] = input.split("::");
 		latitude = -1;
 		longitude = -1;
-		if(parts.length == 5 && parts[0].compareTo("N") == 0)
+		if(parts.length > 4 && parts[0].compareTo("N") == 0)
 		{
 			try
 			{
@@ -27,7 +27,10 @@ public class ReportNotification extends NotificationData
 			mIsValid = makeDate(datetime) && latitude > 0 && longitude > 0;
 			
 		}
-		else
+		if(parts.length > 5)
+			mIsConsumed = (parts[5].compareTo("consumed") == 0);
+		
+		if(parts.length < 5)
 			mIsValid = false;
 	}
 
@@ -49,6 +52,8 @@ public class ReportNotification extends NotificationData
 		String ret = "N::";
 		ret += datetime + "::" + username + "::" + String.valueOf(latitude) + "::";
 		ret += String.valueOf(longitude);
+		if(mIsConsumed)
+			ret += "::consumed";
 		
 		return ret;
 	}

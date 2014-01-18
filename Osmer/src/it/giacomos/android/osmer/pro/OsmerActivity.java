@@ -306,7 +306,10 @@ ReportRequestListener
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 
-		//mActionBarManager.drawerItemChanged(0);
+		/* don't try to remove this unless you know what ur doing. It scrambles up
+		 * the restoring of the tab selection on screen rotation.
+		 */
+		mActionBarManager.drawerItemChanged(0);
 
 		mMenuActionsManager = null;
 		mCurrentLocation = null;
@@ -914,7 +917,6 @@ ReportRequestListener
 
 	public void switchView(ViewType id) 
 	{
-		Log.e("switchView", "swticihc to " + id);
 		mCurrentViewType = id;
 		ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 		OMapFragment mapFragment = getMapFragment();

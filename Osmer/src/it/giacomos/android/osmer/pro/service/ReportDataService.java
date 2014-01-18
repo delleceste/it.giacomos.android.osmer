@@ -58,6 +58,7 @@ FetchRequestsTaskListener, Runnable
 	private FetchRequestsDataTask mServiceDataTask;
 	private long mSleepInterval;
 	private boolean mIsStarted;
+	private Settings mSettings;
 	/* timestamp updated when the AsyncTask completes, successfully or not */
 	private long mLastTaskStartedTimeMillis;
 	private long mCheckIfNeedRunIntervalMillis;
@@ -70,7 +71,6 @@ FetchRequestsTaskListener, Runnable
 		mLocation = null;
 		mServiceDataTask = null;
 		mIsStarted = false;
-		mLastTaskStartedTimeMillis = 0;
 		mCheckIfNeedRunIntervalMillis = 20000;
 	}
 
@@ -92,8 +92,12 @@ FetchRequestsTaskListener, Runnable
 		if(!mIsStarted)
 		{
 			// Log.e("ReportDataService.onStartCommand", "service started");
-			Settings s = new Settings(this);
-			mSleepInterval = s.getServiceSleepIntervalMillis();
+			mSettings = new Settings(this);
+			mSleepInterval = mSettings.getServiceSleepIntervalMillis();
+			/* the last time the network was used is saved so that if the service is killed and
+			 * then restarted, we avoid too frequent and unnecessary downloads
+			 */
+			mLastTaskStartedTimeMillis = mSettings.getLastReportDataServiceStartedTimeMillis();
 			mCheckIfNeedRunIntervalMillis = mSleepInterval / 6;
 
 			if(mLocationClient == null)
@@ -168,6 +172,8 @@ FetchRequestsTaskListener, Runnable
 			startTask();
 			/* mark the last execution complete timestamp */
 			mLastTaskStartedTimeMillis = System.currentTimeMillis();
+			/* save in case the service is killed and then restarted */
+			mSettings.setLastReportDataServiceStartedTimeMillis(mLastTaskStartedTimeMillis);
 			/* when the task is started, we start the short time check */
 			mHandler.postDelayed(this, mCheckIfNeedRunIntervalMillis);
 		}
@@ -281,7 +287,7 @@ FetchRequestsTaskListener, Runnable
 							message += " - " + rrnd.locality;
 						iconId = R.drawable.ic_launcher_statusbar_request;
 						ledColor = Color.argb(255, 5, 220, 246); /* cyan notification */
-						// log("task ok.new req. " + notificationData.username);
+						Logger.log("RDS task ok.new req.notif " + notificationData.username);
 					}
 					else
 					{
@@ -290,7 +296,7 @@ FetchRequestsTaskListener, Runnable
 								+ " "  + notificationData.username;
 						iconId = R.drawable.ic_launcher_statusbar_report;
 						ledColor = Color.argb(255, 56, 220, 5);
-						// log("task ok.new report " + notificationData.username);
+						Logger.log("RDS task ok.new req.notif " + notificationData.username);
 					}
 
 					int notificationFlags = Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS|
@@ -326,6 +332,7 @@ FetchRequestsTaskListener, Runnable
 				}
 				else
 				{
+					Logger.log("RDS task ok. notif not new " + notificationData.username);
 					// log("task ok. notif not new " + notificationData.username);
 					// Log.e("onServiceDataTaskComplete", "notification IS NOT NEW " + notificationData.username);
 				}

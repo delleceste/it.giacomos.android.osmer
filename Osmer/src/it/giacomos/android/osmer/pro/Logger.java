@@ -19,7 +19,7 @@ public class Logger
 	//	Log.e("Logger", "logging on " + f.getAbsolutePath() + "/GreenEnlightenment.Service.txt");
 		PrintWriter out;
 		try {
-			out = new PrintWriter(new BufferedWriter(new FileWriter(f.getAbsolutePath() + "/Meteo.FVG.LocationIssue.txt", true)));
+			out = new PrintWriter(new BufferedWriter(new FileWriter(f.getAbsolutePath() + "/Meteo.FVG.ServiceLog.txt", true)));
 			out.append(Calendar.getInstance().getTime().toLocaleString()+ ": " + message + "\n");
 			out.close();
 		} catch (FileNotFoundException e1) 

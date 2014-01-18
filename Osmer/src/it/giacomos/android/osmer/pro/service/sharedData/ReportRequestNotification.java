@@ -17,7 +17,7 @@ public class ReportRequestNotification extends NotificationData
 		super();
 		
 		String parts[] = input.split("::", -1);
-		mValidString = (parts.length == 7);
+		mValidString = (parts.length == 7 || parts.length == 8);
 		if(mValidString)
 		{
 			isRequest = (parts[0].compareTo("Q") == 0);
@@ -35,6 +35,9 @@ public class ReportRequestNotification extends NotificationData
 			}
 			locality = parts[6];
 			makeDate(datetime);
+			if(parts.length > 7)
+				mIsConsumed = (parts[7].compareTo("consumed") == 0);
+			/* otherwise mIsConsumed remains false */
 		}
 	}
 	
@@ -68,6 +71,8 @@ public class ReportRequestNotification extends NotificationData
 		ret += datetime + "::" + username + "::" + String.valueOf(latitude) + "::";
 		ret += String.valueOf(longitude) + "::" + locality;
 		
+		if(mIsConsumed)
+			ret += "::consumed";
 		return ret;
 	}
 }

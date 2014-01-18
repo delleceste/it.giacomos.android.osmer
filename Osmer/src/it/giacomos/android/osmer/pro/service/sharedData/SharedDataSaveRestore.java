@@ -36,28 +36,31 @@ public class SharedDataSaveRestore
 					new ReportNotification(reportNotificationAsStr));
 		
 		Log.e("SharedDataSaveRestore.load", "loaded data size " + data.size());
-		Logger.log("SharedDataSR.load: loaded siz " + data.size());
+		Logger.log("SharedDataSR.load: REQ " + reportRequestNotificationAsStr);
+		Logger.log("SharedDataSR.load: REP " + reportNotificationAsStr);
 		return data;
 	}
 	
 	public void saveNotificationData(HashMap<Short, NotificationData> data)
 	{
 		SharedPreferences.Editor editor = mSharedPreferences.edit();
+		String repAsString = "", reqAsString = "";
 		if(data.containsKey(NotificationData.TYPE_REPORT))
 		{
-			editor.putString("LAST_REPORT_NOTIF", 
-					data.get(NotificationData.TYPE_REPORT).toString());
+			repAsString = data.get(NotificationData.TYPE_REPORT).toString();
+			editor.putString("LAST_REPORT_NOTIF", repAsString);
 			editor.commit();
 			
 		}
 		if(data.containsKey(NotificationData.TYPE_REQUEST))
 		{
-			editor.putString("LAST_REPORT_REQUEST_NOTIF", 
-					data.get(NotificationData.TYPE_REQUEST).toString());
+			reqAsString = data.get(NotificationData.TYPE_REQUEST).toString();
+			editor.putString("LAST_REPORT_REQUEST_NOTIF", reqAsString);
 			editor.commit();
 		}
 		Log.e("SharedDataSaveRestore.save", "saved data size " + data.size());
-		Logger.log("SharedDataSR.save: saved siz " + data.size());
+		Logger.log("SharedDataSR.save: saved REQ " + reqAsString);
+		Logger.log("SharedDataSR.save: saved REP " + repAsString);
 	}
 
 	public void setLastNotifiedTimeMillis(long lastNotifiedMillis) 
