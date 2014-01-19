@@ -51,6 +51,7 @@ public class ReportRequestNotification extends NotificationData
 		locality = loc;
 		mValidString = true; /* for is valid */
 		isRequest = true;
+		mIsReadable = true;
 		makeDate(datetime);
 	}
 
