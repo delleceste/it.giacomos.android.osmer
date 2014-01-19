@@ -210,8 +210,12 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 				if(ssd.canBeConsideredNew(repReqN, ctx))
 				{
 					Log.e("mCheckForFreshNotifications", "can be considered new!");
-					ssd.updateCurrentRequest(repReqN);
-					ssd.setWasNotified(repReqN);
+					/* true, sets the Notification request notified */
+					ssd.updateCurrentRequest(repReqN, true);
+					// NOTE
+					// The following call has been removed and its functionality has been
+					// put into the updateCurrentRequest through the boolean parameter.
+					// ssd.setWasNotified(repReqN);
 					/* animate camera to new request */
 					mMapFrag.moveTo(rd.getLatitude(), rd.getLongitude());
 					rd.getMarker().showInfoWindow();

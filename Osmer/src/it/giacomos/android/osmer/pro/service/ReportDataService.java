@@ -228,6 +228,7 @@ FetchRequestsTaskListener, Runnable
 	@Override
 	public void onServiceDataTaskComplete(boolean error, String dataAsString) 
 	{	
+		boolean notified = false;
 		//	if(error)
 		Logger.log("task complete: " + dataAsString);
 
@@ -263,12 +264,7 @@ FetchRequestsTaskListener, Runnable
 			{
 				if(sharedData.canBeConsideredNew(notificationData, this))
 				{
-
 					// Log.e("onServiceDataTaskComplete", "notification can be considereth new " + notificationData.username);
-					/* replace the previous notification data (if any) with the new one.
-					 * This updates the sharedData timestamp of the last notification
-					 */
-					sharedData.setWasNotified(notificationData);
 					/* and notify */
 					String message;
 					int iconId, ledColor;
@@ -329,6 +325,7 @@ FetchRequestsTaskListener, Runnable
 					notification.ledOnMS = 800;
 					notification.ledOffMS = 2200;
 					mNotificationManager.notify(ReportDataService.REPORT_REQUEST_NOTIFICATION_TAG, notificationData.makeId(),  notification);
+					notified = true;
 				}
 				else
 				{
@@ -336,10 +333,11 @@ FetchRequestsTaskListener, Runnable
 					// log("task ok. notif not new " + notificationData.username);
 					// Log.e("onServiceDataTaskComplete", "notification IS NOT NEW " + notificationData.username);
 				}
-				/* just update the shared data notification data with the most up to date 
+				/* update the shared data notification data with the most up to date 
 				 * values of latitude, longitude, username...
+				 * If notified is true, then save the timestamp of the notification
 				 */
-				sharedData.updateCurrentRequest(notificationData);
+				sharedData.updateCurrentRequest(notificationData, notified);
 			}
 			else
 			{

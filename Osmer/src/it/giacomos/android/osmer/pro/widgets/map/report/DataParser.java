@@ -103,8 +103,8 @@ public class DataParser
 					if(parts.length > 6) /* should be 7 */
 					{
 						try{
-							lat = Float.parseFloat(parts[4]);
-							lon = Float.parseFloat(parts[5]);
+							lat = Double.parseDouble(parts[4]);
+							lon = Double.parseDouble(parts[5]);
 							/* parts[1] is writable */
 							/* RequestData(String d, String user, double la, double lo, String wri, boolean isSatisfied) */
 							rd = new RequestData(parts[2], parts[3], parts[6], lat, lon, parts[1], true);

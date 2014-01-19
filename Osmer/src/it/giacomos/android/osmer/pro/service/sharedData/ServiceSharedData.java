@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import android.content.Context;
 import android.util.Log;
+import it.giacomos.android.osmer.pro.Logger;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 
 /** This class manages the notifications.
@@ -65,33 +66,43 @@ public class ServiceSharedData
 	{
 		return mNotificationDataHash.get(type);
 	}
-	
-	public void setWasNotified(NotificationData notificationData)
+
+	public void updateCurrentRequest(NotificationData notificationData, boolean setNotified) 
 	{
 		short type = notificationData.getType();
 		/* replace old notificationData for the specified type.
 		 * Remember that only one notificationData per type can be considered.
-		 * Immediately save the data if the service is killed.
 		 */
 		mNotificationDataHash.put(type, notificationData);
-		mLastNotifiedTimeMillis = System.currentTimeMillis(); /* now */
-		/* save */
+		/* save data on shared preferences */
 		mSharedDataSaveRestore.saveNotificationData(mNotificationDataHash);
-		mSharedDataSaveRestore.setLastNotifiedTimeMillis(mLastNotifiedTimeMillis);
+		
+		if(setNotified)
+		{
+			mLastNotifiedTimeMillis = System.currentTimeMillis(); /* now */
+			/* save */
+			mSharedDataSaveRestore.setLastNotifiedTimeMillis(mLastNotifiedTimeMillis);
+		}
 	}
-
+	
 	public boolean canBeConsideredNew(NotificationData notificationData, Context ctx) 
 	{
 		NotificationData inHashND;
 		short type = notificationData.getType();
 		if(!mNotificationDataHash.containsKey(type))
+		{
+			Logger.log("SSD.canBeConsideredNew: yes: no notif. for type " + type);
 			return true;
+		}
 		else
 			inHashND = mNotificationDataHash.get(type);
 
 		/* if the notification is exactly the same, never trigger it again. */
 		if(inHashND.equals(notificationData))
+		{
+			Logger.log("SSD.canBeConsideredNew: no: identical notifs");
 			return false; /* exactly the same */
+		}
 
 
 		/* we can filter out subsequent requests basing on the minimum time between notifications
@@ -102,22 +113,14 @@ public class ServiceSharedData
 		Log.e("ServiceSharedData.canBeConsideredNew", "difftime ms = " + diffTimeMs + " min millis " + minMillis);
 		if(diffTimeMs < minMillis)
 		{
+			Logger.log("SSD.canBeConsideredNew: no: diffTime " + diffTimeMs + " < " + minMillis);
 			Log.e("ServiceSharedData", "diffTimeMillis < minMillis CANNOT BE CONSIDERETH NEW");
 			return false; /* not new */
 		}
 		
 		Log.e("ServiceSharedData", "diffTimeMillis > minimum --> NEW");
+		Logger.log("SSD.canBeConsideredNew: yes, new");
 		return true; /* elapsed time is greater than the minimum interval required between notifications */
 	}
 
-	public void updateCurrentRequest(NotificationData notificationData) 
-	{
-		short type = notificationData.getType();
-		/* replace old notificationData for the specified type.
-		 * Remember that only one notificationData per type can be considered.
-		 */
-		mNotificationDataHash.put(type, notificationData);
-		/* save data on shared preferences */
-		mSharedDataSaveRestore.saveNotificationData(mNotificationDataHash);
-	}
 }
