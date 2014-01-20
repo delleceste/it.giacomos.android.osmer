@@ -83,6 +83,7 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 		btNext.setOnClickListener(this);
 		cb.setChecked(conditionsAccepted);
 		cb.setOnCheckedChangeListener(this);
+		btPrev.setEnabled(false);
 		
 		ViewFlipper vfMain = ((ViewFlipper) rootView.findViewById(R.id.vfMain));
 		
@@ -106,22 +107,35 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 	public void onClick(View v) 
 	{
 		Button b;
-		if(v.getId() == R.id.btTutorialReportPrevious)
+		if(v.getId() == R.id.btTutorialReportPrevious || v.getId() == R.id.btTutorialReportNext)
 		{
-			ViewFlipper vfMain = ((ViewFlipper) this.getView().findViewById(R.id.vfMain));
-			if(vfMain.getDisplayedChild() > 0)
-				vfMain.setDisplayedChild(vfMain.getDisplayedChild() - 1);
 			b = (Button) v;
-			b.setEnabled(vfMain.getDisplayedChild() > 0);
-		}
-		if(v.getId() == R.id.btTutorialReportNext)
-		{
 			ViewFlipper vfMain = ((ViewFlipper) this.getView().findViewById(R.id.vfMain));
-			if(vfMain.getDisplayedChild() < vfMain.getChildCount() - 1)
-				vfMain.setDisplayedChild(vfMain.getDisplayedChild() + 1);
-			b = (Button) v;
-			b.setEnabled(vfMain.getDisplayedChild() < vfMain.getChildCount() - 1);
+			ViewFlipper subVf = null;
+			if(vfMain.getDisplayedChild() == 0) /* report */
+				subVf = (ViewFlipper) this.getView().findViewById(R.id.vfTutorialReport);
+			else if(vfMain.getDisplayedChild() == 1)
+				subVf = (ViewFlipper) this.getView().findViewById(R.id.vfTutorialRequestReport);
+			else if(vfMain.getDisplayedChild() == 2)
+				subVf = (ViewFlipper) this.getView().findViewById(R.id.vfTutorialNotifications);
+			
+			if(v.getId() == R.id.btTutorialReportPrevious)
+			{
+				if(subVf.getDisplayedChild() > 0)
+					subVf.setDisplayedChild(subVf.getDisplayedChild() - 1);
+			}
+			else if(v.getId() == R.id.btTutorialReportNext)
+			{
+				if(subVf.getDisplayedChild() < subVf.getChildCount() - 1)
+					subVf.setDisplayedChild(subVf.getDisplayedChild() + 1);
+			}
+			b = (Button) getView().findViewById(R.id.btTutorialReportNext);
+			b.setEnabled(subVf.getDisplayedChild() < subVf.getChildCount() - 1);
+			b = (Button) getView().findViewById(R.id.btTutorialReportPrevious);
+			b.setEnabled(subVf.getDisplayedChild() > 0);
+					
 		}
+		
 	}
 
 	@Override

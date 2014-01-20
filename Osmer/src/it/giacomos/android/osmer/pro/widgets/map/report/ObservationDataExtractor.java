@@ -17,7 +17,7 @@ public class ObservationDataExtractor
 		PIOGGIA	da 5 a 10 mm
 		PIOGGIA	da 10 a 30 mm
 		PIOGGIA	da 30 a 100 mm
-		PIOGGIA	pi� di 100 mm
+		PIOGGIA	piu di 100 mm
 		NEVE	debole
 		NEVE	moderata
 		NEVE	forte
@@ -27,6 +27,10 @@ public class ObservationDataExtractor
 		int index = 0;
 		float rain = 0.0f;
 		float snow = 0.0f;
+		
+		if(mObservationData == null)
+			return 0;
+		
 		String sky = mObservationData.sky;
 
 		try 
@@ -99,6 +103,9 @@ public class ObservationDataExtractor
 
 	public int getWindIndex()
 	{
+		if(mObservationData == null)
+			return 0;
+		
 		int index = 0; /* do not report wind by default */
 		float km2mts = 1000.0f/3600.0f;
 		String w = mObservationData.wind;
@@ -128,6 +135,8 @@ public class ObservationDataExtractor
 	public String getTemperature()
 	{
 		/* C centigrades symbol */
+		if(mObservationData == null)
+			return "0";
 		String temp = mObservationData.temp.replace("\u00b0C", "");
 		temp =	temp.replaceAll("[A-Za-z_\\s<>=]*", "");
 		return temp;

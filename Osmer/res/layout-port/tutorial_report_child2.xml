@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,18 +15,18 @@
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
          <ImageView
-             android:id="@+id/child1ImageView"
+             android:id="@+id/child2ImageView"
              style="@style/ImageView"
              android:layout_width="match_parent"
              android:layout_height="0dp"
              android:layout_weight="4"
-             android:src="@drawable/report_done" />
+             android:src="@drawable/report_activity" />
         
         <TextView
             android:id="@+id/tvTutorialReportChild0"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="tvTutorialReportChild2" />
+            android:text="tvTutorialReportChild1" />
 
     </LinearLayout>

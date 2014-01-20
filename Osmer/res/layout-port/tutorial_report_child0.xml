@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,11 +12,19 @@
             android:text="@string/tutorial_publish_report"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
+         <ImageView
+             android:id="@+id/child0ImageView"
+             style="@style/ImageView"
+             android:layout_width="match_parent"
+             android:layout_height="0dp"
+             android:layout_weight="2"
+             android:src="@drawable/report_actionbar_icon" />
+        
         <TextView
             android:id="@+id/tvTutorialReportChild0"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:drawableTop="@drawable/info"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="tvTutorialReportChild0" />
 
     </LinearLayout>
