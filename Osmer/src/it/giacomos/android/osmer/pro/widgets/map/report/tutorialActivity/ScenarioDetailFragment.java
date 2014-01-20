@@ -62,7 +62,7 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 			mContent.addItem(new ScenarioItem("requestReport", getResources().getString(R.string.tutorial_publish_request)));
 			mContent.addItem(new ScenarioItem("notificationService", getResources().getString(R.string.tutorial_notification_service)));
 			mContent.addItem(new ScenarioItem("termsOfUse", getResources().getString(R.string.tutorial_terms_conditions)));
-
+			
 			mItem = mContent.itemMap.get(getArguments().getString(
 					ARG_ITEM_ID));
 

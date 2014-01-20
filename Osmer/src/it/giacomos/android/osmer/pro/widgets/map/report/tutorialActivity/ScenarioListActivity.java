@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ViewFlipper;
 
 /**
  * An activity representing a list of Scenarios. This activity has different
@@ -117,7 +118,11 @@ public class ScenarioListActivity extends FragmentActivity implements
 	@Override
 	public void onItemSelected(String id) 
 	{
-		if (mTwoPane) 
+		if(id.compareTo("reportBack") == 0)
+		{
+			NavUtils.navigateUpFromSameTask(this);
+		}
+		else if (mTwoPane) 
 		{
 			// In two-pane mode, show the detail view in this activity by
 			// adding or replacing the detail fragment using a

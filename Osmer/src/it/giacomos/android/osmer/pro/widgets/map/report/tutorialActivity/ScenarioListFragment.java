@@ -79,6 +79,7 @@ public class ScenarioListFragment extends ListFragment {
 		mContent.addItem(new ScenarioItem("requestReport", getResources().getString(R.string.tutorial_publish_request)));
 		mContent.addItem(new ScenarioItem("notificationService", getResources().getString(R.string.tutorial_notification_service)));
 		mContent.addItem(new ScenarioItem("termsOfUse", getResources().getString(R.string.tutorial_terms_conditions)));
+		mContent.addItem(new ScenarioItem("reportBack", getResources().getString(R.string.tutorial_back)));
 		setListAdapter(new ArrayAdapter<ScenarioItem>(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
 				android.R.id.text1, mContent.items));
