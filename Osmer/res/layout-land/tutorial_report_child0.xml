@@ -4,14 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/tvTutorialReportChild0Title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/tutorial_publish_report"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +21,7 @@
             android:id="@+id/tvTutorialReportChild0"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="tvTutorialReportChild0" />
+            android:text="@string/tutorial_start_activity" />
     </LinearLayout>
 
 </LinearLayout>

@@ -104,7 +104,6 @@ public class ScenarioListActivity extends FragmentActivity implements
 			//
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
-			Log.e("onOptionsItemSelected", "FINISH");
 			NavUtils.navigateUpFromSameTask(this);
 		}
 		
@@ -152,7 +151,7 @@ public class ScenarioListActivity extends FragmentActivity implements
 	 */
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		Log.e("ScemarioListActivity.onActivityResult ", " reqCode " + requestCode + " res code " + resultCode +
+		Log.e("ScenarioListActivity.onActivityResult ", " reqCode " + requestCode + " res code " + resultCode +
 				 " data " + data);
 		if(requestCode == SCENARIO_DETAIL_ACTIVITY_FOR_RESULT_ID)
 		{

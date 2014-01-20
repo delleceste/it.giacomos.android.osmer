@@ -32,6 +32,8 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 	public static final String ARG_FORCE_SHOW_TERMS_AND_CONDITIONS = "startedFromActivity";
 	public static final String ARG_CONDITIONS_ACCEPTED = "conditionsAccepted";
 
+	private int mDisplayedSubFlipperChild;
+
 	/**
 	 * The dummy content this fragment is presenting.
 	 */
@@ -60,9 +62,11 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 			mContent.addItem(new ScenarioItem("requestReport", getResources().getString(R.string.tutorial_publish_request)));
 			mContent.addItem(new ScenarioItem("notificationService", getResources().getString(R.string.tutorial_notification_service)));
 			mContent.addItem(new ScenarioItem("termsOfUse", getResources().getString(R.string.tutorial_terms_conditions)));
-			
+
 			mItem = mContent.itemMap.get(getArguments().getString(
 					ARG_ITEM_ID));
+
+			mDisplayedSubFlipperChild = 0;
 		}
 	}
 
@@ -84,19 +88,42 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 		cb.setChecked(conditionsAccepted);
 		cb.setOnCheckedChangeListener(this);
 		btPrev.setEnabled(false);
-		
+
 		ViewFlipper vfMain = ((ViewFlipper) rootView.findViewById(R.id.vfMain));
-		
+
 		if (mItem != null) 
 		{
+			ViewFlipper subVf = null;
+
 			if(forceShowTermsAndConditions || mItem.id.compareTo("termsOfUse") == 0)
+			{
 				vfMain.setDisplayedChild(3);
+				getActivity().getActionBar().setTitle(R.string.tutorial_terms_conditions);
+			}
 			else if(mItem.id.compareTo("publishReport") == 0)
+			{
 				vfMain.setDisplayedChild(0);
+				getActivity().getActionBar().setTitle(R.string.tutorial_report);
+				subVf = (ViewFlipper) rootView.findViewById(R.id.vfTutorialReport);
+			}
 			else if(mItem.id.compareTo("requestReport") == 0)
+			{
 				vfMain.setDisplayedChild(1);
+				getActivity().getActionBar().setTitle(R.string.tutorial_request);
+				subVf = (ViewFlipper) rootView.findViewById(R.id.vfTutorialRequestReport);
+			}
 			else if(mItem.id.compareTo("notificationService") == 0)
+			{
 				vfMain.setDisplayedChild(2);
+				getActivity().getActionBar().setTitle(R.string.tutorial_notification);
+				subVf = (ViewFlipper) rootView.findViewById(R.id.vfTutorialNotifications);
+			}
+			if(subVf != null && savedInstanceState != null)
+			{
+				subVf.setDisplayedChild(savedInstanceState.getInt("SUBFLIPPER_CHILD"));
+				mDisplayedSubFlipperChild = subVf.getDisplayedChild();
+				mPreviousNextButtonsEnabled(rootView, subVf);
+			}
 		}
 
 		Log.e("ScenarioDetailFragment.onCreateView", "flipper child " + vfMain.getDisplayedChild());
@@ -106,19 +133,23 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onClick(View v) 
 	{
-		Button b;
 		if(v.getId() == R.id.btTutorialReportPrevious || v.getId() == R.id.btTutorialReportNext)
 		{
-			b = (Button) v;
 			ViewFlipper vfMain = ((ViewFlipper) this.getView().findViewById(R.id.vfMain));
 			ViewFlipper subVf = null;
 			if(vfMain.getDisplayedChild() == 0) /* report */
+			{
 				subVf = (ViewFlipper) this.getView().findViewById(R.id.vfTutorialReport);
+			}
 			else if(vfMain.getDisplayedChild() == 1)
+			{
 				subVf = (ViewFlipper) this.getView().findViewById(R.id.vfTutorialRequestReport);
+			}
 			else if(vfMain.getDisplayedChild() == 2)
+			{
 				subVf = (ViewFlipper) this.getView().findViewById(R.id.vfTutorialNotifications);
-			
+			}
+
 			if(v.getId() == R.id.btTutorialReportPrevious)
 			{
 				if(subVf.getDisplayedChild() > 0)
@@ -129,13 +160,10 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 				if(subVf.getDisplayedChild() < subVf.getChildCount() - 1)
 					subVf.setDisplayedChild(subVf.getDisplayedChild() + 1);
 			}
-			b = (Button) getView().findViewById(R.id.btTutorialReportNext);
-			b.setEnabled(subVf.getDisplayedChild() < subVf.getChildCount() - 1);
-			b = (Button) getView().findViewById(R.id.btTutorialReportPrevious);
-			b.setEnabled(subVf.getDisplayedChild() > 0);
-					
+			mPreviousNextButtonsEnabled(getView(), subVf);
+			mDisplayedSubFlipperChild = subVf.getDisplayedChild();
 		}
-		
+
 	}
 
 	@Override
@@ -155,5 +183,20 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 	public void setReportConditionsAcceptedListener(ReportConditionsAcceptedListener l) 
 	{
 		mReportConditionsAcceptedListener = l;
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle b)
+	{
+		b.putInt("SUBFLIPPER_CHILD", mDisplayedSubFlipperChild);
+		super.onSaveInstanceState(b);
+	}
+	
+	private void mPreviousNextButtonsEnabled(View rootView, ViewFlipper subVf)
+	{
+		Button b = (Button) rootView.findViewById(R.id.btTutorialReportNext);
+		b.setEnabled(subVf.getDisplayedChild() < subVf.getChildCount() - 1);
+		b = (Button) rootView.findViewById(R.id.btTutorialReportPrevious);
+		b.setEnabled(subVf.getDisplayedChild() > 0);
 	}
 }

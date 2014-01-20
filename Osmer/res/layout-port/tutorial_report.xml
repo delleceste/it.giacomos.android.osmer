@@ -20,29 +20,6 @@
         <include layout="@layout/tutorial_report_child2" />
         
     </ViewFlipper>
-    
-    <LinearLayout
-        android:id="@+id/layout_tutorial_report_buttons"
-        style="@android:style/ButtonBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/btTutorialReportPrevious"
-            style="android:buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/tutorial_report_prev" />
-
-        <Button
-            android:id="@+id/btTutorialReportNext"
-            style="android:buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/tutorial_report_next" />
-    </LinearLayout>
 
 </LinearLayout>

@@ -77,7 +77,7 @@ public class ScenarioDetailActivity extends FragmentActivity implements ReportCo
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			Intent parentIntent = new Intent(this, ScenarioListActivity.class);
-			Log.e("onOptionsItemSelected", "putting extra conditions accepted: " + mConditionsAccepted);
+			Log.e("ScenarioDetailActivity.onOptionsItemSelected", "putting extra conditions accepted: " + mConditionsAccepted);
 			parentIntent.putExtra(ScenarioDetailFragment.ARG_CONDITIONS_ACCEPTED, mConditionsAccepted);
 			NavUtils.navigateUpTo(this, parentIntent);
 			return true;
@@ -85,6 +85,14 @@ public class ScenarioDetailActivity extends FragmentActivity implements ReportCo
 		return super.onOptionsItemSelected(item);
 	}
 	
+	@Override
+	public void onBackPressed()
+	{
+		Intent parentIntent = new Intent(this, ScenarioListActivity.class);
+		Log.e("ScenarioDetailActivity.onBackPressed", "putting extra conditions accepted: " + mConditionsAccepted);
+		parentIntent.putExtra(ScenarioDetailFragment.ARG_CONDITIONS_ACCEPTED, mConditionsAccepted);
+		NavUtils.navigateUpTo(this, parentIntent);
+	}
 
 	@Override
 	public void onReportConditionsAccepted(boolean accepted) 
@@ -93,5 +101,7 @@ public class ScenarioDetailActivity extends FragmentActivity implements ReportCo
 		i.putExtra("conditionsAccepted", accepted);
 		this.setResult(RESULT_OK, i);
 		mConditionsAccepted = accepted;
+		if(accepted) /* back to list view */
+			onBackPressed();
 	}
 }

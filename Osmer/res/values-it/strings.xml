@@ -509,5 +509,33 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 
 	]]>
     </string>
+    
+    
+    <string name="tutorial_report">Publish a report</string>
+    <string name="tutorial_request">Publish a report request</string>
+    <string name="tutorial_notification">Report notifications</string>
+    
+    <string name="title_scenario_list">Scenarios</string>
+    <string name="title_scenario_detail">Scenario Detail</string>
+    <string name="reports_terms_and_conditions">Weather reports terms and conditions</string>
+    <string name="report_terms_and_conditions_text">Terms and conditions are as follows</string>
+    <string name="report_accept_terms_and_conditions">I accept the terms and conditions</string>
+    <string name="tutorial_prev">&lt; Previous</string>
+    <string name="tutorial_next">Next ></string>
+    <string name="tutorial_report_done">Your report is now published and will remain visible for 3 hours.
+        You can remove your report at any time. To change your report, you must first remove it and
+        publish another one.</string>
+    <string name="tutorial_start_activity">Click on the pencil icon to report the weather.
+        You can report the sky observations, the temprature, the wind strength and add a comment.
+        It is also possible to indicate the locality, if it is available.</string>
+        
+    <string name="tutorial_request_long_press">Long press on a point on the map to start. 
+        Long press the marker to move it.</string>
+
+    <string name="tutorial_request_dialog">Just confirm your request. You can disable the location name.</string>
+    <string name="tutorial_request_done">The users within a radius of 3 kilometers around the marker 
+        will be notified if possible. If somebody replies, you will be notified too.</string>
+    
+    
 
 </resources>

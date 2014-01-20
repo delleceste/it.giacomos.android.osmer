@@ -4,27 +4,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-          <TextView
-            android:id="@+id/tvTutorialReportChild0Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/tutorial_publish_report"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
          <ImageView
              android:id="@+id/child1ImageView"
              style="@style/ImageView"
              android:layout_width="match_parent"
-             android:layout_height="0dp"
-             android:layout_weight="4"
-             android:src="@drawable/report_done" />
-        
-        <TextView
-            android:id="@+id/tvTutorialReportChild0"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="tvTutorialReportChild2" />
+             android:layout_height="match_parent"
+             android:src="@drawable/report_activity" />
 
     </LinearLayout>
