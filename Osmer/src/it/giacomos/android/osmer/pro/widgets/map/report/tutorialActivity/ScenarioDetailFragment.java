@@ -99,6 +99,8 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 			{
 				vfMain.setDisplayedChild(3);
 				getActivity().getActionBar().setTitle(R.string.tutorial_terms_conditions);
+				btPrev.setVisibility(View.GONE);
+				btNext.setVisibility(View.GONE);
 			}
 			else if(mItem.id.compareTo("publishReport") == 0)
 			{

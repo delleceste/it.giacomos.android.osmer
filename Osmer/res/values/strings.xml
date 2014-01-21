@@ -537,5 +537,10 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
     <string name="tutorial_request_done">The users within a radius of 3 kilometers around the marker 
         will be notified if possible. If somebody replies, you will be notified too. Your request will
         remain valid for 3 hours.</string>
+    <string name="tutorial_notifcation_request">When a user requests a weather notification in your area 
+        (within 3 km) you receive a notification in the notification bar. Scroll down the notification bar
+        and go directly to the weather reports section.</string>
+    <string name="tutorial_disable_notification_service">How to disable notifications</string>
+    <string name="tutorial_howto_disable_notifications">The notification service checks for new notifications every few minutes. Disable or enable the service in the Reports section from the drop down menu.</string>
     
 </resources>
