@@ -17,7 +17,10 @@
 
         <include layout="@layout/tutorial_request_child1" />
         
-        <include layout="@layout/tutorial_request_child2" />
+        <include layout="@layout/tutorial_request_child2" />   
+        
+        <include layout="@layout/tutorial_drop_down_menu_child3" />
+      
         
     </ViewFlipper>
     

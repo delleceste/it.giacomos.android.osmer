@@ -2,6 +2,8 @@ package it.giacomos.android.osmer.pro.widgets.map.report.tutorialActivity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,13 +81,12 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 
 		Bundle extras = getArguments();
 		boolean forceShowTermsAndConditions = extras != null && extras.getBoolean(ARG_FORCE_SHOW_TERMS_AND_CONDITIONS);
-		boolean conditionsAccepted = extras != null && extras.getBoolean(ARG_CONDITIONS_ACCEPTED);
 		Button btPrev = (Button) rootView.findViewById(R.id.btTutorialReportPrevious);
 		Button btNext = (Button) rootView.findViewById(R.id.btTutorialReportNext);
 		CheckBox cb = (CheckBox) rootView.findViewById(R.id.cbAcceptTermsAndConditions);
 		btPrev.setOnClickListener(this);
 		btNext.setOnClickListener(this);
-		cb.setChecked(conditionsAccepted);
+		cb.setChecked(new Settings(getActivity().getApplicationContext()).reportConditionsAccepted());
 		cb.setOnCheckedChangeListener(this);
 		btPrev.setEnabled(false);
 
@@ -99,6 +100,9 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 			{
 				vfMain.setDisplayedChild(3);
 				getActivity().getActionBar().setTitle(R.string.tutorial_terms_conditions);
+				TextView tv = (TextView) rootView.findViewById(R.id.tvTermsConditions);
+				tv.setText(Html.fromHtml(getActivity().getResources().getString(R.string.report_terms_and_conditions_text)));
+				tv.setMovementMethod(new  ScrollingMovementMethod());
 				btPrev.setVisibility(View.GONE);
 				btNext.setVisibility(View.GONE);
 			}
@@ -173,11 +177,7 @@ public class ScenarioDetailFragment extends Fragment implements OnClickListener,
 	{
 		if(bt.getId() == R.id.cbAcceptTermsAndConditions)
 		{
-			Log.e("ScenarioDetailFragment.onCheckedChanged", "conditions accepted: " + checked);
-			/* There are two kinds of listeners: ScenarioDetailActivity, which sets into the setResult
-			 * intent the value of this boolean, for the handset case, and the ScenarioListActivity,
-			 * that, in case of a two pane device, directly sets the result to return to OsmerActivity.
-			 */
+			Log.e("ScenarioDetailFragment.onCheckedChanged", "setting " + checked);
 			mReportConditionsAcceptedListener.onReportConditionsAccepted(checked);
 		}
 	}

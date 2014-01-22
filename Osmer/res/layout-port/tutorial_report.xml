@@ -19,6 +19,9 @@
         
         <include layout="@layout/tutorial_report_child2" />
         
+        <include layout="@layout/tutorial_drop_down_menu_child3" />
+      
+        
     </ViewFlipper>
 
 

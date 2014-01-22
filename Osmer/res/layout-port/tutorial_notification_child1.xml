@@ -4,20 +4,27 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
+        <TextView
+            android:id="@+id/tvTutorialReportNotification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/tutorial_report_notification_title"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
          <ImageView
              android:id="@+id/child0ImageView"
              style="@style/ImageView"
              android:layout_width="match_parent"
-             android:layout_height="0dp"
-             android:layout_weight="1"
-             android:src="@drawable/request_dialog" />
+             android:layout_height="160dp"
+             android:src="@drawable/tutorial_report_notification" />
         
         <TextView
             android:id="@+id/tvTutorialReportChild0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
-            android:text="@string/tutorial_request_dialog" />
+            android:text="@string/tutorial_report_notification_text" />
 
     </LinearLayout>
 

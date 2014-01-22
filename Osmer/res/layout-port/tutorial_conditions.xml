@@ -13,16 +13,16 @@
         android:text="@string/reports_terms_and_conditions"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:id="@+id/tvTermsConditions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/report_terms_and_conditions_text" />
-
     <CheckBox
         android:id="@+id/cbAcceptTermsAndConditions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/report_accept_terms_and_conditions" />
+    
+    <TextView
+        android:id="@+id/tvTermsConditions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
 
 </LinearLayout>

@@ -3,6 +3,7 @@ package it.giacomos.android.osmer.pro.widgets.map.report.tutorialActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.R.id;
 import it.giacomos.android.osmer.R.layout;
+import it.giacomos.android.osmer.pro.preferences.Settings;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -22,7 +23,6 @@ import android.view.MenuItem;
 public class ScenarioDetailActivity extends FragmentActivity implements ReportConditionsAcceptedListener
 {
 
-	private ScenarioContent mContent;
 	private boolean mConditionsAccepted;
 
 	@Override
@@ -76,23 +76,20 @@ public class ScenarioDetailActivity extends FragmentActivity implements ReportCo
 			//
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
-			Intent parentIntent = new Intent(this, ScenarioListActivity.class);
-			Log.e("ScenarioDetailActivity.onOptionsItemSelected", "putting extra conditions accepted: " + mConditionsAccepted);
-			parentIntent.putExtra(ScenarioDetailFragment.ARG_CONDITIONS_ACCEPTED, mConditionsAccepted);
-			NavUtils.navigateUpTo(this, parentIntent);
+			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 	
-	@Override
-	public void onBackPressed()
-	{
-		Intent parentIntent = new Intent(this, ScenarioListActivity.class);
-		Log.e("ScenarioDetailActivity.onBackPressed", "putting extra conditions accepted: " + mConditionsAccepted);
-		parentIntent.putExtra(ScenarioDetailFragment.ARG_CONDITIONS_ACCEPTED, mConditionsAccepted);
-		NavUtils.navigateUpTo(this, parentIntent);
-	}
+//	@Override
+//	public void onBackPressed()
+//	{
+//		Intent parentIntent = new Intent(this, ScenarioListActivity.class);
+//		Log.e("ScenarioDetailActivity.onBackPressed", "putting extra conditions accepted: " + mConditionsAccepted);
+//		parentIntent.putExtra(ScenarioDetailFragment.ARG_CONDITIONS_ACCEPTED, mConditionsAccepted);
+//		NavUtils.navigateUpTo(this, parentIntent);
+//	}
 
 	@Override
 	public void onReportConditionsAccepted(boolean accepted) 
@@ -101,7 +98,8 @@ public class ScenarioDetailActivity extends FragmentActivity implements ReportCo
 		i.putExtra("conditionsAccepted", accepted);
 		this.setResult(RESULT_OK, i);
 		mConditionsAccepted = accepted;
-		if(accepted) /* back to list view */
-			onBackPressed();
+		new Settings(this).setReportConditionsAccepted(accepted);
+//		if(accepted) /* back to list view */
+//			onBackPressed();
 	}
 }

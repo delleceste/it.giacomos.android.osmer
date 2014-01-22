@@ -736,7 +736,6 @@ ReportRequestListener
 	private void mStartTutorialActivity()
 	{
 		Intent i = new Intent(this, ScenarioListActivity.class);
-		i.putExtra("conditionsAccepted", mReportConditionsAccepted);
 		i.putExtra("startedFromMainActivity", true);
 		this.startActivityForResult(i, TUTORIAL_ACTIVITY_FOR_RESULT_ID);
 	}
@@ -1119,11 +1118,13 @@ ReportRequestListener
 
 			if(conditionsAccepted)
 			{
+				Log.e("OsmerActivity.onActivityResult", "conditionsAccepted " + conditionsAccepted);
 				mDrawerList.setItemChecked(5, true);
 				mActionBarManager.drawerItemChanged(5);
 			}
 			else
 			{
+				Log.e("OsmerActivity.onActivityResult",  "conditionsAccepted " + conditionsAccepted);
 				mDrawerList.setItemChecked(0, true);
 				mActionBarManager.drawerItemChanged(0);
 			}

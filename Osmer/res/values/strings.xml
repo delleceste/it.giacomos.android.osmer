@@ -242,7 +242,7 @@
     <string name="reportNoneAvailable">No recent reports available</string>
     <string name="reportComment">Comment</string>
     <string name="reportUpdate">Refresh</string>
-    <string name="reportHelp">Help on reports</string>
+    <string name="reportHelp">Reports tutorial</string>
     <string name="reportUpdateToast">Updating reports</string>
     <string name="reportAtMost1FieldFilled">Impossible to publish an empty report</string>
     <string name="reportNeedToBeOnline">Internet connection unavailable</string>
@@ -519,7 +519,34 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
     <string name="title_scenario_list">Scenarios</string>
     <string name="title_scenario_detail">Scenario Detail</string>
     <string name="reports_terms_and_conditions">Weather reports terms and conditions</string>
-    <string name="report_terms_and_conditions_text">Terms and conditions are as follows</string>
+    <string name="report_terms_and_conditions_text">
+	<![CDATA[
+
+<h6>Disclaimer</h6>
+<p>The author of the Android applications named "Meteo.FVG", "Meteo.FVG Pro" and "Meteo.FVG prova", 
+Giacomo Strangolino, has no responsibility about the contents of the <strong>reports</strong> section.</p>
+<p>The same goes for the official source of meteorological data 
+<a href="http://www.meteo.fvg.it">Meteo.FVG</a>, who is not involved at all with the contents of the 
+<strong>Reports</strong> section.</p>
+<p>The author is not responsible for any kind of damage that may derive from incomplete, wrong, outdated,
+imprecise or ambiguous reports. The author is not responsible for any kind of economical damage to
+turistic, sports or any other kind of facility.</p>
+<p>The author is not responsible for any unwanted, unappropriate, offensive comments published by 
+the user.</p>
+<p>The author can modify or remove any report which is deemed offensive or whose content is not 
+pertinent to the context.</p>
+<p>The author can remove and report any offensive content inside a comment or spam messages.</p>
+<p>Any user can report unappropriate comments to <a href="mailto:delleceste@gmail.com>the author</a>.</p>
+
+<p>The author is not responsible for any misbehaviour of a device running the application Meteo.FVG,
+included battery drain and/or poor power efficiency of the device itself. Disable the notification 
+service if you notice a decrease of the battery life.</p>
+
+
+
+]]>
+</string>
+
     <string name="report_accept_terms_and_conditions">I accept the terms and conditions</string>
     <string name="tutorial_prev">&lt; Previous</string>
     <string name="tutorial_next">Next ></string>
@@ -542,5 +569,11 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
         and go directly to the weather reports section.</string>
     <string name="tutorial_disable_notification_service">How to disable notifications</string>
     <string name="tutorial_howto_disable_notifications">The notification service checks for new notifications every few minutes. Disable or enable the service in the Reports section from the drop down menu.</string>
+    <string name="tutorial_menu_launch_tutorial">Go to the Reports section, open the drop down menu on the top right corner and select Report Tutorial to read this guide once again</string>
+    <string name="tutorial_launch_again">To launch the tutorial again&#8230;</string>
+    <string name="tutorial_report_notification">A user has replied to your notification. Drop down the status bar and click on the Meteo.FVG icon to watch the report.</string>
+    <string name="tutorial_report_notification_title">New report notification</string>
+    <string name="tutorial_request_notification_title">New request notification</string>
+    <string name="tutorial_report_notification_text">A user in an area within 3km from the poin of your request has replied. Scroll down the status bar and click on the Meteo.FVG icon to read the report</string>
     
 </resources>

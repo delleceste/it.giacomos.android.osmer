@@ -69,27 +69,36 @@ public class ScenarioListActivity extends FragmentActivity implements
 			Log.e("ScenarioListActivity.onCreate", "NOT two pane");
 		
 		Bundle extras = this.getIntent().getExtras();
-		mConditionsAccepted = extras.getBoolean("conditionsAccepted");
-		mForceShowTermsAndConditions = extras.getBoolean("startedFromMainActivity") && !mConditionsAccepted;
+		mForceShowTermsAndConditions = extras.getBoolean("startedFromMainActivity");
 		
-		if(mForceShowTermsAndConditions)
-		{
-			Log.e("ScenarioListActivity.onCreate", "selecting termsOfUse " + mConditionsAccepted + " force show " 
-					+ mForceShowTermsAndConditions);
-			onItemSelected("termsOfUse");
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle inState)
+	{
+		super.onRestoreInstanceState(inState);
+		if(inState != null) /* coming from a screen rotation */
 			mForceShowTermsAndConditions = false;
-		}
 	}
 	
 	@Override
 	public void onResume()
 	{
-		Log.e("ScenarioListActivity.onResume", "saving result, conditions accepted " + mConditionsAccepted);
 		super.onResume();
 		/* sets the value of mConditionsAccepted and initializes the activity result according
 		 * to the value of the "conditionsAccepted" boolean extras.
 		 */
-		onReportConditionsAccepted(mConditionsAccepted);
+		
+		mConditionsAccepted = new Settings(this).reportConditionsAccepted();
+		Log.e("ScenarioListActivity.onResume", "conditions accepted " + mConditionsAccepted + ", force show "
+				+ mForceShowTermsAndConditions);
+		if(mForceShowTermsAndConditions)
+		{
+			Log.e("ScenarioListActivity.onResume " + this, "selecting termsOfUse " + mConditionsAccepted + " force show " 
+					+ mForceShowTermsAndConditions);
+			onItemSelected("termsOfUse");
+			mForceShowTermsAndConditions = false;
+		}
 	}
 
 	@Override
@@ -105,7 +114,7 @@ public class ScenarioListActivity extends FragmentActivity implements
 			//
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
-			NavUtils.navigateUpFromSameTask(this);
+			this.finish();
 		}
 		
 		return super.onOptionsItemSelected(item);
@@ -146,24 +155,7 @@ public class ScenarioListActivity extends FragmentActivity implements
 			detailIntent.putExtra(ScenarioDetailFragment.ARG_ITEM_ID, id);
 			detailIntent.putExtra(ScenarioDetailFragment.ARG_FORCE_SHOW_TERMS_AND_CONDITIONS, mForceShowTermsAndConditions);
 			detailIntent.putExtra(ScenarioDetailFragment.ARG_CONDITIONS_ACCEPTED, mConditionsAccepted);
-			startActivityForResult(detailIntent, SCENARIO_DETAIL_ACTIVITY_FOR_RESULT_ID);
-		}
-	}
-	
-	@Override
-	/** Not two pane case (i.e. handsets): the result of the ScenarioDetailActivity
-	 *
-	 */
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		Log.e("ScenarioListActivity.onActivityResult ", " reqCode " + requestCode + " res code " + resultCode +
-				 " data " + data);
-		if(requestCode == SCENARIO_DETAIL_ACTIVITY_FOR_RESULT_ID)
-		{
-			mConditionsAccepted = (resultCode == Activity.RESULT_OK && 
-					data.getExtras() != null && 
-					data.getExtras().getBoolean("conditionsAccepted"));
-			new Settings(this).setReportConditionsAccepted(mConditionsAccepted);
+			startActivity(detailIntent);
 		}
 	}
 
