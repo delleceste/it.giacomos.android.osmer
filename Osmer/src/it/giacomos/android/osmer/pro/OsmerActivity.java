@@ -8,7 +8,6 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.pro.interfaceHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.pro.interfaceHelpers.NetworkGuiErrorManager;
-import it.giacomos.android.osmer.pro.interfaceHelpers.ObservationTypeGetter;
 import it.giacomos.android.osmer.pro.interfaceHelpers.RadarImageTimestampTextBuilder;
 import it.giacomos.android.osmer.pro.interfaceHelpers.TitlebarUpdater;
 import it.giacomos.android.osmer.pro.locationUtils.LocationInfo;
@@ -127,6 +126,7 @@ ReportRequestListener
 	{
 		super.onCreate(savedInstanceState);
 
+		Log.e("OsmerActivity.onCreate", "onCreate called");
 		requestWindowFeature(Window.FEATURE_PROGRESS);
 		this.setProgressBarVisibility(true);
 
@@ -149,6 +149,7 @@ ReportRequestListener
 	public void onResume()
 	{	
 		super.onResume();
+		Log.e("OsmerActivity.onResume", "onResume called");
 		if(!mGoogleServicesAvailable)
 			return;
 
@@ -196,6 +197,7 @@ ReportRequestListener
 			Log.e("OsmerActivity.onPostCreate", "switching to item " + forceDrawerItem);
 		}
 
+		Log.e("OsmerActivity.onPostCreate", "actionBarMAnager.init with saved instance state and drawerItem " + forceDrawerItem);
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
 	}
 
@@ -609,13 +611,6 @@ ReportRequestListener
 			Toast.makeText(getApplicationContext(), R.string.webcam_lists_downloaded, Toast.LENGTH_SHORT).show();
 	}
 
-	void executeObservationTypeSelectionDialog(MapMode mapMode)
-	{
-		ObservationTypeGetter oTypeGetter = new ObservationTypeGetter();
-		oTypeGetter.get(this, mapMode, -1);
-		oTypeGetter = null;
-	}
-
 	/** implemented from PostActionResultListener.
 	 * This method is invoked after a http post has been executed and returned, with or without
 	 * errors as indicated in the method parameters.
@@ -727,7 +722,12 @@ ReportRequestListener
 		if((mapMode != MapMode.REPORT) || (mapMode == MapMode.REPORT && mReportConditionsAccepted))
 			map.setMode(new MapViewMode(observationType, mapMode));
 		else if(mapMode == MapMode.REPORT)
+		{
+			Log.e("OsmerActivity.onSelectionDone", "starting tutorial activity!!");
+			mDrawerList.setItemChecked(0, true);
+			mActionBarManager.drawerItemChanged(0);
 			mStartTutorialActivity();
+		}
 		if(mapMode == MapMode.DAILY_OBSERVATIONS || mapMode == MapMode.LATEST_OBSERVATIONS)
 			map.updateObservations(m_observationsCache.getObservationData(mapMode));
 
@@ -735,6 +735,7 @@ ReportRequestListener
 
 	private void mStartTutorialActivity()
 	{
+		Log.e("OsmerActivity.mStartTutorialActivity", "STARTING");
 		Intent i = new Intent(this, ScenarioListActivity.class);
 		i.putExtra("startedFromMainActivity", true);
 		this.startActivityForResult(i, TUTORIAL_ACTIVITY_FOR_RESULT_ID);
@@ -1122,13 +1123,6 @@ ReportRequestListener
 				mDrawerList.setItemChecked(5, true);
 				mActionBarManager.drawerItemChanged(5);
 			}
-			else
-			{
-				Log.e("OsmerActivity.onActivityResult",  "conditionsAccepted " + conditionsAccepted);
-				mDrawerList.setItemChecked(0, true);
-				mActionBarManager.drawerItemChanged(0);
-			}
-			findViewById(R.id.left_drawer).setVisibility(View.GONE);
 		}
 	}
 

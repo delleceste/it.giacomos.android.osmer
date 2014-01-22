@@ -114,7 +114,8 @@ public class ScenarioListActivity extends FragmentActivity implements
 			//
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
-			this.finish();
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
 		}
 		
 		return super.onOptionsItemSelected(item);

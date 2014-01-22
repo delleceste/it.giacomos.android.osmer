@@ -94,12 +94,7 @@ public class ScenarioDetailActivity extends FragmentActivity implements ReportCo
 	@Override
 	public void onReportConditionsAccepted(boolean accepted) 
 	{
-		Intent i = new Intent();
-		i.putExtra("conditionsAccepted", accepted);
-		this.setResult(RESULT_OK, i);
 		mConditionsAccepted = accepted;
 		new Settings(this).setReportConditionsAccepted(accepted);
-//		if(accepted) /* back to list view */
-//			onBackPressed();
 	}
 }
