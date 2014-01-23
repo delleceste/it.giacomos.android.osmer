@@ -50,7 +50,7 @@ import it.giacomos.android.osmer.pro.widgets.map.report.ReportRequestDialogFragm
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostReport;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostType;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostActionResultListener;
-import it.giacomos.android.osmer.pro.widgets.map.report.tutorialActivity.ScenarioListActivity;
+import it.giacomos.android.osmer.pro.widgets.map.report.tutorialActivity.TutorialPresentationActivity;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -736,8 +736,9 @@ ReportRequestListener
 	private void mStartTutorialActivity()
 	{
 		Log.e("OsmerActivity.mStartTutorialActivity", "STARTING");
-		Intent i = new Intent(this, ScenarioListActivity.class);
+		Intent i = new Intent(this, TutorialPresentationActivity.class);
 		i.putExtra("startedFromMainActivity", true);
+		i.putExtra("conditionsAccepted", mReportConditionsAccepted);
 		this.startActivityForResult(i, TUTORIAL_ACTIVITY_FOR_RESULT_ID);
 	}
 
@@ -1107,8 +1108,9 @@ ReportRequestListener
 		{
 			Log.e("OsmerActivity.onActivityResult", "resultCode " + resultCode + " data " + data + " OK " +
 					RESULT_OK + " cancelled " + RESULT_CANCELED);
-
-			boolean conditionsAccepted = mSettings.reportConditionsAccepted();
+			boolean conditionsAccepted = false;
+			if(data != null)
+				conditionsAccepted = data.getBooleanExtra("conditionsAccepted", false);
 			if(conditionsAccepted != mReportConditionsAccepted)
 			{
 				mReportConditionsAccepted = conditionsAccepted;
@@ -1116,12 +1118,18 @@ ReportRequestListener
 				mStartNotificationService(conditionsAccepted && mSettings.notificationServiceEnabled());
 			}
 
-
+			Log.e("OsmerActivity.onActivityResult", "conditionsAccepted " + conditionsAccepted);
 			if(conditionsAccepted)
 			{
-				Log.e("OsmerActivity.onActivityResult", "conditionsAccepted " + conditionsAccepted);
-				mDrawerList.setItemChecked(5, true);
-				mActionBarManager.drawerItemChanged(5);
+				mDrawerList.performItemClick(mDrawerList, 5, mDrawerList.getItemIdAtPosition(5));
+//				mDrawerList.setItemChecked(5, true);
+//				mActionBarManager.drawerItemChanged(5);
+			}
+			else
+			{
+				mDrawerList.performItemClick(mDrawerList, 0, mDrawerList.getItemIdAtPosition(0));
+				//mDrawerList.setItemChecked(5, true);
+				//mActionBarManager.drawerItemChanged(5);
 			}
 		}
 	}

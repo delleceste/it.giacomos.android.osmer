@@ -272,14 +272,13 @@
     <string name="notificationServiceWillStartOnNetworkAvailable">Notification service will be started upon network connection</string>
     <string name="include_locality">Include locality</string>
     <string name="locality_unavailable">-</string>
-    
+
     <!-- report tutorial activity and terms and conditions -->
     <string name="tutorial_publish_report">Publish report</string>
     <string name="tutorial_publish_request">Publish request</string>
     <string name="tutorial_notification_service">Notification service</string>
     <string name="tutorial_terms_conditions">Terms and conditions</string>
     <string name="tutorial_back">Back to Meteo.FVG</string>
-    
 
     <!-- notification area -->
     <string name="notificationNewReportRequest">Report request from </string>
@@ -512,68 +511,136 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
 
 ]]>
     </string>
+    
     <string name="tutorial_report">Publish a report</string>
     <string name="tutorial_request">Publish a report request</string>
     <string name="tutorial_notification">Report notifications</string>
-    
+    <string name="tutorial_notifications">Notifications</string>
     <string name="title_scenario_list">Scenarios</string>
     <string name="title_scenario_detail">Scenario Detail</string>
-    <string name="reports_terms_and_conditions">Weather reports terms and conditions</string>
-    <string name="report_terms_and_conditions_text">
-	<![CDATA[
-
-<h6>Disclaimer</h6>
-<p>The author of the Android applications named "Meteo.FVG", "Meteo.FVG Pro" and "Meteo.FVG prova", 
-Giacomo Strangolino, has no responsibility about the contents of the <strong>reports</strong> section.</p>
-<p>The same goes for the official source of meteorological data 
-<a href="http://www.meteo.fvg.it">Meteo.FVG</a>, who is not involved at all with the contents of the 
-<strong>Reports</strong> section.</p>
-<p>The author is not responsible for any kind of damage that may derive from incomplete, wrong, outdated,
-imprecise or ambiguous reports. The author is not responsible for any kind of economical damage to
-turistic, sports or any other kind of facility.</p>
-<p>The author is not responsible for any unwanted, unappropriate, offensive comments published by 
-the user.</p>
-<p>The author can modify or remove any report which is deemed offensive or whose content is not 
-pertinent to the context.</p>
-<p>The author can remove and report any offensive content inside a comment or spam messages.</p>
-<p>Any user can report unappropriate comments to <a href="mailto:delleceste@gmail.com>the author</a>.</p>
-
-<p>The author is not responsible for any misbehaviour of a device running the application Meteo.FVG,
-included battery drain and/or poor power efficiency of the device itself. Disable the notification 
-service if you notice a decrease of the battery life.</p>
+    <string name="reports_terms_and_conditions">Weather reports terms and conditions of use</string>
+ 
+    <string name="special_reports">Special</string>
+    
+    <string name="special_reports_title">Automatic report publishing for individuals</string>
+    
+    <string name="special_reports_text">
+        <![CDATA[
+        Have you got a personal weather station and want to
+        automatically publish data? Contact the author by 
+        <a href="mailto:delleceste@gmail.com?subject=Info about automatic report publishing for individuals">email</a>.
+        If you are a private individual user, it is free.
+        ]]>
+        </string>
+        
+    <string name="special_reports_for_companies_title">Automatic report publishing for business</string>
+     <string name="special_reports_for_companies_text">
+        <![CDATA[
+        Are you a touristic enterprise and want to publish meteorological data 
+        on Meteo.FVG in behalf of your customers? Contact the author by
+        <a href="mailto:delleceste@gmail.com?subject=Info about automatic report publishing for companies">email</a> to get information about 
+        costs and terms of use.
+        ]]>
+        </string>
+        
+<string name="report_terms_and_conditions_text">        
+		<![CDATA[
+		
+		<h6>Disclaimer</h6>
+		<p>The author of the Android applications named "Meteo.FVG", "Meteo.FVG Pro" and "Meteo.FVG prova", 
+		Giacomo Strangolino, has no responsibility about the contents of the <strong>reports</strong> section.</p>
+		<p>The same goes for the official source of meteorological data 
+		<a href="http://www.meteo.fvg.it">Meteo.FVG</a>, who is not involved at all with the contents of the 
+		<strong>Reports</strong> section.</p>
+		<p>The author is not responsible for any kind of damage that may derive from incomplete, wrong, outdated,
+		imprecise or ambiguous reports. The author is not responsible for any kind of economical damage to
+		turistic, sports or any other kind of facility.</p>
+		<p>The author is not responsible for any unwanted, unappropriate, offensive comments published by 
+		the user.</p>
+		<p>The author can modify or remove any report which is deemed offensive or whose content is not 
+		pertinent to the context.</p>
+		<p>The author can remove and report any offensive content inside a comment or spam messages.</p>
+		<p>Any user can report unappropriate comments to <a href="mailto:delleceste@gmail.com>the author</a>.</p>
+		
+		<p>The author is not responsible for any misbehaviour of a device running the application Meteo.FVG,
+		included battery drain and/or poor power efficiency of the device itself. Disable the notification 
+		service if you notice a decrease of the battery life.</p>
 
 
 
 ]]>
-</string>
-
+    </string>
+    
     <string name="report_accept_terms_and_conditions">I accept the terms and conditions</string>
-    <string name="tutorial_prev">&lt; Previous</string>
-    <string name="tutorial_next">Next ></string>
-    <string name="tutorial_report_done">Your report will remain visible for 3 hours.
-        You can remove your report at any time. To change your report, you must first remove it and
-        publish another one.</string>
-    <string name="tutorial_start_activity">Click on the pencil icon to report the weather.
-        You can report the sky observations, the temprature, the wind strength and add a comment.
-        It is also possible to indicate the locality, if it is available.</string>
+    
+    <string name="report_recall_from_menu">NOTE: you can recall this from the "Reports" section,
+        drop down menu in the action bar, "Reports tutorial"</string>
         
+    <string name="tutorial_start_report">Click on the pencil icon in the action bar on the tpo 
+        to start reporting the weather in your area.
+        You can report the sky observations, the temprature, the wind strength and add a comment.
+        It is also possible to indicate the locality, if it is available.
+        </string>
+        
+    <string name="tutorial_report_done">After filling in the report form, a weather icon will appear
+        on the map at your location. Click on the icon to see the details and to remove the
+        report. The report will remain valid for 3 hours and will be visible to all users.
+        To change your report, you must first remove it and
+        publish another one.</string>    
+    
     <string name="tutorial_request_long_press">Long press on a point on the map to start. 
         Long press the marker to move it.</string>
-
     <string name="tutorial_request_dialog">Just confirm your request. You can disable the location name.</string>
+    
     <string name="tutorial_request_done">The users within a radius of 3 kilometers around the marker 
         will be notified if possible. If somebody replies, you will be notified too. Your request will
         remain valid for 3 hours.</string>
-    <string name="tutorial_notifcation_request">When a user requests a weather notification in your area 
-        (within 3 km) you receive a notification in the notification bar. Scroll down the notification bar
-        and go directly to the weather reports section.</string>
+        
+    <string name="tutorial_notifcation_request">Requests\n\nWhen a user asks for a weather report in your area 
+        within 3 km you receive a notification in the status bar. Activate it to directly go to the weather 
+        reports section and reply to her. A request lasts for 3 hours and is represented by a blue marker.</string>
+     
+        <string name="tutorial_report_notification">Replies\n\nSomeone replied to your report request. 
+            Activate the notification to watch the report. Click on the weather icon to see the 
+            detailed report.</string>
+    
+    
     <string name="tutorial_disable_notification_service">How to disable notifications</string>
-    <string name="tutorial_howto_disable_notifications">The notification service checks for new notifications every few minutes. Disable or enable the service in the Reports section from the drop down menu.</string>
+    <string name="tutorial_howto_disable_notifications">The notification service checks for 
+        new notifications every few minutes (unless the device is sleeping). 
+        Disable or enable the service in the Reports section 
+        from the drop down menu.</string>
     <string name="tutorial_menu_launch_tutorial">Go to the Reports section, open the drop down menu on the top right corner and select Report Tutorial to read this guide once again</string>
     <string name="tutorial_launch_again">To launch the tutorial again&#8230;</string>
-    <string name="tutorial_report_notification">A user has replied to your notification. Drop down the status bar and click on the Meteo.FVG icon to watch the report.</string>
     <string name="tutorial_report_notification_title">New report notification</string>
     <string name="tutorial_request_notification_title">New request notification</string>
     <string name="tutorial_report_notification_text">A user in an area within 3km from the poin of your request has replied. Scroll down the status bar and click on the Meteo.FVG icon to read the report</string>
+    <string name="title_activity_tutorial_presentation">TutorialPresentationActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="tutorial_tab1_title">Terms of use</string>
+    <string name="tutorial_tab2_title">Reports</string>
+    <string name="tutorial_tab3_title">Requests</string>
+    <string name="tutorial_tab4_title">Notifications</string>
+    <string name="tutorial_tab5_title">Special</string>
+    
+    
+    <string name="quickstart_publish1">Long press on a point in the map to start the request. 
+        An orange marker will appear. Long press on the marker to change its position. Click on the baloon
+        to start the request procedure.</string>
+        
+    <string name="quickstart_publish2">Once successfully published, the marker turns to green.
+        You can touch the marker and follow the instructions to remove your request.
+        The request will stay valid for 3 hours.</string>
+
+    <!--  TRIAL -->
+    
+    <string name="trial_version">Trial version</string>
+    <string name="days_left">days left.</string>
+    <string name="trial_version_expiring">Trial version is expiring! </string>
+    <string name="touch_to_buy">Touch here to learn what to do!</string>
+    <string name="buy_now_from_activity_settings">Buy Now!</string>
+    <string name="learn_more">Learn More&#8230;</string>
+
+    
     
 </resources>
