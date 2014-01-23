@@ -29,24 +29,24 @@
             <TextView
                 android:id="@+id/tvPublishRequest1"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1.00"
+                android:background="@drawable/tutorial_textview_background"
                 android:drawableLeft="@drawable/map_pin_orange"
                 android:drawablePadding="15dp"
                 android:padding="8dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/tutorial_textview_background"
                 android:text="@string/quickstart_publish1" />
 
             <TextView
                 android:id="@+id/tvPublishRequest2"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1.00"
+                android:background="@drawable/tutorial_textview_background"
                 android:drawableRight="@drawable/map_pin_green"
                 android:padding="8dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/tutorial_textview_background"
                 android:text="@string/quickstart_publish2" />
 
         </LinearLayout>

@@ -41,7 +41,7 @@
             <TextView
                 android:id="@+id/tvPublishReport2"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:layout_weight="1.00"
                 android:background="@drawable/tutorial_textview_background_black_grad"
