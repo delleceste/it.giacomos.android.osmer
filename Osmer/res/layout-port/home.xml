@@ -12,11 +12,41 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
+        	<LinearLayout
+            android:id="@+id/trialLayout"
+            android:layout_width="match_parent"
+            android:layout_height="36dp" 
+            android:background="#ddddde"
+            android:orientation="horizontal">
+            
+            <TextView
+            android:id="@+id/tvdaysLeft"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:padding="2dp"
+            android:text="@string/days_left"
+            android:layout_margin="3dp"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+            
+            <Button
+            android:id="@+id/btBuy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:background="@drawable/button_background_with_gray_border"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/buy" />
+            
+            </LinearLayout>
+        
         <!--  for home screen, in portrait orientation, keep situation image as
         		large as possible and let the homeTextView's height wrap contents
         		 -->
         		 
-         <it.giacomos.android.osmer.pro.widgets.SituationImage
+         <it.giacomos.android.osmer.PROva.widgets.SituationImage
              android:id="@+id/child1ImageView"
              style="@style/ImageView"
              android:layout_width="match_parent"
@@ -24,7 +54,7 @@
              android:minHeight="280dp"
              android:src="@drawable/fvg_background2" />
 
-        <it.giacomos.android.osmer.pro.widgets.HomeTextView
+        <it.giacomos.android.osmer.PROva.widgets.HomeTextView
             android:id="@+id/homeTextView"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
@@ -33,7 +63,7 @@
             android:inputType="none" >
 
 
-        </it.giacomos.android.osmer.pro.widgets.HomeTextView>
+        </it.giacomos.android.osmer.PROva.widgets.HomeTextView>
     </LinearLayout>
 
 </ScrollView>

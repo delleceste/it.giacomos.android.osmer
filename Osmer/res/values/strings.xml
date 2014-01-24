@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Meteo.FVG</string>
+    <string name="app_name">Meteo.FVG PROva</string>
     <string name="app_broadcast_receiver">Meteo.FVG.BootReceiver</string>
     <string name="version">version</string>
     <string name="data_source">Data source: http://www.meteo.fvg.it</string>
@@ -640,12 +640,19 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
 
     <!--  TRIAL -->
     
+    <string name="title_activity_buy_pro">Buy Meteo.FVG Pro</string>
     <string name="trial_version">Trial version</string>
     <string name="days_left">days left.</string>
     <string name="trial_version_expiring">Trial version is expiring! </string>
-    <string name="touch_to_buy">Touch here to learn what to do!</string>
+    <string name="touch_to_buy">Touch here to buy Meteo.FVG Pro!</string>
     <string name="buy_now_from_activity_settings">Buy Now!</string>
     <string name="learn_more">Learn More&#8230;</string>
+    <string name="buy">Buy!</string>
+    <string name="buy_pro_title">Buy Meteo.FVG Pro!</string>
+    <string name="button_text_buy_now">Buy now!</string>
+    <string name="bt_no_buy_now">Not now, thanks!</string>
+    <string name="trial_expired">Trial version has expired!</string>
+    <string name="buy_now_promotional_text">Buy Meteo.FVG Pro now, enjoy its fantastic features and support its future development!</string>
 
     
     

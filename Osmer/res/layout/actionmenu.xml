@@ -27,7 +27,7 @@
 	    		android:layout_gravity="center_horizontal|center_vertical"
         		android:id="@+id/actionOverflow" />	
         		
-       <it.giacomos.android.osmer.pro.widgets.AnimatedImageView 
+       <it.giacomos.android.osmer.PROva.widgets.AnimatedImageView 
     
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/refresh_animation"
@@ -36,7 +36,7 @@
     android:layout_gravity="center_horizontal|center_vertical"
      >
     
-</it.giacomos.android.osmer.pro.widgets.AnimatedImageView >
+</it.giacomos.android.osmer.PROva.widgets.AnimatedImageView >
     
        
 </LinearLayout>

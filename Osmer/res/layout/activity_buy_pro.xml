@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutReportConditions"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="6dp"
+    android:orientation="vertical"
+    android:padding="5dp" >
+
+    <TextView
+        android:id="@+id/tvBuyPro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/buy_pro_title"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/btBuyNow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_text_buy_now" />
+
+    <TextView
+        android:id="@+id/tvBuyProPromotionalMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/tutorial_textview_background_green_border"
+        android:scrollbars="vertical"
+        android:text="@string/buy_now_promotional_text"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btNoBuyThanks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bt_no_buy_now" />
+
+    <TextView
+        android:id="@+id/tvBuyDaysLeft"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/tutorial_textview_background_red_border"
+        android:padding="8dp"
+        android:scrollbars="vertical"
+        android:textStyle="bold|italic" />
+
+</LinearLayout>

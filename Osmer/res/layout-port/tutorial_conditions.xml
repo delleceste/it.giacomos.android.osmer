@@ -16,7 +16,7 @@
     android:padding="5dp" >
 
     <TextView
-        android:id="@+id/tvTutorialReport"
+        android:id="@+id/tvBuyPro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -24,7 +24,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
-        android:id="@+id/tvRecallTutorialFromMenu"
+        android:id="@+id/tvBuyProPromotionalMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -35,7 +35,7 @@
         android:textStyle="bold|italic" />
 
     <TextView
-        android:id="@+id/TextViewTermsConditionsReadAll"
+        android:id="@+id/tvBuyDaysLeft"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

@@ -5,20 +5,30 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-    <it.giacomos.android.osmer.pro.widgets.SituationImage
+    <it.giacomos.android.osmer.PROva.widgets.SituationImage
         android:id="@+id/child1ImageView"
         android:layout_width="0dip"
         android:layout_height="fill_parent"
         android:layout_weight="1.0"
         android:src="@drawable/fvg_background2" />
-
+ 		
+ 		
+    
     <ScrollView
         android:id="@+id/homeTextScrollView"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1.0" >
 
-        <it.giacomos.android.osmer.pro.widgets.HomeTextView
+        <LinearLayout
+            android:id="@+id/scrollLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" 
+            android:orientation="vertical">
+        
+      
+        
+        <it.giacomos.android.osmer.PROva.widgets.HomeTextView
             android:id="@+id/homeTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +36,39 @@
 
             <requestFocus>
             </requestFocus>
-        </it.giacomos.android.osmer.pro.widgets.HomeTextView>
+        </it.giacomos.android.osmer.PROva.widgets.HomeTextView>
+        
+         <LinearLayout
+            android:id="@+id/trialLayout"
+            android:layout_width="match_parent"
+            android:layout_height="60dp" 
+            android:background="#ddddde"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:orientation="vertical">
+            
+            <TextView
+            android:id="@+id/tvdaysLeft"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="2dp"
+            android:text="@string/days_left"
+            android:layout_margin="3dp"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+            
+            <Button
+            android:id="@+id/btBuy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:background="@drawable/button_background_with_gray_border"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/buy" />
+            
+            </LinearLayout>
+            </LinearLayout>
     </ScrollView>
 
 </LinearLayout>
