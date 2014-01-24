@@ -512,66 +512,204 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
     </string>
     
     
-       <string name="tutorial_report">Publish a report</string>
-    <string name="tutorial_request">Publish a report request</string>
-    <string name="tutorial_notification">Report notifications</string>
+    <string name="tutorial_report">Pubblica una segnalazione</string>
+    <string name="tutorial_request">Richiedi una segnalazione</string>
+    <string name="tutorial_notification">Segnalazione notifiche</string>
+    <string name="tutorial_notifications">Notifiche</string>
+    <string name="reports_terms_and_conditions">Termini e condizioni d\'uso delle segnalazioni</string>
+ 
+    <string name="special_reports">Possibilita` speciali</string>
     
-    <string name="title_scenario_list">Scenarios</string>
-    <string name="title_scenario_detail">Scenario Detail</string>
-    <string name="reports_terms_and_conditions">Weather reports terms and conditions</string>
+    <string name="special_reports_title">Pubblicazione automatica delle segnalazioni per privati</string>
     
-    <string name="report_terms_and_conditions_text">
-	<![CDATA[
+    <string name="special_reports_text">
+        <![CDATA[
+        
+        Possiedi una stazione meteo personale e desideri pubblicare i tuoi dati in modo automatico?
+        Contatta l\'autore a questo 
+        <a href="mailto:delleceste@gmail.com?subject=Info about automatic report publishing for individuals">indirizzo email</a>.
+        Se sei un utente privato, il servizio e` del tutto gratuito!
+        ]]>
+        </string>
+        
+    <string name="special_reports_for_companies_title">Pubblicazione automatica delle segnalazioni per aziende/impianti turistici</string>
+     <string name="special_reports_for_companies_text">
+        <![CDATA[
+        
+        Se sei un\'azienda (ad esempio un impianto turistico) e vuoi fornire un servizio aggiuntivo ai tuoi clienti 
+        segnalando il meteo nella tua zona con continuita` e in modo automatico contatta l\'autore a questo 
+        <a href="mailto:delleceste@gmail.com?subject=Info about automatic report publishing for individuals">indirizzo email</a>
+        per ottenere informazioni su costi e termini d\'uso.
 
-<h6>Disclaimer</h6>
-<p>The author of the Android applications named "Meteo.FVG", "Meteo.FVG Pro" and "Meteo.FVG prova", 
-Giacomo Strangolino, has no responsibility about the contents of the <strong>reports</strong> section.</p>
-<p>The same goes for the official source of meteorological data 
-<a href="http://www.meteo.fvg.it">Meteo.FVG</a>, who is not involved at all with the contents of the 
-<strong>Reports</strong> section.</p>
-<p>The author is not responsible for any kind of damage that may derive from incomplete, wrong, outdated,
-imprecise or ambiguous reports. The author is not responsible for any kind of economical damage to
-turistic, sports or any other kind of facility.</p>
-<p>The author is not responsible for any unwanted, unappropriate, offensive comments published by 
-the user.</p>
-<p>The author can modify or remove any report which is deemed offensive or whose content is not 
-pertinent to the context.</p>
-<p>The author can remove and report any offensive content inside a comment or spam messages.</p>
-<p>Any user can report unappropriate comments to <a href="mailto:delleceste@gmail.com>the author</a>.</p>
-
-<p>The author is not responsible for any misbehaviour of a device running the application Meteo.FVG,
-included battery drain and/or poor power efficiency of the device itself. Disable the notification 
-service if you notice a decrease of the battery life.</p>
-
-
+        ]]>
+        </string>
+        
+	<string name="report_terms_and_conditions_text">        
+		
+		<![CDATA[
+		
+		<h4>Esonero di responsabilita</h4>
+		
+		<p>L\'autore delle applicazioni Android denominate "Meteo.FVG", "Meteo.FVG Pro" e 
+		"Meteo.FVG PROva, Giacomo Strangolino, non ha alcuna responsabilita` circa i contenuti delle 
+		segnalazioni pubblicate nella sezione "Segnalazioni".</p>
+		<p>Il contenuto di ogni segnalazione meteo nella sezione "Segnalazioni" e` responsabilita` dell\'utente che 
+		lo pubblica, essendo compresi nel "contenuto" icone del cielo, del vento, il valore della temperatura e 
+		il testo dei commenti.</p>
+		
+		<p>Lo stesso vale per la sorgente ufficiale dei dati meteorologici <a href="http://www.meteo.fvg.it">Meteo.FVG</a>,
+		la quale non fornisce alcun dato presentato nella sezione "Segnalazioni".</p>
+		
+		<h6>Esonero di responsabilita` dell\'autore per danni economici e di qualsiasi altro tipo</h6>
+		
+		<p>L\'autore delle applicazioni "Meteo.FVG", "Meteo.FVG Pro" e 
+		"Meteo.FVG PROva" non si assume alcuna responsabilita` in conseguenza a qualsiasi danno di tipo economico,
+		fisico (a persone o cose) che possa derivare da segnalazioni incomplete, errate, non aggiornate e cosi` via... 
+		L\'autore sottolinea l\'esonero di responsabilita` dovuta a danni economici a impianti turistici,
+		locali, ristoranti e, piu` in generale, a ogni tipo di attivita` dipendente o legata alle condizioni del tempo
+		meteorologico, derivanti da errate segnalazioni da parte degli utenti, ivi comprese segnalazioni dell\'autore
+		stesso.
+		</p>
+		
+		<p>
+		L\'autore non e` responsabile per contenuti inappropriati o offensivi all\'interno dei messaggi
+		di testo nei commenti degli utenti. Ogni utente e` responsabile dei contenuti pubblicati.
+		L\'autore si assume il diritto di rimuovere ogni contenuto inappropriato (offensivo, di "spam",
+		pubblicitario, non pertinente con le osservazioni meteo e cosi` via...).
+		</p>
+		
+		<p>
+		Per finalita` di test, e` possibile che l\'autore pubblichi segnalazioni in parte o in tutto non aderenti
+		alla realta`. In questo caso, l\'autore corredera` la segnalazione con un opportuno commento.
+		Nessuna responsabilita` si assume l\'autore per questo tipo di contenuti.
+		</p>
+		
+		<p>
+		Qualsiasi utente puo` segnalare contenuti inappropriati all\'autore utilizzando questo indirizzo
+		<a href="mailto:delleceste@gmail.com>email</a>.
+		</p>
+		
+		<h6>Esonero di responsabilita` dell\'autore per malfunzionamento del dispositivo o 
+			eccessivo consumo di batteria</h6> 
+		<p>
+		L\'autore non e` responsabile per qualsiasi malfunzionamento di un dispositivo che esegue 
+		"Meteo.FVG", "Meteo.FVG Pro" e "Meteo.FVG PROva, incluso un aumento dell\'utilizzo della 
+		batteria o una diminuzione delle performance del dispositivo. Nella sezione "Notifiche"
+		di questo tutorial e` possibile apprendere come disabilitare il servizio delle notifiche
+		qualora si sospetti che tale servizio abbia un effetto negativo sulla durata della batteria.
+		Si legga con attenzione la sezione "Notifiche" di questo tutorial.
+		</p>
+		
+		<h6>Nota</h6>
+		<p>
+		Questo esonero di responsabilita` <strong>non sostituisce, ma integra</strong> l\'esonero di 
+		responsabilita` al testo del quale si accede dal tasto "Menu" del dispositivo -> 
+		"Informazioni sulla app", capitolo <cite>Esonero di responsabilita`</cite>.
+		</p>
+		
+		<h6>Contatti</h6>
+		<p>L\'autore puo` essere contattato via email a <a href="mailto:delleceste@gmail.com>questo indirizzo</a>.
+		</p>
+		<p>L\'utente puo` iscriversi alla community <strong>Google+</strong> 
+		<a href="https://plus.google.com/u/0/communities/104494499218507670829">Android.Meteo.FVG</a>
+		per accedere a discussioni e pubblicare commenti o fare delle proposte di miglioramento della app.
+		</p>
 
 ]]>
+
 </string>
-    <string name="report_accept_terms_and_conditions">I accept the terms and conditions</string>
-    <string name="tutorial_prev">&lt; Previous</string>
-    <string name="tutorial_next">Next ></string>
-    <string name="tutorial_report_done">Your report will remain visible for 3 hours.
-        You can remove your report at any time. To change your report, you must first remove it and
-        publish another one.</string>
-    <string name="tutorial_start_activity">Click on the pencil icon to report the weather.
-        You can report the sky observations, the temprature, the wind strength and add a comment.
-        It is also possible to indicate the locality, if it is available.</string>
+
+    
+    <string name="report_accept_terms_and_conditions">Ho letto e accetto i termini e le condizioni d\'uso</string>
+    
+    <string name="report_recall_from_menu">NOTA: puoi richiamare questa guida dalla sezione "Segnalazioni",
+        attivando il menu` a tendina e selezionando "Tutorial segnalazioni".</string>
         
-    <string name="tutorial_request_long_press">Long press on a point on the map to start. 
-        Long press the marker to move it.</string>
-
-    <string name="tutorial_request_dialog">Just confirm your request. You can disable the location name.</string>
-    <string name="tutorial_request_done">The users within a radius of 3 kilometers around the marker 
-        will be notified if possible. If somebody replies, you will be notified too. Your request will
-        remain valid for 3 hours.</string>
-    <string name="tutorial_notifcation_request">When a user requests a weather notification in your area 
-        (within 3 km) you receive a notification in the notification bar. Scroll down the notification bar
-        and go directly to the weather reports section.</string>
-    <string name="tutorial_disable_notification_service">How to disable notifications</string>
-    <string name="tutorial_howto_disable_notifications">The notification service checks for new notifications every few minutes. Disable or enable the service in the Reports section from the drop down menu.</string>
-    <string name="tutorial_menu_launch_tutorial">Go to the Reports section, open the drop down menu on the top right corner and select Report Tutorial to read this guide once again</string>
-    <string name="tutorial_launch_again">To launch the tutorial again&#8230;</string>
+    <string name="report_carefully_read_all">NOTA: leggi attentamente tutte le sezioni di questo tutorial.</string>
+           
+     <string name="tutorial_start_report">Clicca sull\'icona della matita nella barra delle azioni in alto per
+         iniziare la procedura di segnalazione meteo. Si possono segnalare le condizioni del cielo, del vento,
+         il valore della temperatura e la forza del vento. Si puo` anche aggiungere un commento.
+         Se disponibile, puo` essere inclusa l\'informazione aggiuntiva sulla localita`.
+        </string>
     
+  <string name="tutorial_report_done">Una volta compilata la scheda della segnalazione, sulla mappa, 
+      nel punto in cui ti trovi, verra` visualizzata un\'icona, tipicamente quella del cielo.
+      Tocca l\'icona per leggere i dettagli. Tocca il fumetto che comparira` per rimuovere la 
+      segnalazione. La segnalazione rimane valida per 3 ore dalla pubblicazione e sara` visibile a
+      tutti gli utenti. Per modificare una segnalazione, e` necessario prima rimuovere quella vecchia
+      e ripetere la procedura.</string>     
     
+   <string name="tutorial_request_long_press">Tieni premuto a lungo un punto della mappa per iniziare
+       la procedura di richiesta di segnalazione. Comparira` un segnaposti arancione. Toccalo a lungo
+       e spostalo per cambiare la posizione.</string>
+  
+   <string name="tutorial_request_dialog">Conferma l\'invio della richiesta. Nota che puoi disabilitare l\'invio
+       del nome della localita`.</string>
+       
+    <string name="tutorial_request_done">Pubblicata la richiesta con successo, il segnaposti diverra` verde.
+        Gli utenti che si trovano entro un raggio di 3 km intorno al segnaposti riceveranno una notifica,
+        se il servizio delle notifiche e` abilitato sul loro dispositivo. Alla ricezione di una risposta
+        alla tua richiesta, riceverai una notifica. La tua richiesta rimane attiva e visibile per 3 ore.
+        Se tocchi il marcatore della tua richiesta, un fumetto ti dara` la possibilita` di rimuoverla,
+        toccandolo.</string>
+   
+    <string name="tutorial_notifcation_request">Richieste\n\nQuando un utente effettua una richiesta
+        in un punto entro 3 km da dove ti trovi, riceverai una notifica nella barra di stato. 
+        Attivala per accedere direttamente alla sezione "Segnalazioni" e pubblicare la risposta.
+        Una richiesta rimane viva per 3 ore ed e` evidenziata da un segnaposti blu.</string>
+     
+     <string name="tutorial_report_notification">Risposte\n\nQualcuno ha risposto alla tua richiesta
+         Attiva l\'icona di notifica per accedere alla sezione "Segnalazioni". Tocca l\'icona 
+         per leggere i dettagli in un fumetto.</string>
+    
+    <string name="tutorial_disable_notification_service">Disabilitare le notifiche</string>
+    
+    <string name="tutorial_howto_disable_notifications">Il sistema delle notifiche controlla la presenza di 
+        nuovi dati in rete ogni cinque minuti. Abilita/disabilita il servizio notifiche dalla sezione 
+        "Segnalazioni", menu` a tendina, "Servizio notifiche".\n
+        NOTA I: allo spegnimento dello schermo, il dispositivo a breve entra in uno stato di "sleep" e il 
+        servizio notifiche non e` operativo. Questo e` una conseguenza di una scelta progettuale atta ad
+        ottimizzare il rapporto efficienza del servizio/consumo di batteria.
+        NOTA II: quando la rete e` spenta, il servizio notifiche non viene eseguito. Di conseguenza, non
+        esegue calcoli e non utilizza la batteria.
+        </string>
+    
+ <string name="tutorial_menu_launch_tutorial">Vai alla sezione "Notifiche", apri il menu` a tendina in alto a destra e seleziona
+     "Tutorial segnalazioni" per leggere di nuovo questa guida.
+</string>
+ 	
+    <string name="tutorial_report_notification_title">Notifica di nuova segnalazione</string>
+    <string name="tutorial_request_notification_title">Notifica di nuova richiesta</string>
+    
+    <string name="tutorial_report_notification_text">Un utente che si trova entro 3km dal punto della tua richiesta
+        ha risposto. Abbassa la tendina e tocca l\'icona di notifica per leggere la segnalazione.</string>
+    
+    <string name="title_activity_tutorial_presentation">Presentazione funzionalità segnalazioni</string>
+    
+    <string name="action_settings">Impostazioni</string>
+    <string name="tutorial_tab1_title">Termini d\'uso</string>
+    <string name="tutorial_tab2_title">Pubblicare una segnalazione</string>
+    <string name="tutorial_tab3_title">Richiedere una segnalazione</string>
+    <string name="tutorial_tab4_title">Notifiche</string>
+    <string name="tutorial_tab5_title">Specialità</string>
+    
+    <string name="quickstart_publish1">Tocca a lungo un punto sulla mappa.
+        Apparirà un segnaposti arancione. Toccalo a lungo per spostarlo. Clicca infine sul fumetto per
+        iniziare la procedura di richiesta.</string>
+        
+     <string name="quickstart_publish2">Quando la richiesta è stata pubblicata con successo, il marker diventa verde.
+         Puoi toccarlo e seguire le istruzioni per rimuovere la richiesta.
+         Ogni richiesta rimane valida per tre ore.</string>
 
+    <!--  TRIAL -->
+    
+    <string name="trial_version">Versione di prova</string>
+    <string name="days_left">giorni rimanenti.</string>
+    <string name="trial_version_expiring">La versione di prova si sta esaurendo!</string>
+    <string name="touch_to_buy">Tocca qui per ottenere istruzioni</string>
+    <string name="buy_now_from_activity_settings">Compra ora la versione PRO!</string>
+    <string name="learn_more">Learn More&#8230;</string>
+
+    
 </resources>

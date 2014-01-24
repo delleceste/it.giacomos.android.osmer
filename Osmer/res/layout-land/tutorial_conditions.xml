@@ -35,6 +35,17 @@
         android:text="@string/report_recall_from_menu"
         android:textStyle="bold|italic" />
 
+    <TextView
+        android:id="@+id/TextViewTermsConditionsReadAll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/tutorial_textview_background_red_border"
+        android:padding="8dp"
+        android:scrollbars="vertical"
+        android:text="@string/report_carefully_read_all"
+        android:textStyle="bold|italic" />
+
     <CheckBox
         android:id="@+id/cbAcceptTermsAndConditions"
         android:layout_width="match_parent"

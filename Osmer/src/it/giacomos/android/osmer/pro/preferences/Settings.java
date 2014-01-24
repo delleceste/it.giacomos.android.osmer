@@ -334,7 +334,7 @@ public class Settings
 	 */
 	public long getServiceSleepIntervalMillis() 
 	{
-		long intmillis =  mSharedPreferences.getLong("SERVICE_SLEEP_INTERVAL_MILLIS", 240000);
+		long intmillis =  mSharedPreferences.getLong("SERVICE_SLEEP_INTERVAL_MILLIS", 300000);
 		return intmillis;
 	}
 	

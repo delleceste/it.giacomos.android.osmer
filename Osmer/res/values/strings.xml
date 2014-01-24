@@ -574,7 +574,9 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
     <string name="report_accept_terms_and_conditions">I accept the terms and conditions</string>
     
     <string name="report_recall_from_menu">NOTE: you can recall this from the "Reports" section,
-        drop down menu in the action bar, "Reports tutorial"</string>
+        drop down menu in the action bar, "Reports tutorial".</string>
+        
+    <string name="report_carefully_read_all">NOTE: carefully read through all the sections in this tutorial.</string>
         
     <string name="tutorial_start_report">Click on the pencil icon in the action bar on the tpo 
         to start reporting the weather in your area.
@@ -607,11 +609,15 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
     
     <string name="tutorial_disable_notification_service">How to disable notifications</string>
     <string name="tutorial_howto_disable_notifications">The notification service checks for 
-        new notifications every few minutes (unless the device is sleeping). 
+        new notifications every five minutes. 
         Disable or enable the service in the Reports section 
-        from the drop down menu.</string>
+        from the drop down menu.\n
+        NOTE I: if the device goes to "sleep" (this normally happens right after screen goes off), the
+        notification service is not run. This is a design compromise solution aimed at balancing 
+        utility and battery usage.\n
+        NOTE II: when network is off, the notification service does not run. As a consequence, no
+        battery power is used as far as notifications are concerned.</string>
     <string name="tutorial_menu_launch_tutorial">Go to the Reports section, open the drop down menu on the top right corner and select Report Tutorial to read this guide once again</string>
-    <string name="tutorial_launch_again">To launch the tutorial again&#8230;</string>
     <string name="tutorial_report_notification_title">New report notification</string>
     <string name="tutorial_request_notification_title">New request notification</string>
     <string name="tutorial_report_notification_text">A user in an area within 3km from the poin of your request has replied. Scroll down the status bar and click on the Meteo.FVG icon to read the report</string>

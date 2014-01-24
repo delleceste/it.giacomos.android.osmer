@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
-            android:background="@drawable/tutorial_textview_background"
+            android:background="@drawable/tutorial_textview_background_red_border"
             android:padding="8dp"
             android:text="@string/tutorial_howto_disable_notifications" />
     
