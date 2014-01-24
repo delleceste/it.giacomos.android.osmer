@@ -638,15 +638,5 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
         You can touch the marker and follow the instructions to remove your request.
         The request will stay valid for 3 hours.</string>
 
-    <!--  TRIAL -->
-    
-    <string name="trial_version">Trial version</string>
-    <string name="days_left">days left.</string>
-    <string name="trial_version_expiring">Trial version is expiring! </string>
-    <string name="touch_to_buy">Touch here to learn what to do!</string>
-    <string name="buy_now_from_activity_settings">Buy Now!</string>
-    <string name="learn_more">Learn More&#8230;</string>
-
-    
     
 </resources>

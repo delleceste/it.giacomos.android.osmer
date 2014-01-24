@@ -702,14 +702,5 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
          Puoi toccarlo e seguire le istruzioni per rimuovere la richiesta.
          Ogni richiesta rimane valida per tre ore.</string>
 
-    <!--  TRIAL -->
-    
-    <string name="trial_version">Versione di prova</string>
-    <string name="days_left">giorni rimanenti.</string>
-    <string name="trial_version_expiring">La versione di prova si sta esaurendo!</string>
-    <string name="touch_to_buy">Tocca qui per ottenere istruzioni</string>
-    <string name="buy_now_from_activity_settings">Compra ora la versione PRO!</string>
-    <string name="learn_more">Learn More&#8230;</string>
-
     
 </resources>
