@@ -12,6 +12,7 @@ import it.giacomos.android.osmer.PROva.preferences.Settings;
 import it.giacomos.android.osmer.PROva.trial.BuyProActivity;
 import it.giacomos.android.osmer.PROva.trial.ExpirationChecker;
 import it.giacomos.android.osmer.PROva.trial.ExpirationCheckerListener;
+import it.giacomos.android.osmer.PROva.trial.TrialDaysLeftListener;
 import it.giacomos.android.osmer.PROva.trial.TrialExpiringNotification;
 import it.giacomos.android.osmer.PROva.widgets.HomeTextView;
 import it.giacomos.android.osmer.PROva.widgets.OTextView;
@@ -35,6 +36,7 @@ ExpirationCheckerListener, OnClickListener
 	private SituationImage mSituationImage;
 	private OTextView mHomeTextView;
 	private ExpirationChecker mExpirationChecker;
+	private TrialDaysLeftListener mTrialDaysLeftListener; /* trial version */
 	
 	public SituationFragment() 
 	{
@@ -66,6 +68,8 @@ ExpirationCheckerListener, OnClickListener
 		LocationService locationService = oActivity.getLocationService();
 		locationService.registerLocationServiceAddressUpdateListener(mSituationImage);
 		locationService.registerLocationServiceUpdateListener(mSituationImage);
+		
+		mTrialDaysLeftListener = (TrialDaysLeftListener) getActivity();
 	}
 	
 	public void onResume()
@@ -107,7 +111,7 @@ ExpirationCheckerListener, OnClickListener
 	@Override
 	public void onTrialDaysRemaining(int days) 
 	{
-		new Settings(getActivity()).setTrialDaysLeft(days);
+		mTrialDaysLeftListener.onTrialDaysRemaining(days);
 		updateTrialDaysRemainingText(days);
 	}
 
@@ -119,19 +123,8 @@ ExpirationCheckerListener, OnClickListener
 		String expiringMsg = getString(R.string.trial_version) + ": " + days + " " +
 				getString(R.string.days_left);
 		TextView expiTV = (TextView) getActivity().findViewById(R.id.tvdaysLeft);
-		if(days <= 0)
-		{
-			Toast.makeText(getActivity(), R.string.trial_expired, Toast.LENGTH_LONG).show();
-			Intent activityIntent = new Intent(getActivity(), BuyProActivity.class);
-			startActivity(activityIntent);
-			getActivity().finish();
-		}
-		else if(days < 3)
-		{
+		if(days < 3)
 			expiTV.setTextColor(Color.RED);
-			TrialExpiringNotification ten = new TrialExpiringNotification();
-			ten.show(getActivity(), days);
-		}
 		expiTV.setText(expiringMsg);
 	}
 	

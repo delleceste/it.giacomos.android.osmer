@@ -38,6 +38,7 @@ import it.giacomos.android.osmer.PROva.service.ServiceManager;
 import it.giacomos.android.osmer.PROva.trial.ExpirationChecker;
 import it.giacomos.android.osmer.PROva.trial.ExpirationCheckerListener;
 import it.giacomos.android.osmer.PROva.trial.BuyProActivity;
+import it.giacomos.android.osmer.PROva.trial.TrialDaysLeftListener;
 import it.giacomos.android.osmer.PROva.trial.TrialExpiringNotification;
 import it.giacomos.android.osmer.PROva.webcams.WebcamDataHelper;
 import it.giacomos.android.osmer.PROva.widgets.AnimatedImageView;
@@ -111,7 +112,8 @@ RadarOverlayUpdateListener,
 DataPoolErrorListener,
 RadarAnimationListener,
 PostActionResultListener,
-ReportRequestListener /* in trial version */
+ReportRequestListener, 
+TrialDaysLeftListener/*  trial version */
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
@@ -161,11 +163,16 @@ ReportRequestListener /* in trial version */
 		/* (re)connect the location update client */
 		mLocationService.connect();
 		m_downloadManager.onResume(this);
+		
+		
+		/* trial version */
+		mTrialDaysChanged(mSettings.getTrialDaysLeft());
 	}
 
 	public void onPause()
 	{
 		super.onPause();
+		Log.e("OsmerActivity.onPause", "onPause");
 		if(!mGoogleServicesAvailable)
 			return;
 
@@ -176,8 +183,6 @@ ReportRequestListener /* in trial version */
 		 */
 		m_downloadManager.onPause(this);
 		mLocationService.disconnect();
-		
-		
 	}
 
 	/**
@@ -247,6 +252,7 @@ ReportRequestListener /* in trial version */
 
 	protected void onDestroy()
 	{
+		Log.e("OsmerActivity.onDestroy", "onDestroy");
 		if(mGoogleServicesAvailable)
 		{
 			/* drawables are unbinded inside ForecastFragment's onDestroy() */
@@ -273,6 +279,38 @@ ReportRequestListener /* in trial version */
 			return;
 	}
 
+	/* trial version.
+	 * This method is triggered by SituationFragment
+	 */
+	@Override
+	public void onTrialDaysRemaining(int days) 
+	{
+		mSettings.setTrialDaysLeft(days);
+		mTrialDaysChanged(days);
+	}
+	
+	private void mTrialDaysChanged(int days)
+	{
+		if(days <= 0)
+		{
+			Toast.makeText(this, R.string.trial_expired, Toast.LENGTH_LONG).show();
+			Intent activityIntent = new Intent(this, BuyProActivity.class);
+			startActivity(activityIntent);
+			/* stop notification service, if running.
+			 * The ConnectivityChangedReceiver will not start the service anymore
+			 * if the trial period has expired.
+			 */
+			mStartNotificationService(false);
+			/* finish app */
+			this.finish();
+		}
+		if(days < 3)
+		{
+			TrialExpiringNotification ten = new TrialExpiringNotification();
+			ten.show(this, days);
+		}
+	}
+	
 	public void init()
 	{
 		mProgressBarStep = mProgressBarTotSteps = 0;
@@ -808,7 +846,7 @@ ReportRequestListener /* in trial version */
 	private void mStartNotificationService(boolean startService) 
 	{
 		ServiceManager serviceManager = new ServiceManager();
-		Log.e("OsmerActivity.onClick", "enabling service: " + startService +
+		Log.e("OsmerActivity.mStartNotificationService", "enabling service: " + startService +
 				" was running "+ serviceManager.isServiceRunning(this));
 		boolean ret = serviceManager.setEnabled(this, startService);
 		if(ret && startService)
@@ -1299,5 +1337,6 @@ ReportRequestListener /* in trial version */
 
 
 	int availCnt = 0;
+
 
 }
