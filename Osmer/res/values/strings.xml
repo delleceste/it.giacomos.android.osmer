@@ -385,6 +385,12 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
 	    ]]>		
 	    </string>
 	
+	<string name="try_meteo_fvg_prova">Try Meteo.FVG PROva for free</string>
+	
+	<string name="download_prova_now">Install</string>
+	
+	<string name="becomes_social">Meteo.FVG becomes \"social\"!</string>
+	
 	
 	
 </resources>

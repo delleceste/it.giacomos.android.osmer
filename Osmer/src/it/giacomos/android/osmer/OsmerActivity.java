@@ -39,10 +39,12 @@ import it.giacomos.android.osmer.preferences.*;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -746,6 +748,12 @@ TextDecoderListener
 			case R.id.centerMapButton:
 				((OMapView) findViewById(R.id.mapview)).centerMap();
 				break;
+				
+				/* Button try PROva */
+			case R.id.btInstallProva:
+				mStartInstallProva();
+				break;
+				
 			default:
 				mToggleButtonGroupHelper.setClicked(b);
 				break;
@@ -787,6 +795,7 @@ TextDecoderListener
 				}
 
 				break;
+			
 			default:
 				break;	
 			}
@@ -957,6 +966,16 @@ TextDecoderListener
 		TitlebarUpdater titleUpdater = new TitlebarUpdater();
 		titleUpdater.update(this);
 		titleUpdater = null;
+	}
+
+	/** Try Meteo.FVG PROva 
+	 * 
+	 */
+	private void mStartInstallProva() 
+	{
+		Intent i = new Intent(android.content.Intent.ACTION_VIEW);
+		i.setData(Uri.parse("https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.prova"));
+		startActivity(i);	
 	}
 
 	public DownloadManager stateMachine() { return m_downloadManager; }
@@ -1146,6 +1165,9 @@ TextDecoderListener
 		
 		/* center map button (v. 1.1.5) */
 		findViewById(R.id.centerMapButton).setOnClickListener(this);	
+		
+		Button btInstallProva = (Button) findViewById(R.id.btInstallProva);
+		btInstallProva.setOnClickListener(this);
 	}
 	
 	/* private members */

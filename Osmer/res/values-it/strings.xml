@@ -316,7 +316,7 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 	
 	</string>
 	    
-	<string name="dontshow_upgrade_popup_again">Non mostrare più questo messaggio all\'avvio dell\'applicazione</string>
+	<string name="dontshow_upgrade_popup_again">Non mostrare più questo messaggio</string>
 	
 	<string name="menu_upgrade">
 	    Upgrade alla versione Pro
@@ -326,71 +326,62 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 	    per visualizzare ancora il messaggio di upgrade alla versione 2</string>
 	
 	<string name="upgrade"><![CDATA[
-		<h3>Acquista la versione Pro per Android 4! Ora c\'è l\'animazione radar!</h3>
-		<p>
-		<h2>Importanti novità!</h2>
-		
-		<ul><li>- Animazione radar!</li><br/>
-		<li>- <strong>Tendenza</strong> meteo per il <strong>terzo giorno</strong>;</li><br/>
-		<li>- dati aggiuntivi toccando un\'icona o un punto sulla mappa delle previsioni;</li><br/>
-		<li>- previsioni dettagliate per monti, prealpi, alta pianura, costa... (tocca un\'icona
-			o un punto sulla mappa delle previsioni);</li><br/>
-		</ul>
-		Acquista <a href="https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro">Meteo.FVG Pro</a>
-		supportandone lo sviluppo.
-		</p>
-		
-		<p>
-	    Lo sviluppo dell\'applicazione <em>Meteo.FVG</em>, la sua manutenzione
-	    e l\'aggiornamento periodico hanno richiesto al programmatore mesi di sviluppo 
-	    a tempo pieno.
-		
-		<br/>Gli utenti Android 4 possono da oggi acquistare la versione <em>Pro</em>
-		di <cite>Meteo.FVG</cite> 
-		dal <a href="https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro">play store di Google</a>,
-		supportando così eventuali sviluppi futuri, aggiornamenti e correzioni della app.
+	    <h3>Meteo.FVG diventa <cite>social</cite>!!</h3>
 	    
+	    <p>Dopo le importanti novit&agrave; dell\'<font color="green">animazione radar</font>, 
+	    della <font color="green">grafica rinnovata</font> e del notevole <font color="green">miglioramento</font>
+	    delle
+	    <font color="green">prestazioni</font> e del <font color="green">tempo di download dei dati</font>,
+	    ora &egrave; possibile usare Meteo.FVG Pro per <font color="green"><strong>segnalare il tempo nel punto in cui ti
+	    trovi e richiedere una segnalazione in un punto qualsiasi della regione!</strong></font>
+	    Prima di andare in gita o al mare, pubblica una richiesta sulla tua destinazione!
+	    Riceverai una <strong>notifica</strong> quando qualcuno ti avr&agrave; risposto!</p>
+	    
+	    <h3>Da oggi puoi provare Meteo.FVG Pro per 30 giorni!</h3>
+	    <h5>Scarica gratuitamente la 
+	    versione <strong><a href="https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.prova">Meteo.FVG PROva</a></strong> 
+	    dal Play Store di google e provala subito sul tuo dispositivo per 30 giorni!</h5>
+	    <p>In seguito potrai decidere se supportare il suo sviluppo acquistando la versione ufficiale
+	    <a href="https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro">Meteo.FVG Pro</a>.
 	    </p>
 	    
-	    <h5>Scaricamento gratuito della versione di Meteo.FVG Pro (versioni 2.0 e successive.)</h5>
-	    <p>
-	    Se trovi utile e ti piace l\'app Meteo.FVG, considera di supportarla acquistando
-	    la versione Pro (versioni 2.1.0 e successive.)
-	    </p>
-	    <p>
-	    Se invece non desideri comperare la versione Pro di Meteo.FVG (che dà diritto a 
-	    tutti i successivi aggiornamenti, se previsti) potrai
-	    scaricare <em>gratuitamente</em> dal play store di Google la versione Pro "<em>beta</em>" di ogni
-	    rilascio ufficiale,
-	    dopo esserti iscritto alla <em>community Google +</em> denominata <strong>
-	     <a href="https://plus.google.com/u/0/communities/104494499218507670829">Android.Meteo.FVG</a></strong>.
-	     <br/>
-	    All\'interno della community <cite>Android.Meteo.FVG</cite> troverai un link
-	    per l\'installazione della versione pro <cite>beta gratuita</cite>.
-	    <br/>Ogni versione <em>beta</em> gratuita sarà del tutto identica a quella corrispondente a pagamento 
-	    avente il medesimo numero di versione.
-	    Una versione beta/test è già disponibile per lo scaricamento (Android versione 4.0 o
-	    successive) tramite un link condiviso nella community sopra citata. Se desideri provarla 
-	    e segnalare problemi o suggerire miglioramenti iscriviti alla community, sei il benvenuto!
+	    <p><strong>Meteo.FVG Pro &egrave; <font color="green">studiata e ottimizzata per Android 4</font>!</strong>
 	    </p>
 	    
-	    <h6>Android.Meteo.FVG Google+ community</h6>
+	    <h3>Statistiche</h3>
+	    <p><ul>
+	    <li>- Meteo.FVG e Meteo.FVG Pro vengono sviluppati e mantenuti da due anni e mezzo;</li><br/>
+	    <li>- oltre 6.500 persone hanno <cite>attualmente</cite> installato Meteo.FVG.</li><br/>
+	    <li>- Tra queste, oltre 5.000 hanno una versione di Android compatibile con la 
+	    <a href="https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro">Meteo.FVG Pro;</a></li><br/>
+	    <li>- 200 persone hanno attualmente installato Meteo.FVG Pro.</li></ul></p>
+	    
+	    <h3>Nota</h3>
+	    <p>La funzionalit&agrave; "social" di richieste e segnalazioni &egrave; ancora in fase
+	    sperimentale: sono necessari numerosi utenti per perfezionarne il funzionamento!</p>
+	    	    
+	    <h3>Android.Meteo.FVG Google+ community</h3>
 	    <p>Iscriviti subito alla <em>community</em> <a href="https://plus.google.com/u/0/communities/104494499218507670829">Android.Meteo.FVG</a>
 	    per fare domande, ottenere risposte e suggerire miglioramenti per la app Meteo.FVG.<br/>
 	    Entra nel tuo profilo Google+, seleziona <cite>community</cite> dal menù sulla sinistra,
 	    cerca la community <em>Android.Meteo.FVG</em> e richiedi di diventare membro.
-	    Sono già oltre 3000 gli utilizzatori di Meteo.FVG!
 	    </p>
 	    
 	    
-	    <h6>Visualizza di nuovo questo messaggio</h6>
+	    <h3>Visualizza di nuovo questo messaggio</h3>
 	    <p>Per visualizzare di nuovo questo messaggio in futuro, tocca il tasto <em>Menu</em> e
-	    seleziona la voce <em>Upgrade alla versione 2</em> dal menù a tendina.</p>
+	    seleziona la voce <em>Upgrade alla versione Pro</em> dal menù a tendina.</p>
 	    
-	    <p>Grazie.</p>
+	    <h3>Grazie.</h3>
 	    
 	    
 	    ]]>		
 	    </string>
 	
+	
+	<string name="try_meteo_fvg_prova">Prova ora gratuitamente Meteo.FVG PROva</string>
+	
+	<string name="download_prova_now">Installa</string>
+	
+	<string name="becomes_social">Meteo.FVG diventa \"social\"!</string>
 </resources>

@@ -9,11 +9,25 @@
     android:orientation="vertical"
     tools:ignore="UnusedNamespace" >
 
+      <TextView
+          android:id="@+id/tvTryProva"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_marginTop="5dp"
+          android:layout_toLeftOf="@+id/btInstallProva"
+          android:gravity="right|center_vertical"
+          android:minHeight="30dp"
+          android:padding="5dp"
+          android:text="@string/try_meteo_fvg_prova"
+          android:textColor="#000000" />
+    
 	<it.giacomos.android.osmer.widgets.OViewFlipper
 	    android:id="@+id/viewFlipper1"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
-	    android:layout_above="@+id/buttonsFlipper" >
+	    android:layout_above="@+id/buttonsFlipper"
+	    android:layout_below="@+id/tvTryProva" >
 
 		<!-- match_content on relative layout to make the text view contain the 
 			full text even if long. The view is scrollable -->
@@ -249,24 +263,21 @@
 			android:id="@+id/RelativeLayoutButtonsPage1" android:layout_gravity="right"
 			android:layout_width="258dp" android:layout_height="wrap_content">
 			<ToggleButton android:textOff="" android:textOn=""
-				android:layout_alignBaseline="@+id/buttonHome"
 				android:layout_alignParentTop="true" android:id="@+id/buttonToday"
 				android:padding="10dp" android:background="@drawable/forecast_button"
 				android:layout_height="60dp" android:layout_width="60dp"></ToggleButton>
 			<ToggleButton android:onClick="onToggle"
 				android:textOff="" android:textOn="" android:layout_toRightOf="@+id/buttonToday"
-				android:layout_alignBaseline="@+id/buttonHome"
 				android:layout_alignParentTop="true" android:id="@+id/buttonTomorrow"
 				android:padding="10dp" android:background="@drawable/forecast_1_button"
 				android:layout_height="60dp" android:layout_width="60dp"></ToggleButton>
 			<ToggleButton android:onClick="onToggle"
 				android:textOff="" android:textOn="" android:layout_toRightOf="@+id/buttonTomorrow"
-				android:layout_alignBaseline="@+id/buttonHome"
 				android:layout_alignParentTop="true" android:id="@+id/buttonTwoDays"
 				android:padding="10dp" android:background="@drawable/forecast_2_button"
 				android:layout_height="60dp" android:layout_width="60dp"></ToggleButton>
 			<ToggleButton android:onClick="onToggle"
-				android:textOff="" android:textOn="" android:layout_alignBaseline="@+id/buttonHome"
+				android:textOff="" android:textOn="" 
 				android:layout_alignParentTop="true" android:id="@+id/buttonMap"
 				android:padding="10dp" android:background="@drawable/fvg_button"
 				android:layout_height="60dp" android:layout_width="60dp"
@@ -466,4 +477,18 @@
 		android:textOn="" android:background="@drawable/home_button"
 		android:id="@+id/buttonHome" android:layout_alignParentBottom="true"
 		android:layout_width="60dp" android:layout_height="60dp"></ToggleButton>
+
+	<Button
+	    android:id="@+id/btInstallProva"
+	    style="?android:attr/buttonStyleSmall"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@+id/viewFlipper1"
+	    android:layout_alignParentRight="true"
+	    android:layout_marginRight="3dp"
+	    android:layout_marginTop="5dp"
+	    android:background="@drawable/try_meteofvg_prova_button_background"
+	    android:text="@string/download_prova_now"
+	    android:textColor="#000000" />
+
 </RelativeLayout>
