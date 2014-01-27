@@ -70,6 +70,7 @@ ExpirationCheckTaskListener
 
 	public void stop(Context ctx)
 	{
+		mExpirationCheckerListener = null;
 		if(mNetworkCheck && mNetworkStatusMonitor != null)
 		{
 			if(mExpirationCheckTask!= null && 
@@ -129,7 +130,8 @@ ExpirationCheckTaskListener
 				
 				/* notify service */
 				mDaysLeft = daysLeft;
-				mExpirationCheckerListener.onTrialDaysRemaining(daysLeft);
+				if(mExpirationCheckerListener != null)
+					mExpirationCheckerListener.onTrialDaysRemaining(daysLeft);
 			}
 			catch(NumberFormatException e)
 			{
