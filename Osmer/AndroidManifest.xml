@@ -112,9 +112,13 @@
 
         <service android:name="it.giacomos.android.osmer.PROva.service.ReportDataService" />
 
+        <!--
+        
         <meta-data android:name="com.google.android.gms.version"  android:value="@integer/google_play_services_version" />
 
-        
+          -->
+          
+          
         <activity
             android:name="it.giacomos.android.osmer.PROva.widgets.map.report.tutorialActivity.TutorialPresentationActivity"
             android:label="@string/title_activity_tutorial_presentation"
