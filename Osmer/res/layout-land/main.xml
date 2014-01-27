@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/viewFlipper1"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp"
+        android:layout_margin="5dp"
         android:layout_toRightOf="@+id/tvTryProva"
         android:background="@drawable/try_meteofvg_prova_button_background"
         android:text="@string/download_prova_now"
