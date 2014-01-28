@@ -14,7 +14,7 @@ public class MyAlertDialogFragment extends DialogFragment
 
 	public static void MakeGenericError(int message, FragmentActivity a)
 	{
-		MyAlertDialogFragment.newInstance(R.string.error_message, message, R.drawable.)
+		MyAlertDialogFragment.newInstance(R.string.error_message, message, R.drawable.ic_dialog_alert)
 		.show(a.getSupportFragmentManager(), "ErrorDialog");
 	}
 
@@ -73,7 +73,7 @@ public class MyAlertDialogFragment extends DialogFragment
 		else if(!msg.isEmpty())
 			builder.setMessage(msg);
 		
-		builder.setPositiveButton(string.ok_button,
+		builder.setPositiveButton(R.string.ok_button,
 				new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 
