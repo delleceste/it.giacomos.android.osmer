@@ -1,8 +1,7 @@
 package it.giacomos.android.osmer.pro;
 
 
-import it.giacomos.android.osmer.R.string;
-import android.R;
+import it.giacomos.android.osmer.pro.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -15,19 +14,19 @@ public class MyAlertDialogFragment extends DialogFragment
 
 	public static void MakeGenericError(int message, FragmentActivity a)
 	{
-		MyAlertDialogFragment.newInstance(string.error_message, message, R.drawable.ic_dialog_alert)
+		MyAlertDialogFragment.newInstance(R.string.error_message, message, R.drawable.)
 		.show(a.getSupportFragmentManager(), "ErrorDialog");
 	}
 
 	public static void MakeGenericError(String message, FragmentActivity a)
 	{
-		MyAlertDialogFragment.newInstance(string.error_message, message, R.drawable.ic_dialog_alert)
+		MyAlertDialogFragment.newInstance(R.string.error_message, message, R.drawable.ic_dialog_alert)
 		.show(a.getSupportFragmentManager(), "ErrorDialog");
 	}
 
 	public static void MakeGenericInfo(int message, FragmentActivity a)
 	{
-		MyAlertDialogFragment.newInstance(string.info, message, R.drawable.ic_dialog_info)
+		MyAlertDialogFragment.newInstance(R.string.info, message, R.drawable.ic_dialog_info)
 		.show(a.getSupportFragmentManager(), "InfoDialog");
 	}
 

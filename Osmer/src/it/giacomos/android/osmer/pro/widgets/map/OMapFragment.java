@@ -12,7 +12,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
 import it.giacomos.android.osmer.pro.OsmerActivity;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.pro.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.pro.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.pro.network.Data.DataPoolBitmapListener;

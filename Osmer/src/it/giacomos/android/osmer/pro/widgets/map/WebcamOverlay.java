@@ -1,7 +1,7 @@
 package it.giacomos.android.osmer.pro.widgets.map;
 
 import it.giacomos.android.osmer.pro.OsmerActivity;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.pro.network.Data.DataPool;
 import it.giacomos.android.osmer.pro.network.Data.DataPoolTextListener;
 import it.giacomos.android.osmer.pro.network.state.WebcamBitmapTask;

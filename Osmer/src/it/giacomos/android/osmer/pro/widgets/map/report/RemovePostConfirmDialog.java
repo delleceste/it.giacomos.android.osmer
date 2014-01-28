@@ -2,7 +2,7 @@ package it.giacomos.android.osmer.pro.widgets.map.report;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.pro.network.state.Urls;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostActionResultListener;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostType;

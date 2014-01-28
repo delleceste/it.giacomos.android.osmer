@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.pro.widgets;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
