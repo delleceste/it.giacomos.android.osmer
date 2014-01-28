@@ -126,7 +126,7 @@ ReportRequestListener
 	{
 		super.onCreate(savedInstanceState);
 
-		Log.e("OsmerActivity.onCreate", "onCreate called");
+//		Log.e("OsmerActivity.onCreate", "onCreate called");
 		requestWindowFeature(Window.FEATURE_PROGRESS);
 		this.setProgressBarVisibility(true);
 
@@ -149,7 +149,7 @@ ReportRequestListener
 	public void onResume()
 	{	
 		super.onResume();
-		Log.e("OsmerActivity.onResume", "onResume called");
+//		Log.e("OsmerActivity.onResume", "onResume called");
 		if(!mGoogleServicesAvailable)
 			return;
 
@@ -194,10 +194,7 @@ ReportRequestListener
 			if(extras.getBoolean("NotificationReportRequest")
 					|| extras.getBoolean("NotificationReport"))
 				forceDrawerItem = mDrawerItems.length - 1;
-			Log.e("OsmerActivity.onPostCreate", "switching to item " + forceDrawerItem);
 		}
-
-		Log.e("OsmerActivity.onPostCreate", "actionBarMAnager.init with saved instance state and drawerItem " + forceDrawerItem);
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
 	}
 
@@ -274,7 +271,7 @@ ReportRequestListener
 		mViewPager = new ViewPager(this);
 		mViewPager.setId(R.id.pager);
 
-		mLocationService = new LocationService(getApplicationContext(), mDownloadStatus);
+		mLocationService = new LocationService(getApplicationContext());
 		/* Set the number of pages that should be retained to either side of 
 		 * the current page in the view hierarchy in an idle state
 		 */
@@ -643,13 +640,10 @@ ReportRequestListener
 	@Override
 	public void onMyReportLocalityChanged(String locality) 
 	{
-		Log.e("OsmerActivity.onMyReportLocalityChanged", "locality " + locality);
 		ReportRequestDialogFragment rrdf = (ReportRequestDialogFragment) 
 				getSupportFragmentManager().findFragmentByTag("ReportRequestDialogFragment");
 		if(rrdf != null)
 			rrdf.setLocality(locality);
-		else
-			Log.e("OsmerActivity.onMyReportLocalityChanged", "FRAGMENT NULL!");
 	}
 
 	/** implements ReportRequestListener interface
@@ -723,7 +717,6 @@ ReportRequestListener
 			map.setMode(new MapViewMode(observationType, mapMode));
 		else if(mapMode == MapMode.REPORT)
 		{
-			Log.e("OsmerActivity.onSelectionDone", "starting tutorial activity!!");
 			mDrawerList.setItemChecked(0, true);
 			mActionBarManager.drawerItemChanged(0);
 			mStartTutorialActivity();
@@ -735,7 +728,6 @@ ReportRequestListener
 
 	private void mStartTutorialActivity()
 	{
-		Log.e("OsmerActivity.mStartTutorialActivity", "STARTING");
 		Intent i = new Intent(this, TutorialPresentationActivity.class);
 		i.putExtra("startedFromMainActivity", true);
 		i.putExtra("conditionsAccepted", mReportConditionsAccepted);
@@ -958,7 +950,6 @@ ReportRequestListener
 		} 
 		else 
 		{
-			Log.e("OsmerActivity.swithciee", "displayting child 1");
 			viewFlipper.setDisplayedChild(1);
 		}
 
@@ -1021,7 +1012,6 @@ ReportRequestListener
 				updateWbcamList();
 			else if(id == ViewType.REPORT)
 			{
-				Log.e("switchView", "updating report");
 				updateReport(false);
 			}
 		}
@@ -1053,7 +1043,6 @@ ReportRequestListener
 
 	public void startReportActivity()
 	{
-		Log.e("OsmerActivity.startReportActivity", "enter");
 		Location loc = this.mLocationService.getCurrentLocation();
 		LocationInfo loci = mLocationService.getCurrentLocationInfo();
 		if(loc == null)
@@ -1072,11 +1061,10 @@ ReportRequestListener
 			i.putExtra("longitude", loc.getLongitude());
 			if(loci != null)
 			{
-				Log.e("OsmerActivity.startReportActivity",  "startingActivity with locality" + loci.locality);
 				i.putExtra("locality", loci.locality);
 			}
-			else
-				Log.e("OsmerActivity.startReportActivity", "startingActivity without locality");
+//			else
+//				Log.e("OsmerActivity.startReportActivity", "startingActivity without locality");
 			this.startActivityForResult(i, REPORT_ACTIVITY_FOR_RESULT_ID);
 		}
 	}
@@ -1084,7 +1072,7 @@ ReportRequestListener
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{
-		Log.e("onActivityResult", "result " + resultCode);
+//		Log.e("onActivityResult", "result " + resultCode);
 		if(requestCode == REPORT_ACTIVITY_FOR_RESULT_ID)
 		{
 			if(resultCode == Activity.RESULT_OK)
@@ -1106,8 +1094,8 @@ ReportRequestListener
 		}
 		else if(requestCode == TUTORIAL_ACTIVITY_FOR_RESULT_ID)
 		{
-			Log.e("OsmerActivity.onActivityResult", "resultCode " + resultCode + " data " + data + " OK " +
-					RESULT_OK + " cancelled " + RESULT_CANCELED);
+//			Log.e("OsmerActivity.onActivityResult", "resultCode " + resultCode + " data " + data + " OK " +
+//					RESULT_OK + " cancelled " + RESULT_CANCELED);
 			boolean conditionsAccepted = false;
 			if(data != null)
 				conditionsAccepted = data.getBooleanExtra("conditionsAccepted", false);
@@ -1118,7 +1106,7 @@ ReportRequestListener
 				mStartNotificationService(conditionsAccepted && mSettings.notificationServiceEnabled());
 			}
 
-			Log.e("OsmerActivity.onActivityResult", "conditionsAccepted " + conditionsAccepted);
+//			Log.e("OsmerActivity.onActivityResult", "conditionsAccepted " + conditionsAccepted);
 			if(conditionsAccepted)
 			{
 				mDrawerList.performItemClick(mDrawerList, 5, mDrawerList.getItemIdAtPosition(5));

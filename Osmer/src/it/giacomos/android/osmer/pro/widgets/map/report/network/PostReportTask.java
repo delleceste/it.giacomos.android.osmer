@@ -79,7 +79,6 @@ public class PostReportTask extends AsyncTask<String, Integer, String>
 		try {
 			form = new UrlEncodedFormEntity(postParameters);
 	        request.setEntity(form);
-	        Log.e("PostReportTask.doInBackground", postParameters.toString());
 	        HttpResponse response = httpClient.execute(request);
 	        StatusLine statusLine = response.getStatusLine();
 	        if(statusLine.getStatusCode() < 200 || statusLine.getStatusCode() >= 300)

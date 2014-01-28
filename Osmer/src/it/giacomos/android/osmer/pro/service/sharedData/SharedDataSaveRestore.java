@@ -35,7 +35,6 @@ public class SharedDataSaveRestore
 			data.put(NotificationData.TYPE_REPORT, 
 					new ReportNotification(reportNotificationAsStr));
 		
-		Log.e("SharedDataSaveRestore.load", "loaded data size " + data.size());
 		Logger.log("SharedDataSR.load: REQ " + reportRequestNotificationAsStr);
 		Logger.log("SharedDataSR.load: REP " + reportNotificationAsStr);
 		return data;
@@ -58,9 +57,8 @@ public class SharedDataSaveRestore
 			editor.putString("LAST_REPORT_REQUEST_NOTIF", reqAsString);
 			editor.commit();
 		}
-		Log.e("SharedDataSaveRestore.save", "saved data size " + data.size());
-		Logger.log("SharedDataSR.save: saved REQ " + reqAsString);
-		Logger.log("SharedDataSR.save: saved REP " + repAsString);
+//		Logger.log("SharedDataSR.save: saved REQ " + reqAsString);
+//		Logger.log("SharedDataSR.save: saved REP " + repAsString);
 	}
 
 	public void setLastNotifiedTimeMillis(long lastNotifiedMillis) 

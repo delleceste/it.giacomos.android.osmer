@@ -42,7 +42,6 @@ ReportUpdateTaskListener
 		 * onResume is not called when map switches mode. Instead, when the activity is paused, 
 		 * the onPause method of ReportUpdater unregisters from NetworkStatusMonitor.
 		 */
-		Log.e("ReportUpdater", "registering network status monitor in CONSTRUCTOR");
 		mContext.registerReceiver(mNetworkStatusMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 		mReportUpdaterListener = rul;
 		mLastReportUpdatedAt = 0;

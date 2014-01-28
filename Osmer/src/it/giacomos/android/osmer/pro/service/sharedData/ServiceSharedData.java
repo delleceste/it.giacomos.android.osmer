@@ -110,16 +110,16 @@ public class ServiceSharedData
 		 */
 		long minMillis = new Settings(ctx).minTimeBetweenReportRequestNotificationsMinutes() * 60 * 1000;
 		long diffTimeMs =  Calendar.getInstance().getTime().getTime() - mLastNotifiedTimeMillis;
-		Log.e("ServiceSharedData.canBeConsideredNew", "difftime ms = " + diffTimeMs + " min millis " + minMillis);
+//		Log.e("ServiceSharedData.canBeConsideredNew", "difftime ms = " + diffTimeMs + " min millis " + minMillis);
 		if(diffTimeMs < minMillis)
 		{
 			Logger.log("SSD.canBeConsideredNew: no: diffTime " + diffTimeMs + " < " + minMillis);
-			Log.e("ServiceSharedData", "diffTimeMillis < minMillis CANNOT BE CONSIDERETH NEW");
+//			Log.e("ServiceSharedData", "diffTimeMillis < minMillis CANNOT BE CONSIDERETH NEW");
 			return false; /* not new */
 		}
 		
-		Log.e("ServiceSharedData", "diffTimeMillis > minimum --> NEW");
-		Logger.log("SSD.canBeConsideredNew: yes, new");
+//		Log.e("ServiceSharedData", "diffTimeMillis > minimum --> NEW");
+//		Logger.log("SSD.canBeConsideredNew: yes, new");
 		return true; /* elapsed time is greater than the minimum interval required between notifications */
 	}
 

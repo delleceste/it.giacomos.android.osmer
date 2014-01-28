@@ -21,16 +21,13 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener,
 GeocodeAddressUpdateListener
 {
 	private final Context mContext;
-	private final DownloadStatus mDownloadStatus;
 	private LocationClient mLocationClient;
 	private ArrayList<LocationServiceUpdateListener> mLocationServiceUpdateListeners;
 	private ArrayList<LocationServiceAddressUpdateListener> mLocationServiceAddressUpdateListeners;
 	private LocationRequest mLocationRequest;
 	private Location mCurrentLocation;
 	private LocationInfo mCurrentLocationInfo;
-	
-	private int tmpUpdCnt;
-	
+		
 	/* store location services available flag if servicesAvailable returns true */
 	
 	/* Define a request code to send to Google Play services
@@ -39,17 +36,14 @@ GeocodeAddressUpdateListener
 	public final static int
 	CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 	
-	public LocationService(Context ctx, DownloadStatus dows)
+	public LocationService(Context ctx)
 	{
 		mContext = ctx;
-		mDownloadStatus = dows;
 		mLocationClient = null;
 		mCurrentLocation = null;
 		mCurrentLocationInfo = null;
 		mLocationServiceUpdateListeners = new ArrayList<LocationServiceUpdateListener>();
 		mLocationServiceAddressUpdateListeners = new ArrayList<LocationServiceAddressUpdateListener>();
-	
-		tmpUpdCnt= 0;
 	}
 	
 	public Location getCurrentLocation()
@@ -64,7 +58,6 @@ GeocodeAddressUpdateListener
 	
 	public boolean isConnected()
 	{
-		Log.e("isConnected", "client null? " + (mLocationClient != null) + ", " + mLocationClient.isConnected());
 		return mLocationClient != null && mLocationClient.isConnected();
 	}
 	
@@ -95,7 +88,6 @@ GeocodeAddressUpdateListener
 			mLocationRequest.setSmallestDisplacement(100.0f);
 			mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 			mLocationClient = new LocationClient(mContext, this,  this);
-			Log.e("connect()", "connecting to location client");
 			mLocationClient.connect();
 		}
 		return result;
@@ -113,7 +105,7 @@ GeocodeAddressUpdateListener
 				Log.e("LocationService.disconnect()", "removing location updates");
 				mLocationClient.removeLocationUpdates(this);
 			}
-//			Log.e("LocationService.disconnect()", "disconnecting location client");
+			Log.e("LocationService.disconnect()", "disconnecting location client");
 			mLocationClient.disconnect();
 		}
 	}
@@ -210,9 +202,6 @@ GeocodeAddressUpdateListener
 	@Override
 	public void onLocationChanged(Location location) 
 	{
-		tmpUpdCnt++;
-		Log.e("onLocationChanged", "lat "+ location.getLatitude() + " long " + 
-				location.getLongitude() + " count " + tmpUpdCnt);
 		for(LocationServiceUpdateListener l : mLocationServiceUpdateListeners)
 			l.onLocationChanged(location);
 		mCurrentLocation = location;

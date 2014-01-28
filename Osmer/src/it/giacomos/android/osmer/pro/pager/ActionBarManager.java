@@ -81,12 +81,10 @@ public class ActionBarManager implements ActionBarTabChangeListener
 			ActionBar.Tab selectedTab = actionBar.getSelectedTab();
 			if(selectedTab  != null)
 			{
-				Log.e("ActionBarManager.init", "selected tab not null");
 				selectedTabIndex = actionBar.getSelectedTab().getPosition();
 			}
 			else
 				selectedTabIndex = 0;
-			Log.e("ActionBarManager.init", "tab idx " + selectedTabIndex);
 			/* switch to correct tab */
 			onActionBarTabChanged(selectedTabIndex);
 			/* check the first item of the drawer */

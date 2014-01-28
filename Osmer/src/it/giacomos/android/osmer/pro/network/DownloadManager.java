@@ -107,8 +107,6 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 	{
 		if(url != null)
 			m_state.getReport(url);
-		else
-			Log.e("DownloadManager, url is null", "YEA, NULL");
 	}
 	
 	public void getObservationsTable(MapMode mapMode) 

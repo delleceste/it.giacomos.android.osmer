@@ -76,7 +76,6 @@ public class RemovePostTask extends AsyncTask<String, Integer, String> {
 		try {
 			form = new UrlEncodedFormEntity(postParameters);
 	        request.setEntity(form);
-	        Log.e("RemovePostTask.doInBackground", postParameters.toString());
 	        HttpResponse response = httpClient.execute(request);
 	        StatusLine statusLine = response.getStatusLine();
 	        if(statusLine.getStatusCode() < 200 || statusLine.getStatusCode() >= 300)
@@ -101,7 +100,6 @@ public class RemovePostTask extends AsyncTask<String, Integer, String> {
 			e.printStackTrace();
 		}
 
-        Log.e("PostReportTask", "server returneth " + returnVal + "error " + mErrorMsg);
 		return returnVal;
 	}
 
@@ -115,7 +113,6 @@ public class RemovePostTask extends AsyncTask<String, Integer, String> {
 	@Override
 	public void onPostExecute(String doc)
 	{
-		Log.e("RemovePostTask.onPostExecute", "doc " + doc + "error " + mErrorMsg);
 		if(mErrorMsg.isEmpty())
 			mRemovePostTaskListener.onRemovePostTaskCompleted(false, "", mType);
 		else

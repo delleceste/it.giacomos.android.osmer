@@ -87,20 +87,17 @@ public class BitmapTask extends AsyncTask<URL, Integer, Bitmap>
         		 */
         		if(bitmap == null) /* prevent from calling onBitmapBytesUpdate */
         		{
-        			Log.e("Bitmap doInBackground", "bitmap is null");
         			mBitmapBytes = null;
         			m_errorMessage = "BitmapTask: error decoding bitmap: invalid bitmap data";
         		}
         		else
         		{
-        			Log.e("Bitmap doInBackground", "bitmap is NOT null seteting hasAlpha");
             		bitmap.setHasAlpha(true);
         		}
         	}
         	catch(IOException e)
         	{
         		m_errorMessage = "IOException: URL: \"" + mUrl.toString() + "\":\n\"" + e.getLocalizedMessage() + "\"";
-        		Log.e("doInBackground (Bitmaptask)", m_errorMessage);
         	}
         	publishProgress(100);
         }    

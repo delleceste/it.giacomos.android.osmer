@@ -36,18 +36,18 @@ public class ServiceManager
 		
 		if(enabled && netinfo != null && netinfo.isConnected())
 		{
-			Log.e(" ServiceManager", "enabled "  + enabled + " starting service ReportDataService");
+//			Log.e(" ServiceManager", "enabled "  + enabled + " starting service ReportDataService");
 			ComponentName cn = context.startService(myIntent);
 			return cn.getClassName().endsWith("ReportDataService");
 		}
 		else
 		{
-			if(netinfo != null)
-				Log.e("ServiceManager.setEnabled", "enabled "  + enabled + 
-						" net up " +  connMgr.getActiveNetworkInfo().isConnectedOrConnecting() + " stopping service ReportDataService");
-			else
-				Log.e("ServiceManager.setEnabled", "enabled "  + enabled + 
-						" net info null: stopping service ReportDataService");
+//			if(netinfo != null)
+//				Log.e("ServiceManager.setEnabled", "enabled "  + enabled + 
+//						" net up " +  connMgr.getActiveNetworkInfo().isConnectedOrConnecting() + " stopping service ReportDataService");
+//			else
+//				Log.e("ServiceManager.setEnabled", "enabled "  + enabled + 
+//						" net info null: stopping service ReportDataService");
 			return context.stopService(myIntent);
 		}
 	}

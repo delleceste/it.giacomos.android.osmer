@@ -76,7 +76,6 @@ public class ReportUpdateTask extends AsyncTask<String, Integer, String>
 		try {
 			form = new UrlEncodedFormEntity(postParameters);
 	        request.setEntity(form);
-	        Log.e("----> ReportUpdater.doInBackground", "thread " + Thread.currentThread());
 	        HttpResponse response = httpClient.execute(request);
 	        StatusLine statusLine = response.getStatusLine();
 	        if(statusLine.getStatusCode() < 200 || statusLine.getStatusCode() >= 300)

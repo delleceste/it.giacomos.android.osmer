@@ -27,9 +27,7 @@ public class NearestObservationData {
 
 		HashMap<String, ObservationData> latestObsData = observationsCache.getLatestObservationData();
 		ObservationData obsData = latestObsData.get(nearestLocationName);
-		Log.e("NearestObservationData.get", "observationData is " + obsData + " for " + nearestLocationName);
 		long endT = System.nanoTime();
-		Log.e("NearestObservationData.get", "took " + ((endT - startT)/ 1e6) + " millis to init widgets");
 		return obsData;
 
 	}

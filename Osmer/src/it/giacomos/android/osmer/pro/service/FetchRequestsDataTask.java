@@ -58,7 +58,6 @@ public class FetchRequestsDataTask extends AsyncTask<String, Integer, String> {
 		try {
 			form = new UrlEncodedFormEntity(postParameters);
 			request.setEntity(form);
-			Log.e("FetchRequestsDataTask.doInBackground", "* " +  postParameters.toString());
 			HttpResponse response = httpClient.execute(request);
 			StatusLine statusLine = response.getStatusLine();
 			if(statusLine.getStatusCode() < 200 || statusLine.getStatusCode() >= 300)
@@ -100,6 +99,6 @@ public class FetchRequestsDataTask extends AsyncTask<String, Integer, String> {
 	@Override
 	public void onCancelled(String data)
 	{
-		Log.e("FetchRequestsDataTask.onCancelled", "task cancelled");
+//		Log.e("FetchRequestsDataTask.onCancelled", "task cancelled");
 	}
 }

@@ -229,7 +229,6 @@ LocationServiceUpdateListener
 	@Override
 	public void onMapClick(LatLng ll) 
 	{
-		Log.e("MeasureOverlay: onMapClick", "clicked on " + ll.latitude + ", " + ll.longitude);
 		if(mLine != null)
 		{
 			mLine.remove();

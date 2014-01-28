@@ -71,7 +71,6 @@ public class WebcamBitmapTask extends AsyncTask<URL, Integer, Bitmap>
         	catch(IOException e)
         	{
         		m_errorMessage = "WebcamBitmapTask IOException: URL: \"" + mUrl.toString() + "\":\n\"" + e.getLocalizedMessage() + "\"";
-        		Log.e("doInBackground (WebcamBitmaptask)", m_errorMessage);
         	}
         	publishProgress(100);
         }    
