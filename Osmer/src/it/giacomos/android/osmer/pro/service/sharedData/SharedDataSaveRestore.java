@@ -35,8 +35,8 @@ public class SharedDataSaveRestore
 			data.put(NotificationData.TYPE_REPORT, 
 					new ReportNotification(reportNotificationAsStr));
 		
-		Logger.log("SharedDataSR.load: REQ " + reportRequestNotificationAsStr);
-		Logger.log("SharedDataSR.load: REP " + reportNotificationAsStr);
+//		Logger.log("SharedDataSR.load: REQ " + reportRequestNotificationAsStr);
+//		Logger.log("SharedDataSR.load: REP " + reportNotificationAsStr);
 		return data;
 	}
 	

@@ -88,7 +88,7 @@ FetchRequestsTaskListener, Runnable
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{
-		Logger.log("RDS.onStartCmd: intent " + intent + "isStarted" + mIsStarted);
+		//   Logger.log("RDS.onStartCmd: intent " + intent + "isStarted" + mIsStarted);
 		if(!mIsStarted)
 		{
 			// Log.e("ReportDataService.onStartCommand", "service started");
@@ -204,7 +204,7 @@ FetchRequestsTaskListener, Runnable
 	@Override
 	public void onDestroy()
 	{
-		Logger.log("RDS.onDestroy");
+		//   Logger.log("RDS.onDestroy");
 		/* clean tasks, stop scheduled repetition of data task, disconnect from 
 		 * location service.
 		 */
@@ -230,7 +230,7 @@ FetchRequestsTaskListener, Runnable
 	{	
 		boolean notified = false;
 		//	if(error)
-		Logger.log("task complete: " + dataAsString);
+		//   Logger.log("task complete: " + dataAsString);
 
 		ServiceSharedData sharedData = ServiceSharedData.Instance(this);
 		NotificationManager mNotificationManager =
@@ -283,7 +283,7 @@ FetchRequestsTaskListener, Runnable
 							message += " - " + rrnd.locality;
 						iconId = R.drawable.ic_launcher_statusbar_request;
 						ledColor = Color.argb(255, 5, 220, 246); /* cyan notification */
-						Logger.log("RDS task ok.new req.notif " + notificationData.username);
+						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
 					}
 					else
 					{
@@ -292,7 +292,7 @@ FetchRequestsTaskListener, Runnable
 								+ " "  + notificationData.username;
 						iconId = R.drawable.ic_launcher_statusbar_report;
 						ledColor = Color.argb(255, 56, 220, 5);
-						Logger.log("RDS task ok.new req.notif " + notificationData.username);
+						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
 					}
 
 					int notificationFlags = Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS|
@@ -329,7 +329,7 @@ FetchRequestsTaskListener, Runnable
 				}
 				else
 				{
-					Logger.log("RDS task ok. notif not new " + notificationData.username);
+					//   Logger.log("RDS task ok. notif not new " + notificationData.username);
 					// log("task ok. notif not new " + notificationData.username);
 					// Log.e("onServiceDataTaskComplete", "notification IS NOT NEW " + notificationData.username);
 				}
