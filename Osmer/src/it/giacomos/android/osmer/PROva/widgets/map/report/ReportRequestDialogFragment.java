@@ -46,7 +46,6 @@ public class ReportRequestDialogFragment extends DialogFragment
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) 
 	{
-		Log.e("ReportRequestDialogFragment", "onCreateDialog");
 		this.setStyle(STYLE_NO_FRAME, android.R.style.Theme_Holo_Light);
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -82,7 +81,6 @@ public class ReportRequestDialogFragment extends DialogFragment
 
 			@Override
 			public void afterTextChanged(Editable ed) {
-				Log.e("TextWatcher.afterTextChanged", "afterTextChangeth");
 				mCheckUsernameNotEmpty(alertDialog);
 			}
 
@@ -107,14 +105,12 @@ public class ReportRequestDialogFragment extends DialogFragment
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
-		Log.e("ReportRequestDialogFragment", "onActivityCreated");
 		super.onActivityCreated(savedInstanceState);
 		/* register for locality name updates and location updates */
 	}
 
 	public void setData(LatLng pointOnMap, String locality)
 	{
-		Log.e("setData", "called set data with " + locality);
 		mLatLng = pointOnMap;
 		/* the name obtained by geocode address task in ReportOverlay. May be "-" */
 		mLocality = locality;
@@ -141,10 +137,7 @@ public class ReportRequestDialogFragment extends DialogFragment
 		{
 			EditText et = (EditText) mDialogView.findViewById(R.id.etRequestName);
 			positiveButton.setEnabled(et.getText().toString().length() > 0);
-			Log.e("mCheckUsernameNotEmpty", "dialog button is NOT null! --> no scandalo");
 		}
-		else
-			Log.e("mCheckUsernameNotEmpty", "dialog is null! scandalo");
 	}
 
 	public LatLng getLatLng()

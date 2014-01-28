@@ -133,7 +133,6 @@ TrialDaysLeftListener/*  trial version */
 	{
 		super.onCreate(savedInstanceState);
 
-		Log.e("OsmerActivity.onCreate", "onCreate called");
 		requestWindowFeature(Window.FEATURE_PROGRESS);
 		this.setProgressBarVisibility(true);
 
@@ -172,7 +171,6 @@ TrialDaysLeftListener/*  trial version */
 	public void onPause()
 	{
 		super.onPause();
-		Log.e("OsmerActivity.onPause", "onPause");
 		if(!mGoogleServicesAvailable)
 			return;
 
@@ -206,10 +204,8 @@ TrialDaysLeftListener/*  trial version */
 			if(extras.getBoolean("NotificationReportRequest")
 					|| extras.getBoolean("NotificationReport"))
 				forceDrawerItem = mDrawerItems.length - 1;
-			Log.e("OsmerActivity.onPostCreate", "switching to item " + forceDrawerItem);
 		}
 
-		Log.e("OsmerActivity.onPostCreate", "actionBarMAnager.init with saved instance state and drawerItem " + forceDrawerItem);
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
 	}
 
@@ -224,7 +220,6 @@ TrialDaysLeftListener/*  trial version */
 			if(extras.getBoolean("NotificationReportRequest")
 					|| extras.getBoolean("NotificationReport"))
 				drawerItem = mDrawerItems.length - 1;
-			Log.e("OsmerActivity.onNewIntent", "switching to item " + drawerItem);
 			mActionBarManager.drawerItemChanged(drawerItem);
 		}
 	}
@@ -252,7 +247,6 @@ TrialDaysLeftListener/*  trial version */
 
 	protected void onDestroy()
 	{
-		Log.e("OsmerActivity.onDestroy", "onDestroy");
 		if(mGoogleServicesAvailable)
 		{
 			/* drawables are unbinded inside ForecastFragment's onDestroy() */
@@ -688,13 +682,10 @@ TrialDaysLeftListener/*  trial version */
 	@Override
 	public void onMyReportLocalityChanged(String locality) 
 	{
-		Log.e("OsmerActivity.onMyReportLocalityChanged", "locality " + locality);
 		ReportRequestDialogFragment rrdf = (ReportRequestDialogFragment) 
 				getSupportFragmentManager().findFragmentByTag("ReportRequestDialogFragment");
 		if(rrdf != null)
 			rrdf.setLocality(locality);
-		else
-			Log.e("OsmerActivity.onMyReportLocalityChanged", "FRAGMENT NULL!");
 	}
 
 	/** implements ReportRequestListener interface
@@ -768,7 +759,6 @@ TrialDaysLeftListener/*  trial version */
 			map.setMode(new MapViewMode(observationType, mapMode));
 		else if(mapMode == MapMode.REPORT)
 		{
-			Log.e("OsmerActivity.onSelectionDone", "starting tutorial activity!!");
 			mDrawerList.setItemChecked(0, true);
 			mActionBarManager.drawerItemChanged(0);
 			mStartTutorialActivity();
@@ -780,7 +770,6 @@ TrialDaysLeftListener/*  trial version */
 
 	private void mStartTutorialActivity()
 	{
-		Log.e("OsmerActivity.mStartTutorialActivity", "STARTING");
 		Intent i = new Intent(this, TutorialPresentationActivity.class);
 		i.putExtra("startedFromMainActivity", true);
 		i.putExtra("conditionsAccepted", mReportConditionsAccepted);
@@ -846,8 +835,8 @@ TrialDaysLeftListener/*  trial version */
 	private void mStartNotificationService(boolean startService) 
 	{
 		ServiceManager serviceManager = new ServiceManager();
-		Log.e("OsmerActivity.mStartNotificationService", "enabling service: " + startService +
-				" was running "+ serviceManager.isServiceRunning(this));
+//		Log.e("OsmerActivity.mStartNotificationService", "enabling service: " + startService +
+//				" was running "+ serviceManager.isServiceRunning(this));
 		boolean ret = serviceManager.setEnabled(this, startService);
 		if(ret && startService)
 			Toast.makeText(this, R.string.notificationServiceStarted, Toast.LENGTH_LONG).show();
@@ -1003,7 +992,6 @@ TrialDaysLeftListener/*  trial version */
 		} 
 		else 
 		{
-			Log.e("OsmerActivity.swithciee", "displayting child 1");
 			viewFlipper.setDisplayedChild(1);
 		}
 
@@ -1066,7 +1054,6 @@ TrialDaysLeftListener/*  trial version */
 				updateWbcamList();
 			else if(id == ViewType.REPORT)
 			{
-				Log.e("switchView", "updating report");
 				updateReport(false);
 			}
 		}
@@ -1098,7 +1085,6 @@ TrialDaysLeftListener/*  trial version */
 
 	public void startReportActivity()
 	{
-		Log.e("OsmerActivity.startReportActivity", "enter");
 		Location loc = this.mLocationService.getCurrentLocation();
 		LocationInfo loci = mLocationService.getCurrentLocationInfo();
 		if(loc == null)
@@ -1117,7 +1103,6 @@ TrialDaysLeftListener/*  trial version */
 			i.putExtra("longitude", loc.getLongitude());
 			if(loci != null)
 			{
-				Log.e("OsmerActivity.startReportActivity",  "startingActivity with locality" + loci.locality);
 				i.putExtra("locality", loci.locality);
 			}
 			else
@@ -1151,8 +1136,8 @@ TrialDaysLeftListener/*  trial version */
 		}
 		else if(requestCode == TUTORIAL_ACTIVITY_FOR_RESULT_ID)
 		{
-			Log.e("OsmerActivity.onActivityResult", "resultCode " + resultCode + " data " + data + " OK " +
-					RESULT_OK + " cancelled " + RESULT_CANCELED);
+//			Log.e("OsmerActivity.onActivityResult", "resultCode " + resultCode + " data " + data + " OK " +
+//					RESULT_OK + " cancelled " + RESULT_CANCELED);
 			boolean conditionsAccepted = false;
 			if(data != null)
 				conditionsAccepted = data.getBooleanExtra("conditionsAccepted", false);
@@ -1163,7 +1148,6 @@ TrialDaysLeftListener/*  trial version */
 				mStartNotificationService(conditionsAccepted && mSettings.notificationServiceEnabled());
 			}
 
-			Log.e("OsmerActivity.onActivityResult", "conditionsAccepted " + conditionsAccepted);
 			if(conditionsAccepted)
 			{
 				mDrawerList.performItemClick(mDrawerList, 5, mDrawerList.getItemIdAtPosition(5));

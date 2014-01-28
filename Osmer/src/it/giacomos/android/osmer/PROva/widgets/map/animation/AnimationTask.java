@@ -101,7 +101,6 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 						}
 						/* cache for offline mode */
 						fileHelper.storeUrlList(mDownloadUrls, mExternalStorageDirPath);
-						Log.e("AnimationTask", "downloaded text file for URLS - totSteps "  + mTotSteps);
 					}
 					catch (IOException e) 
 					{
@@ -147,7 +146,6 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 		 */
 		ArrayList<String> neededFiles = new ArrayList<String>(Arrays.asList(filenames));
 		removedFilesCount = fileHelper.removeUnneededFiles(neededFiles, mExternalStorageDirPath);
-		Log.e("AnimationTask.doInBackground", "removed unneeded files " + removedFilesCount);
 
 		for(String fName : filenames)
 		{			
@@ -202,13 +200,9 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 						{
 							m_errorMessage = "Error saving image on external storage " +
 									fileHelper.getErrorMessage();
-							Log.e("AnimationTask.doInBackground", "failed to save " + fName + " on external storage: " + fileHelper.getErrorMessage());
 
 							break;
 						}
-						else
-							Log.e("AnimationTask.doInBackground", "got and saveth " + surl + "[" + stepCnt + "/" + mTotSteps + "]");
-
 						/* if the task is cancelled, return before incrementing stepCnt and publishProgress, because the task
 						 * may have been cancelled on screen rotation. This ensures that the current step is not taken into account
 						 * (can be incomplete if the activity is destroyed here) when the activity is restarted.
@@ -223,7 +217,6 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 					catch(MalformedURLException e)
 					{
 						m_errorMessage = "Malformed URL: \"" + surl + "\":\n\"" + e.getLocalizedMessage() + "\"";
-						Log.e("AnimationTask.doInBackground", "Malformed URL" + m_errorMessage);
 						/* leave on error */
 						break;
 					}
@@ -232,7 +225,6 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 				catch(IOException e)
 				{
 					m_errorMessage = "IOException: URL: \"" + surl + "\":\n\"" + e.getLocalizedMessage() + "\"";
-					Log.e("AnimationTask.doInBackground", m_errorMessage);
 					/* leave on error */
 					break;
 				}
@@ -245,7 +237,6 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 			if(!isCancelled())
 			{
 				publishProgress(stepCnt);
-				Log.e("AnimationTask.doInBackground", "publishing progress " + stepCnt);
 			}
 			else if(isCancelled())
 			{
@@ -268,7 +259,6 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 
 	protected void onPostExecute(Integer result) 
 	{
-		Log.e("AnimationTask.onPostExecute", " result is " + result);
 		if(mAnimationTaskListener == null)
 			return;
 		if(result == 0) /* error */

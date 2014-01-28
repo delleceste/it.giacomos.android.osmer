@@ -53,7 +53,6 @@ public class ReportRequestDialogClickListener implements OnClickListener {
 
 			if(!user.isEmpty())
 			{
-				Log.e("ReportRequestDialogClickListener.onClick", " locality " + locality);
 				PostReportRequestTask postReportRequestTask = new PostReportRequestTask(user, locality, llng.latitude, llng.longitude, oActivity);
 				String deviceId = Secure.getString(mReportRequestDialogFragment.getActivity().getContentResolver(), Secure.ANDROID_ID);
 				postReportRequestTask.setDeviceId(deviceId);

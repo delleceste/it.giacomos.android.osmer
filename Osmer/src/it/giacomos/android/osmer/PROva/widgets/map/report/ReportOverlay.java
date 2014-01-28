@@ -85,7 +85,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	@Override
 	public void clear() 
 	{
-		Log.e("****************************************** ReportOverlay: clear called", "maerkers size " + mDataInterfaceHash.size());
 		mReportUpdater.clear();
 		mCancelTasks();
 		mRemoveMarkers();
@@ -162,7 +161,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		int reportCount = 0;
 		if(dataInterfaceList != null) /* the task may return null */
 		{
-			Log.e("onReportOverlayTaskFinished", "got " + dataInterfaceList.length);
 			/* save my request markers that haven't been published yet in order not to lose them
 			 * when the update takes place. Actually, mRemoveMarkers below clears all markers.
 			 */
@@ -209,7 +207,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 				ServiceSharedData ssd = ServiceSharedData.Instance(ctx);
 				if(ssd.canBeConsideredNew(repReqN, ctx))
 				{
-					Log.e("mCheckForFreshNotifications", "can be considered new!");
 					/* true, sets the Notification request notified */
 					ssd.updateCurrentRequest(repReqN, true);
 					// NOTE
@@ -324,7 +321,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 
 	private void mStartGeocodeAddressTask(Marker marker)
 	{
-		Log.e("ReportOverlay.mStartGeocodeAddressTask", "starting geocode address task");
 		mGeocodeAddressTask = 
 				new GeocodeAddressTask(mMapFrag.getActivity().getApplicationContext(),
 						this, marker.getId());
@@ -338,7 +334,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	@Override
 	public void onGeocodeAddressUpdate(LocationInfo locationInfo, String id) 
 	{	
-		Log.e("ReportOverlay.onGeocodeAddressUpdate", "-> " + locationInfo.locality);
 		DataInterface dataI = mDataInterfaceHash.get(id);
 		if(dataI != null) /* may have been removed */
 		{
@@ -360,14 +355,12 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	public void onInfoWindowClick(Marker marker) 
 	{
 		DataInterface dataI = mDataInterfaceHash.get(marker.getId());
-		Log.e("onInfoWindowClick", "dataI " + dataI);
 		/* retrieve my request marker, if present. If it's mine and not published, trigger the request dialog
 		 * execution.
 		 */
 		if(dataI != null && dataI.getType() == DataInterface.TYPE_REQUEST &&
 				dataI.isWritable() && !dataI.isPublished())
 		{
-			Log.e("onInfoWindowClick", "got My request marker; clicked position  " + marker.getPosition().toString() + " loc " + dataI.getLocality());
 			mMyReportRequestListener.onMyReportRequestTriggered(marker.getPosition(), dataI.getLocality());
 			marker.hideInfoWindow();
 		}
@@ -416,17 +409,14 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	@Override
 	public void onMarkerDragStart(Marker arg0) 
 	{
-		Log.e("ReportOverlay.onMarkerDragStart", "geocode address task null? " + (mGeocodeAddressTask != null));
 		if(mGeocodeAddressTask != null)
 		{
-			Log.e("ReportOverlay.onMarkerDragStart", "stopping geocode address task");
 			mGeocodeAddressTask.cancel(false);
 		}
 	}
 
 	public void onPostActionResult(boolean error, String message, PostType postType) 
 	{
-		Log.e("onPostActionResult", " err " + error + " post type " + postType);
 		if(postType == PostType.REQUEST)
 		{
 
@@ -444,8 +434,8 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 					&& position.latitude == dataI.getLatitude() 
 					&& position.longitude == dataI.getLongitude())
 			{
-				Log.e("removeMyPendingReportRequestMarker", "Cancel hit on dialog? removing maker "
-						+ dataI.getLocality() + dataI.getMarker().getTitle());
+//				Log.e("removeMyPendingReportRequestMarker", "Cancel hit on dialog? removing maker "
+//						+ dataI.getLocality() + dataI.getMarker().getTitle());
 				Marker toRemoveMarker = dataI.getMarker();
 				toRemoveMarker.remove();
 				it.remove(); /* remove from hash */
@@ -456,11 +446,10 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 
 	private void mRestoreYetUnpublishedMyRequestData(ArrayList<DataInterface> backupData)
 	{
-		Log.e("mRestoreYetUnpublishedMyRequestData", "bk data sixe " + backupData.size() + " data if hash " 
-				+ mDataInterfaceHash.size());
+//		Log.e("mRestoreYetUnpublishedMyRequestData", "bk data sixe " + backupData.size() + " data if hash " 
+//				+ mDataInterfaceHash.size());
 		for(DataInterface di : backupData)
 		{
-			Log.e("mRestoreYetUnpublishedMyRequestData", "restoring " + di.getLocality() +  " id " + di.getMarker().getId());
 			/* must rebuild marker options because locality may have not been set in the memorized marker options.
 			 * onGeocodeAddressTask actually updates the locality by changing the snippet on the marker rather 
 			 * than regenerating a MarkerOptions.
@@ -471,8 +460,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 			myRestoredRequestMarker.showInfoWindow();
 			/* restore data in the hash now! */
 			mDataInterfaceHash.put(myRestoredRequestMarker.getId(), di);
-
-
 		}
 	}
 
@@ -483,7 +470,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		{
 			if(di.getType() == DataInterface.TYPE_REQUEST && di.isWritable() && !di.isPublished())
 			{
-				Log.e("mSaveYetUnpublishedMyRequestData", "saving " + di.getLocality() +  " id " + di.getMarker().getId());
+//				Log.e("mSaveYetUnpublishedMyRequestData", "saving " + di.getLocality() +  " id " + di.getMarker().getId());
 				myRequestsYetUnpublished.add(di);
 			}
 			else

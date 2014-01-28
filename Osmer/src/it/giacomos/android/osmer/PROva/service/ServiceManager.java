@@ -36,7 +36,7 @@ public class ServiceManager
 		
 		if(enabled && netinfo != null && netinfo.isConnected())
 		{
-			Log.e(" ServiceManager", "enabled "  + enabled + " starting service ReportDataService");
+//			Log.e(" ServiceManager", "enabled "  + enabled + " starting service ReportDataService");
 			ComponentName cn = context.startService(myIntent);
 			return cn.getClassName().endsWith("ReportDataService");
 		}

@@ -42,8 +42,6 @@ public class ReportActivity extends Activity implements OnClickListener
 
 		setContentView(R.layout.report_activity_layout);
 
-		Log.e("ReportActivity", "onCreateDialog");
-
 		((Button)findViewById(R.id.bSend)).setOnClickListener(this);
 
 		((Button)findViewById(R.id.bCancel)).setOnClickListener(this);
@@ -86,7 +84,6 @@ public class ReportActivity extends Activity implements OnClickListener
 
 			@Override
 			public void afterTextChanged(Editable ed) {
-				Log.e("TextWatcher.afterTextChanged", "afterTextChangeth");
 				setEnabled(ed.length() > 0);
 			}
 

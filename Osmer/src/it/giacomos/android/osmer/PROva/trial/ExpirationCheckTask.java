@@ -45,7 +45,7 @@ public class ExpirationCheckTask extends AsyncTask<String, Integer, String>
 	@Override
 	public void onCancelled(String doc)
 	{
-		Log.e("XXXXX ExpirationCheckTask.onCancelled", "TASK CANCELLED!!");
+		
 	}
 	
 	public String getError()
@@ -67,7 +67,6 @@ public class ExpirationCheckTask extends AsyncTask<String, Integer, String>
 		try {
 			form = new UrlEncodedFormEntity(postParameters);
 	        request.setEntity(form);
-	        Log.e("----> ExpirationCheckTask.doInBackground", "thread " + Thread.currentThread());
 	        HttpResponse response = httpClient.execute(request);
 	        StatusLine statusLine = response.getStatusLine();
 	        if(statusLine.getStatusCode() < 200 || statusLine.getStatusCode() >= 300)

@@ -12,9 +12,7 @@ public class Interrupted extends ProgressState
 	{
 		
 		super(radarAnimation, at, previousState);
-		
-		Log.e("Interrupted.Interrupted", "constructor");
-		
+				
 		mUrlList = urlList;
 		if(previousState.getStatus() == RadarAnimationStatus.RUNNING && dFrameNo > 0)
 			dFrameNo--;
@@ -41,7 +39,6 @@ public class Interrupted extends ProgressState
 	{
 		if(dAnimationTask != null && !dAnimationTask.isCancelled())
 		{
-			Log.e("Interrupted.enter", "cancelling the animation task");
 			dAnimationTask.cancel(false);
 		}
 	}

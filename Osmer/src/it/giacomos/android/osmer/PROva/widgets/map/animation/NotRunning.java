@@ -26,10 +26,10 @@ public class NotRunning extends State
 		/* cancels the current task */
 		if(dAnimationTask!= null && !dAnimationTask.isCancelled())
 		{
-			Log.e("NotRunning.enter", "cancelling animation task");
+//			Log.e("NotRunning.enter", "cancelling animation task");
 		}
-		else if(dAnimationTask != null)
-			Log.e("NotRunning.enter", "not cancelling task: its state is " + dAnimationTask.getStatus());
+//		else if(dAnimationTask != null)
+//			Log.e("NotRunning.enter", "not cancelling task: its state is " + dAnimationTask.getStatus());
 		
 		/* hide all animation controls */
 		OMapFragment mapFrag = dRadarAnimation.getMapFragment();

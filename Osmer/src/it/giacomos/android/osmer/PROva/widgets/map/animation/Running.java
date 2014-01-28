@@ -54,7 +54,6 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		/* if previousState is ProgressState, fetches the frameNo, the tot frames, the download step */
 		super(radarAnimation, animationTask, previousState);
 		
-		Log.e("Running.Running", "previous state was " + previousState.getStatus());
 		if(previousState.getStatus() == RadarAnimationStatus.BUFFERING)
 		{
 			Buffering bu = (Buffering) previousState;
@@ -63,7 +62,6 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 		else if(previousState.getStatus() == RadarAnimationStatus.PAUSED)
 		{
 			Paused pa = (Paused) previousState;
-			Log.e("Running.Running", "previous state was PAUSED, tot steps " + dTotSteps + " dFrameNo " + dFrameNo + " download step " + dDownloadStep);
 			mPauseOnFrameNo = -1;
 		}
 //		else if(previousState.getStatus() == RadarAnimationStatus.FINISHED)
@@ -116,7 +114,6 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 	@Override
 	public void enter() 
 	{
-		Log.e("Running.enter",  this + "entering RUNNING state");
 		hideProgressBar();
 		/* show controls */
 		OMapFragment mapFrag = dRadarAnimation.getMapFragment();
@@ -136,7 +133,6 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 
 	public void cancel()
 	{
-		Log.e("Running.cancel", "migrating to not running. Cancelling tasks, remove callbacks on Handler");
 		mTimeoutHandler.removeCallbacks(this);
 		dAnimationTask.cancel(false);
 		dRadarAnimation.onTransition(RadarAnimationStatus.NOT_RUNNING);
@@ -160,7 +156,6 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 	public void onDownloadError(String message) 
 	{
 		dRadarAnimation.onError(message);
-		Log.e("Running.onDownloadError", "cancelling task, going to NOT_RUNNING");
 		cancel();
 	}
 

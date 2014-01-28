@@ -110,9 +110,7 @@ public class ObservationDataExtractor
 		float km2mts = 1000.0f/3600.0f;
 		String w = mObservationData.wind;
 		float wind = 0.0f;
-		Log.e("ObservationDataExtaca", "wind " + w);
 		w = w.replaceAll("[A-Za-z_\\s<>=\\[\\]/]*", "");
-		Log.e("ObservationDataExtaca", "wind dopo " + w);
 		try 
 		{
 			wind = Float.parseFloat(w) * km2mts;

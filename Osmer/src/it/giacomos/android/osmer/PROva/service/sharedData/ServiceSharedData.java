@@ -91,7 +91,7 @@ public class ServiceSharedData
 		short type = notificationData.getType();
 		if(!mNotificationDataHash.containsKey(type))
 		{
-			Logger.log("SSD.canBeConsideredNew: yes: no notif. for type " + type);
+			/// Logger.log("SSD.canBeConsideredNew: yes: no notif. for type " + type);
 			return true;
 		}
 		else
@@ -100,7 +100,7 @@ public class ServiceSharedData
 		/* if the notification is exactly the same, never trigger it again. */
 		if(inHashND.equals(notificationData))
 		{
-			Logger.log("SSD.canBeConsideredNew: no: identical notifs");
+			/// Logger.log("SSD.canBeConsideredNew: no: identical notifs");
 			return false; /* exactly the same */
 		}
 
@@ -113,13 +113,13 @@ public class ServiceSharedData
 		Log.e("ServiceSharedData.canBeConsideredNew", "difftime ms = " + diffTimeMs + " min millis " + minMillis);
 		if(diffTimeMs < minMillis)
 		{
-			Logger.log("SSD.canBeConsideredNew: no: diffTime " + diffTimeMs + " < " + minMillis);
+			/// Logger.log("SSD.canBeConsideredNew: no: diffTime " + diffTimeMs + " < " + minMillis);
 			Log.e("ServiceSharedData", "diffTimeMillis < minMillis CANNOT BE CONSIDERETH NEW");
 			return false; /* not new */
 		}
 		
 		Log.e("ServiceSharedData", "diffTimeMillis > minimum --> NEW");
-		Logger.log("SSD.canBeConsideredNew: yes, new");
+		/// Logger.log("SSD.canBeConsideredNew: yes, new");
 		return true; /* elapsed time is greater than the minimum interval required between notifications */
 	}
 

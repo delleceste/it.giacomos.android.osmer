@@ -88,7 +88,6 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 	@Override
 	public void enter() 
 	{
-		Log.e("Buffering.enter", "entering");
 		OMapFragment mapFrag = dRadarAnimation.getMapFragment();
 		Resources res = mapFrag.getActivity().getResources();
 		ToggleButton tb = (ToggleButton )mapFrag.getActivity().findViewById(R.id.playPauseButton);
@@ -140,14 +139,12 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 
 	public void cancel() 
 	{
-		Log.e("Buffering.cancel", "cancelling task, migrating to NOT_RUNNING");
 		dAnimationTask.cancel(false);
 		dRadarAnimation.onTransition(RadarAnimationStatus.NOT_RUNNING);
 	}
 	
 	public void leave() 
 	{
-		Log.e("Buffering.leave", "leaving for RUNNING");
 		dRadarAnimation.onTransition(RadarAnimationStatus.RUNNING);
 	}
 
@@ -165,13 +162,11 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		/* wait until the 40% of the images has been downloaded */
 		if(step > 1 && step >= Math.round(0.4f * (float) total))
 		{
-			Log.e("Buffering.onProgressUpdate", "leaving with step " + step + " and total is " + total);
 			/* can start animating */
 			leave();
 		}
 		else
 		{
-			Log.e("Buffering.onProgressUpdate", "progress bar with step " + step + " and total is " + total);
 			OMapFragment mapFrag = dRadarAnimation.getMapFragment();
 			TextView timeTv = (TextView) mapFrag.getActivity().findViewById(R.id.radarAnimTime);
 			/* total is one too much */ 
@@ -192,7 +187,6 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 	public void onDownloadError(String message) 
 	{
 		dRadarAnimation.onError(message);
-		Log.e("Buffering.onDownloadError", "cancelling task, going to NOT_RUNNING");
 		cancel();
 	}
 
