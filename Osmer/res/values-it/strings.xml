@@ -689,8 +689,8 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
     
     <string name="action_settings">Impostazioni</string>
     <string name="tutorial_tab1_title">Termini d\'uso</string>
-    <string name="tutorial_tab2_title">Pubblicare una segnalazione</string>
-    <string name="tutorial_tab3_title">Richiedere una segnalazione</string>
+    <string name="tutorial_tab2_title">Pubblicare</string>
+    <string name="tutorial_tab3_title">Richiedere</string>
     <string name="tutorial_tab4_title">Notifiche</string>
     <string name="tutorial_tab5_title">Specialità</string>
     
