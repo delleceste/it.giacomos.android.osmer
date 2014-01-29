@@ -974,7 +974,7 @@ TextDecoderListener
 	private void mStartInstallProva() 
 	{
 		Intent i = new Intent(android.content.Intent.ACTION_VIEW);
-		i.setData(Uri.parse("https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.prova"));
+		i.setData(Uri.parse("https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.PROva"));
 		startActivity(i);	
 	}
 
