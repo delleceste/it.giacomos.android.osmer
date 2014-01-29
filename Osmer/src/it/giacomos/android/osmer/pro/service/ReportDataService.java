@@ -1,7 +1,6 @@
 package it.giacomos.android.osmer.pro.service;
 
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.pro.Logger;
 import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.pro.network.state.Urls;
 import it.giacomos.android.osmer.pro.preferences.Settings;
@@ -197,6 +196,7 @@ FetchRequestsTaskListener, Runnable
 			 * will schedule the next task.
 			 */
 			mServiceDataTask = new FetchRequestsDataTask(this, deviceId, mLocation.getLatitude(), mLocation.getLongitude());
+			/* "http://www.giacomos.it/meteo.fvg/get_reports_and_requests_for_my_location.php" */
 			mServiceDataTask.execute(new Urls().getReportsAndRequestUpdatesForMyLocationUrl());
 		}
 	}
