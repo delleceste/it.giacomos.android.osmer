@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.pro.service;
 
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.Logger;
 import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.pro.network.state.Urls;

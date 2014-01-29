@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.pro.widgets.map.report.tutorialActivity;
 
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
