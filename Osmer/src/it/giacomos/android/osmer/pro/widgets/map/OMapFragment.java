@@ -139,7 +139,8 @@ RadarAnimationListener
 			mMapReady = true;
 			mMapFragmentListener.onCameraReady();
 		}
-
+		
+		Log.e("OMapFragment.onCameraChanged", " tilt " + cameraPosition.tilt);
 	} 
 
 	public void onStart()
