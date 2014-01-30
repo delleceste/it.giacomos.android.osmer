@@ -459,6 +459,8 @@ RadarAnimationListener
 			mMap.setOnInfoWindowClickListener(mReportOverlay);
 			mMap.setOnMarkerDragListener(mReportOverlay);
 			mMap.setOnMapClickListener(mReportOverlay);
+			mMap.setOnMarkerClickListener(mReportOverlay);
+			// mMap.setOnCameraChangeListener(mReportOverlay);
 			mOverlays.add(mReportOverlay);
 		}
 		else if(m.currentMode != MapMode.HIDDEN)

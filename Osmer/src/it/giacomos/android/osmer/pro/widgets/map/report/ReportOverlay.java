@@ -9,11 +9,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -30,6 +32,7 @@ import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.pro.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.pro.locationUtils.GeocodeAddressUpdateListener;
 import it.giacomos.android.osmer.pro.locationUtils.LocationInfo;
+import it.giacomos.android.osmer.pro.locationUtils.NearLocationFinder;
 import it.giacomos.android.osmer.pro.network.Data.DataPoolCacheUtils;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
 import it.giacomos.android.osmer.pro.preferences.Settings;
@@ -47,7 +50,8 @@ import it.giacomos.android.osmer.pro.widgets.map.report.network.ReportUpdaterLis
 public class ReportOverlay implements OOverlayInterface, 
 ReportOverlayTaskListener, OnMarkerClickListener,
 OnMapClickListener, OnMapLongClickListener, OnInfoWindowClickListener, 
-OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
+OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener,
+OnCameraChangeListener
 {
 
 	private OMapFragment mMapFrag;
@@ -70,7 +74,6 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		mReportUpdater = new ReportUpdater(oMapFragment.getActivity().getApplicationContext(),  this);
 		mMapFrag.getMap().setInfoWindowAdapter(mMapBaloonInfoWindowAdapter);
 		mDataInterfaceHash = new HashMap<String, DataInterface>();
-		mMapFrag.getMap().setOnMarkerClickListener(this);
 
 		/* register as DataPool text listener */
 		/* get data pool reference */
@@ -225,14 +228,32 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	@Override
 	public boolean onMarkerClick(Marker m) 
 	{
-//		Log.e("ReportOverlay.OnmarkerClick", m.getTitle());
-//		if(m.getTitle().compareTo("u") == 0) /* do nothing please */
-//		{
-//			Log.e("should do nothing with this marker!", "fuck!");
-//			return true;
-//		}
-//		else
-			Log.e("dafuq", "title is " + m.getTitle());
+		final float thresholdDistance = 3000f; /* meters */
+		Log.e("ReportOverlay.OnmarkerClick", m.getTitle());
+		DataInterface dataI = this.mDataInterfaceHash.get(m.getId());
+		DataInterface nearestReportDI = null;
+		if(dataI.getType() == DataInterface.TYPE_ACTIVE_USER)
+		{
+			long startTime = System.currentTimeMillis();
+			/* must avoid that DataUser markers above report or request markers
+			 * prevent the latter from being shown. (No Z axis position in markers!)
+			 */
+			nearestReportDI = this.mFindNearestReportOrRequest(dataI.getLatitude(),
+					dataI.getLongitude(), thresholdDistance);
+			if(nearestReportDI != null) /* found a report or request nearby */
+			{
+				nearestReportDI.getMarker().showInfoWindow();
+				Log.e("ReportOverlay.onMarkerClick", "found "
+						+ nearestReportDI.getMarker().getTitle() + " in " + 
+						(System.currentTimeMillis() - startTime) + "ms");
+				return true;
+			}
+			Log.e("ReportOverlay.onMarkerClick", 
+					"NOT found a nearby report or req in " + 
+					(System.currentTimeMillis() - startTime) + "ms");
+		}
+		else
+			Log.e("ReportOverlay.OnmarkerClick", "title is " + m.getTitle());
 		mMapBaloonInfoWindowAdapter.setTitle(m.getTitle());
 		mMapBaloonInfoWindowAdapter.setText(m.getSnippet());
 		return false;
@@ -503,5 +524,52 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 			}
 		}
 	}
+	
+	private DataInterface mFindNearestReportOrRequest(double lat, 
+			double lon, float thresholdDistance)
+	{
+		float distMt = 1000000;
+		float minDist = distMt;
+		LatLng activeUserLatLng = new LatLng(lat, lon);
+		LatLng repReqLatLng = null;
+		NearLocationFinder nearLocFinder = new NearLocationFinder();
+		DataInterface di = null;
+		ArrayList<DataInterface> repreqList = mGetReportsAndRequestsList();
+		for(DataInterface din : repreqList)
+		{
+			repReqLatLng = new LatLng(din.getLatitude(), din.getLongitude());
+			distMt = nearLocFinder.distanceBetween(activeUserLatLng, repReqLatLng);
+			if(distMt < thresholdDistance)
+			{
+				if(distMt < minDist)
+				{
+					di = din;
+					minDist = distMt;
+				}
+			}
+		}
+		return di;
+	}
+	
+	private ArrayList<DataInterface> mGetReportsAndRequestsList()
+	{
+		ArrayList<DataInterface> ret = new ArrayList<DataInterface>();
+		for(DataInterface di : mDataInterfaceHash.values())
+		{
+			if(di.getType() == DataInterface.TYPE_REQUEST || di.getType() == 
+					DataInterface.TYPE_REPORT)
+			{
+				ret.add(di);
+			}
+		}
+		return ret;
+	}
 
+	@Override
+	public void onCameraChange(CameraPosition cameraPos) 
+	{
+		float zoom = cameraPos.zoom;
+		Log.e("ReportOverlay.onCameraChange", "zoom " + zoom);
+		
+	}
 }
