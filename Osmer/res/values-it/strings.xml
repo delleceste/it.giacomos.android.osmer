@@ -285,6 +285,13 @@
 	<string name="notificationServiceStopped">Servizio di notifica segnalazioni correttamente disattivato</string>
 	<string name="notificationServiceWillStartOnNetworkAvailable">La notifica delle segnalazioni verrà attivata quando la rete sarà disponibile</string>
     
+	<!--  active user data -->
+	<string name="activeUser">Utente attivo</string>
+	<string name="inTheLast10Min">negli ultimi 10 min.</string>
+	<string name="inTheLast20Min">negli ultimi 20 min.</string>
+	<string name="inTheLastHour">nell\'ultima ora</string>
+	<string name="activeUserSeemdAvailableInThisZone">un utente è attivo\nin questa zona.</string>
+	
     <string-array name="report_sky_textitems">
         <item>non segnalare il cielo</item>
         <item>cielo sereno</item>
@@ -528,7 +535,7 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
         Possiedi una stazione meteo personale e desideri pubblicare i tuoi dati in modo automatico?
         Contatta l\'autore a questo 
         <a href="mailto:delleceste@gmail.com?subject=Info about automatic report publishing for individuals">indirizzo email</a>.
-        Se sei un utente privato, il servizio e` del tutto gratuito!
+        Se sei un utente privato, il servizio è del tutto gratuito!
         ]]>
         </string>
         
@@ -553,7 +560,7 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 		<p>L\'autore delle applicazioni Android denominate "Meteo.FVG", "Meteo.FVG Pro" e 
 		"Meteo.FVG PROva, Giacomo Strangolino, non ha alcuna responsabilita` circa i contenuti delle 
 		segnalazioni pubblicate nella sezione "Segnalazioni".</p>
-		<p>Il contenuto di ogni segnalazione meteo nella sezione "Segnalazioni" e` responsabilita` dell\'utente che 
+		<p>Il contenuto di ogni segnalazione meteo nella sezione "Segnalazioni" è responsabilita` dell\'utente che 
 		lo pubblica, essendo compresi nel "contenuto" icone del cielo, del vento, il valore della temperatura e 
 		il testo dei commenti.</p>
 		
@@ -572,14 +579,14 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 		</p>
 		
 		<p>
-		L\'autore non e` responsabile per contenuti inappropriati o offensivi all\'interno dei messaggi
-		di testo nei commenti degli utenti. Ogni utente e` responsabile dei contenuti pubblicati.
+		L\'autore non è responsabile per contenuti inappropriati o offensivi all\'interno dei messaggi
+		di testo nei commenti degli utenti. Ogni utente è responsabile dei contenuti pubblicati.
 		L\'autore si assume il diritto di rimuovere ogni contenuto inappropriato (offensivo, di "spam",
 		pubblicitario, non pertinente con le osservazioni meteo e cosi` via...).
 		</p>
 		
 		<p>
-		Per finalita` di test, e` possibile che l\'autore pubblichi segnalazioni in parte o in tutto non aderenti
+		Per finalita` di test, è possibile che l\'autore pubblichi segnalazioni in parte o in tutto non aderenti
 		alla realta`. In questo caso, l\'autore corredera` la segnalazione con un opportuno commento.
 		Nessuna responsabilita` si assume l\'autore per questo tipo di contenuti.
 		</p>
@@ -592,10 +599,10 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 		<h6>Esonero di responsabilita` dell\'autore per malfunzionamento del dispositivo o 
 			eccessivo consumo di batteria</h6> 
 		<p>
-		L\'autore non e` responsabile per qualsiasi malfunzionamento di un dispositivo che esegue 
+		L\'autore non è responsabile per qualsiasi malfunzionamento di un dispositivo che esegue 
 		"Meteo.FVG", "Meteo.FVG Pro" e "Meteo.FVG PROva, incluso un aumento dell\'utilizzo della 
 		batteria o una diminuzione delle performance del dispositivo. Nella sezione "Notifiche"
-		di questo tutorial e` possibile apprendere come disabilitare il servizio delle notifiche
+		di questo tutorial è possibile apprendere come disabilitare il servizio delle notifiche
 		qualora si sospetti che tale servizio abbia un effetto negativo sulla durata della batteria.
 		Si legga con attenzione la sezione "Notifiche" di questo tutorial.
 		</p>
@@ -637,7 +644,7 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
       nel punto in cui ti trovi, verra` visualizzata un\'icona, tipicamente quella del cielo.
       Tocca l\'icona per leggere i dettagli. Tocca il fumetto che comparira` per rimuovere la 
       segnalazione. La segnalazione rimane valida per 3 ore dalla pubblicazione e sara` visibile a
-      tutti gli utenti. Per modificare una segnalazione, e` necessario prima rimuovere quella vecchia
+      tutti gli utenti. Per modificare una segnalazione, è necessario prima rimuovere quella vecchia
       e ripetere la procedura.</string>     
     
    <string name="tutorial_request_long_press">Tieni premuto a lungo un punto della mappa per iniziare
@@ -649,7 +656,7 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
        
     <string name="tutorial_request_done">Pubblicata la richiesta con successo, il segnaposti diverra` verde.
         Gli utenti che si trovano entro un raggio di 3 km intorno al segnaposti riceveranno una notifica,
-        se il servizio delle notifiche e` abilitato sul loro dispositivo. Alla ricezione di una risposta
+        se il servizio delle notifiche è abilitato sul loro dispositivo. Alla ricezione di una risposta
         alla tua richiesta, riceverai una notifica. La tua richiesta rimane attiva e visibile per 3 ore.
         Se tocchi il marcatore della tua richiesta, un fumetto ti dara` la possibilita` di rimuoverla,
         toccandolo.</string>
@@ -657,7 +664,7 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
     <string name="tutorial_notifcation_request">Richieste\n\nQuando un utente effettua una richiesta
         in un punto entro 3 km da dove ti trovi, riceverai una notifica nella barra di stato. 
         Attivala per accedere direttamente alla sezione "Segnalazioni" e pubblicare la risposta.
-        Una richiesta rimane viva per 3 ore ed e` evidenziata da un segnaposti blu.</string>
+        Una richiesta rimane viva per 3 ore ed è evidenziata da un segnaposti blu.</string>
      
      <string name="tutorial_report_notification">Risposte\n\nQualcuno ha risposto alla tua richiesta
          Attiva l\'icona di notifica per accedere alla sezione "Segnalazioni". Tocca l\'icona 
@@ -669,9 +676,9 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
         nuovi dati in rete ogni cinque minuti. Abilita/disabilita il servizio notifiche dalla sezione 
         "Segnalazioni", menu` a tendina, "Servizio notifiche".\n
         NOTA I: allo spegnimento dello schermo, il dispositivo a breve entra in uno stato di "sleep" e il 
-        servizio notifiche non e` operativo. Questo e` una conseguenza di una scelta progettuale atta ad
+        servizio notifiche non è operativo. Questo è una conseguenza di una scelta progettuale atta ad
         ottimizzare il rapporto efficienza del servizio/consumo di batteria.
-        NOTA II: quando la rete e` spenta, il servizio notifiche non viene eseguito. Di conseguenza, non
+        NOTA II: quando la rete è spenta, il servizio notifiche non viene eseguito. Di conseguenza, non
         esegue calcoli e non utilizza la batteria.
         </string>
     

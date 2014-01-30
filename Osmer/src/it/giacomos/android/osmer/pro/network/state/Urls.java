@@ -82,9 +82,14 @@ public class Urls {
 		return "http://www.giacomos.it/meteo.fvg/put_report.php";
 	}
 	
+	/**
+	 * since version 2.6.1, invokes get_report_2_6_1 because the report 
+	 * response contains the active users list.
+	 * 
+	 */
 	public String getReportUrl()
 	{
-		return "http://www.giacomos.it/meteo.fvg/get_report.php";
+		return "http://www.giacomos.it/meteo.fvg/get_report_2_6_1.php";
 	}
 	
 	public String getPostReportRequestUrl() {

@@ -11,6 +11,7 @@ public abstract class DataInterface
 {
 	public static int TYPE_REPORT = 0;
 	public static int TYPE_REQUEST = 1;
+	public static int TYPE_ACTIVE_USER = 2;
 	
 	private final int closeDistance = 500;
 	

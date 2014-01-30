@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
+import android.util.Log;
 import android.view.View;
 
 public class MapBaloonInfoWindowAdapter implements GoogleMap.InfoWindowAdapter 
@@ -27,6 +28,7 @@ public class MapBaloonInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
 	@Override
 	public View getInfoContents(Marker marker) 
 	{
+		Log.e("MapBaloonInfoWindowAdapter.getInfoContents", marker.getTitle());
 		setText(marker.getSnippet());
 		setTitle(marker.getTitle());
 		return mView;

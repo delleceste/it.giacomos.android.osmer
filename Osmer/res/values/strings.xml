@@ -284,6 +284,15 @@
     <string name="notificationNewReportRequest">Report request from </string>
     <string name="notificationNewReportArrived">New report from </string>
 
+        
+	<!--  active user data -->
+	<string name="activeUser">Active user</string>
+	<string name="inTheLast10Min">in the last 10 min.</string>
+	<string name="inTheLast20Min">in the last 20 min.</string>
+	<string name="inTheLastHour">in the last hour</string>
+	<string name="activeUserSeemdAvailableInThisZone">a user seemed to be active\nin this area.</string>
+    
+    
     <string-array name="report_sky_textitems">
         <item>don\'t report</item>
         <item>clear</item>

@@ -216,7 +216,7 @@ public class ReportData extends DataInterface
 				iconId = R.drawable.weather_wind_17; /* moderato */
 			else if(windIdx == 4)
 				iconId = R.drawable.weather_wind_26; /* moderato */
-			else if(windIdx == 4)
+			else if(windIdx == 5)
 				iconId = R.drawable.weather_wind2_red_34; /* moderato */
 			
 			if(iconId > -1)

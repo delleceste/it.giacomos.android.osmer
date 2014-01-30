@@ -157,7 +157,7 @@ ReportUpdateTaskListener
 			mReportUpdateTask.cancel(false);
 		
 		mReportUpdateTask = new ReportUpdateTask(this, mLocationClient.getLastLocation(), deviceId);
-		/* "http://www.giacomos.it/meteo.fvg/get_report.php" */
+		/* "http://www.giacomos.it/meteo.fvg/get_report_2_6_1.php" */
 		mReportUpdateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().getReportUrl());
 
 		/* no more interested in location updates, the task has been starting with the last known

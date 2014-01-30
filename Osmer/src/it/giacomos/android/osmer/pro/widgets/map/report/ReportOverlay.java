@@ -45,9 +45,8 @@ import it.giacomos.android.osmer.pro.widgets.map.report.network.ReportUpdater;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.ReportUpdaterListener;
 
 public class ReportOverlay implements OOverlayInterface, 
-ReportOverlayTaskListener, 
-OnMapClickListener,
-OnMarkerClickListener, OnMapLongClickListener, OnInfoWindowClickListener, 
+ReportOverlayTaskListener, OnMarkerClickListener,
+OnMapClickListener, OnMapLongClickListener, OnInfoWindowClickListener, 
 OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 {
 
@@ -71,6 +70,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 		mReportUpdater = new ReportUpdater(oMapFragment.getActivity().getApplicationContext(),  this);
 		mMapFrag.getMap().setInfoWindowAdapter(mMapBaloonInfoWindowAdapter);
 		mDataInterfaceHash = new HashMap<String, DataInterface>();
+		mMapFrag.getMap().setOnMarkerClickListener(this);
 
 		/* register as DataPool text listener */
 		/* get data pool reference */
@@ -225,6 +225,14 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	@Override
 	public boolean onMarkerClick(Marker m) 
 	{
+//		Log.e("ReportOverlay.OnmarkerClick", m.getTitle());
+//		if(m.getTitle().compareTo("u") == 0) /* do nothing please */
+//		{
+//			Log.e("should do nothing with this marker!", "fuck!");
+//			return true;
+//		}
+//		else
+			Log.e("dafuq", "title is " + m.getTitle());
 		mMapBaloonInfoWindowAdapter.setTitle(m.getTitle());
 		mMapBaloonInfoWindowAdapter.setText(m.getSnippet());
 		return false;
@@ -254,7 +262,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 	@Override
 	public void onReportUpdateDone(String txt) 
 	{		
-		int reportDataLen = 0, requestDataLen = 0;
+		int reportDataLen = 0, requestDataLen = 0, activeUsersListLen = 0;
 		/* In this first implementation, let the markers be updated even if the text has not changed.
 		 * When the task has been completed, the buddy request notification marker is drawn if pertinent,
 		 * inside onReportOverlayTaskFinished().
@@ -262,19 +270,7 @@ OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener
 
 		/* ok start processing data */
 		DataParser reportDataFactory = new DataParser();
-
-		ReportData reportDataList[] = reportDataFactory.parseReports(txt); /* reports */
-		RequestData requestDataList[] = reportDataFactory.parseRequests(txt);
-		if(reportDataList != null)
-			reportDataLen = reportDataList.length;
-		if(requestDataList != null)
-			requestDataLen = requestDataList.length;
-
-		DataInterface dataList[] = new DataInterface[reportDataLen + requestDataLen];
-		if(reportDataLen > 0) /* reportDataList not null */
-			System.arraycopy(reportDataList, 0, dataList, 0,  reportDataLen);
-		if(requestDataLen > 0) /* requestDataList not null */
-			System.arraycopy(requestDataList, 0, dataList, reportDataLen, requestDataLen);
+		DataInterface dataList[] = reportDataFactory.parse(txt);
 
 		mReportOverlayTask = new ReportOverlayTask(mMapFrag.getActivity().getApplicationContext(), this);
 		mReportOverlayTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataList);
