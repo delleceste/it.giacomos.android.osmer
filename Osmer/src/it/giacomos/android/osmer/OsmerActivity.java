@@ -324,6 +324,12 @@ TextDecoderListener
 		Dialog d = mUpgradeAlertDialogManager.getAtStartup(R.string.menu_upgrade, R.string.upgrade);
 		if(d != null)
 			d.show();
+		boolean isAndroid4 = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1;
+		if(!isAndroid4)
+		{
+			findViewById(R.id.tvTryProva).setVisibility(View.GONE);
+			findViewById(R.id.btInstallProva).setVisibility(View.GONE);
+		}
 	}	
 
 	@Override
@@ -1166,8 +1172,12 @@ TextDecoderListener
 		/* center map button (v. 1.1.5) */
 		findViewById(R.id.centerMapButton).setOnClickListener(this);	
 		
-		Button btInstallProva = (Button) findViewById(R.id.btInstallProva);
-		btInstallProva.setOnClickListener(this);
+		boolean isAndroid4 = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1;
+		if(isAndroid4)
+		{
+			Button btInstallProva = (Button) findViewById(R.id.btInstallProva);
+			btInstallProva.setOnClickListener(this);
+		}
 	}
 	
 	/* private members */
