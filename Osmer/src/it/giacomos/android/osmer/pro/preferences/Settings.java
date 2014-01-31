@@ -377,16 +377,16 @@ public class Settings
 		e.commit();
 	}
 	
-	public boolean tiltTutorialNeverShown() 
+	public boolean tiltTutorialShown() 
 	{
-		boolean ret = mSharedPreferences.getBoolean("TILT_TUTORIAL_NEVER_SHOWN", true);
+		boolean ret = mSharedPreferences.getBoolean("TILT_TUTORIAL_SHOWN", false);
 		return ret;
 	}
 	
-	public void setTiltTutorialShown()
+	public void setTiltTutorialShown(boolean b)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
-		e.putBoolean("TILT_TUTORIAL_NEVER_SHOWN", false);
+		e.putBoolean("TILT_TUTORIAL_SHOWN", b);
 		e.commit();
 	}
 	

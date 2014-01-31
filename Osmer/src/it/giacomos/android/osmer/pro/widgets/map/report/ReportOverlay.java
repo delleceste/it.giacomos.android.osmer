@@ -22,6 +22,11 @@ import android.content.Context;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.OsmerActivity;
@@ -45,7 +50,8 @@ public class ReportOverlay implements OOverlayInterface,
 ReportOverlayTaskListener, OnMarkerClickListener,
 OnMapClickListener, OnMapLongClickListener, OnInfoWindowClickListener, 
 OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener,
-OnTiltChangeListener
+OnTiltChangeListener,
+OnClickListener
 {
 	/* 
 	 * 0 <= tilt < TILT_MARKERS_SHOW_ALL_THRESH => only request/reports are shown
@@ -81,14 +87,15 @@ OnTiltChangeListener
 		mDataInterfaceList = new ArrayList<DataInterface>();
 		mMapTilt = 0;
 
-		/* register as DataPool text listener */
-		/* get data pool reference */
-		//		DataPoolCacheUtils dataCacheUtils = new DataPoolCacheUtils(); /* cache utils reference */
-		//		{
-		//			String text = dataCacheUtils.loadFromStorage(ViewType.REPORT, mMapFrag.getActivity().getApplicationContext());
-		//			Log.e("----------- FROME CHAENC", "from chane!");
-		//			onReportUpdateDone(text);
-		//		}
+		Context ctx = mMapFrag.getActivity();
+		if(!new Settings(ctx).tiltTutorialShown())
+		{
+			LayoutInflater li = mMapFrag.getActivity().getLayoutInflater();
+			View transparentTutorial = li.inflate(R.layout.map_tilt_transparent_help, 
+					(ViewGroup) mMapFrag.getView());
+			((Button) transparentTutorial.findViewById(R.id.reportMapTiltHelpOkButton))
+				.setOnClickListener(this);
+		}
 	}
 
 	@Override
@@ -638,6 +645,20 @@ OnTiltChangeListener
 			newStatus |= 0x04;
 
 		return oldStatus != newStatus;
+	}
+	
+	@Override
+	public void onClick(View b) 
+	{
+		if(b.getId() == R.id.reportMapTiltHelpOkButton)
+		{
+			Log.e("ReportOverlay", "removing view");
+			ViewGroup mainV = (ViewGroup) mMapFrag.getView();
+			View transparentTutorial = mainV.findViewById(R.id.tiltTutorialLayout);
+			mainV.removeView(transparentTutorial);
+			new Settings(mMapFrag.getActivity()).setTiltTutorialShown(true);
+		}
+		
 	}
 
 }

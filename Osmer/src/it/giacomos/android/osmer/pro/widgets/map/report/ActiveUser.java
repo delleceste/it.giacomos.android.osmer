@@ -53,17 +53,17 @@ public class ActiveUser extends DataInterface {
 		if(isRecent)
 		{
 			title += " " + res.getString(R.string.inTheLast10Min);
-			mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_marker_small));
+			mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_medium));
 		}
 		else if(isQuiteRecent)
 		{
 			title += " " + res.getString(R.string.inTheLast20Min);
-			mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_marker_micro));
+			mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_small));
 		}
 		else
 		{
 			title += " " + res.getString(R.string.inTheLastHour);
-			mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_marker_micro));
+			mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_micro));
 		}
 
 		snippet = datetime + ": " + res.getString(R.string.activeUserSeemdAvailableInThisZone);

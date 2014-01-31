@@ -47,6 +47,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.location.Location;
@@ -59,8 +60,7 @@ WebcamOverlayChangeListener,
 MeasureOverlayChangeListener,
 DataPoolBitmapListener,
 DataPoolErrorListener,
-RadarAnimationListener,
-OnClickListener
+RadarAnimationListener
 {
 	public final int minLatitude = GeoCoordinates.bottomRight.getLatitudeE6();
 	public final int maxLatitude = GeoCoordinates.topLeft.getLatitudeE6();
@@ -471,11 +471,6 @@ OnClickListener
 			mMap.setOnMarkerClickListener(mReportOverlay);
 			// mMap.setOnCameraChangeListener(mReportOverlay);
 			mOverlays.add(mReportOverlay);
-			if(mSettings.tiltTutorialNeverShown())
-			{
-				LayoutInflater li = this.getLayoutInflater(null);
-				View transparentTutorial = li.inflate(R.layout.map_tilt_transparent_help, (ViewGroup) getView());
-			}
 		}
 		else if(m.currentMode != MapMode.HIDDEN)
 		{
@@ -764,12 +759,4 @@ OnClickListener
 		pt.setLongitude(pointOnMap.longitude);
 		return myLocation.distanceTo(pt) < 500;
 	}
-
-	@Override
-	public void onClick(View b) 
-	{
-		
-		
-	}
-
 }

@@ -782,6 +782,8 @@ ReportRequestListener
 			updateReport(true);
 			break;
 		case R.id.reportHelpAction:
+			/* show map tilt transparent overlay next time too */
+			mSettings.setTiltTutorialShown(false);
 			mStartTutorialActivity();
 			break;
 		default:
