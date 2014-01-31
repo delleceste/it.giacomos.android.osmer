@@ -377,8 +377,22 @@ public class Settings
 		e.commit();
 	}
 	
+	public boolean tiltTutorialNeverShown() 
+	{
+		boolean ret = mSharedPreferences.getBoolean("TILT_TUTORIAL_NEVER_SHOWN", true);
+		return ret;
+	}
+	
+	public void setTiltTutorialShown()
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putBoolean("TILT_TUTORIAL_NEVER_SHOWN", false);
+		e.commit();
+	}
+	
 	public static final String PREFERENCES_NAME = "Osmer.conf";
 	private SharedPreferences mSharedPreferences;
+	
 	
 	
 	

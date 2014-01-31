@@ -13,7 +13,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class RequestData extends DataInterface
 {
-	private double latitude, longitude;
 	private String writable;
 	public String datetime, username, locality;
 	private Marker mMarker;
@@ -33,11 +32,9 @@ public class RequestData extends DataInterface
 	public RequestData(String d, String user, String local, 
 			double la, double lo, String wri, boolean isPublished)
 	{
-		latitude = la;
-		longitude = lo;
+		super(la, lo, d);
 		writable = wri;
 		username = user;
-		datetime = d;
 		locality = local;
 		mIsPublished = isPublished;
 	}
@@ -47,27 +44,7 @@ public class RequestData extends DataInterface
 		return (writable.compareTo("w") == 0);
 	}
 
-	@Override
-	public void setLatitude(double l)
-	{
-		latitude = l;
-	}
 	
-	@Override
-	public void setLongitude(double l)
-	{
-		longitude = l;
-	}
-	
-	@Override
-	public double getLatitude() {
-		return latitude;
-	}
-
-	@Override
-	public double getLongitude() {
-		return longitude;
-	}
 
 	@Override
 	public int getType() {
@@ -91,7 +68,7 @@ public class RequestData extends DataInterface
 		String  title;
 
 		mMarkerOptions = new MarkerOptions();
-		mMarkerOptions.position(new LatLng(latitude, longitude));
+		mMarkerOptions.position(new LatLng(getLatitude(), getLongitude()));
 		if(!isWritable())
 		{
 			title = res.getString(R.string.reportRequested);

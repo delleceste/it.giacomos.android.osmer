@@ -35,6 +35,7 @@ import it.giacomos.android.osmer.pro.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimation;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationStatus;
+import it.giacomos.android.osmer.pro.widgets.map.report.OnTiltChangeListener;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportOverlay;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostReportAsyncTaskPool;
 import it.giacomos.android.osmer.pro.widgets.map.report.network.PostType;
@@ -44,7 +45,9 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.location.Location;
 import android.os.Bundle;
@@ -56,7 +59,8 @@ WebcamOverlayChangeListener,
 MeasureOverlayChangeListener,
 DataPoolBitmapListener,
 DataPoolErrorListener,
-RadarAnimationListener
+RadarAnimationListener,
+OnClickListener
 {
 	public final int minLatitude = GeoCoordinates.bottomRight.getLatitudeE6();
 	public final int maxLatitude = GeoCoordinates.topLeft.getLatitudeE6();
@@ -73,6 +77,7 @@ RadarAnimationListener
 	private GoogleMap mMap;
 	private CameraPosition mSavedCameraPosition;
 	private ZoomChangeListener mZoomChangeListener;
+	private OnTiltChangeListener mOnTiltChangeListener;
 	private ArrayList <OOverlayInterface> mOverlays;
 	private boolean mMapClickOnBaloonImageHintEnabled;
 	private Settings mSettings;
@@ -140,7 +145,8 @@ RadarAnimationListener
 			mMapFragmentListener.onCameraReady();
 		}
 		
-		Log.e("OMapFragment.onCameraChanged", " tilt " + cameraPosition.tilt);
+		if(mOnTiltChangeListener != null)
+			mOnTiltChangeListener.onTiltChanged(cameraPosition.tilt);
 	} 
 
 	public void onStart()
@@ -455,7 +461,9 @@ RadarAnimationListener
 			mRadarAnimation.stop();
 			radarTimestampText.hide();
 			mReportOverlay = new ReportOverlay(this);
+			mOnTiltChangeListener = mReportOverlay;
 			mReportOverlay.setOnReportRequestListener((OsmerActivity) getActivity());
+			mReportOverlay.setMapTilt(mMap.getCameraPosition().tilt);
 			mMap.setOnMapLongClickListener(mReportOverlay);
 			mMap.setOnInfoWindowClickListener(mReportOverlay);
 			mMap.setOnMarkerDragListener(mReportOverlay);
@@ -463,6 +471,11 @@ RadarAnimationListener
 			mMap.setOnMarkerClickListener(mReportOverlay);
 			// mMap.setOnCameraChangeListener(mReportOverlay);
 			mOverlays.add(mReportOverlay);
+			if(mSettings.tiltTutorialNeverShown())
+			{
+				LayoutInflater li = this.getLayoutInflater(null);
+				View transparentTutorial = li.inflate(R.layout.map_tilt_transparent_help, (ViewGroup) getView());
+			}
 		}
 		else if(m.currentMode != MapMode.HIDDEN)
 		{
@@ -646,6 +659,7 @@ RadarAnimationListener
 			mMap.setOnMarkerDragListener(null);
 		}
 		setOnZoomChangeListener(null);
+		mOnTiltChangeListener = null;
 	}
 
 	private MeasureOverlay mMeasureOverlay = null;
@@ -749,6 +763,13 @@ RadarAnimationListener
 		pt.setLatitude(pointOnMap.latitude);
 		pt.setLongitude(pointOnMap.longitude);
 		return myLocation.distanceTo(pt) < 500;
+	}
+
+	@Override
+	public void onClick(View b) 
+	{
+		
+		
 	}
 
 }

@@ -15,7 +15,6 @@ public class ReportData extends DataInterface
 {
 	public String username, datetime, locality, comment, temperature, writable;
 	public int sky, wind;
-	double latitude, longitude;
 	
 	private Marker mMarker;
 	private MarkerOptions mMarkerOptions;
@@ -23,15 +22,13 @@ public class ReportData extends DataInterface
 	public ReportData(String u, String d, String l, String c, 
 			String t, int s, int w, double lat, double longi, String writa)
 	{
+		super(lat, longi, d);
 		username = u;
-		datetime = d;
 		locality = l;
 		comment = c;
 		temperature = t;
 		sky = s;
 		wind = w;
-		latitude = lat;
-		longitude = longi;
 		writable = writa;
 		mMarker = null;
 	}
@@ -39,28 +36,6 @@ public class ReportData extends DataInterface
 	public boolean isWritable()
 	{
 		return (writable.compareTo("w") == 0);
-	}
-	
-	@Override
-	public void setLatitude(double l)
-	{
-		latitude = l;
-	}
-	
-	@Override
-	public void setLongitude(double l)
-	{
-		longitude = l;
-	}
-	
-	@Override
-	public double getLatitude() {
-		return latitude;
-	}
-
-	@Override
-	public double getLongitude() {
-		return longitude;
 	}
 
 	@Override
@@ -194,7 +169,7 @@ public class ReportData extends DataInterface
 			text += "\n*" + res.getString(R.string.reportTouchBaloonToRemove);
 		
 		mMarkerOptions = new MarkerOptions();
-		mMarkerOptions.position(new LatLng(latitude, longitude));
+		mMarkerOptions.position(new LatLng(getLatitude(), getLongitude()));
 		mMarkerOptions.title(title);
 		mMarkerOptions.snippet(text);
 

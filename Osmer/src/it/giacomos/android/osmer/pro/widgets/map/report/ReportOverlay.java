@@ -2,39 +2,33 @@ package it.giacomos.android.osmer.pro.widgets.map.report;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.pro.MyAlertDialogFragment;
 import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.pro.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.pro.locationUtils.GeocodeAddressUpdateListener;
 import it.giacomos.android.osmer.pro.locationUtils.LocationInfo;
 import it.giacomos.android.osmer.pro.locationUtils.NearLocationFinder;
-import it.giacomos.android.osmer.pro.network.Data.DataPoolCacheUtils;
-import it.giacomos.android.osmer.pro.network.state.ViewType;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 import it.giacomos.android.osmer.pro.service.sharedData.ReportRequestNotification;
 import it.giacomos.android.osmer.pro.service.sharedData.ServiceSharedData;
@@ -51,8 +45,16 @@ public class ReportOverlay implements OOverlayInterface,
 ReportOverlayTaskListener, OnMarkerClickListener,
 OnMapClickListener, OnMapLongClickListener, OnInfoWindowClickListener, 
 OnMarkerDragListener, GeocodeAddressUpdateListener, ReportUpdaterListener,
-OnCameraChangeListener
+OnTiltChangeListener
 {
+	/* 
+	 * 0 <= tilt < TILT_MARKERS_SHOW_ALL_THRESH => only request/reports are shown
+	 * TILT_MARKERS_SHOW_ALL_THRESH  <= tilt < TILT_MARKERS_SHOW_ONLY_USERS_THRESH =>
+	 *   all markers are shown together
+	 * tilt >= TILT_MARKERS_SHOW_ONLY_USERS_THRESH => only active users markers are shown.
+	 */
+	private final int TILT_MARKERS_SHOW_ALL_THRESH = 10;
+	private final int TILT_MARKERS_SHOW_ONLY_USERS_THRESH = 15;
 
 	private OMapFragment mMapFrag;
 	private ReportOverlayTask mReportOverlayTask;
@@ -60,9 +62,11 @@ OnCameraChangeListener
 	private ReportRequestListener mMyReportRequestListener; /* OsmerActivity */
 	private GeocodeAddressTask mGeocodeAddressTask;
 	private ReportUpdater mReportUpdater;
+	private float mMapTilt;
 
 	/* maps the marker id (obtained with marker.getId()) with the associated marker data */
-	private HashMap<String , DataInterface> mDataInterfaceHash;
+	private HashMap<String , DataInterface> mDataInterfaceMarkerIdHash;
+	private ArrayList<DataInterface> mDataInterfaceList;
 
 	public ReportOverlay(OMapFragment oMapFragment) 
 	{
@@ -73,7 +77,9 @@ OnCameraChangeListener
 		mGeocodeAddressTask = null;
 		mReportUpdater = new ReportUpdater(oMapFragment.getActivity().getApplicationContext(),  this);
 		mMapFrag.getMap().setInfoWindowAdapter(mMapBaloonInfoWindowAdapter);
-		mDataInterfaceHash = new HashMap<String, DataInterface>();
+		mDataInterfaceMarkerIdHash = new HashMap<String, DataInterface>();
+		mDataInterfaceList = new ArrayList<DataInterface>();
+		mMapTilt = 0;
 
 		/* register as DataPool text listener */
 		/* get data pool reference */
@@ -107,17 +113,17 @@ OnCameraChangeListener
 		 */
 		mCancelTasks();
 	}
-	
+
 	public void onResume()
 	{
 		mReportUpdater.onResume();
 	}
-	
+
 	private void mRemoveMarkers()
 	{
-		for(String markerId : mDataInterfaceHash.keySet())
-			mDataInterfaceHash.get(markerId).getMarker().remove();
-		mDataInterfaceHash.clear();
+		for(String markerId : mDataInterfaceMarkerIdHash.keySet())
+			mDataInterfaceMarkerIdHash.get(markerId).getMarker().remove();
+		mDataInterfaceMarkerIdHash.clear();
 	}
 
 	private void mCancelTasks()
@@ -126,6 +132,11 @@ OnCameraChangeListener
 			mReportOverlayTask.cancel(false);
 		if(mGeocodeAddressTask != null)
 			mGeocodeAddressTask.cancel(true);
+	}
+
+	public void setMapTilt(float ti)
+	{
+		mMapTilt = ti;
 	}
 
 	@Override
@@ -137,16 +148,16 @@ OnCameraChangeListener
 	@Override
 	public void hideInfoWindow() 
 	{
-		for(String id : mDataInterfaceHash.keySet())
-			mDataInterfaceHash.get(id).getMarker().hideInfoWindow();
+		for(String id : mDataInterfaceMarkerIdHash.keySet())
+			mDataInterfaceMarkerIdHash.get(id).getMarker().hideInfoWindow();
 	}
 
 	@Override
 	public boolean isInfoWindowVisible()
 	{
-		for(String markerId : mDataInterfaceHash.keySet())
+		for(String markerId : mDataInterfaceMarkerIdHash.keySet())
 		{
-			Marker m = mDataInterfaceHash.get(markerId).getMarker();
+			Marker m = mDataInterfaceMarkerIdHash.get(markerId).getMarker();
 			if(m.isInfoWindowShown())
 				return true;
 		}
@@ -159,43 +170,99 @@ OnCameraChangeListener
 	 */
 	public void onReportOverlayTaskFinished(DataInterface [] dataInterfaceList) 
 	{
-		Context ctx = mMapFrag.getActivity().getApplicationContext();
-		Resources res = ctx.getResources();
-		int reportCount = 0;
 		if(dataInterfaceList != null) /* the task may return null */
 		{
+			/* store new data into mDataInterfaceList field */
+			mDataInterfaceList = new ArrayList<DataInterface>(Arrays.asList(dataInterfaceList));
 			/* save my request markers that haven't been published yet in order not to lose them
 			 * when the update takes place. Actually, mRemoveMarkers below clears all markers.
 			 */
 			ArrayList<DataInterface> myRequestsYetUnpublishedBackup = mSaveYetUnpublishedMyRequestData();
 			mRemoveMarkers();
-			for(DataInterface dataI : dataInterfaceList)
-			{
-				/* generate marker */
-				Marker marker = mMapFrag.getMap().addMarker(dataI.getMarkerOptions());
-				/* store into our data reference */
-				dataI.setMarker(marker);
-				/* insert data into hash map for future use */
-				mDataInterfaceHash.put(marker.getId(), dataI);
-				if(dataI.getType() == DataInterface.TYPE_REPORT)
-					reportCount++;
+			/* creates markers on the map according to the tilt value. Populates mDataInterfaceMarkerIdHash */
+			mUpdateMarkers();
 
-			}
 			/* do not need data interface list anymore, since it's been saved into hash */
 			dataInterfaceList = new DataInterface[0];
 			/* restore yet unpublished markers that the user was just placing into the map */
 			mRestoreYetUnpublishedMyRequestData(myRequestsYetUnpublishedBackup);
 		}
-		if(reportCount > 0)
-			Toast.makeText(ctx,  res.getString(R.string.thereAreNReports) +
-					reportCount, Toast.LENGTH_SHORT).show();
 
 		mCheckForFreshNotifications();
 	}
 
+	private void mUpdateMarkers() 
+	{
+		boolean showAll = (mMapTilt >= TILT_MARKERS_SHOW_ALL_THRESH &&
+				mMapTilt < TILT_MARKERS_SHOW_ONLY_USERS_THRESH);
+		boolean showUsers = (mMapTilt >= TILT_MARKERS_SHOW_ONLY_USERS_THRESH);
+
+	//	mDataInterfaceMarkerIdHash.clear();
+
+		/* invoked when map tilt changes. We need to remove or add markers
+		 * appropriately. mDataInterfaceMarkerIdHash is updated with the new id
+		 * of the marker, if added. Each 
+		 * DataInterface stored in its values will have its marker set
+		 * or unset (i.e. set to null) accordingly to the shown/hidden status 
+		 * of the marker.
+		 * 
+		 */
+		for(DataInterface dataI : mDataInterfaceList)
+		{
+//			Log.e("reportOvarlay.mUpdateMarkers", " ty " + dataI.getType() + "showAll " + showAll
+//					+ " showUser " + showUsers + " tilt " + mMapTilt);
+			
+			int typ = dataI.getType();
+			Marker marker = dataI.getMarker();
+			
+			if(showAll || (typ == DataInterface.TYPE_ACTIVE_USER && showUsers) 
+					|| (typ != DataInterface.TYPE_ACTIVE_USER && !showUsers) )
+			{
+				if(marker == null)
+				{
+					/* must generate marker for that data interface */
+					marker = mMapFrag.getMap().addMarker(dataI.getMarkerOptions());
+					/* store it into our data reference */
+					dataI.setMarker(marker);
+//					Log.e("reportOvarlay.mUpdateMarkers", "setting marker " + marker.getTitle() + 
+//							" id " + marker.getId());
+					mDataInterfaceMarkerIdHash.put(marker.getId(), dataI);
+
+				}
+				else
+				{
+//					Log.e("reportOvarlay.mUpdateMarkers", "marker " + marker.getTitle() + 
+//							" should be visible already");
+
+					/* if there was a not null marker in the data interface, then it
+					 * should be visible.
+					 */
+				}
+				/* end: if marker to be shown */
+			} 
+			else
+			{
+				/* marker must be hidden */
+				if(marker != null) /* is visible */
+				{
+					/* remove couple id, DataInterface from hash */
+					mDataInterfaceMarkerIdHash.remove(marker.getId());
+//					Log.e("reportOvarlay.mUpdateMarkers", "removigng marker " + marker.getTitle() + 
+//							" id " + marker.getId());
+					marker.remove();
+					dataI.setMarker(null);
+				}
+			}
+		} /* end for DataInterface dataI : mDataInterfaceMarkerIdHash.values() */
+
+//		Log.e("ReportOverlay.mUpdateMarkers", "from tilt change: hash size " + mDataInterfaceMarkerIdHash.size()
+//				+ " dataSize " + mDataInterfaceList.size());
+
+	}
+
 	private void mCheckForFreshNotifications() 
 	{
-		for(DataInterface di : mDataInterfaceHash.values())
+		for(DataInterface di : mDataInterfaceMarkerIdHash.values())
 		{
 			if(di.getType() == DataInterface.TYPE_REQUEST && !di.isWritable())
 			{
@@ -228,32 +295,7 @@ OnCameraChangeListener
 	@Override
 	public boolean onMarkerClick(Marker m) 
 	{
-		final float thresholdDistance = 3000f; /* meters */
 		Log.e("ReportOverlay.OnmarkerClick", m.getTitle());
-		DataInterface dataI = this.mDataInterfaceHash.get(m.getId());
-		DataInterface nearestReportDI = null;
-		if(dataI.getType() == DataInterface.TYPE_ACTIVE_USER)
-		{
-			long startTime = System.currentTimeMillis();
-			/* must avoid that DataUser markers above report or request markers
-			 * prevent the latter from being shown. (No Z axis position in markers!)
-			 */
-			nearestReportDI = this.mFindNearestReportOrRequest(dataI.getLatitude(),
-					dataI.getLongitude(), thresholdDistance);
-			if(nearestReportDI != null) /* found a report or request nearby */
-			{
-				nearestReportDI.getMarker().showInfoWindow();
-				Log.e("ReportOverlay.onMarkerClick", "found "
-						+ nearestReportDI.getMarker().getTitle() + " in " + 
-						(System.currentTimeMillis() - startTime) + "ms");
-				return true;
-			}
-			Log.e("ReportOverlay.onMarkerClick", 
-					"NOT found a nearby report or req in " + 
-					(System.currentTimeMillis() - startTime) + "ms");
-		}
-		else
-			Log.e("ReportOverlay.OnmarkerClick", "title is " + m.getTitle());
 		mMapBaloonInfoWindowAdapter.setTitle(m.getTitle());
 		mMapBaloonInfoWindowAdapter.setText(m.getSnippet());
 		return false;
@@ -283,7 +325,6 @@ OnCameraChangeListener
 	@Override
 	public void onReportUpdateDone(String txt) 
 	{		
-		int reportDataLen = 0, requestDataLen = 0, activeUsersListLen = 0;
 		/* In this first implementation, let the markers be updated even if the text has not changed.
 		 * When the task has been completed, the buddy request notification marker is drawn if pertinent,
 		 * inside onReportOverlayTaskFinished().
@@ -326,7 +367,7 @@ OnCameraChangeListener
 		Marker myRequestMarker = mMapFrag.getMap().addMarker(myRequestData.getMarkerOptions());
 		myRequestData.setMarker(myRequestMarker);
 		/* prepend "MyRequestMarker" to the id of my request marker */
-		mDataInterfaceHash.put(myRequestMarker.getId(), myRequestData);
+		mDataInterfaceMarkerIdHash.put(myRequestMarker.getId(), myRequestData);
 
 		return myRequestMarker;
 	}
@@ -338,7 +379,7 @@ OnCameraChangeListener
 
 	private void mStartGeocodeAddressTask(Marker marker)
 	{
-		Log.e("ReportOverlay.mStartGeocodeAddressTask", "starting geocode address task");
+	//	Log.e("ReportOverlay.mStartGeocodeAddressTask", "starting geocode address task");
 		mGeocodeAddressTask = 
 				new GeocodeAddressTask(mMapFrag.getActivity().getApplicationContext(),
 						this, marker.getId());
@@ -352,8 +393,8 @@ OnCameraChangeListener
 	@Override
 	public void onGeocodeAddressUpdate(LocationInfo locationInfo, String id) 
 	{	
-		Log.e("ReportOverlay.onGeocodeAddressUpdate", "-> " + locationInfo.locality);
-		DataInterface dataI = mDataInterfaceHash.get(id);
+		//Log.e("ReportOverlay.onGeocodeAddressUpdate", "-> " + locationInfo.locality);
+		DataInterface dataI = mDataInterfaceMarkerIdHash.get(id);
 		if(dataI != null) /* may have been removed */
 		{
 			RequestData rd = (RequestData) dataI;
@@ -373,7 +414,7 @@ OnCameraChangeListener
 	@Override
 	public void onInfoWindowClick(Marker marker) 
 	{
-		DataInterface dataI = mDataInterfaceHash.get(marker.getId());
+		DataInterface dataI = mDataInterfaceMarkerIdHash.get(marker.getId());
 		/* retrieve my request marker, if present. If it's mine and not published, trigger the request dialog
 		 * execution.
 		 */
@@ -415,7 +456,7 @@ OnCameraChangeListener
 	public void onMarkerDragEnd(Marker marker) 
 	{
 		/* must update data into data interface */
-		DataInterface di = mDataInterfaceHash.get(marker.getId());
+		DataInterface di = mDataInterfaceMarkerIdHash.get(marker.getId());
 		if(di != null && di.getType() == DataInterface.TYPE_REQUEST) /* must be */
 		{
 			RequestData reqD = (RequestData) di;
@@ -436,15 +477,12 @@ OnCameraChangeListener
 
 	public void onPostActionResult(boolean error, String message, PostType postType) 
 	{
-		if(postType == PostType.REQUEST)
-		{
 
-		}
 	}
 
 	public void removeMyPendingReportRequestMarker(LatLng position) 
 	{
-		for(Iterator<Map.Entry<String, DataInterface>> it = mDataInterfaceHash.entrySet().iterator(); it.hasNext(); ) 
+		for(Iterator<Map.Entry<String, DataInterface>> it = mDataInterfaceMarkerIdHash.entrySet().iterator(); it.hasNext(); ) 
 		{
 			Map.Entry<String, DataInterface> entry = it.next();
 			DataInterface dataI = entry.getValue();
@@ -453,8 +491,8 @@ OnCameraChangeListener
 					&& position.latitude == dataI.getLatitude() 
 					&& position.longitude == dataI.getLongitude())
 			{
-//				Log.e("removeMyPendingReportRequestMarker", "Cancel hit on dialog? removing maker "
-//						+ dataI.getLocality() + dataI.getMarker().getTitle());
+				//				Log.e("removeMyPendingReportRequestMarker", "Cancel hit on dialog? removing maker "
+				//						+ dataI.getLocality() + dataI.getMarker().getTitle());
 				Marker toRemoveMarker = dataI.getMarker();
 				toRemoveMarker.remove();
 				it.remove(); /* remove from hash */
@@ -465,8 +503,8 @@ OnCameraChangeListener
 
 	private void mRestoreYetUnpublishedMyRequestData(ArrayList<DataInterface> backupData)
 	{
-//		Log.e("mRestoreYetUnpublishedMyRequestData", "bk data sixe " + backupData.size() + " data if hash " 
-//				+ mDataInterfaceHash.size());
+		//		Log.e("mRestoreYetUnpublishedMyRequestData", "bk data sixe " + backupData.size() + " data if hash " 
+		//				+ mDataInterfaceMarkerIdHash.size());
 		for(DataInterface di : backupData)
 		{
 			/* must rebuild marker options because locality may have not been set in the memorized marker options.
@@ -478,7 +516,7 @@ OnCameraChangeListener
 			di.setMarker(myRestoredRequestMarker); /* replace old marker with new one */
 			myRestoredRequestMarker.showInfoWindow();
 			/* restore data in the hash now! */
-			mDataInterfaceHash.put(myRestoredRequestMarker.getId(), di);
+			mDataInterfaceMarkerIdHash.put(myRestoredRequestMarker.getId(), di);
 
 
 		}
@@ -487,15 +525,15 @@ OnCameraChangeListener
 	private ArrayList<DataInterface> mSaveYetUnpublishedMyRequestData() 
 	{
 		ArrayList<DataInterface> myRequestsYetUnpublished = new ArrayList<DataInterface>();
-		for(DataInterface di : mDataInterfaceHash.values())
+		for(DataInterface di : mDataInterfaceMarkerIdHash.values())
 		{
 			if(di.getType() == DataInterface.TYPE_REQUEST && di.isWritable() && !di.isPublished())
 			{
 				myRequestsYetUnpublished.add(di);
 			}
-//			else
-//				Log.e("mSaveYetUnpublishedMyRequestData", "not saving " + di.getLocality() +  " id " + di.getMarker().getId() +
-//						"w " + di.isWritable()  + ", pub"  + di.isPublished());
+			//			else
+			//				Log.e("mSaveYetUnpublishedMyRequestData", "not saving " + di.getLocality() +  " id " + di.getMarker().getId() +
+			//						"w " + di.isWritable()  + ", pub"  + di.isPublished());
 		}
 		return myRequestsYetUnpublished;
 	}
@@ -512,7 +550,7 @@ OnCameraChangeListener
 
 	private void mRemoveUnpublishedMyRequestMarkers() 
 	{
-		for(Iterator<Map.Entry<String, DataInterface>> it = mDataInterfaceHash.entrySet().iterator(); it.hasNext(); ) 
+		for(Iterator<Map.Entry<String, DataInterface>> it = mDataInterfaceMarkerIdHash.entrySet().iterator(); it.hasNext(); ) 
 		{
 			Map.Entry<String, DataInterface> entry = it.next();
 
@@ -524,7 +562,7 @@ OnCameraChangeListener
 			}
 		}
 	}
-	
+
 	private DataInterface mFindNearestReportOrRequest(double lat, 
 			double lon, float thresholdDistance)
 	{
@@ -550,11 +588,11 @@ OnCameraChangeListener
 		}
 		return di;
 	}
-	
+
 	private ArrayList<DataInterface> mGetReportsAndRequestsList()
 	{
 		ArrayList<DataInterface> ret = new ArrayList<DataInterface>();
-		for(DataInterface di : mDataInterfaceHash.values())
+		for(DataInterface di : mDataInterfaceMarkerIdHash.values())
 		{
 			if(di.getType() == DataInterface.TYPE_REQUEST || di.getType() == 
 					DataInterface.TYPE_REPORT)
@@ -566,10 +604,40 @@ OnCameraChangeListener
 	}
 
 	@Override
-	public void onCameraChange(CameraPosition cameraPos) 
+	public void onTiltChanged(float tilt) 
 	{
-		float zoom = cameraPos.zoom;
-		Log.e("ReportOverlay.onCameraChange", "zoom " + zoom);
-		
+		/* check if changed, first of all! */
+		boolean update = mMarkersNeedUpdate(mMapTilt, tilt);
+		mMapTilt = tilt;
+		if(update)
+		{
+			/* by passing null to mUpdateMarkers, the mDataInterfaceMarkerIdHash is not
+			 * touched but the active user/report/request markers are hidden or
+			 * shown according to the tilt value.
+			 */
+			mUpdateMarkers();
+		}
 	}
+
+	private boolean mMarkersNeedUpdate(float oldTilt, float newTilt)
+	{
+		int oldStatus = 0, newStatus = 0;
+
+		if(oldTilt < TILT_MARKERS_SHOW_ALL_THRESH)
+			oldStatus = 0x01;
+		if(oldTilt >= TILT_MARKERS_SHOW_ALL_THRESH && oldTilt < TILT_MARKERS_SHOW_ONLY_USERS_THRESH)
+			oldStatus |= 0x02;
+		if(oldTilt >= TILT_MARKERS_SHOW_ONLY_USERS_THRESH)
+			oldStatus |= 0x04;
+
+		if(newTilt < TILT_MARKERS_SHOW_ALL_THRESH)
+			newStatus = 0x01;
+		if(newTilt >= TILT_MARKERS_SHOW_ALL_THRESH && oldTilt < TILT_MARKERS_SHOW_ONLY_USERS_THRESH)
+			newStatus |= 0x02;
+		if(newTilt >= TILT_MARKERS_SHOW_ONLY_USERS_THRESH)
+			newStatus |= 0x04;
+
+		return oldStatus != newStatus;
+	}
+
 }

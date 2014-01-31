@@ -14,11 +14,33 @@ public abstract class DataInterface
 	public static int TYPE_ACTIVE_USER = 2;
 	
 	private final int closeDistance = 500;
+	private double latitude, longitude;
+	private String datetime;
 	
-	public abstract double getLatitude();
-	public abstract double getLongitude();
-	public abstract void setLatitude(double d);
-	public abstract void setLongitude(double lon);
+	
+	public String getDateTime()
+	{
+		return datetime;
+	}
+	
+	public void setLatitude(double l)
+	{
+		latitude = l;
+	}
+	
+	public void setLongitude(double l)
+	{
+		longitude = l;
+	}
+	
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+	
 	public abstract int getType();
 	public abstract String getLocality();
 	
@@ -31,6 +53,13 @@ public abstract class DataInterface
 	public abstract void  setMarker(Marker m);
 	
 	public abstract Marker getMarker();	
+	
+	public DataInterface(double lat, double lon, String datet)
+	{
+		latitude = lat;
+		longitude = lon;
+		datetime = datet;
+	}
 	
 	public abstract boolean isPublished();
 	

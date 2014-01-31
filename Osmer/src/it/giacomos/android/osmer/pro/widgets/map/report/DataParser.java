@@ -118,13 +118,11 @@ public class DataParser
 							lat = Double.parseDouble(parts[2]);
 							lon = Double.parseDouble(parts[3]);
 
-							if(!mIsNearAReportOrRequest(lat, lon, tmpArray, 1500))
-							{
-								isRecent = (Integer.parseInt(parts[4]) == 1);
-								isQuiteRecent = (Integer.parseInt(parts[5]) == 1);
-								activeUser = new ActiveUser(parts[1], lat, lon, isRecent, isQuiteRecent);
-								tmpArray.add(activeUser);
-							}
+							isRecent = (Integer.parseInt(parts[4]) == 1);
+							isQuiteRecent = (Integer.parseInt(parts[5]) == 1);
+							activeUser = new ActiveUser(parts[1], lat, lon, isRecent, isQuiteRecent);
+							tmpArray.add(activeUser);
+
 						}
 						catch(NumberFormatException e)
 						{
@@ -144,30 +142,6 @@ public class DataParser
 			ret = tmpArray.toArray(new DataInterface[tmpArray.size()]);
 
 		return ret;
-	}	
-
-	private boolean mIsNearAReportOrRequest(double lat, 
-			double lon, 
-			final ArrayList<DataInterface> repreqList, 
-			float thresholdDistance)
-	{
-		float distMt = 1000000;
-		LatLng activeUserLatLng = new LatLng(lat, lon);
-		LatLng repReqLatLng = null;
-		NearLocationFinder nearLocFinder = new NearLocationFinder();
-		for(DataInterface din : repreqList)
-		{
-			if(din.getType() != DataInterface.TYPE_ACTIVE_USER)
-			{
-				repReqLatLng = new LatLng(din.getLatitude(), din.getLongitude());
-				distMt = nearLocFinder.distanceBetween(activeUserLatLng, repReqLatLng);
-				if(distMt < thresholdDistance)
-				{
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 }

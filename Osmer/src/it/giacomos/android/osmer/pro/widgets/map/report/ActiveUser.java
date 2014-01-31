@@ -11,7 +11,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class ActiveUser extends DataInterface {
 
-	public double latitude, longitude;
 	public boolean isRecent, isQuiteRecent;
 	public String datetime;
 	private MarkerOptions mMarkerOptions;
@@ -20,33 +19,12 @@ public class ActiveUser extends DataInterface {
 	public ActiveUser(String datet, double lat, double lon, 
 			boolean recent, boolean quite_recent)
 	{
+		super(lat, lon, datet);
 		datetime = datet;
-		latitude = lat;
-		longitude = lon;
 		isRecent = recent;
 		isQuiteRecent = quite_recent;
 	}
 	
-	@Override
-	public double getLatitude() {
-		return latitude;
-	}
-
-	@Override
-	public double getLongitude() {
-		return longitude;
-	}
-
-	@Override
-	public void setLatitude(double d) {
-		latitude = d;
-	}
-
-	@Override
-	public void setLongitude(double lon) {
-		longitude = lon;
-	}
-
 	@Override
 	public int getType() {
 		return TYPE_ACTIVE_USER;
@@ -69,7 +47,7 @@ public class ActiveUser extends DataInterface {
 		Resources res = ctx.getResources();
 
 		mMarkerOptions = new MarkerOptions();
-		mMarkerOptions.position(new LatLng(latitude, longitude));
+		mMarkerOptions.position(new LatLng(getLatitude(), getLongitude()));
 		
 		title = res.getString(R.string.activeUser);
 		if(isRecent)
