@@ -275,7 +275,7 @@ OnClickListener
 			{
 				// ReportRequestNotification(String datet, String user, double lat, double lon, String loc)
 				RequestData rd = (RequestData) di;
-				ReportRequestNotification repReqN = new ReportRequestNotification(rd.datetime,
+				ReportRequestNotification repReqN = new ReportRequestNotification(rd.getDateTime(),
 						rd.username, rd.getLatitude(), rd.getLongitude(), rd.locality);
 				/* put the report request notification into the data shared with the service,
 				 * so that the service does not trigger a notification.

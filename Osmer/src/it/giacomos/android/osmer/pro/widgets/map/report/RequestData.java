@@ -14,7 +14,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class RequestData extends DataInterface
 {
 	private String writable;
-	public String datetime, username, locality;
+	public String username, locality;
 	private Marker mMarker;
 	private MarkerOptions mMarkerOptions;
 	private boolean mIsPublished;
@@ -142,13 +142,13 @@ public class RequestData extends DataInterface
 				snippet += "\n" + res.getString(R.string.reportTouchBaloonToRequest);
 			else
 			{
-				snippet += "\n" + res.getString(R.string.reportRequestPublishedOn) + " " + datetime;
+				snippet += "\n" + res.getString(R.string.reportRequestPublishedOn) + " " + getDateTime();
 				snippet += "\n" + res.getString(R.string.reportTouchBaloonToCancel);
 			}
 		}
 		else
 		{
-			snippet += "\n" + res.getString(R.string.reportRequestPublishedOn) + " " + datetime;
+			snippet += "\n" + res.getString(R.string.reportRequestPublishedOn) + " " + getDateTime();
 			snippet += "\n* " + res.getString(R.string.reportTouchBaloonToReport) + " " + username;
  		}
 		return snippet;

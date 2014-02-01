@@ -71,7 +71,7 @@ public class ReportUpdateTask extends AsyncTask<String, Integer, String>
         postParameters.add(new BasicNameValuePair("d", mAndroidId));
         postParameters.add(new BasicNameValuePair("la", String.valueOf(l.getLatitude())));
         postParameters.add(new BasicNameValuePair("lo", String.valueOf(l.getLongitude())));
-        // postParameters.add(new BasicNameValuePair("loc", mLocality));
+        //postParameters.add(new BasicNameValuePair("loc", mLocality));
         UrlEncodedFormEntity form;
 		try {
 			form = new UrlEncodedFormEntity(postParameters);

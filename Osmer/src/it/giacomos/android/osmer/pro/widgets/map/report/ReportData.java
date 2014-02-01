@@ -13,7 +13,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class ReportData extends DataInterface
 {
-	public String username, datetime, locality, comment, temperature, writable;
+	public String username, locality, comment, temperature, writable;
 	public int sky, wind;
 	
 	private Marker mMarker;
@@ -145,7 +145,7 @@ public class ReportData extends DataInterface
 		if(locality.length() > 1) /* different from "-" */
 			title += " - " + locality;
 		
-		text = datetime + "\n";
+		text = getDateTime() + "\n";
 		
 		if(skystr.length() > 0)
 			text += skystr + "\n";
