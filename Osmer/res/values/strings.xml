@@ -291,6 +291,7 @@
 	<string name="inTheLast20Min">in the last 20 min.</string>
 	<string name="inTheLastHour">in the last hour</string>
 	<string name="activeUserSeemdAvailableInThisZone">a user seemed to be active\nin this area.</string>
+    <string name="touchBaloonToMakeRequestInThisArea">Touch to make a request in this area</string>
     
     
     <string-array name="report_sky_textitems">
@@ -566,6 +567,20 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
 		turistic, sports or any other kind of facility.</p>
 		<p>The author is not responsible for any unwanted, unappropriate, offensive comments published by 
 		the user.</p>
+		
+		<h6><cite>Active</cite> users map</h6>
+		<p>
+		Since version <cite>2.6.1</cite>, the Reports map, when tilted with an angle 
+		greater than 10 degrees, shows a little circular marker in correspondance of
+		each user whose report background service has been active in the last hour.
+		This kind of data is absolutely anonymous. No user data is collected or shown,
+		even the nick name chosen by the user itself. In order to correlate data into the
+		Meteo.FVG online database (in the context of the web server, not inside the app), only the 
+		Android device id is stored (because it is a unique identifier of every device).
+		If you do not want to make part of the <cite>active</cite> users, turn the 
+		Report service off from the Reports section, drop down menu, Notification Service.
+		</p>
+		
 		<p>The author can modify or remove any report which is deemed offensive or whose content is not 
 		pertinent to the context.</p>
 		<p>The author can remove and report any offensive content inside a comment or spam messages.</p>

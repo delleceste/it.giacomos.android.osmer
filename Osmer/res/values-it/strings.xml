@@ -290,6 +290,7 @@
 	<string name="inTheLast10Min">negli ultimi 10 min.</string>
 	<string name="inTheLast20Min">negli ultimi 20 min.</string>
 	<string name="inTheLastHour">nell\'ultima ora</string>
+	<string name="touchBaloonToMakeRequestInThisArea">Tocca qui per iniziare a pubblicare\nuna richiesta in quest\'area</string>
 	<string name="activeUserSeemdAvailableInThisZone">un utente è attivo\nin questa zona.</string>
 	
     <string-array name="report_sky_textitems">
@@ -584,6 +585,25 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 		L\'autore si assume il diritto di rimuovere ogni contenuto inappropriato (offensivo, di "spam",
 		pubblicitario, non pertinente con le osservazioni meteo e cosi` via...).
 		</p>
+		
+		
+		<h6>Mappa degli utenti "<cite>attivi</cite>"</h6>
+		<p>
+		A partire dalla versione <cite>2.6.1</cite>, la mappa delle segnalazioni,
+		quando viene inclinata rispetto alla verticale di un angolo maggiore di 10
+		gradi, mostra un piccolo circolo in corrispondenza di ogni utente il cui
+		<em>Servizio Notifiche</em> fosse risultato attivo nell'ultima ora.
+		I dati mostrati sono completamente anonimi. Non viene salvato e mostrato 
+		nessun dato relativo all'utente, neppure il suo nickname.
+		Al fine di correlare i dati nel database online di Meteo.FVG Pro (sul
+		server web, non sulla app), solo l'identificativo del dispositivo Android
+		viene salvato (perch&eacute; rappresenta un identificativo univoco di ogni
+		dispositivo). Se non si desidera fare parte degli utenti "<cite>attivi</cite>"
+		si disabiliti il <em>Servizio Notifiche</em> nella sezione Segnalazioni,
+		men&ugrave; a tendina, Servizio Notifiche.
+		
+		</p>
+		
 		
 		<p>
 		Per finalita` di test, è possibile che l\'autore pubblichi segnalazioni in parte o in tutto non aderenti

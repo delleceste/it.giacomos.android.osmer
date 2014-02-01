@@ -222,8 +222,11 @@ OnClickListener
 			int typ = dataI.getType();
 			Marker marker = dataI.getMarker();
 			
-			if(showAll || (typ == DataInterface.TYPE_ACTIVE_USER && showUsers) 
-					|| (typ != DataInterface.TYPE_ACTIVE_USER && !showUsers) )
+			/* always show request marker */
+			if(showAll || 
+					(typ == DataInterface.TYPE_REQUEST) ||
+					(typ == DataInterface.TYPE_ACTIVE_USER && showUsers) || 
+					(typ != DataInterface.TYPE_ACTIVE_USER && !showUsers) )
 			{
 				if(marker == null)
 				{
@@ -351,11 +354,15 @@ OnClickListener
 	@Override
 	public void onMapLongClick(LatLng point) 
 	{
+		mStartRequestProcedure(point);
+	}
+	
+	private void mStartRequestProcedure(LatLng point)
+	{
 		mRemoveUnpublishedMyRequestMarkers();
 		Marker myRequestMarker = mCreateMyRequestMarker(point);
 		mStartGeocodeAddressTask(myRequestMarker);
 		myRequestMarker.showInfoWindow();
-
 	}
 
 	/* Create my request marker. Embed the marker in a RequestData which is finally
@@ -447,6 +454,12 @@ OnClickListener
 				&& dataI.getType() == DataInterface.TYPE_REQUEST)
 		{
 			mMyReportRequestListener.onMyReportPublish();
+		}
+		else if(dataI != null && dataI.getType() == DataInterface.TYPE_ACTIVE_USER)
+		{
+			/* same as above */
+			this.mStartRequestProcedure(marker.getPosition());
+	//		mMyReportRequestListener.onMyReportRequestTriggered(marker.getPosition(), dataI.getLocality());
 		}
 		else if(dataI == null) /* must build a new request */
 		{

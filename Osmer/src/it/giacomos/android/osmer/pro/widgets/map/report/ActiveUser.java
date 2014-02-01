@@ -65,9 +65,11 @@ public class ActiveUser extends DataInterface {
 			title += " " + res.getString(R.string.inTheLastHour);
 			mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_micro));
 		}
-
-		snippet = datetime + ": " + res.getString(R.string.activeUserSeemdAvailableInThisZone);
 		
+		snippet = datetime + ": " + res.getString(R.string.activeUserSeemdAvailableInThisZone);
+		/* add * Touch the baloon to publish a request in this area hint */
+		snippet += "\n*" + res.getString(R.string.touchBaloonToMakeRequestInThisArea);
+
 		mMarkerOptions.title(title);
 		mMarkerOptions.snippet(snippet);
 
