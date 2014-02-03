@@ -3,7 +3,7 @@
     package="it.giacomos.android.osmer.PROva"
     android:installLocation="auto"
     android:versionCode="565"
-    android:versionName="2.6.2-PROva-dev" >
+    android:versionName="2.6.1-PROva" >
 
     <uses-sdk
         android:minSdkVersion="14"

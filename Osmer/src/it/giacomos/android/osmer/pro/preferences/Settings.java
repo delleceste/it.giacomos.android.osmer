@@ -399,7 +399,7 @@ public class Settings
 	 */
 	public int getTrialDaysLeft() 
 	{
-		int daysLeft =  mSharedPreferences.getInt("TRIAL_DAYS_LEFT", 20);
+		int daysLeft =  mSharedPreferences.getInt("TRIAL_DAYS_LEFT", 30);
 		return daysLeft;
 	}
 	
