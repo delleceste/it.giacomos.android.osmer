@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="it.giacomos.android.osmer.PROva"
+    package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="565"
-    android:versionName="2.6.1-PROva" >
+    android:versionCode="575"
+    android:versionName="2.6.2-dev" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -84,16 +84,18 @@
 			it.giacomos.android.osmer package name
         -->
              
-     <!--     <meta-data
+         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBhRcwqzgppnwzQApAHcV7-Rer1JhXiDQs" /> --> 
+            android:value="AIzaSyBhRcwqzgppnwzQApAHcV7-Rer1JhXiDQs" /> 
    
    
         <!--  And this is for meteo.FVG.PROva -->
         
-          <meta-data
+       <!--    
+       <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDY220O3jmr3mb2r5YzQbXEmNfzld8nFhQ" />
+        -->
         
         <receiver
             android:name="it.giacomos.android.osmer.pro.service.ConnectivityChangedReceiver"

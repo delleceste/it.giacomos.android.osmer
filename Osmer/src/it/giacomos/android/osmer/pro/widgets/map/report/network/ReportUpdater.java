@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.util.Log;
 import android.widget.Toast;
-import it.giacomos.android.osmer.PROva.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.network.NetworkStatusMonitor;
 import it.giacomos.android.osmer.pro.network.NetworkStatusMonitorListener;
 import it.giacomos.android.osmer.pro.network.Data.DataPoolCacheUtils;

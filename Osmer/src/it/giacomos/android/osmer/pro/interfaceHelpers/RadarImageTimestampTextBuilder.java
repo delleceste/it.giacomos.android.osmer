@@ -2,7 +2,7 @@ package it.giacomos.android.osmer.pro.interfaceHelpers;
 
 import java.util.Calendar;
 
-import it.giacomos.android.osmer.PROva.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.widgets.map.RadarOverlay;
 import android.content.res.Resources;
 import android.text.Html;
