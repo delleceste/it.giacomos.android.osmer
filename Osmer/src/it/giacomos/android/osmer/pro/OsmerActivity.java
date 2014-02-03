@@ -4,7 +4,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.PROva.R;
 import it.giacomos.android.osmer.pro.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.pro.interfaceHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.pro.interfaceHelpers.NetworkGuiErrorManager;
@@ -35,6 +35,11 @@ import it.giacomos.android.osmer.pro.pager.TabsAdapter;
 import it.giacomos.android.osmer.pro.pager.ViewPagerPages;
 import it.giacomos.android.osmer.pro.preferences.*;
 import it.giacomos.android.osmer.pro.service.ServiceManager;
+import it.giacomos.android.osmer.pro.trial.BuyProActivity;
+import it.giacomos.android.osmer.pro.trial.ExpirationChecker;
+import it.giacomos.android.osmer.pro.trial.ExpirationCheckerListener;
+import it.giacomos.android.osmer.pro.trial.TrialDaysLeftListener;
+import it.giacomos.android.osmer.pro.trial.TrialExpiringNotification;
 import it.giacomos.android.osmer.pro.webcams.WebcamDataHelper;
 import it.giacomos.android.osmer.pro.widgets.AnimatedImageView;
 import it.giacomos.android.osmer.pro.widgets.OAnimatedTextView;
@@ -44,6 +49,7 @@ import it.giacomos.android.osmer.pro.widgets.map.RadarOverlayUpdateListener;
 import it.giacomos.android.osmer.pro.widgets.map.ReportRequestListener;
 import it.giacomos.android.osmer.pro.widgets.map.animation.RadarAnimationListener;
 import it.giacomos.android.osmer.pro.widgets.map.report.ObservationDataExtractor;
+import it.giacomos.android.osmer.pro.widgets.map.report.RemovePostConfirmDialog;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportActivity;
 import it.giacomos.android.osmer.pro.widgets.map.report.RemovePostConfirmDialog;
 import it.giacomos.android.osmer.pro.widgets.map.report.ReportRequestDialogFragment;
@@ -60,6 +66,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
@@ -70,11 +77,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -106,7 +115,8 @@ RadarOverlayUpdateListener,
 DataPoolErrorListener,
 RadarAnimationListener,
 PostActionResultListener,
-ReportRequestListener
+ReportRequestListener, 
+TrialDaysLeftListener/*  trial version */
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
@@ -156,6 +166,11 @@ ReportRequestListener
 		/* (re)connect the location update client */
 		mLocationService.connect();
 		m_downloadManager.onResume(this);
+		
+		
+		/* trial version */
+		if(this.getPackageName().contains("PROva"))
+			mTrialDaysChanged(mSettings.getTrialDaysLeft());
 	}
 
 	public void onPause()
@@ -263,6 +278,39 @@ ReportRequestListener
 			return;
 	}
 
+	/* trial version.
+	 * This method is triggered by SituationFragment, when the package
+	 * is it.giacomos.android.osmer.PROva
+	 */
+	@Override
+	public void onTrialDaysRemaining(int days) 
+	{
+		mSettings.setTrialDaysLeft(days);
+		mTrialDaysChanged(days);
+	}
+	
+	private void mTrialDaysChanged(int days)
+	{
+		if(days <= 0)
+		{
+			Toast.makeText(this, R.string.trial_expired, Toast.LENGTH_LONG).show();
+			Intent activityIntent = new Intent(this, BuyProActivity.class);
+			startActivity(activityIntent);
+			/* stop notification service, if running.
+			 * The ConnectivityChangedReceiver will not start the service anymore
+			 * if the trial period has expired.
+			 */
+			mStartNotificationService(false);
+			/* finish app */
+			this.finish();
+		}
+		if(days < 3)
+		{
+			TrialExpiringNotification ten = new TrialExpiringNotification();
+			ten.show(this, days);
+		}
+	}
+	
 	public void init()
 	{
 		mProgressBarStep = mProgressBarTotSteps = 0;

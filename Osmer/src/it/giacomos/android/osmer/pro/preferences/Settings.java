@@ -9,6 +9,10 @@ import android.content.SharedPreferences;
 
 public class Settings 
 {
+	public static final int TRIAL_DAYS = 20;
+	public static final String PREFERENCES_NAME = "Osmer.conf";
+	private SharedPreferences mSharedPreferences;
+	
 	public Settings(Context ctx)
 	{
 		mSharedPreferences = ctx.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -390,8 +394,23 @@ public class Settings
 		e.commit();
 	}
 	
-	public static final String PREFERENCES_NAME = "Osmer.conf";
-	private SharedPreferences mSharedPreferences;
+		/** 
+	 * Trial version
+	 */
+	public int getTrialDaysLeft() 
+	{
+		int daysLeft =  mSharedPreferences.getInt("TRIAL_DAYS_LEFT", 20);
+		return daysLeft;
+	}
+	
+	public void setTrialDaysLeft(int daysLeft) 
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putInt("TRIAL_DAYS_LEFT", daysLeft);
+		e.commit();
+	}
+	
+	
 	
 	
 	

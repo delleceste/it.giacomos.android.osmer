@@ -12,6 +12,10 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
+        
+        <!-- here the trial layout goes -->
+
+        
         <!--  for home screen, in portrait orientation, keep situation image as
         		large as possible and let the homeTextView's height wrap contents
         		 -->

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Meteo.FVG</string>
+    <string name="app_name">Meteo.FVG PROva</string>
     <string name="app_broadcast_receiver">Meteo.FVG.BootReceiver</string>
     <string name="version">versione</string>
     <string name="data_source">Fonte dati: http://www.meteo.fvg.it</string>
@@ -721,6 +721,23 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
      <string name="quickstart_publish2">Quando la richiesta è stata pubblicata con successo, il marker diventa verde.
          Puoi toccarlo e seguire le istruzioni per rimuovere la richiesta.
          Ogni richiesta rimane valida per tre ore.</string>
+
+    <!--  TRIAL -->
+    
+    <string name="title_activity_buy_pro">Acquista Meteo.FVG Pro</string>
+    <string name="trial_version">Versione di prova</string>
+    <string name="days_left">giorni rimanenti.</string>
+    <string name="trial_version_expiring">Il periodo di prova sta terminando!</string>
+    <string name="buy_now_from_activity_settings">Compra la versione PRO!</string>
+    <string name="touch_to_buy">Tocca qui per acquistare Meteo.FVG Pro!</string>
+    <string name="buy">Acquista!</string>
+    <string name="buy_pro_title">Acquista Meteo.FVG Pro!</string>
+    <string name="button_text_buy_now">Acquista ora!</string>
+    <string name="bt_no_buy_now">Non ora, grazie!</string>
+    <string name="trial_expired">Il periodo di prova è scaduto</string>
+    <string name="buy_now_promotional_text">Compra la versione Pro di Meteo.FVG, divertiti con le sue 
+        fantastiche nuove funzioni e supporta il suo sviluppo futuro!</string>
+    
 
     
 </resources>
