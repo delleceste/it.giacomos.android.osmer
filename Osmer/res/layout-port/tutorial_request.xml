@@ -34,6 +34,17 @@
             android:text="@string/quickstart_publish1" />
 
         <TextView
+            android:id="@+id/TextViewPublishFromActiveUsersMap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:background="@drawable/tutorial_textview_background"
+            android:drawablePadding="15dp"
+            android:drawableTop="@drawable/map_tilt_tutorial_icon"
+            android:padding="8dp"
+            android:text="@string/quickstart_publish_from_active_user" />
+
+        <TextView
             android:id="@+id/tvPublishRequest2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

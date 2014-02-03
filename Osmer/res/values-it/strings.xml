@@ -556,62 +556,52 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 		
 		<![CDATA[
 		
-		<h4>Esonero di responsabilita</h4>
-		
-		<p>L\'autore delle applicazioni Android denominate "Meteo.FVG", "Meteo.FVG Pro" e 
+		<h4>Esonero di responsabilit&agrave; e trattamento dei dati utente "<cite>attivi</cite>".</h4>
+		<p>
+		L\'autore delle applicazioni Android denominate "Meteo.FVG", "Meteo.FVG Pro" e 
 		"Meteo.FVG PROva, Giacomo Strangolino, non ha alcuna responsabilita` circa i contenuti delle 
-		segnalazioni pubblicate nella sezione "Segnalazioni".</p>
-		<p>Il contenuto di ogni segnalazione meteo nella sezione "Segnalazioni" è responsabilita` dell\'utente che 
+		segnalazioni pubblicate nella sezione "Segnalazioni".</br/>
+		Il contenuto di ogni segnalazione meteo nella sezione "Segnalazioni" è responsabilita` dell\'utente che 
 		lo pubblica, essendo compresi nel "contenuto" icone del cielo, del vento, il valore della temperatura e 
-		il testo dei commenti.</p>
-		
-		<p>Lo stesso vale per la sorgente ufficiale dei dati meteorologici <a href="http://www.meteo.fvg.it">Meteo.FVG</a>,
-		la quale non fornisce alcun dato presentato nella sezione "Segnalazioni".</p>
+		il testo dei commenti.
+		<br/>Lo stesso vale per la sorgente ufficiale dei dati meteorologici <a href="http://www.meteo.fvg.it">Meteo.FVG</a>,
+		la quale non fornisce alcun dato presentato nella sezione "Segnalazioni".
+		</p>
 		
 		<h6>Esonero di responsabilita` dell\'autore per danni economici e di qualsiasi altro tipo</h6>
-		
 		<p>L\'autore delle applicazioni "Meteo.FVG", "Meteo.FVG Pro" e 
 		"Meteo.FVG PROva" non si assume alcuna responsabilita` in conseguenza a qualsiasi danno di tipo economico,
 		fisico (a persone o cose) che possa derivare da segnalazioni incomplete, errate, non aggiornate e cosi` via... 
 		L\'autore sottolinea l\'esonero di responsabilita` dovuta a danni economici a impianti turistici,
 		locali, ristoranti e, piu` in generale, a ogni tipo di attivita` dipendente o legata alle condizioni del tempo
 		meteorologico, derivanti da errate segnalazioni da parte degli utenti, ivi comprese segnalazioni dell\'autore
-		stesso.
-		</p>
-		
-		<p>
+		stesso.<br/>
 		L\'autore non è responsabile per contenuti inappropriati o offensivi all\'interno dei messaggi
 		di testo nei commenti degli utenti. Ogni utente è responsabile dei contenuti pubblicati.
 		L\'autore si assume il diritto di rimuovere ogni contenuto inappropriato (offensivo, di "spam",
 		pubblicitario, non pertinente con le osservazioni meteo e cosi` via...).
 		</p>
 		
-		
 		<h6>Mappa degli utenti "<cite>attivi</cite>"</h6>
+		
 		<p>
-		A partire dalla versione <cite>2.6.1</cite>, la mappa delle segnalazioni,
+		A partire dalla versione <cite>2.6.1</cite>, la mappa delle segnalazioni, 
 		quando viene inclinata rispetto alla verticale di un angolo maggiore di 10
 		gradi, mostra un piccolo circolo in corrispondenza di ogni utente il cui
-		<em>Servizio Notifiche</em> fosse risultato attivo nell'ultima ora.
+		<em>Servizio Notifiche</em> &egrave; risultato attivo nell'ultima ora.
 		I dati mostrati sono completamente anonimi. Non viene salvato e mostrato 
-		nessun dato relativo all'utente, neppure il suo nickname.
+		alcun dato relativo all'utente, incluso il proprio nickname.
 		Al fine di correlare i dati nel database online di Meteo.FVG Pro (sul
-		server web, non sulla app), solo l'identificativo del dispositivo Android
+		server web, non all'interno della app), solo l'identificativo del dispositivo Android
 		viene salvato (perch&eacute; rappresenta un identificativo univoco di ogni
 		dispositivo). Se non si desidera fare parte degli utenti "<cite>attivi</cite>"
 		si disabiliti il <em>Servizio Notifiche</em> nella sezione Segnalazioni,
-		men&ugrave; a tendina, Servizio Notifiche.
-		
-		</p>
-		
-		
-		<p>
+		men&ugrave; a tendina, Servizio Notifiche.	
+		<br/>
 		Per finalita` di test, è possibile che l\'autore pubblichi segnalazioni in parte o in tutto non aderenti
 		alla realta`. In questo caso, l\'autore corredera` la segnalazione con un opportuno commento.
 		Nessuna responsabilita` si assume l\'autore per questo tipo di contenuti.
-		</p>
-		
-		<p>
+		<br/>
 		Qualsiasi utente puo` segnalare contenuti inappropriati all\'autore utilizzando questo indirizzo
 		<a href="mailto:delleceste@gmail.com>email</a>.
 		</p>
@@ -626,18 +616,17 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 		qualora si sospetti che tale servizio abbia un effetto negativo sulla durata della batteria.
 		Si legga con attenzione la sezione "Notifiche" di questo tutorial.
 		</p>
-		
+			
 		<h6>Nota</h6>
 		<p>
 		Questo esonero di responsabilita` <strong>non sostituisce, ma integra</strong> l\'esonero di 
 		responsabilita` al testo del quale si accede dal tasto "Menu" del dispositivo -> 
 		"Informazioni sulla app", capitolo <cite>Esonero di responsabilita`</cite>.
-		</p>
+		</p>	
 		
 		<h6>Contatti</h6>
 		<p>L\'autore puo` essere contattato via email a <a href="mailto:delleceste@gmail.com>questo indirizzo</a>.
-		</p>
-		<p>L\'utente puo` iscriversi alla community <strong>Google+</strong> 
+		<br/>L\'utente puo` iscriversi alla community <strong>Google+</strong> 
 		<a href="https://plus.google.com/u/0/communities/104494499218507670829">Android.Meteo.FVG</a>
 		per accedere a discussioni e pubblicare commenti o fare delle proposte di miglioramento della app.
 		</p>
@@ -724,6 +713,10 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
     <string name="quickstart_publish1">Tocca a lungo un punto sulla mappa.
         Apparirà un segnaposti arancione. Toccalo a lungo per spostarlo. Clicca infine sul fumetto per
         iniziare la procedura di richiesta.</string>
+        
+    <string name="quickstart_publish_from_active_user">Puoi anche iniziare la procedura di richiesta
+        segnalazione inclinando la mappa (strisciandoci sopra con due dita verso il basso)
+        e toccando un punto in cui uno o più utenti risultano attivi.</string>
         
      <string name="quickstart_publish2">Quando la richiesta è stata pubblicata con successo, il marker diventa verde.
          Puoi toccarlo e seguire le istruzioni per rimuovere la richiesta.

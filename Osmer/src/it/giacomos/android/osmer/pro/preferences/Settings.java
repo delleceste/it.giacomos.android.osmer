@@ -353,14 +353,14 @@ public class Settings
 	
 	public boolean reportConditionsAccepted()
 	{
-		boolean ret = mSharedPreferences.getBoolean("REPORT_CONDITIONS_ACCEPTED", false);
+		boolean ret = mSharedPreferences.getBoolean("REPORT_CONDITIONS_ACCEPTED_V_2_6_1", false);
 		return ret;
 	}
 	
 	public void setReportConditionsAccepted(boolean en)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
-		e.putBoolean("REPORT_CONDITIONS_ACCEPTED", en);
+		e.putBoolean("REPORT_CONDITIONS_ACCEPTED_V_2_6_1", en);
 		e.commit();
 	}
 	

@@ -657,7 +657,11 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
     <string name="quickstart_publish1">Long press on a point in the map to start the request. 
         An orange marker will appear. Long press on the marker to change its position. Click on the baloon
         to start the request procedure.</string>
-        
+     
+    <string name="quickstart_publish_from_active_user">You can start the request procedure
+        by tilting the map (touch it with two fingers and drag it downwards) and touching
+        a point where users are active.</string>
+    
     <string name="quickstart_publish2">Once successfully published, the marker turns to green.
         You can touch the marker and follow the instructions to remove your request.
         The request will stay valid for 3 hours.</string>
