@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.pro.widgets.map.report.tutorialActivity;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 
 import java.util.Locale;
 

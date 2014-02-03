@@ -1,7 +1,7 @@
 package it.giacomos.android.osmer.pro;
 
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;

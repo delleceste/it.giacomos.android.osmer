@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="it.giacomos.android.osmer"
+    package="it.giacomos.android.osmer.pro"
     android:installLocation="auto"
     android:versionCode="545"
     android:versionName="2.6.1" >
@@ -75,9 +75,8 @@
          	it.giacomos.android.osmer.pro package name
         -->
         
-    <!--   
+  
       <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCO_r5ZYrWaqA5ExtIxAVHwRn6KiGAJ_Ps"/>
-		-->
 
         <!--
               Meteo.FVG package (old and alpha/beta versions) 
@@ -85,10 +84,11 @@
         -->
         
        
+       <!-- 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBhRcwqzgppnwzQApAHcV7-Rer1JhXiDQs" />
- 
+  		-->
  
         <receiver
             android:name="it.giacomos.android.osmer.pro.service.ConnectivityChangedReceiver"

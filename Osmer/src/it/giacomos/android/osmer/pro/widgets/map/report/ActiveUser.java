@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.pro.widgets.map.report;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import android.content.Context;
 import android.content.res.Resources;
 
