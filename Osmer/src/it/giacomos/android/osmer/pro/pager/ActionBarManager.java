@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SpinnerAdapter;
 import it.giacomos.android.osmer.pro.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.fragments.ForecastFragment;
 import it.giacomos.android.osmer.pro.fragments.SituationFragment;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
