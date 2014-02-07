@@ -292,6 +292,7 @@
 	<string name="inTheLastHour">in the last hour</string>
 	<string name="activeUserSeemdAvailableInThisZone">a user seemed to be active\nin this area.</string>
     <string name="touchBaloonToMakeRequestInThisArea">Touch to make a request in this area</string>
+    <string name="active_users">active users</string>
     
     
     <string-array name="report_sky_textitems">

@@ -203,7 +203,8 @@ OnClickListener
 		boolean showAll = (mMapTilt >= TILT_MARKERS_SHOW_ALL_THRESH &&
 				mMapTilt < TILT_MARKERS_SHOW_ONLY_USERS_THRESH);
 		boolean showUsers = (mMapTilt >= TILT_MARKERS_SHOW_ONLY_USERS_THRESH);
-
+		int usersCount = 0;
+		
 	//	mDataInterfaceMarkerIdHash.clear();
 
 		/* invoked when map tilt changes. We need to remove or add markers
@@ -227,7 +228,10 @@ OnClickListener
 					(typ == DataInterface.TYPE_REQUEST) ||
 					(typ == DataInterface.TYPE_ACTIVE_USER && showUsers) || 
 					(typ != DataInterface.TYPE_ACTIVE_USER && !showUsers) )
-			{
+			{  
+				if(typ == DataInterface.TYPE_ACTIVE_USER && (showUsers || showAll))
+					usersCount++;
+				
 				if(marker == null)
 				{
 					/* must generate marker for that data interface */
@@ -267,7 +271,14 @@ OnClickListener
 
 //		Log.e("ReportOverlay.mUpdateMarkers", "from tilt change: hash size " + mDataInterfaceMarkerIdHash.size()
 //				+ " dataSize " + mDataInterfaceList.size());
-
+		
+		/* short length toast to say how many users are active */
+		if(usersCount > 0)
+		{
+			String activeUsers = mMapFrag.getString(R.string.active_users);
+			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), 
+					String.valueOf(usersCount) + " " + activeUsers, Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	private void mCheckForFreshNotifications() 

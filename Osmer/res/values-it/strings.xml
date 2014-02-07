@@ -292,6 +292,7 @@
 	<string name="inTheLastHour">nell\'ultima ora</string>
 	<string name="touchBaloonToMakeRequestInThisArea">Tocca qui per iniziare a pubblicare\nuna richiesta in quest\'area</string>
 	<string name="activeUserSeemdAvailableInThisZone">un utente è attivo\nin questa zona.</string>
+	<string name="active_users">utenti attivi</string>
 	
     <string-array name="report_sky_textitems">
         <item>non segnalare il cielo</item>
