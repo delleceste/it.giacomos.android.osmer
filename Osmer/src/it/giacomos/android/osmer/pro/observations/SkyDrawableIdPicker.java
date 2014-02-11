@@ -3,7 +3,7 @@
  */
 package it.giacomos.android.osmer.pro.observations;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.PROva.R;
 
 import java.util.Calendar;
 import java.util.Date;

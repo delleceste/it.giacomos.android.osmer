@@ -1,7 +1,7 @@
 package it.giacomos.android.osmer.pro.interfaceHelpers;
 import android.content.res.Resources;
 import it.giacomos.android.osmer.pro.OsmerActivity;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.PROva.R;
 import it.giacomos.android.osmer.pro.network.DownloadStatus;
 import it.giacomos.android.osmer.pro.observations.MapMode;
 import it.giacomos.android.osmer.pro.observations.ObservationType;

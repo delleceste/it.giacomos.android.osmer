@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.pro.widgets.map.animation;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.PROva.R;
 import it.giacomos.android.osmer.pro.widgets.map.OMapFragment;
 import android.os.Handler;
 import android.util.Log;
