@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import it.giacomos.android.osmer.PROva.R;
+import it.giacomos.android.osmer.R;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

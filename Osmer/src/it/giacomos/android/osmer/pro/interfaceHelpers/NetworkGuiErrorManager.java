@@ -1,7 +1,7 @@
 package it.giacomos.android.osmer.pro.interfaceHelpers;
 
 import it.giacomos.android.osmer.pro.OsmerActivity;
-import it.giacomos.android.osmer.PROva.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.widgets.AnimatedImageView;
 
 import java.lang.String;

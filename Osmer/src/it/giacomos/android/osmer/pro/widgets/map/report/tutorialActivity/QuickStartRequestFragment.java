@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.pro.widgets.map.report.tutorialActivity;
 
-import it.giacomos.android.osmer.PROva.R;
+import it.giacomos.android.osmer.R;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
