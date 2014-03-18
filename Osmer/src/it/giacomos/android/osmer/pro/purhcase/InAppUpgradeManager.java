@@ -20,10 +20,10 @@ IabHelper.OnIabSetupFinishedListener, IabHelper.QueryInventoryFinishedListener
 
 	public static int MODE_CHECK = 0, MODE_PURCHASE = 1;
 
-	private final String SKU_UNLIMITED = "it.giacomos.android.greendisplay.unlimited";
+	private final String SKU_UNLIMITED = "it.giacomos.android.osmer.pro.unlimited";
 	// private final String SKU_UNLIMITED = "android.test.canceled";
-	private final String DEVELOPER_PAYLOAD_FOR_UNLIMITED_PURCHASE = "urwpvgbva//&bcecfc-3489451201;.1";
-	private final int UNLIMITED_PURCHASE_ID = 110221;
+	private final String DEVELOPER_PAYLOAD_FOR_UNLIMITED_PURCHASE = "urwpvffdygbva//&bcecfc-3489trrhy451201;.1";
+	private final int UNLIMITED_PURCHASE_ID = 420225;
 
 	private final String[] b = 
 		{

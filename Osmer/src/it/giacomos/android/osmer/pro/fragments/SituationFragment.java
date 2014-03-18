@@ -1,7 +1,7 @@
 package it.giacomos.android.osmer.pro.fragments;
 
 import it.giacomos.android.osmer.pro.OsmerActivity;
-import it.giacomos.android.osmer.PROva.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.locationUtils.LocationService;
 import it.giacomos.android.osmer.pro.network.Data.DataPool;
 import it.giacomos.android.osmer.pro.network.Data.DataPoolCacheUtils;
@@ -9,16 +9,15 @@ import it.giacomos.android.osmer.pro.network.Data.DataPoolTextListener;
 import it.giacomos.android.osmer.pro.network.state.ViewType;
 import it.giacomos.android.osmer.pro.observations.ObservationsCache;
 import it.giacomos.android.osmer.pro.preferences.Settings;
-import it.giacomos.android.osmer.pro.trial.BuyProActivity;
+import it.giacomos.android.osmer.pro.purhcase.InAppUpgradeManager;
+import it.giacomos.android.osmer.pro.purhcase.InAppUpgradeManagerListener;
 import it.giacomos.android.osmer.pro.trial.ExpirationChecker;
 import it.giacomos.android.osmer.pro.trial.ExpirationCheckerListener;
-import it.giacomos.android.osmer.pro.trial.TrialDaysLeftListener;
-import it.giacomos.android.osmer.pro.trial.TrialExpiringNotification;
+import it.giacomos.android.osmer.pro.trial.InAppEventListener;
 import it.giacomos.android.osmer.pro.widgets.HomeTextView;
 import it.giacomos.android.osmer.pro.widgets.OTextView;
 import it.giacomos.android.osmer.pro.widgets.SituationImage;
 import android.support.v4.app.Fragment;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -30,15 +29,17 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class SituationFragment extends Fragment implements DataPoolTextListener,
-ExpirationCheckerListener, OnClickListener
+ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 {
 	private SituationImage mSituationImage;
 	private OTextView mHomeTextView;
 	private ExpirationChecker mExpirationChecker;
-	private TrialDaysLeftListener mTrialDaysLeftListener; /* trial version */
+	private InAppEventListener mTrialDaysLeftListener; /* trial version */
+	private InAppUpgradeManager mInAppUpgradeManager;
+	private String mInAppUpgradeManagerErrorMsg;
+	private boolean mIsUnlimited;
 
 	public SituationFragment() 
 	{
@@ -72,23 +73,14 @@ ExpirationCheckerListener, OnClickListener
 		locationService.registerLocationServiceUpdateListener(mSituationImage);
 
 		mExpirationChecker = null;
-		mTrialDaysLeftListener = (TrialDaysLeftListener) getActivity();
+		mTrialDaysLeftListener = (InAppEventListener) getActivity();
 	}
 
 	public void onResume()
 	{	
 		super.onResume();
-		/* trial version */
-		if(getActivity().getPackageName().contains("PROva"))
-		{
-			/* registers for net status monitor, so inside onResume */
-			mExpirationChecker = new ExpirationChecker(this, getActivity());
-			mExpirationChecker.start(getActivity());
-			updateTrialDaysRemainingText(new Settings(getActivity()).getTrialDaysLeft());
-			Button buyButton = (Button) getActivity().findViewById(R.id.btBuy);
-			if(buyButton != null) /* not present in landscape mode */
-				buyButton.setOnClickListener(this);
-		}
+		mInAppUpgradeManager = new InAppUpgradeManager();
+		mInAppUpgradeManager.checkIfPurchased(getActivity());
 	}
 
 	public void onPause()
@@ -110,30 +102,29 @@ ExpirationCheckerListener, OnClickListener
 		mSituationImage = (SituationImage) view.findViewById(R.id.child1ImageView);
 		mSituationImage.setViewType(ViewType.HOME);
 
-		if(getActivity().getPackageName().contains("PROva"))
-		{
-			float trialViewHeightDp;
-			final float scale = getResources().getDisplayMetrics().density;
-			View trialView = inflater.inflate(R.layout.trial_layout, null);
-			
-			if(getResources().getConfiguration().orientation ==
-					Configuration.ORIENTATION_PORTRAIT)
-			{
-				trialViewHeightDp = 40f;
-				trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (trialViewHeightDp * scale + 0.5f)));
-				ViewGroup vg = (ViewGroup) view.findViewById(R.id.homeRelativeLayout);
-				vg.addView(trialView, 0);
 
-			}
-			else if(getResources().getConfiguration().orientation ==
-					Configuration.ORIENTATION_LANDSCAPE)
-			{
-				trialViewHeightDp = 64f; /* 50dp for landscape because they are put one below each other */
-				trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (trialViewHeightDp * scale + 0.5f)));
-				ViewGroup vg = (ViewGroup) view.findViewById(R.id.scrollLayout);
-				vg.addView(trialView, 0);
-			}
+		float trialViewHeightDp;
+		final float scale = getResources().getDisplayMetrics().density;
+		View trialView = inflater.inflate(R.layout.trial_layout, null);
+
+		if(getResources().getConfiguration().orientation ==
+				Configuration.ORIENTATION_PORTRAIT)
+		{
+			trialViewHeightDp = 40f;
+			trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (trialViewHeightDp * scale + 0.5f)));
+			ViewGroup vg = (ViewGroup) view.findViewById(R.id.homeRelativeLayout);
+			vg.addView(trialView, 0);
+
 		}
+		else if(getResources().getConfiguration().orientation ==
+				Configuration.ORIENTATION_LANDSCAPE)
+		{
+			trialViewHeightDp = 64f; /* 50dp for landscape because they are put one below each other */
+			trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (trialViewHeightDp * scale + 0.5f)));
+			ViewGroup vg = (ViewGroup) view.findViewById(R.id.scrollLayout);
+			vg.addView(trialView, 0);
+		}
+
 		return view;
 	}
 
@@ -193,9 +184,50 @@ ExpirationCheckerListener, OnClickListener
 	{
 		if(v.getId() == R.id.btBuy)
 		{
-			Intent buyActivityIntent = new Intent(getActivity(), BuyProActivity.class);
-			startActivity(buyActivityIntent);
+			mInAppUpgradeManager.purchase(getActivity());
 		}
+
+	}
+
+	@Override
+	public void onPurchaseComplete(boolean ok, String error, boolean purchased) 
+	{
+		if(ok && purchased)
+			getActivity().findViewById(R.id.trialLayout).setVisibility(View.GONE);
+	}
+
+	@Override
+	public void onCheckComplete(boolean ok, String error, boolean purchased) 
+	{
+		if(!ok)
+			mInAppUpgradeManagerErrorMsg = error;
+		else
+			mInAppUpgradeManagerErrorMsg = "";
+
+		mIsUnlimited = purchased;
+
+		if(!mIsUnlimited) /* check if trial days are left */
+		{
+			getActivity().findViewById(R.id.trialLayout).setVisibility(View.VISIBLE);
+			Log.e("ESS.onCheckComplete", "this version is not unlimited: looking for expiration time...");
+			/* registers for net status monitor, so inside onResume */
+			mExpirationChecker = new ExpirationChecker(this, getActivity());
+			mExpirationChecker.start(getActivity());
+			updateTrialDaysRemainingText(new Settings(getActivity()).getTrialDaysLeft());
+			Button buyButton = (Button) getActivity().findViewById(R.id.btBuy);
+			if(buyButton != null) /* not present in landscape mode */
+				buyButton.setOnClickListener(this);
+		}
+		else
+		{
+			/* hide trial text and buttons. The app is unlimited. Nothing to do */
+			getActivity().findViewById(R.id.trialLayout).setVisibility(View.GONE);
+		}
+	}
+
+	@Override
+	public void onInAppSetupComplete(boolean success, String message) {
+		// TODO Auto-generated method stub
 
 	}
 }

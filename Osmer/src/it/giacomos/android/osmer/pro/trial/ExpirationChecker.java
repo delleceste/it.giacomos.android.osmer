@@ -3,6 +3,7 @@ package it.giacomos.android.osmer.pro.trial;
 
 import it.giacomos.android.osmer.pro.network.NetworkStatusMonitor;
 import it.giacomos.android.osmer.pro.network.NetworkStatusMonitorListener;
+import it.giacomos.android.osmer.pro.preferences.Settings;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -40,7 +41,7 @@ ExpirationCheckTaskListener
 		mNetworkCheck = false;
 		mMonitorRegistered = false;
 		/* get last time checked */
-		mSharedPrefs = ctx.getSharedPreferences(ctx.getPackageName(), 
+		mSharedPrefs = ctx.getSharedPreferences(Settings.PREFERENCES_NAME, 
 				Context.MODE_PRIVATE);
 		mDaysLeft = mSharedPrefs.getInt("TRIAL_DAYS_LEFT", TRIAL_DAYS);
 	}

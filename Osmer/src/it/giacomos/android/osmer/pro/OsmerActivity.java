@@ -4,7 +4,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
-import it.giacomos.android.osmer.PROva.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.pro.interfaceHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.pro.interfaceHelpers.NetworkGuiErrorManager;
@@ -38,7 +38,7 @@ import it.giacomos.android.osmer.pro.service.ServiceManager;
 import it.giacomos.android.osmer.pro.trial.BuyProActivity;
 import it.giacomos.android.osmer.pro.trial.ExpirationChecker;
 import it.giacomos.android.osmer.pro.trial.ExpirationCheckerListener;
-import it.giacomos.android.osmer.pro.trial.TrialDaysLeftListener;
+import it.giacomos.android.osmer.pro.trial.InAppEventListener;
 import it.giacomos.android.osmer.pro.trial.TrialExpiringNotification;
 import it.giacomos.android.osmer.pro.webcams.WebcamDataHelper;
 import it.giacomos.android.osmer.pro.widgets.AnimatedImageView;
@@ -116,7 +116,7 @@ DataPoolErrorListener,
 RadarAnimationListener,
 PostActionResultListener,
 ReportRequestListener, 
-TrialDaysLeftListener/*  trial version */
+InAppEventListener/*  trial version */
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
@@ -278,6 +278,17 @@ TrialDaysLeftListener/*  trial version */
 			return;
 	}
 
+
+	@Override
+	public void onAppPurchased(boolean ok) 
+	{
+		if(ok)
+		{
+			
+		}
+		
+	}
+	
 	/* trial version.
 	 * This method is triggered by SituationFragment, when the package
 	 * is it.giacomos.android.osmer.PROva
@@ -1330,5 +1341,4 @@ TrialDaysLeftListener/*  trial version */
 
 
 	int availCnt = 0;
-
 }

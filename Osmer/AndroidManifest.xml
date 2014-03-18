@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="it.giacomos.android.osmer.PROva"
+    package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="579"
-    android:versionName="2.6.2-alpha1-PROva" >
+    android:versionCode="601"
+    android:versionName="2.6.3-alpha0" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -22,6 +22,10 @@
     </uses-permission>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+ 	<!--  in app billing -->
+ 	<uses-permission android:name="com.android.vending.BILLING" />
+ 	
+ 	
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="false" />
@@ -87,21 +91,21 @@
 			it.giacomos.android.osmer package name
         -->
              
-             <!-- 
+            
          <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBhRcwqzgppnwzQApAHcV7-Rer1JhXiDQs" /> 
             
-             -->
+            
    
    
         <!--  And this is for meteo.FVG.PROva -->
         
-         
+         <!-- 
        <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDY220O3jmr3mb2r5YzQbXEmNfzld8nFhQ" />
-       
+        -->
         
         <receiver
             android:name="it.giacomos.android.osmer.pro.service.ConnectivityChangedReceiver"

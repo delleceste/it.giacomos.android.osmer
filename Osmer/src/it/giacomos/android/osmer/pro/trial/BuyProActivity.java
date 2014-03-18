@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.pro.trial;
 
-import it.giacomos.android.osmer.PROva.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 import android.net.Uri;
 import android.os.Bundle;

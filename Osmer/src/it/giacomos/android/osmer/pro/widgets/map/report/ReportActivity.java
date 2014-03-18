@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.pro.widgets.map.report;
 
-import it.giacomos.android.osmer.PROva.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.Logger;
 import it.giacomos.android.osmer.pro.OsmerActivity;
 import it.giacomos.android.osmer.pro.observations.ObservationData;
