@@ -20,13 +20,23 @@ IabHelper.OnIabSetupFinishedListener, IabHelper.QueryInventoryFinishedListener
 
 	public static int MODE_CHECK = 0, MODE_PURCHASE = 1;
 
-	private final String SKU_UNLIMITED = "it.giacomos.android.osmer.pro.unlimited";
+	private final String SKU_UNLIMITED = "it.giacomos.android.osmer.unlimited";
 	// private final String SKU_UNLIMITED = "android.test.canceled";
 	private final String DEVELOPER_PAYLOAD_FOR_UNLIMITED_PURCHASE = "urwpvffdygbva//&bcecfc-3489trrhy451201;.1";
 	private final int UNLIMITED_PURCHASE_ID = 420225;
 
 	private final String[] b = 
 		{
+			"MIIBIjANBgkqh",
+			"kiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0E5",
+			"DdylVTIeMZJ03GBRj7IFs",
+			"IQR6OZdPBntfPtVp141rPIQWi9+MyA",
+			"BD788kJLs7YfXb2MPrL0+gfpgWcdgt9Mm1vXJqC6km61DrBhwsQLVYFJcc+",
+			"o6sixOveabtJHaisHfBNVJBNnTo7ISiJ4H28G/Thyhy75ZkWWunBiDX",
+			"5gnh1Qh1huMvCsLjJhRXXhF58LDkyMwyTg+Wq5n5AmXOAz5uD1tSdWXSgJXrr+KLbEYzbz0RL",
+			"nyzMKwmUYHtFfGgwN8cd5UT9sts/3JB0fTirxw6GVxM9tuSggOgq7Neo",
+			"6yXJ0zVWChWmcwrQ2axNAQV+ZcjMx+a+9JyRyBOMjuocQIDAQAB",
+			
 			/* 0 */	"AAOCAQ8AMIIBCgKCAQEAj", 
 			/* 1 */		"MIIBIjANBgkqhkiG9w0BAQEF", 
 			/* 2 */		"N9TZt", 
@@ -126,6 +136,7 @@ IabHelper.OnIabSetupFinishedListener, IabHelper.QueryInventoryFinishedListener
 	{
 		mMode = MODE_CHECK;
 		mActivity = null;
+		Log.e("InAppUpgradeManager.checkIfPurchased", "checking");
 		mIabHelper = new IabHelper(context, mMakePublicKey());
 		mIabHelper.startSetup(this);
 	}
