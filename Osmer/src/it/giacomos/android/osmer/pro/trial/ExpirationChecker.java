@@ -17,11 +17,11 @@ ExpirationCheckTaskListener
 {
 	public static final int TRIAL_DAYS = 30;
 	
-	private final long DAY_MILLIS = 24 * 3600 * 1000;
+//	private final long DAY_MILLIS = 24 * 3600 * 1000;
 	
 //	private final long DAY_MILLIS = 1 * 30 * 1000;
 	
-//	private final long DAY_MILLIS = 1 * 60 * 1000;
+	private final long DAY_MILLIS = 1 * 60 * 1000;
 	
 	
 	private final String mUrl = "http://www.giacomos.it/meteo.fvg/checkexpiry.php";

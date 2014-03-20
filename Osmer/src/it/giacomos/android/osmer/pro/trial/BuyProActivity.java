@@ -1,10 +1,14 @@
 package it.giacomos.android.osmer.pro.trial;
 
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.MyAlertDialogFragment;
 import it.giacomos.android.osmer.pro.preferences.Settings;
+import it.giacomos.android.osmer.pro.purhcase.InAppUpgradeManager;
+import it.giacomos.android.osmer.pro.purhcase.InAppUpgradeManagerListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,14 +17,16 @@ import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 
-public class BuyProActivity extends Activity implements OnClickListener
+public class BuyProActivity extends Activity implements 
+OnClickListener, InAppUpgradeManagerListener, DialogInterface.OnClickListener
 {
-	private final String PLAY_STORE_URI = "https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro";
+	private InAppUpgradeManager mInAppUpgradeManager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,14 @@ public class BuyProActivity extends Activity implements OnClickListener
 		new TrialExpiringNotification().remove(this);
 	}
 
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+		if(mInAppUpgradeManager != null)
+			mInAppUpgradeManager.dispose();
+	}
+	
 	@Override
 	public void onResume()
 	{
@@ -68,14 +82,6 @@ public class BuyProActivity extends Activity implements OnClickListener
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 	}
-//
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		// Inflate the menu; this adds items to the action bar if it is present.
-//		getMenuInflater().inflate(R.menu.trial_expired, menu);
-//		return true;
-//	}
-//
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -100,14 +106,54 @@ public class BuyProActivity extends Activity implements OnClickListener
 		
 		if(v.getId() == R.id.btBuyNow)
 		{
-			Intent i = new Intent(android.content.Intent.ACTION_VIEW);
-			i.setData(Uri.parse(PLAY_STORE_URI));
-			startActivity(i);
+			mInAppUpgradeManager = new InAppUpgradeManager();
+			mInAppUpgradeManager.addInAppUpgradeManagerListener(this);
+			mInAppUpgradeManager.purchase(this);
+			
+			this.onPurchaseComplete(true, "", true);
 		}
 		else if(v.getId() == R.id.btNoBuyThanks)
 		{
 			NavUtils.navigateUpFromSameTask(this);
 		}
+	}
+
+	@Override
+	public void onPurchaseComplete(boolean ok, String error, boolean purchased) 
+	{	
+		Log.e("BuyProActivity.onPurchaseComplete", " Success " + ok + ", message "+ error + ", purchased " + purchased);
+		int iconId = R.drawable.ic_launcher;
+		int msgId, titleId;
+		if(purchased && ok)
+		{
+			titleId = R.string.purchase_ok_title;
+			msgId = R.string.thanks_for_purchasing;
+		}
+		else
+		{
+			titleId = R.string.purchase_error_title;
+			msgId = R.string.purchase_error;
+		}
+		PurchaseDialogFragment f = PurchaseDialogFragment.newInstance(titleId, msgId, iconId);
+		f.show(this.getFragmentManager(), "InfoDialog");
+	}
+
+	@Override
+	public void onCheckComplete(boolean ok, String error, boolean bought) 
+	{
+		Log.e("BuyProActivity.onCheckComplete", " Success " + ok + ", message "+ error);
+	}
+
+	@Override
+	public void onInAppSetupComplete(boolean success, String message) 
+	{
+		Log.e("BuyProActivity.onInAppSetupComplete", " Success " + success + ", message "+ message);
+	}
+
+	@Override
+	public void onClick(DialogInterface di, int whichButton) 
+	{
+		NavUtils.navigateUpFromSameTask(this);
 	}
 
 }

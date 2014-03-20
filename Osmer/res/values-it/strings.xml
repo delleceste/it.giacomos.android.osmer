@@ -592,7 +592,7 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 		<em>Servizio Notifiche</em> &egrave; risultato attivo nell'ultima ora.
 		I dati mostrati sono completamente anonimi. Non viene salvato e mostrato 
 		alcun dato relativo all'utente, incluso il proprio nickname.
-		Al fine di correlare i dati nel database online di Meteo.FVG Pro (sul
+		Al fine di correlare i dati nel database online di Meteo.FVG (sul
 		server web, non all'interno della app), solo l'identificativo del dispositivo Android
 		viene salvato (perch&eacute; rappresenta un identificativo univoco di ogni
 		dispositivo). Se non si desidera fare parte degli utenti "<cite>attivi</cite>"
@@ -725,20 +725,26 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 
     <!--  TRIAL -->
     
-    <string name="title_activity_buy_pro">Acquista Meteo.FVG Pro</string>
+    <string name="title_activity_buy_pro">Acquista Meteo.FVG</string>
     <string name="trial_version">Versione di prova</string>
     <string name="days_left">giorni rimanenti.</string>
     <string name="trial_version_expiring">Il periodo di prova sta terminando!</string>
-    <string name="buy_now_from_activity_settings">Compra la versione PRO!</string>
-    <string name="touch_to_buy">Tocca qui per acquistare Meteo.FVG Pro!</string>
+    <string name="buy_now_from_activity_settings">Compra Meteo.FVG!</string>
+    <string name="touch_to_buy">Tocca qui per acquistare Meteo.FVG!</string>
     <string name="buy">Acquista!</string>
-    <string name="buy_pro_title">Acquista Meteo.FVG Pro!</string>
+    <string name="buy_pro_title">Acquista Meteo.FVG!</string>
     <string name="button_text_buy_now">Acquista ora!</string>
     <string name="bt_no_buy_now">Non ora, grazie!</string>
     <string name="trial_expired">Il periodo di prova è scaduto</string>
-    <string name="buy_now_promotional_text">Compra la versione Pro di Meteo.FVG, divertiti con le sue 
+    <string name="buy_now_promotional_text">Compra ora Meteo.FVG al prezzo speciale di soli 1,50 euro,
+        divertiti con le sue 
         fantastiche nuove funzioni e supporta il suo sviluppo futuro!</string>
     
+    <string name="thanks_for_purchasing">Grazie per aver supportato la app Meteo.FVG!</string>
+    <string name="purchase_ok_title">Meteo.FVG acquistata con successo</string>
+    
+    <string name="purchase_error">C\'è stato un errore durante l\'acquisto di Meteo.FVG. Riprova più tardi!</string>
+    <string name="purchase_error_title">Errore durante la procedura di acquisto</string>
 
     
 </resources>

@@ -25,50 +25,32 @@ IabHelper.OnIabSetupFinishedListener, IabHelper.QueryInventoryFinishedListener
 	private final String DEVELOPER_PAYLOAD_FOR_UNLIMITED_PURCHASE = "urwpvffdygbva//&bcecfc-3489trrhy451201;.1";
 	private final int UNLIMITED_PURCHASE_ID = 420225;
 
+	
+	
 	private final String[] b = 
 		{
-			"MIIBIjANBgkqh",
-			"kiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0E5",
-			"DdylVTIeMZJ03GBRj7IFs",
-			"IQR6OZdPBntfPtVp141rPIQWi9+MyA",
-			"BD788kJLs7YfXb2MPrL0+gfpgWcdgt9Mm1vXJqC6km61DrBhwsQLVYFJcc+",
-			"o6sixOveabtJHaisHfBNVJBNnTo7ISiJ4H28G/Thyhy75ZkWWunBiDX",
-			"5gnh1Qh1huMvCsLjJhRXXhF58LDkyMwyTg+Wq5n5AmXOAz5uD1tSdWXSgJXrr+KLbEYzbz0RL",
-			"nyzMKwmUYHtFfGgwN8cd5UT9sts/3JB0fTirxw6GVxM9tuSggOgq7Neo",
-			"6yXJ0zVWChWmcwrQ2axNAQV+ZcjMx+a+9JyRyBOMjuocQIDAQAB",
-			
-			/* 0 */	"AAOCAQ8AMIIBCgKCAQEAj", 
-			/* 1 */		"MIIBIjANBgkqhkiG9w0BAQEF", 
-			/* 2 */		"N9TZt", 
-			/* 3 */		"Xx",
-			/* 4 */		"TfTeEJzYfAdz1ldhqq", 
-			/* 05 */		"+ppc", 
-			/* 6 */		"DAQAB", 
-			/* 7 */		"dmXnDa3hztspJDTcE1fabE/",
-			/* 8 */			"Gpi7A7J8Jw6yOxtflT",
-			/* 9 */			"Vxpz2fnMjXkSwnUXFiXyDg0TgJ", 
-			/* 10 */			"ZCOkeQtomkwEVxODG56T", 
-			/* 11 */	"brmIBwR7gkXEh2qDMD", 
-			/* 12 */	"31A4w", 
-			/* 13 */	"EsMtXDrc0TKoKewdHYoQfOt", 
-			/* 14 */	"6NUMNsRl16gWKOVBHWlFXb",
-			/* 15 */	"MioWeEI2+LO6FI", 
-			/* 16 */	"jeJUtzGO", 
-			/* 17 */	"AN", 
-			/* 18 */	"iajfsyKeg6VzU",
-			/* 19 */	"8tBeZ7OjfKoNlq9",
-			/* 20 */	"lji/lwP1q7H2j", 
-			/* 21 */	"Z8i", 
-			/* 22 */	"ydgfRckqFAI", 
-			/* 23 */	"6aFuBV+k4F", 
-			/* 24 */	"YwqpqtpXLaremtK1k8zYiS+", 
-			/* 25 */	"Cs", 
-			/* 26 */	"I8M",
-			/* 27 */	"1nMKVQ9uOWqle3EaQvmme",
-			/* 28 */	"g4GQI", 
-			/* 29 */	"1nKFy0i0thSvnG/", 
+		/* 0 */	"kiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0E5",
+				"MIIBIjANBgkqh",
+				"DdylVTIeMZJ03GBRj7IFs",
+		/* 3 */	"IQR6OZdPBntfPtVp141rPIQWi9+MyA",
+				"BD788kJLs7YfXb2MPrL0+gfpgWcdgt9Mm1vXJqC6km61DrBhwsQLVYFJcc+",
+				"o6sixOveabtJHaisHfBNVJBNnTo7ISiJ4H28G/Thyhy75ZkWWunBiDX",
+		/* 6 */	"nyzMKwmUYHtFfGgwN8cd5UT9sts/3JB0fTirxw6GVxM9tuSggOgq7Neo",
+				"5gnh1Qh1huMvCsLjJhRXXhF58LDkyMwyTg+Wq5n5AmXOAz5uD1tSdWXSgJXrr+KLbEYzbz0RL",
+		/* 8 */	"6yXJ0zVWChWmcwrQ2axNAQV+ZcjMx+a+9JyRyBOMjuocQIDAQAB",
 		};
 
+	private String mMakePublicKey()
+	{
+		String pk = "";
+		pk += b[1] + b[0];
+		for(int i = 2; i < 6; i++)
+			pk += b[i];
+		pk += b[7] + b[6];
+
+		return pk + b[1 * 2 * 4];
+	}
+	
 	private ArrayList<InAppUpgradeManagerListener> mInAppUpgradeManagerListeners;
 
 	public InAppUpgradeManager()
@@ -94,42 +76,13 @@ IabHelper.OnIabSetupFinishedListener, IabHelper.QueryInventoryFinishedListener
 		mIabHelper = null;
 	}
 
-	private String mMakePublicKey()
-	{
-		String pk = "";
-		pk += b[1] + b[0] + b[7 * 2] +
-				b[2] + b[22] + b[27];
-		for(int i = 3; i < 6; i++)
-			pk += b[i];
-		for(int i = 7; i < 13; i++)
-			pk += b[i];
-		pk += b[24];
-		for(int i = 13; i < 17; i++)
-		{
-			if( i != 14)
-				pk += b[i];
-		}
-		pk += b[29];
-		for(int i = 17; i <= 21; i++)
-			pk += b[i];
-		pk += b[23];
-		int i = 25;
-		while (i < 27)
-		{
-			pk += b[i];
-			i++;
-		}
-		pk += b[28];
-
-		return pk + b[6];
-	}
-
 	public void purchase(Activity activity)
 	{
 		mActivity = activity;
 		mMode = MODE_PURCHASE;		
 		mIabHelper = new IabHelper(activity, mMakePublicKey());
 		mIabHelper.startSetup(this);
+		Log.e("InAppUpgradeManager.purchase", "startSetup invoketh");
 	}
 
 	public void checkIfPurchased(Context context)
