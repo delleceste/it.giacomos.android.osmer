@@ -759,4 +759,9 @@ ed entusiasmante.\n
 Acquista ora a un prezzo speciale Meteo.FVG e supporta così il suo sviluppo futuro.
         </string>
     
+     
+   
+    <string name="authorized_to_get_promo">L\'autore mi ha autorizzato a ottenere questa applicazione gratuitamente </string>
+    <string name="request_authorization_for_free">Richiedi ora l\'attivazione!</string>  
+     
 </resources>

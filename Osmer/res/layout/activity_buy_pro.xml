@@ -72,8 +72,32 @@
         android:layout_marginTop="6dp"
         android:background="@drawable/tutorial_textview_background_green_border"
         android:scrollbars="vertical"
-        android:text="@string/purchase_whats_new_txt"
-         />
+        android:text="@string/purchase_whats_new_txt" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/tutorial_textview_background_red_border"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tvAuthorizedToGetPromo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/authorized_to_get_promo"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btRequestAuth"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_menu_login"
+            android:text="@string/request_authorization_for_free" />
+
+    </LinearLayout>
 
 </LinearLayout>
 

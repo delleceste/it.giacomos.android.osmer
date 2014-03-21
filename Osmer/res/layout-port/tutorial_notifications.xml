@@ -14,7 +14,7 @@
         android:padding="5dp" >
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/tvAuthorizedToGetPromo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"

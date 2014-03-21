@@ -687,14 +687,16 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
     <string name="thanks_for_purchasing">Thanks for purchasing Meteo.FVG!</string>
     <string name="purchase_ok_title">Meteo.FVG successfully bought</string>
     <string name="whats_new">What\'s new?</string>
-    <string name="purchase_whats_new_txt">"This is a completely rewritten application and is 
-        the result of two years of work.\n"
-- Faster download of data;\n
+    <string name="purchase_whats_new_txt">"This is a completely renewed application and is 
+the result of two years of work. It features:\n
+- faster download of data;\n
 - google maps code rewritten with new API v2;\n
 - radar animation;\n
 - meteorological conditions reports: you can be a meteo reporter;\n
 - user interface completely rewritten for Android 4.
         </string>
+    <string name="authorized_to_get_promo">I\'ve been authorized by the author to get this version for free</string>
+    <string name="request_authorization_for_free">Request authorization now!</string>
 
     
     
