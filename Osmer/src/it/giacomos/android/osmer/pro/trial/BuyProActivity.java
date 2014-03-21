@@ -1,7 +1,6 @@
 package it.giacomos.android.osmer.pro.trial;
 
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.pro.MyAlertDialogFragment;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 import it.giacomos.android.osmer.pro.purhcase.InAppUpgradeManager;
 import it.giacomos.android.osmer.pro.purhcase.InAppUpgradeManagerListener;
