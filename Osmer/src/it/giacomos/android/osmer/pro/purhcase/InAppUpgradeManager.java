@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
 import android.util.Log;
 import it.giacomos.android.osmer.pro.purhcase.iabHelper.IabHelper;
 import it.giacomos.android.osmer.pro.purhcase.iabHelper.IabResult;
@@ -160,5 +159,6 @@ IabHelper.OnIabSetupFinishedListener, IabHelper.QueryInventoryFinishedListener
 		mIabHelper.dispose();
 		mIabHelper = null;
 	}
+	
 }
 

@@ -120,7 +120,8 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 		{
 			View view = getActivity().findViewById(R.id.mainScrollView);
 			trialViewHeightDp = 40f;
-			trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (trialViewHeightDp * scale + 0.5f)));
+			//trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (trialViewHeightDp * scale + 0.5f)));
+			trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 			ViewGroup vg = (ViewGroup) view.findViewById(R.id.homeRelativeLayout);
 			vg.addView(trialView, 0);
 
@@ -130,7 +131,8 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 		{
 			View view = getActivity().findViewById(R.id.homeRelativeLayout);
 			trialViewHeightDp = 64f; /* 50dp for landscape because they are put one below each other */
-			trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (trialViewHeightDp * scale + 0.5f)));
+//			trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (trialViewHeightDp * scale + 0.5f)));
+			trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 			ViewGroup vg = (ViewGroup) view.findViewById(R.id.scrollLayout);
 			vg.addView(trialView, 0);
 		}
@@ -138,7 +140,10 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 	}
 	
 	/** 
-	 * This function is the 1st one related to the trial version
+	 * This function is the 1st one related to the trial version.
+	 * Implements ExpirationCheckerListener. 
+	 * ExpirationChecker is created and started only if the application _is_ _NOT_ unlimited,
+	 * that is, if it has not been purchased.
 	 */
 	@Override
 	public void onTrialDaysRemaining(int days) 
@@ -202,6 +207,8 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 	{
 		if(ok && purchased)
 			getActivity().findViewById(R.id.trialLayout).setVisibility(View.GONE);
+		/* cache the information locally */
+		new Settings(this.getActivity()).setApplicationPurchased(purchased && ok);
 	}
 
 	@Override
@@ -213,22 +220,35 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 			mInAppUpgradeManagerErrorMsg = "";
 
 		mIsUnlimited = purchased;
-
+		
 		
 		/// TEST!
 		/// mIsUnlimited = true;
+		
+		/* cache the information locally (the service uses this shared preferences cached value) */
+		new Settings(this.getActivity()).setApplicationPurchased(mIsUnlimited);
+		
 		View trialView = getActivity().findViewById(R.id.trialLayout);
 		
+		/* if the application hasn't been purchased yet, check the expiration time.
+		 * Otherwise, no expiration time check is performed.
+		 */
 		if(!mIsUnlimited) /* check if trial days are left */
 		{
+			int daysLeft = new Settings(getActivity()).getTrialDaysLeft();
 			if(trialView == null)
 				trialView = mSetupTrialInterface();
 			trialView.setVisibility(View.VISIBLE);
-			Log.e("SituationFragment.onCheckComplete", "this version is not unlimited: looking for expiration time...");
+//			Log.e("SituationFragment.onCheckComplete", "this version is not unlimited: looking for expiration time...");
 			/* registers for net status monitor, so inside onResume */
 			mExpirationChecker = new ExpirationChecker(this, getActivity());
-			mExpirationChecker.start(getActivity());
-			updateTrialDaysRemainingText(new Settings(getActivity()).getTrialDaysLeft());
+			
+			if(mExpirationChecker.timeToCheck())
+				mExpirationChecker.start(getActivity());
+			else /* notify activity with stored value */
+				mTrialDaysLeftListener.onTrialDaysRemaining(daysLeft);
+			
+			updateTrialDaysRemainingText(daysLeft);
 			Button buyButton = (Button) getActivity().findViewById(R.id.btBuy);
 			if(buyButton != null) /* not present in landscape mode */
 				buyButton.setOnClickListener(this);

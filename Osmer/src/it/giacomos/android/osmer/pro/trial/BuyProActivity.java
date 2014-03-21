@@ -4,10 +4,8 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 import it.giacomos.android.osmer.pro.purhcase.InAppUpgradeManager;
 import it.giacomos.android.osmer.pro.purhcase.InAppUpgradeManagerListener;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,7 +15,6 @@ import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
@@ -108,8 +105,6 @@ OnClickListener, InAppUpgradeManagerListener, DialogInterface.OnClickListener
 			mInAppUpgradeManager = new InAppUpgradeManager();
 			mInAppUpgradeManager.addInAppUpgradeManagerListener(this);
 			mInAppUpgradeManager.purchase(this);
-			
-			this.onPurchaseComplete(true, "", true);
 		}
 		else if(v.getId() == R.id.btNoBuyThanks)
 		{
@@ -120,7 +115,6 @@ OnClickListener, InAppUpgradeManagerListener, DialogInterface.OnClickListener
 	@Override
 	public void onPurchaseComplete(boolean ok, String error, boolean purchased) 
 	{	
-		Log.e("BuyProActivity.onPurchaseComplete", " Success " + ok + ", message "+ error + ", purchased " + purchased);
 		int iconId = R.drawable.ic_launcher;
 		int msgId, titleId;
 		if(purchased && ok)
@@ -130,6 +124,7 @@ OnClickListener, InAppUpgradeManagerListener, DialogInterface.OnClickListener
 		}
 		else
 		{
+			iconId = R.drawable.ic_dialog_alert;
 			titleId = R.string.purchase_error_title;
 			msgId = R.string.purchase_error;
 		}
@@ -140,13 +135,13 @@ OnClickListener, InAppUpgradeManagerListener, DialogInterface.OnClickListener
 	@Override
 	public void onCheckComplete(boolean ok, String error, boolean bought) 
 	{
-		Log.e("BuyProActivity.onCheckComplete", " Success " + ok + ", message "+ error);
+		
 	}
 
 	@Override
 	public void onInAppSetupComplete(boolean success, String message) 
 	{
-		Log.e("BuyProActivity.onInAppSetupComplete", " Success " + success + ", message "+ message);
+		
 	}
 
 	@Override

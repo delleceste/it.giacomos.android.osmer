@@ -90,7 +90,7 @@ FetchRequestsTaskListener, Runnable
 		//   Logger.log("RDS.onStartCmd: intent " + intent + "isStarted" + mIsStarted);
 		if(!mIsStarted)
 		{
-			// Log.e("ReportDataService.onStartCommand", "service started");
+			Log.e("ReportDataService.onStartCommand", "service started");
 			mSettings = new Settings(this);
 			mSleepInterval = mSettings.getServiceSleepIntervalMillis();
 			/* the last time the network was used is saved so that if the service is killed and

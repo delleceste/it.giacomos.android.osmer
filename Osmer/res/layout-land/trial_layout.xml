@@ -2,16 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/trialLayout"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     android:background="#ddddde"
     android:orientation="vertical" >
 
     <TextView
         android:id="@+id/tvdaysLeft"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_margin="3dp"
-        android:layout_weight="1"
         android:gravity="center"
         android:padding="2dp"
         android:text="@string/days_left"
@@ -21,9 +20,8 @@
         android:id="@+id/btBuy"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_margin="3dp"
-        android:layout_weight="1"
         android:background="@drawable/button_background_with_gray_border"
         android:text="@string/buy"
         android:textAppearance="?android:attr/textAppearanceSmall" />

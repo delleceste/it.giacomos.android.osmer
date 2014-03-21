@@ -166,11 +166,6 @@ InAppEventListener/*  trial version */
 		/* (re)connect the location update client */
 		mLocationService.connect();
 		m_downloadManager.onResume(this);
-		
-		
-		/* trial version */
-		if(this.getPackageName().contains("PROva"))
-			mTrialDaysChanged(mSettings.getTrialDaysLeft());
 	}
 
 	public void onPause()
@@ -289,9 +284,9 @@ InAppEventListener/*  trial version */
 		
 	}
 	
-	/* trial version.
-	 * This method is triggered by SituationFragment, when the package
-	 * is it.giacomos.android.osmer.PROva
+	/* 
+	 * This method is triggered by SituationFragment only when the application
+	 * has not been purchased.
 	 */
 	@Override
 	public void onTrialDaysRemaining(int days) 

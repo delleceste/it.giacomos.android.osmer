@@ -46,14 +46,18 @@ ExpirationCheckTaskListener
 		mDaysLeft = mSharedPrefs.getInt("TRIAL_DAYS_LEFT", TRIAL_DAYS);
 	}
 
-	public void start(Context ctx)
+	public boolean timeToCheck()
 	{
 		long lastCheckedTimeMillis = mSharedPrefs.getLong("LAST_EXPIRATION_CHECKED_TIME_MILLIS",
 				0);
 		long currentTimeMillis = System.currentTimeMillis();
-
+		return (currentTimeMillis - lastCheckedTimeMillis) > DAY_MILLIS;
+	}
+	
+	public void start(Context ctx)
+	{
 		/* check just once a day */
-		mNetworkCheck = (currentTimeMillis - lastCheckedTimeMillis) > DAY_MILLIS;
+		mNetworkCheck = timeToCheck();
 
 		if(mNetworkCheck && !mMonitorRegistered)
 		{

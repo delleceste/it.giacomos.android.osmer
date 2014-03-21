@@ -104,7 +104,7 @@
     <string name="menu_online_guide">Documentazione Online</string>
     <string name="menu_author_info">Informazioni sull\'autore</string>
     <string name="menu_config_info">Caratteristiche tecniche</string>
-    <string name="locality_unavailable">Località non disponibile</string>
+  <!--   <string name="locality_unavailable">Località non disponibile</string> -->
     <string name="ok_button">Ok</string>
     <string name="popup_position_title">Informazioni sulla posizione</string>
     <string name="popup_info_title">Meteo.FVG app info e copyright</string>
@@ -727,7 +727,7 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
     
     <string name="title_activity_buy_pro">Acquista Meteo.FVG</string>
     <string name="trial_version">Versione di prova</string>
-    <string name="days_left">giorni rimanenti.</string>
+    <string name="days_left">giorni rimanenti.\nIn promozione ora a soli 1,50 euro!</string>
     <string name="trial_version_expiring">Il periodo di prova sta terminando!</string>
     <string name="buy_now_from_activity_settings">Compra Meteo.FVG!</string>
     <string name="touch_to_buy">Tocca qui per acquistare Meteo.FVG!</string>

@@ -91,7 +91,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 
 	public void pause()
 	{
-		Log.e("RadarAnimation", "pause");
+//		Log.e("RadarAnimation", "pause");
 		mState = new Paused(this, mAnimationTask, mState);
 		mState.enter();
 		for(RadarAnimationListener ral : mAnimationListeners)
@@ -110,8 +110,8 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 
 			{
 				/* frame number starts from 0 and it reaches at most total frames - 1 */
-				Log.e("RadarAnimation.play", " frameNo " + progState.getFrameNo() +
-						"progState.getTotalFrames() - 1 " + (progState.getTotalFrames() - 1 ));
+//				Log.e("RadarAnimation.play", " frameNo " + progState.getFrameNo() +
+//						"progState.getTotalFrames() - 1 " + (progState.getTotalFrames() - 1 ));
 				if(progState.getFrameNo() < progState.getTotalFrames())
 				{
 					mState = new Running(this, mAnimationTask, mState);
@@ -133,7 +133,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 
 	public void start()
 	{
-		Log.e("RadarAnimation", "start");
+//		Log.e("RadarAnimation", "start");
 		boolean isStart = true;
 		DownloadStatus downloadStatus = DownloadStatus.Instance();
 		
@@ -154,7 +154,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 
 	public void stop() 
 	{
-		Log.e("RadarAnimation", "stop");
+//		Log.e("RadarAnimation", "stop");
 		mState = new NotRunning(this, mAnimationTask, mState);
 		mState.enter();
 		/* reset counters and the list of image urls */
@@ -197,8 +197,8 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			/* animationStatus 1 means it was interrupted */
 			outState.putInt("animationStatus", 1);
 
-			Log.e("RadarAnimation.saveStaeate", "state is in progress... saving variables sownload step: " + downloadStep + " frame no "
-					+ lastFrameNo + " mUrlList ie empty " + mUrlList.isEmpty());
+//			Log.e("RadarAnimation.saveState", "state is in progress... saving variables download step: " + downloadStep + " frame no "
+//					+ lastFrameNo + " mUrlList ie empty " + mUrlList.isEmpty());
 
 			if(currentAnimationStatus == RadarAnimationStatus.RUNNING && lastFrameNo > 0)
 			{
@@ -213,7 +213,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		else if(currentAnimationStatus == RadarAnimationStatus.NOT_RUNNING)
 			outState.putInt("animationStatus", 0);
 
-		Log.e("RadarAnimation.saveState", "lastFrameNo " + lastFrameNo);
+//		Log.e("RadarAnimation.saveState", "lastFrameNo " + lastFrameNo);
 		outState.putInt("animationFrameNo", lastFrameNo);
 		outState.putInt("animationDownloadProgress", downloadStep);
 		outState.putString("urlList", mUrlList);
@@ -230,13 +230,11 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		/* NotRunning state already set in the constructor: look for 1 and 3 */
 		if(savedAnimationStatusAsInt == 1)
 		{
-			Log.e("RadarAnimation.restoreState", "creating INTERRUPTED, savedFrameNo "  + savedFrameNo + 
-					" download progress " + savedDownloadProgress);
+//			Log.e("RadarAnimation.restoreState", "creating INTERRUPTED, savedFrameNo "  + savedFrameNo + 
+//					" download progress " + savedDownloadProgress);
 			mState = new Interrupted(this, savedFrameNo, savedDownloadProgress, urlList);
 			mState.enter();
 		}
-		else
-			Log.e("RadarAnimation.restoreState", "no particular saved state");
 	}
 
 
@@ -263,8 +261,8 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			buffering.setPauseOnFrameNo(interrupted.getFrameNo());
 			buffering.setFrameNo(interrupted.getFrameNo());
 
-			Log.e("RadarAnimation.restore", "the animation status is INTERRUPTED, starting animation task, will pause on frame "
-					+ interrupted.getFrameNo());
+//			Log.e("RadarAnimation.restore", "the animation status is INTERRUPTED, starting animation task, will pause on frame "
+//					+ interrupted.getFrameNo());
 			/* allocates a new AnimationTask. mAnimationTask is passed through states */
 			buffering.enter();
 			mAnimationTask = buffering.getAnimationTask();
@@ -273,8 +271,6 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 					mMapFrag.getResources().getString(R.string.radarAnimationPausedAfterRotation),
 					Toast.LENGTH_SHORT).show();
 		}
-		else
-			Log.e("RadarAnimation.restore", "animation status " + mState.getStatus());
 
 		for(RadarAnimationListener ral : mAnimationListeners)
 			ral.onRadarAnimationRestored();
@@ -287,7 +283,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 
 	public void onPause() 
 	{
-		Log.e("RadarAnimation.onPause", "setting Interrupted state to CANCEL THE TASK!");
+//		Log.e("RadarAnimation.onPause", "setting Interrupted state to CANCEL THE TASK!");
 		if(mState.animationInProgress())
 		{
 			/* this will cancel the task */
@@ -422,8 +418,8 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	public void onTransition(RadarAnimationStatus to) 
 	{
 		RadarAnimationStatus from = mState.getStatus();
-		Log.e("RadarAnimation.onTransition", from + " --> " + to + "[" + 
-				this + "]");
+//		Log.e("RadarAnimation.onTransition", from + " --> " + to + "[" + 
+//				this + "]");
 		if(from == RadarAnimationStatus.BUFFERING && to == RadarAnimationStatus.RUNNING)
 		{
 			Running running = new Running(this, mAnimationTask, mState);
@@ -460,7 +456,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 
 	private void mMakeStep(int frameNo)
 	{
-		Log.e("RadarAnimation.mmakeStep", "frameNo is " + frameNo + " mAnimationData,size is " + mAnimationData.size());
+//		Log.e("RadarAnimation.mmakeStep", "frameNo is " + frameNo + " mAnimationData,size is " + mAnimationData.size());
 		if(mAnimationData != null && frameNo < mAnimationData.size())
 		{
 			String text = mAnimationData.valueAt(frameNo).time + " [" + (frameNo + 1) + "/" + mAnimationData.size() + "]";

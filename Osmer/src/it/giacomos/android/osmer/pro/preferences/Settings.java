@@ -409,8 +409,18 @@ public class Settings
 		e.putInt("TRIAL_DAYS_LEFT", daysLeft);
 		e.commit();
 	}
+
+	public boolean getApplicationPurchased() 
+	{
+		return mSharedPreferences.getBoolean("APPLICATION_PURCHASED", false);
+	}
 	
-	
+	public void setApplicationPurchased(boolean purchaseth) 
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putBoolean("APPLICATION_PURCHASED", purchaseth);
+		e.commit();
+	}
 	
 	
 	
