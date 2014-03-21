@@ -271,7 +271,7 @@
     <string name="notificationServiceStopped">Notification service stopped</string>
     <string name="notificationServiceWillStartOnNetworkAvailable">Notification service will be started upon network connection</string>
     <string name="include_locality">Include locality</string>
-    <string name="locality_unavailable">-</string>
+    <string name="locality_unavailable_dash">-</string>
 
     <!-- report tutorial activity and terms and conditions -->
     <string name="tutorial_publish_report">Publish report</string>
@@ -686,6 +686,15 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
         
     <string name="thanks_for_purchasing">Thanks for purchasing Meteo.FVG!</string>
     <string name="purchase_ok_title">Meteo.FVG successfully bought</string>
+    <string name="whats_new">What\'s new?</string>
+    <string name="purchase_whats_new_txt">"This is a completely rewritten application and is 
+        the result of two years of work.\n"
+- Faster download of data;\n
+- google maps code rewritten with new API v2;\n
+- radar animation;\n
+- meteorological conditions reports: you can be a meteo reporter;\n
+- user interface completely rewritten for Android 4.
+        </string>
 
     
     

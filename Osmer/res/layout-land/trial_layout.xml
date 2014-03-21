@@ -3,14 +3,15 @@
     android:id="@+id/trialLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ddddde"
-    android:orientation="vertical" >
+    android:background="@drawable/button_background_with_gray_border"
+    android:orientation="horizontal" >
 
     <TextView
         android:id="@+id/tvdaysLeft"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="3dp"
+        android:layout_gravity="center"
+        android:layout_weight="5"
         android:gravity="center"
         android:padding="2dp"
         android:text="@string/days_left"
@@ -18,12 +19,15 @@
 
     <Button
         android:id="@+id/btBuy"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="3dp"
-        android:background="@drawable/button_background_with_gray_border"
-        android:text="@string/buy"
+        android:layout_gravity="right|center_vertical"
+        android:layout_margin="4dp"
+        android:background="@android:drawable/btn_default_small"
+        android:drawableLeft="@drawable/ic_menu_help"
+        android:gravity="center"
+        android:minHeight="@dimen/activity_vertical_margin"
+        android:minWidth="@dimen/activity_horizontal_margin"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </LinearLayout>

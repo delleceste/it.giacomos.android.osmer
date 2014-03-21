@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/buyProActivityScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="vertical" >
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
     android:id="@+id/layoutReportConditions"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -50,5 +56,26 @@
         android:scrollbars="vertical"
         android:textStyle="bold|italic" />
 
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/whats_new"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/tvNews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/tutorial_textview_background_green_border"
+        android:scrollbars="vertical"
+        android:text="@string/purchase_whats_new_txt"
+         />
+
 </LinearLayout>
+
+</ScrollView>
 

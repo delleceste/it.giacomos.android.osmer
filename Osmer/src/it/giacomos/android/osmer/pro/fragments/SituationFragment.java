@@ -11,6 +11,7 @@ import it.giacomos.android.osmer.pro.observations.ObservationsCache;
 import it.giacomos.android.osmer.pro.preferences.Settings;
 import it.giacomos.android.osmer.pro.purhcase.InAppUpgradeManager;
 import it.giacomos.android.osmer.pro.purhcase.InAppUpgradeManagerListener;
+import it.giacomos.android.osmer.pro.trial.BuyProActivity;
 import it.giacomos.android.osmer.pro.trial.ExpirationChecker;
 import it.giacomos.android.osmer.pro.trial.ExpirationCheckerListener;
 import it.giacomos.android.osmer.pro.trial.InAppEventListener;
@@ -18,6 +19,7 @@ import it.giacomos.android.osmer.pro.widgets.HomeTextView;
 import it.giacomos.android.osmer.pro.widgets.OTextView;
 import it.giacomos.android.osmer.pro.widgets.SituationImage;
 import android.support.v4.app.Fragment;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -110,8 +112,6 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 
 	private View mSetupTrialInterface()
 	{
-		float trialViewHeightDp;
-		final float scale = getResources().getDisplayMetrics().density;
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View trialView = inflater.inflate(R.layout.trial_layout, null);
 
@@ -119,7 +119,6 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 				Configuration.ORIENTATION_PORTRAIT)
 		{
 			View view = getActivity().findViewById(R.id.mainScrollView);
-			trialViewHeightDp = 40f;
 			//trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (trialViewHeightDp * scale + 0.5f)));
 			trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 			ViewGroup vg = (ViewGroup) view.findViewById(R.id.homeRelativeLayout);
@@ -130,7 +129,6 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 				Configuration.ORIENTATION_LANDSCAPE)
 		{
 			View view = getActivity().findViewById(R.id.homeRelativeLayout);
-			trialViewHeightDp = 64f; /* 50dp for landscape because they are put one below each other */
 //			trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (trialViewHeightDp * scale + 0.5f)));
 			trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 			ViewGroup vg = (ViewGroup) view.findViewById(R.id.scrollLayout);
@@ -198,7 +196,9 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 	{
 		if(v.getId() == R.id.btBuy)
 		{
-			mInAppUpgradeManager.purchase(getActivity());
+			Intent resultIntent = new Intent(getActivity(), BuyProActivity.class);
+			resultIntent.putExtra("daysLeft", mExpirationChecker.getDaysLeft());
+			this.startActivity(resultIntent);
 		}
 	}
 
