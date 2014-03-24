@@ -147,7 +147,18 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 	public void onTrialDaysRemaining(int days) 
 	{
 		mTrialDaysLeftListener.onTrialDaysRemaining(days);
-		updateTrialDaysRemainingText(days);
+		/* if days > 365, assume this is an unlimited version */
+		if(days <= 365)
+		{
+			View trialView = getActivity().findViewById(R.id.trialLayout);
+			if(trialView == null)
+				trialView = mSetupTrialInterface();
+			trialView.setVisibility(View.VISIBLE);
+			Button buyButton = (Button) getActivity().findViewById(R.id.btBuy);
+			if(buyButton != null) /* not present in landscape mode */
+				buyButton.setOnClickListener(this);
+			updateTrialDaysRemainingText(days);
+		}
 	}
 
 	/** 
@@ -228,33 +239,29 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 		/* cache the information locally (the service uses this shared preferences cached value) */
 		new Settings(this.getActivity()).setApplicationPurchased(mIsUnlimited);
 		
-		View trialView = getActivity().findViewById(R.id.trialLayout);
-		
 		/* if the application hasn't been purchased yet, check the expiration time.
 		 * Otherwise, no expiration time check is performed.
 		 */
 		if(!mIsUnlimited) /* check if trial days are left */
 		{
-			int daysLeft = new Settings(getActivity()).getTrialDaysLeft();
-			if(trialView == null)
-				trialView = mSetupTrialInterface();
-			trialView.setVisibility(View.VISIBLE);
 //			Log.e("SituationFragment.onCheckComplete", "this version is not unlimited: looking for expiration time...");
 			/* registers for net status monitor, so inside onResume */
 			mExpirationChecker = new ExpirationChecker(this, getActivity());
 			
 			if(mExpirationChecker.timeToCheck())
+			{
+				/* onTrialDaysRemaining will be invoked as a callback when expiration checker finishes */
 				mExpirationChecker.start(getActivity());
-			else /* notify activity with stored value */
-				mTrialDaysLeftListener.onTrialDaysRemaining(daysLeft);
-			
-			updateTrialDaysRemainingText(daysLeft);
-			Button buyButton = (Button) getActivity().findViewById(R.id.btBuy);
-			if(buyButton != null) /* not present in landscape mode */
-				buyButton.setOnClickListener(this);
+			}
+			else /* directly call onTrialDaysRemaining */
+			{
+				int daysLeft = new Settings(getActivity()).getTrialDaysLeft();
+				this.onTrialDaysRemaining(daysLeft);
+			}
 		}
 		else
 		{
+			View trialView = getActivity().findViewById(R.id.trialLayout);
 			/* hide trial text and buttons. The app is unlimited. Nothing to do */
 			if(trialView != null)
 				trialView.setVisibility(View.GONE);
