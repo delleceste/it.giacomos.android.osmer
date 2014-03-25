@@ -695,9 +695,27 @@ the result of two years of work. It features:\n
 - meteorological conditions reports: you can be a meteo reporter;\n
 - user interface completely rewritten for Android 4.
         </string>
-    <string name="authorized_to_get_promo">I\'ve been authorized by the author to get this version for free</string>
-    <string name="request_authorization_for_free">Request authorization now!</string>
+    <string name="authorized_to_get_promo">I\'ve been previously authorized by the author to get this version for free&#42;</string>
+    <string name="request_authorization_for_free">Request activation now!</string>
+    <string name="contributed_to_devel">"I contributed to the development of 
+the app through the Android.Meteo.FVG Google+ community&#42;&#42; "</string>
+    <string name="previously_authorized_footnote">* You must have been previously authorized by the author. This request is not aimed at requesting authorization. Unauthorized requests will be ignored and blacklisted.</string>
+    <string name="contributed_to_devel_footnote">** Please indicate your name and the date of your comment on G+ in the precompiled email message.</string>
 
+    <string name="activation_mail_title">
+        Activation request for Android Meteo.FVG by 
+    </string>
     
+    <string name="activation_mail_text_1">"Hello.\nI kindly request the authorization
+to activate Meteo.FVG for Android for free.
+I have read and accepted all the conditions of use of the application.
+My android id is as follows:\n\n
+	</string>
+					
+	<string name="activation_mail_text_2">				
+\nThanks.\n\nMy full name: \n\n
+Date: \n\n
+Please note: requests devoid of the full name and date will be ignored.\n\n
+	</string>
     
 </resources>

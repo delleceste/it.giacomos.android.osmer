@@ -107,6 +107,8 @@ public class IabHelper {
 
     // Public key for verifying signature, in base64 encoding
     String mSignatureBase64 = null;
+    
+    String mPackageName = null;
 
     // Billing response codes
     public static final int BILLING_RESPONSE_RESULT_OK = 0;
@@ -164,6 +166,7 @@ public class IabHelper {
     public IabHelper(Context ctx, String base64PublicKey) {
         mContext = ctx.getApplicationContext();
         mSignatureBase64 = base64PublicKey;
+        mPackageName = ctx.getPackageName();
         logDebug("IAB helper created.");
     }
 
@@ -220,12 +223,11 @@ public class IabHelper {
                 if (mDisposed) return;
                 logDebug("Billing service connected.");
                 mService = IInAppBillingService.Stub.asInterface(service);
-                String packageName = mContext.getPackageName();
                 try {
                     logDebug("Checking for in-app billing 3 support.");
 
                     // check for in-app billing v3 support
-                    int response = mService.isBillingSupported(3, packageName, ITEM_TYPE_INAPP);
+                    int response = mService.isBillingSupported(3, mPackageName, ITEM_TYPE_INAPP);
                     if (response != BILLING_RESPONSE_RESULT_OK) {
                         if (listener != null) listener.onIabSetupFinished(new IabResult(response,
                                 "Error checking for billing v3 support."));
@@ -234,10 +236,10 @@ public class IabHelper {
                         mSubscriptionsSupported = false;
                         return;
                     }
-                    logDebug("In-app billing version 3 supported for " + packageName);
+                    logDebug("In-app billing version 3 supported for " + mPackageName);
 
                     // check for v3 subscriptions support
-                    response = mService.isBillingSupported(3, packageName, ITEM_TYPE_SUBS);
+                    response = mService.isBillingSupported(3, mPackageName, ITEM_TYPE_SUBS);
                     if (response == BILLING_RESPONSE_RESULT_OK) {
                         logDebug("Subscriptions AVAILABLE.");
                         mSubscriptionsSupported = true;
@@ -285,7 +287,7 @@ public class IabHelper {
      * used by it such as service connections. Naturally, once the object is
      * disposed of, it can't be used again.
      */
-    public void dispose() {
+    public synchronized void dispose() {
         logDebug("Disposing.");
         mSetupDone = false;
         if (mServiceConn != null) {
@@ -384,7 +386,7 @@ public class IabHelper {
 
         try {
             logDebug("Constructing buy intent for " + sku + ", item type: " + itemType);
-            Bundle buyIntentBundle = mService.getBuyIntent(3, mContext.getPackageName(), sku, itemType, extraData);
+            Bundle buyIntentBundle = mService.getBuyIntent(3, mPackageName, sku, itemType, extraData);
             int response = getResponseCodeFromBundle(buyIntentBundle);
             if (response != BILLING_RESPONSE_RESULT_OK) {
                 logError("Unable to buy item, Error response: " + getResponseDesc(response));
@@ -519,7 +521,7 @@ public class IabHelper {
         return true;
     }
 
-    public Inventory queryInventory(boolean querySkuDetails, List<String> moreSkus) throws IabException {
+    public synchronized Inventory queryInventory(boolean querySkuDetails, List<String> moreSkus) throws IabException {
         return queryInventory(querySkuDetails, moreSkus, null);
     }
 
@@ -535,8 +537,10 @@ public class IabHelper {
      * @param moreSubsSkus additional SUBSCRIPTIONS skus to query information on, regardless of ownership.
      *     Ignored if null or if querySkuDetails is false.
      * @throws IabException if a problem occurs while refreshing the inventory.
+     * 
+     * G.S. Synchronize with dispose()!!
      */
-    public Inventory queryInventory(boolean querySkuDetails, List<String> moreItemSkus,
+    public synchronized Inventory queryInventory(boolean querySkuDetails, List<String> moreItemSkus,
                                         List<String> moreSubsSkus) throws IabException {
         checkNotDisposed();
         checkSetupDone("queryInventory");
@@ -603,7 +607,7 @@ public class IabHelper {
      * @param moreSkus as in {@link #queryInventory}
      * @param listener The listener to notify when the refresh operation completes.
      */
-    public void queryInventoryAsync(final boolean querySkuDetails,
+    public  void queryInventoryAsync(final boolean querySkuDetails,
                                final List<String> moreSkus,
                                final QueryInventoryFinishedListener listener) {
         final Handler handler = new Handler();
@@ -673,7 +677,7 @@ public class IabHelper {
             }
 
             logDebug("Consuming sku: " + sku + ", token: " + token);
-            int response = mService.consumePurchase(3, mContext.getPackageName(), token);
+            int response = mService.consumePurchase(3, mPackageName, token);
             if (response == BILLING_RESPONSE_RESULT_OK) {
                logDebug("Successfully consumed sku: " + sku);
             }
@@ -722,7 +726,7 @@ public class IabHelper {
      * @param purchase The purchase to be consumed.
      * @param listener The listener to notify when the consumption operation finishes.
      */
-    public void consumeAsync(Purchase purchase, OnConsumeFinishedListener listener) {
+    public synchronized void consumeAsync(Purchase purchase, OnConsumeFinishedListener listener) {
         checkNotDisposed();
         checkSetupDone("consume");
         List<Purchase> purchases = new ArrayList<Purchase>();
@@ -834,13 +838,13 @@ public class IabHelper {
     int queryPurchases(Inventory inv, String itemType) throws JSONException, RemoteException {
         // Query purchases
         logDebug("Querying owned items, item type: " + itemType);
-        logDebug("Package name: " + mContext.getPackageName());
+        logDebug("Package name: " + mPackageName);
         boolean verificationFailed = false;
         String continueToken = null;
 
         do {
             logDebug("Calling getPurchases with continuation token: " + continueToken);
-            Bundle ownedItems = mService.getPurchases(3, mContext.getPackageName(),
+            Bundle ownedItems = mService.getPurchases(3, mPackageName,
                     itemType, continueToken);
 
             int response = getResponseCodeFromBundle(ownedItems);
@@ -914,7 +918,7 @@ public class IabHelper {
 
         Bundle querySkus = new Bundle();
         querySkus.putStringArrayList(GET_SKU_DETAILS_ITEM_LIST, skuList);
-        Bundle skuDetails = mService.getSkuDetails(3, mContext.getPackageName(),
+        Bundle skuDetails = mService.getSkuDetails(3, mPackageName,
                 itemType, querySkus);
 
         if (!skuDetails.containsKey(RESPONSE_GET_SKU_DETAILS_LIST)) {
@@ -979,7 +983,7 @@ public class IabHelper {
     }
 
     void logDebug(String msg) {
-        if (mDebugLog) Log.d(mDebugTag, msg);
+        if (mDebugLog) Log.e(mDebugTag, msg);
     }
 
     void logError(String msg) {

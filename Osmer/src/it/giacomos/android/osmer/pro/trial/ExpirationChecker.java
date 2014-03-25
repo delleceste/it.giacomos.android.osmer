@@ -17,11 +17,11 @@ ExpirationCheckTaskListener
 {
 	public static final int TRIAL_DAYS = 30;
 	
-//	private final long DAY_MILLIS = 24 * 3600 * 1000;
+	private final long CHECK_INTERVAL = 8 * 3600 * 1000;
 	
 //	private final long DAY_MILLIS = 1 * 30 * 1000;
 	
-	private final long DAY_MILLIS = 1 * 60 * 1000;
+//	private final long DAY_MILLIS = 1 * 60 * 1000;
 	
 	
 	private final String mUrl = "http://www.giacomos.it/meteo.fvg/checkexpiry.php";
@@ -51,7 +51,7 @@ ExpirationCheckTaskListener
 		long lastCheckedTimeMillis = mSharedPrefs.getLong("LAST_EXPIRATION_CHECKED_TIME_MILLIS",
 				0);
 		long currentTimeMillis = System.currentTimeMillis();
-		return (currentTimeMillis - lastCheckedTimeMillis) > DAY_MILLIS;
+		return (currentTimeMillis - lastCheckedTimeMillis) > CHECK_INTERVAL;
 	}
 	
 	public void start(Context ctx)
@@ -69,25 +69,23 @@ ExpirationCheckTaskListener
 					new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 			mMonitorRegistered = true;
 		}
-		else
-			Log.e("ExpirationChecker.start", "not yet time to check for expiration");
 	}
 
 	public void stop(Context ctx)
 	{
 		mExpirationCheckerListener = null;
+		if(mMonitorRegistered)
+		{
+			Log.e("ExpirationChecker.stop", "unregistering for network updates");
+			ctx.unregisterReceiver(mNetworkStatusMonitor);
+			mMonitorRegistered = false;
+		}
+		
 		if(mNetworkCheck && mNetworkStatusMonitor != null)
 		{
 			if(mExpirationCheckTask!= null && 
 					mExpirationCheckTask.getStatus() != AsyncTask.Status.FINISHED)
 				mExpirationCheckTask.cancel(false);
-			
-			if(mMonitorRegistered)
-			{
-				Log.e("ExpirationChecker.stop", "unregistering for network updates");
-				ctx.unregisterReceiver(mNetworkStatusMonitor);
-				mMonitorRegistered = false;
-			}
 		}
 		else
 			Log.e("ExpirationChecker.stop", "'twas not yet time to check for expiration");

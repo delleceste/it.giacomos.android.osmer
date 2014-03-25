@@ -10,6 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
@@ -22,7 +25,7 @@ import android.os.Build;
 import android.provider.Settings.Secure;
 
 public class BuyProActivity extends Activity implements 
-OnClickListener, InAppUpgradeManagerListener, DialogInterface.OnClickListener
+OnClickListener, InAppUpgradeManagerListener, DialogInterface.OnClickListener, OnCheckedChangeListener
 {
 	private InAppUpgradeManager mInAppUpgradeManager;
 	
@@ -41,6 +44,12 @@ OnClickListener, InAppUpgradeManagerListener, DialogInterface.OnClickListener
 		button.setOnClickListener(this);
 		button = (Button) findViewById(R.id.btRequestAuth);
 		button.setOnClickListener(this);
+		button.setEnabled(false);
+		
+		CheckBox cb = (CheckBox) findViewById(R.id.cbAuthorized);
+		cb.setOnCheckedChangeListener(this);
+		cb = (CheckBox) findViewById(R.id.cbContributedToDevel);
+		cb.setOnCheckedChangeListener(this);
 		
 		new TrialExpiringNotification().remove(this);
 	}
@@ -118,20 +127,18 @@ OnClickListener, InAppUpgradeManagerListener, DialogInterface.OnClickListener
 		}
 		else if(v.getId() == R.id.btRequestAuth)
 		{
+			String title = getResources().getString(R.string.activation_mail_title);
+			String msg1 = getResources().getString(R.string.activation_mail_text_1);
+			String msg2 = getResources().getString(R.string.activation_mail_text_2);
+			
 			String androidId =  Secure.getString(getContentResolver(), Secure.ANDROID_ID);
 			final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 			/* Fill it with Data */
 			emailIntent.setType("plain/text");
 			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { AUTHOR_EMAIL } );
-			emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Authorization request for Android Meteo.FVG by " + androidId );
-			emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Hello.\nI kindly request the authorization " +
-					"to activate Meteo.FVG for Android for free.\n" +
-					"I have read and accepted all the conditions of use of the application.\n\n" +
-					"My android id is as follows:\n\n" + 
-					androidId +
-					"\n\nThanks.\n\nMy full name: \n\n" + 
-					"Date: " +
-					"\n\nPlease note: requests devoid of the full name and date will be ignored.\n\n");
+			emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, title + " " +  androidId );
+			emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, msg1 + 
+					androidId +msg2);
 			
 			/* Send it off to the Activity-Chooser */
 			startActivity(emailIntent);
@@ -174,6 +181,14 @@ OnClickListener, InAppUpgradeManagerListener, DialogInterface.OnClickListener
 	public void onClick(DialogInterface di, int whichButton) 
 	{
 		NavUtils.navigateUpFromSameTask(this);
+	}
+
+	@Override
+	public void onCheckedChanged(CompoundButton b, boolean checked) {
+		CheckBox cb1 = (CheckBox) findViewById(R.id.cbAuthorized);
+		CheckBox cb2 = (CheckBox) findViewById(R.id.cbContributedToDevel);
+		Button bt = (Button) findViewById(R.id.btRequestAuth);
+		bt.setEnabled(cb1.isChecked() || cb2.isChecked());
 	}
 
 }

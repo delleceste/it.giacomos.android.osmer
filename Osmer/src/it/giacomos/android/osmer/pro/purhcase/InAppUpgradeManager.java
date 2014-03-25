@@ -70,6 +70,7 @@ IabHelper.OnIabSetupFinishedListener, IabHelper.QueryInventoryFinishedListener
 
 	public void dispose()
 	{
+		mInAppUpgradeManagerListeners.clear();
 		if(mIabHelper != null)
 			mIabHelper.dispose();
 		mIabHelper = null;

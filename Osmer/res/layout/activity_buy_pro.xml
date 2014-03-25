@@ -81,11 +81,20 @@
         android:background="@drawable/tutorial_textview_background_red_border"
         android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/tvAuthorizedToGetPromo"
+        <CheckBox
+            android:id="@+id/cbAuthorized"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/authorized_to_get_promo"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="bold" />
+
+        <CheckBox
+            android:id="@+id/cbContributedToDevel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/contributed_to_devel"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold" />
 
@@ -96,6 +105,31 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_menu_login"
             android:text="@string/request_authorization_for_free" />
+
+        <TextView
+            android:id="@+id/tvAuthorizedToGetPromo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvAuthorizedFootnote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/previously_authorized_footnote"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/contributed_to_devel_footnote"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="italic" />
 
     </LinearLayout>
 
