@@ -287,10 +287,12 @@
         
 	<!--  active user data -->
 	<string name="activeUser">Active user</string>
+	<string name="activeUsers">active users</string>
 	<string name="inTheLast10Min">in the last 10 min.</string>
 	<string name="inTheLast20Min">in the last 20 min.</string>
 	<string name="inTheLastHour">in the last hour</string>
 	<string name="activeUserSeemdAvailableInThisZone">a user seemed to be active\nin this area.</string>
+	<string name="activeUsersSeemdAvailableInThisZone"> users seemed to be active\nin this area.</string>
     <string name="touchBaloonToMakeRequestInThisArea">Touch to make a request in this area</string>
     <string name="active_users">active users</string>
     

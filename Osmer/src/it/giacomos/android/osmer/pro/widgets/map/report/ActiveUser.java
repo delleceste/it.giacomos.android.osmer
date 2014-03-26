@@ -15,6 +15,7 @@ public class ActiveUser extends DataInterface {
 	public String datetime;
 	private MarkerOptions mMarkerOptions;
 	private Marker mMarker;
+	public int otherUsersInAreaCnt;
 	
 	public ActiveUser(String datet, double lat, double lon, 
 			boolean recent, boolean quite_recent)
@@ -23,6 +24,19 @@ public class ActiveUser extends DataInterface {
 		datetime = datet;
 		isRecent = recent;
 		isQuiteRecent = quite_recent;
+		otherUsersInAreaCnt = 0; /* only this */
+	}
+	
+	public ActiveUser(String datet, double lat, double lon, 
+			boolean recent, boolean quite_recent, 
+			int otherUsersNearbyCnt)
+	{
+		super(lat, lon, datet);
+		datetime = datet;
+		isRecent = recent;
+		isQuiteRecent = quite_recent;
+		/* _other_ users. Total users in area is  otherUsersInAreaCnt + 1 (this) */
+		otherUsersInAreaCnt = otherUsersNearbyCnt; 
 	}
 	
 	@Override
@@ -45,28 +59,47 @@ public class ActiveUser extends DataInterface {
 	{
 		String  title, snippet;
 		Resources res = ctx.getResources();
-
+		int totalUsersInAreaCnt = otherUsersInAreaCnt + 1;
 		mMarkerOptions = new MarkerOptions();
 		mMarkerOptions.position(new LatLng(getLatitude(), getLongitude()));
-		
-		title = res.getString(R.string.activeUser);
+		if(totalUsersInAreaCnt == 1)
+			title = res.getString(R.string.activeUser);
+		else
+			title = otherUsersInAreaCnt + " " + res.getString(R.string.activeUsers);
 		if(isRecent)
 		{
 			title += " " + res.getString(R.string.inTheLast10Min);
-			mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_medium));
+			if(otherUsersInAreaCnt == 0)
+				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_medium));
+			else if(otherUsersInAreaCnt < 20)
+				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_big_green));
+			else
+				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_bigger_green));
 		}
 		else if(isQuiteRecent)
 		{
 			title += " " + res.getString(R.string.inTheLast20Min);
-			mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_small));
+			if(otherUsersInAreaCnt == 0)
+				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_small));
+			else if(otherUsersInAreaCnt < 20)
+				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_big_violet));
+			else
+				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_bigger_violet));
 		}
 		else
 		{
 			title += " " + res.getString(R.string.inTheLastHour);
-			mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_micro));
+			if(otherUsersInAreaCnt == 0)
+				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_micro));
+			else if(otherUsersInAreaCnt < 20)
+				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_big_red));
+			else
+				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_bigger_red));
 		}
-		
-		snippet = datetime + ": " + res.getString(R.string.activeUserSeemdAvailableInThisZone);
+		if(otherUsersInAreaCnt == 1)
+			snippet = datetime + ": " + res.getString(R.string.activeUserSeemdAvailableInThisZone);
+		else
+			snippet = datetime + ": " + totalUsersInAreaCnt + " " + res.getString(R.string.activeUsersSeemdAvailableInThisZone);
 		/* add * Touch the baloon to publish a request in this area hint */
 		snippet += "\n*" + res.getString(R.string.touchBaloonToMakeRequestInThisArea);
 

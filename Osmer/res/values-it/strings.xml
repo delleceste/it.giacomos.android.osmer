@@ -287,11 +287,13 @@
     
 	<!--  active user data -->
 	<string name="activeUser">Utente attivo</string>
+	<string name="activeUsers">utenti attivi</string>
 	<string name="inTheLast10Min">negli ultimi 10 min.</string>
 	<string name="inTheLast20Min">negli ultimi 20 min.</string>
 	<string name="inTheLastHour">nell\'ultima ora</string>
 	<string name="touchBaloonToMakeRequestInThisArea">Tocca qui per iniziare a pubblicare\nuna richiesta in quest\'area</string>
 	<string name="activeUserSeemdAvailableInThisZone">un utente è attivo\nin questa zona.</string>
+	<string name="activeUsersSeemdAvailableInThisZone"> utenti sono attivi\nin questa zona.</string>
 	<string name="active_users">utenti attivi</string>
 	
     <string-array name="report_sky_textitems">

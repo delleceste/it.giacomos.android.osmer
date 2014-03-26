@@ -86,10 +86,15 @@ public class Urls {
 	 * since version 2.6.1, invokes get_report_2_6_1 because the report 
 	 * response contains the active users list.
 	 * 
+	 * since version 2.6.3 invokes get_report_2_6_3 that groups active users
+	 * by area, returning the most recently active users in an area, excluding
+	 * all other users less recent whose distance from the most recent is less
+	 * than a threshold in km.
+	 * 
 	 */
 	public String getReportUrl()
 	{
-		return "http://www.giacomos.it/meteo.fvg/get_report_2_6_1.php";
+		return "http://www.giacomos.it/meteo.fvg/get_report_2_6_3.php";
 	}
 	
 	public String getPostReportRequestUrl() {
@@ -105,40 +110,6 @@ public class Urls {
 	public String getRemovePostUrl() 
 	{
 		return "http://www.giacomos.it/meteo.fvg/remove_post.php";
-	}
-	
-	public String minTempUrl()
-	{
-		return "";
-	}
-	
-	public String maxTempUrl()
-	{
-
-		return "";
-	}
-	
-	public String humidityUrl()
-	{
-		return "";
-	}
-	
-	public String rainUrl()
-	{
-
-		return "";
-	}
-	
-	public String windUrl()
-	{
-
-		return "";
-	}
-	
-	public String pressureUrl()
-	{
-
-		return "";
 	}
 	
 	public String webcamImagesPath()

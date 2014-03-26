@@ -230,7 +230,7 @@ OnClickListener
 					(typ != DataInterface.TYPE_ACTIVE_USER && !showUsers) )
 			{  
 				if(typ == DataInterface.TYPE_ACTIVE_USER && (showUsers || showAll))
-					usersCount++;
+					usersCount += ((ActiveUser) dataI).otherUsersInAreaCnt + 1;
 				
 				if(marker == null)
 				{
@@ -241,7 +241,6 @@ OnClickListener
 //					Log.e("reportOvarlay.mUpdateMarkers", "setting marker " + marker.getTitle() + 
 //							" id " + marker.getId());
 					mDataInterfaceMarkerIdHash.put(marker.getId(), dataI);
-
 				}
 				else
 				{
@@ -261,7 +260,7 @@ OnClickListener
 				{
 					/* remove couple id, DataInterface from hash */
 					mDataInterfaceMarkerIdHash.remove(marker.getId());
-//					Log.e("reportOvarlay.mUpdateMarkers", "removigng marker " + marker.getTitle() + 
+//					Log.e("reportOvarlay.mUpdateMarkers", "removing marker " + marker.getTitle() + 
 //							" id " + marker.getId());
 					marker.remove();
 					dataI.setMarker(null);
@@ -529,7 +528,6 @@ OnClickListener
 				it.remove(); /* remove from hash */
 			}
 		}
-
 	}
 
 	private void mRestoreYetUnpublishedMyRequestData(ArrayList<DataInterface> backupData)
@@ -548,8 +546,6 @@ OnClickListener
 			myRestoredRequestMarker.showInfoWindow();
 			/* restore data in the hash now! */
 			mDataInterfaceMarkerIdHash.put(myRestoredRequestMarker.getId(), di);
-
-
 		}
 	}
 
@@ -562,9 +558,6 @@ OnClickListener
 			{
 				myRequestsYetUnpublished.add(di);
 			}
-			//			else
-			//				Log.e("mSaveYetUnpublishedMyRequestData", "not saving " + di.getLocality() +  " id " + di.getMarker().getId() +
-			//						"w " + di.isWritable()  + ", pub"  + di.isPublished());
 		}
 		return myRequestsYetUnpublished;
 	}
@@ -676,7 +669,6 @@ OnClickListener
 	{
 		if(b.getId() == R.id.reportMapTiltHelpOkButton)
 		{
-			Log.e("ReportOverlay", "removing view");
 			ViewGroup mainV = (ViewGroup) mMapFrag.getView();
 			View transparentTutorial = mainV.findViewById(R.id.tiltTutorialLayout);
 			mainV.removeView(transparentTutorial);

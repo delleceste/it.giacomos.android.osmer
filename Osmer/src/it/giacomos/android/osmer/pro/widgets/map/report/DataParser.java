@@ -1,11 +1,6 @@
 package it.giacomos.android.osmer.pro.widgets.map.report;
 
-import it.giacomos.android.osmer.pro.locationUtils.NearLocationFinder;
-
 import java.util.ArrayList;
-
-import com.google.android.gms.maps.model.LatLng;
-
 import android.util.Log;
 
 public class DataParser 
@@ -25,6 +20,7 @@ public class DataParser
 			String line;
 			double lat, lon;
 			int sky, wind;
+			int numberOfUsersInArea;
 
 			for(int i = 0; i < lines.length; i++)
 			{
@@ -112,7 +108,7 @@ public class DataParser
 					 */
 					ActiveUser activeUser = null;
 					String [] parts = line.split("::", -1);
-					if(parts.length > 5) /* should be 6 */
+					if(parts.length > 6) /* should be 7 starting from 2.6.3 */
 					{
 						try{
 							lat = Double.parseDouble(parts[2]);
@@ -120,9 +116,10 @@ public class DataParser
 
 							isRecent = (Integer.parseInt(parts[4]) == 1);
 							isQuiteRecent = (Integer.parseInt(parts[5]) == 1);
-							activeUser = new ActiveUser(parts[1], lat, lon, isRecent, isQuiteRecent);
+							numberOfUsersInArea = Integer.parseInt(parts[6]);
+							activeUser = new ActiveUser(parts[1], lat, lon, isRecent, 
+									isQuiteRecent, numberOfUsersInArea);
 							tmpArray.add(activeUser);
-
 						}
 						catch(NumberFormatException e)
 						{
