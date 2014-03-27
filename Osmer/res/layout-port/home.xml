@@ -20,7 +20,7 @@
         		large as possible and let the homeTextView's height wrap contents
         		 -->
         		 
-         <it.giacomos.android.osmer.pro.widgets.SituationImage
+         <it.giacomos.android.osmer.widgets.SituationImage
              android:id="@+id/child1ImageView"
              style="@style/ImageView"
              android:layout_width="match_parent"
@@ -28,16 +28,13 @@
              android:minHeight="280dp"
              android:src="@drawable/fvg_background2" />
 
-        <it.giacomos.android.osmer.pro.widgets.HomeTextView
+        <it.giacomos.android.osmer.widgets.HomeTextView
             android:id="@+id/homeTextView"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_margin="6dp"
             android:background="@drawable/shape_textview"
-            android:inputType="none" >
-
-
-        </it.giacomos.android.osmer.pro.widgets.HomeTextView>
+            android:inputType="none" />
     </LinearLayout>
 
 </ScrollView>

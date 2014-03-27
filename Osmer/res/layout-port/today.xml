@@ -12,21 +12,21 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <it.giacomos.android.osmer.pro.widgets.MapWithForecastImage
+        <it.giacomos.android.osmer.widgets.MapWithForecastImage
             android:id="@+id/todayImageView"
             style="@style/ImageView"
             android:layout_width="match_parent"
             android:layout_height="330dp"
             android:src="@drawable/fvg_background2" />
 
-        <it.giacomos.android.osmer.pro.widgets.ForecastTextView
+        <it.giacomos.android.osmer.widgets.ForecastTextView
             android:id="@+id/todayTextView"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_margin="6dp"
             android:background="@drawable/shape_textview"
             android:inputType="none" >
-        </it.giacomos.android.osmer.pro.widgets.ForecastTextView>
+        </it.giacomos.android.osmer.widgets.ForecastTextView>
     </LinearLayout>
 
 </ScrollView>

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-    <it.giacomos.android.osmer.pro.widgets.MapWithForecastImage
+    <it.giacomos.android.osmer.widgets.MapWithForecastImage
         android:id="@+id/twoDaysImageView"
         android:layout_width="0dip"
         android:layout_height="fill_parent"
@@ -18,15 +18,12 @@
         android:layout_height="match_parent"
         android:layout_weight="1.0" >
 
-        <it.giacomos.android.osmer.pro.widgets.ForecastTextView
+        <it.giacomos.android.osmer.widgets.ForecastTextView
             android:id="@+id/twoDaysTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none" >
+            android:inputType="none" />
 
-            <requestFocus>
-            </requestFocus>
-        </it.giacomos.android.osmer.pro.widgets.ForecastTextView>
     </ScrollView>
 
 </LinearLayout>
