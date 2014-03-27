@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.forecastRepr;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import android.content.res.Resources;
 import android.util.SparseArray;
 
