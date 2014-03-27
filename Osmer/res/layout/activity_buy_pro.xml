@@ -131,6 +131,15 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="italic" />
 
+        <TextView
+            android:id="@+id/tvNotePROvaUsers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/note_prova_users"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="bold" />
+
     </LinearLayout>
 
 </LinearLayout>

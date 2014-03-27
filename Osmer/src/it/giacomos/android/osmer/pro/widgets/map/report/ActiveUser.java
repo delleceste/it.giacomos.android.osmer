@@ -65,13 +65,13 @@ public class ActiveUser extends DataInterface {
 		if(totalUsersInAreaCnt == 1)
 			title = res.getString(R.string.activeUser);
 		else
-			title = otherUsersInAreaCnt + " " + res.getString(R.string.activeUsers);
+			title = totalUsersInAreaCnt + " " + res.getString(R.string.activeUsers);
 		if(isRecent)
 		{
 			title += " " + res.getString(R.string.inTheLast10Min);
-			if(otherUsersInAreaCnt == 0)
+			if(totalUsersInAreaCnt == 1)
 				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_medium));
-			else if(otherUsersInAreaCnt < 20)
+			else if(totalUsersInAreaCnt < 26)
 				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_big_green));
 			else
 				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_bigger_green));
@@ -79,9 +79,9 @@ public class ActiveUser extends DataInterface {
 		else if(isQuiteRecent)
 		{
 			title += " " + res.getString(R.string.inTheLast20Min);
-			if(otherUsersInAreaCnt == 0)
+			if(totalUsersInAreaCnt == 1)
 				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_small));
-			else if(otherUsersInAreaCnt < 20)
+			else if(totalUsersInAreaCnt < 26)
 				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_big_violet));
 			else
 				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_bigger_violet));
@@ -89,14 +89,14 @@ public class ActiveUser extends DataInterface {
 		else
 		{
 			title += " " + res.getString(R.string.inTheLastHour);
-			if(otherUsersInAreaCnt == 0)
+			if(totalUsersInAreaCnt == 1)
 				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_micro));
-			else if(otherUsersInAreaCnt < 20)
+			else if(totalUsersInAreaCnt < 26)
 				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_big_red));
 			else
 				mMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_circle_bigger_red));
 		}
-		if(otherUsersInAreaCnt == 1)
+		if(totalUsersInAreaCnt == 1)
 			snippet = datetime + ": " + res.getString(R.string.activeUserSeemdAvailableInThisZone);
 		else
 			snippet = datetime + ": " + totalUsersInAreaCnt + " " + res.getString(R.string.activeUsersSeemdAvailableInThisZone);

@@ -295,7 +295,8 @@
 	<string name="activeUsersSeemdAvailableInThisZone"> users seemed to be active\nin this area.</string>
     <string name="touchBaloonToMakeRequestInThisArea">Touch to make a request in this area</string>
     <string name="active_users">active users</string>
-    
+    <string name="grouped_in">grouped in</string>
+    <string name="markers">markers</string>
     
     <string-array name="report_sky_textitems">
         <item>don\'t report</item>
@@ -719,5 +720,7 @@ My android id is as follows:\n\n
 Date: \n\n
 Please note: requests devoid of the full name and date will be ignored.\n\n
 	</string>
+					
+	<string name="note_prova_users">NOTE: Meteo.FVG PROva users may have their trial period shorter or even expired</string>
     
 </resources>

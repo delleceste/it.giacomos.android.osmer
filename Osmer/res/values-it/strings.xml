@@ -295,7 +295,9 @@
 	<string name="activeUserSeemdAvailableInThisZone">un utente è attivo\nin questa zona.</string>
 	<string name="activeUsersSeemdAvailableInThisZone"> utenti sono attivi\nin questa zona.</string>
 	<string name="active_users">utenti attivi</string>
-	
+	<string name="grouped_in">raggruppati in</string>
+    <string name="markers">puntini</string>
+    
     <string-array name="report_sky_textitems">
         <item>non segnalare il cielo</item>
         <item>cielo sereno</item>
@@ -761,8 +763,6 @@ ed entusiasmante.\n
 Acquista ora a un prezzo speciale Meteo.FVG e supporta così il suo sviluppo futuro.
         </string>
     
-     
-   
     <string name="authorized_to_get_promo">L\'autore mi ha autorizzato a ottenere questa applicazione gratuitamente 
         (di persona, tramite facebook o Google+/Hangout)</string>
     <string name="request_authorization_for_free">Richiedi ora l\'attivazione!</string>  
@@ -776,7 +776,10 @@ di un\'autorizzazione. Le richieste da parte di utenti non autorizzati verranno 
     <string name="contributed_to_devel_footnote">** Si indichi la data indicativa della pubblicazione del proprio commento
    all\'interno del messaggio di email precompilato.</string>
 
-   
+   <string name="note_prova_users">NOTA: gli utenti che hanno precedentemente utilizzato Meteo.FVG PROva
+       avranno il periodo di prova ridotto o esaurito, dipendentemente dalla data di installazione di
+       Meteo.FVG.PROva</string>
+       
      <string name="activation_mail_title">
         Richiesta attivazione Android Meteo.FVG da  
     </string>

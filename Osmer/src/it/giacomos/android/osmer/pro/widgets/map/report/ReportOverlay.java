@@ -204,6 +204,7 @@ OnClickListener
 				mMapTilt < TILT_MARKERS_SHOW_ONLY_USERS_THRESH);
 		boolean showUsers = (mMapTilt >= TILT_MARKERS_SHOW_ONLY_USERS_THRESH);
 		int usersCount = 0;
+		int markerCnt = 0;
 		
 	//	mDataInterfaceMarkerIdHash.clear();
 
@@ -222,6 +223,9 @@ OnClickListener
 			
 			int typ = dataI.getType();
 			Marker marker = dataI.getMarker();
+			
+			if(typ == DataInterface.TYPE_ACTIVE_USER && (showUsers || showAll))
+				markerCnt++;
 			
 			/* always show request marker */
 			if(showAll || 
@@ -275,8 +279,12 @@ OnClickListener
 		if(usersCount > 0)
 		{
 			String activeUsers = mMapFrag.getString(R.string.active_users);
+			String groupedIn = mMapFrag.getString(R.string.grouped_in);
+			String markers = mMapFrag.getString(R.string.markers);
 			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), 
-					String.valueOf(usersCount) + " " + activeUsers, Toast.LENGTH_SHORT).show();
+					String.valueOf(usersCount) + " " + activeUsers + ", " + groupedIn + " " + markerCnt
+					+ " " + markers,
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 
