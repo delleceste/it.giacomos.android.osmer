@@ -7,7 +7,7 @@ import it.giacomos.android.osmer.network.state.WebcamBitmapTask;
 import it.giacomos.android.osmer.network.state.WebcamBitmapTaskListener;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.webcams.OsmerWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.OtherWebcamListDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;

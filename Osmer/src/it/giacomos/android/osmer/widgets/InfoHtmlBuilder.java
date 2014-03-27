@@ -3,7 +3,7 @@ package it.giacomos.android.osmer.widgets;
 import java.util.Calendar;
 
 import android.content.res.Resources;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 
 public class InfoHtmlBuilder {
 	public InfoHtmlBuilder()
