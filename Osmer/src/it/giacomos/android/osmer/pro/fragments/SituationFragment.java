@@ -75,15 +75,22 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 		locationService.registerLocationServiceUpdateListener(mSituationImage);
 
 		mExpirationChecker = null;
+		mInAppUpgradeManager = null;
 		mTrialDaysLeftListener = (InAppEventListener) getActivity();
 	}
 
 	public void onResume()
 	{	
 		super.onResume();
-		mInAppUpgradeManager = new InAppUpgradeManager();
-		mInAppUpgradeManager.addInAppUpgradeManagerListener(this);
-		mInAppUpgradeManager.checkIfPurchased(getActivity());
+		/* if package is not it.giacomos.android.osmer.pro, check for purchase
+		 * 
+		 */
+		if(getActivity().getPackageName().compareTo("it.giacomos.android.osmer.pro") != 0)
+		{
+			mInAppUpgradeManager = new InAppUpgradeManager();
+			mInAppUpgradeManager.addInAppUpgradeManagerListener(this);
+			mInAppUpgradeManager.checkIfPurchased(getActivity());
+		}
 	}
 
 	public void onPause()
@@ -129,14 +136,14 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 				Configuration.ORIENTATION_LANDSCAPE)
 		{
 			View view = getActivity().findViewById(R.id.homeRelativeLayout);
-//			trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (trialViewHeightDp * scale + 0.5f)));
+			//			trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (trialViewHeightDp * scale + 0.5f)));
 			trialView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 			ViewGroup vg = (ViewGroup) view.findViewById(R.id.scrollLayout);
 			vg.addView(trialView, 0);
 		}
 		return trialView;
 	}
-	
+
 	/** 
 	 * This function is the 1st one related to the trial version.
 	 * Implements ExpirationCheckerListener. 
@@ -231,23 +238,23 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 			mInAppUpgradeManagerErrorMsg = "";
 
 		mIsUnlimited = purchased;
-		
-		
+
+
 		/// TEST!
 		/// mIsUnlimited = true;
-		
+
 		/* cache the information locally (the service uses this shared preferences cached value) */
 		new Settings(this.getActivity()).setApplicationPurchased(mIsUnlimited);
-		
+
 		/* if the application hasn't been purchased yet, check the expiration time.
 		 * Otherwise, no expiration time check is performed.
 		 */
 		if(!mIsUnlimited) /* check if trial days are left */
 		{
-//			Log.e("SituationFragment.onCheckComplete", "this version is not unlimited: looking for expiration time...");
+			//			Log.e("SituationFragment.onCheckComplete", "this version is not unlimited: looking for expiration time...");
 			/* registers for net status monitor, so inside onResume */
 			mExpirationChecker = new ExpirationChecker(this, getActivity());
-			
+
 			if(mExpirationChecker.timeToCheck())
 			{
 				/* onTrialDaysRemaining will be invoked as a callback when expiration checker finishes */
