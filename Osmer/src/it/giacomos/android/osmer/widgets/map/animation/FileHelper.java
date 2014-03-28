@@ -61,6 +61,9 @@ public class FileHelper
 
 	public boolean exists(String fileName, String externalStorageDirPath)
 	{
+		if(fileName == null || externalStorageDirPath == null)
+			return false;
+		
 		File file = new File(externalStorageDirPath, fileName);
 		return file.exists();
 	}
