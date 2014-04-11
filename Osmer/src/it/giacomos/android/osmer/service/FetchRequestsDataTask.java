@@ -81,6 +81,12 @@ public class FetchRequestsDataTask extends AsyncTask<String, Integer, String> {
 			mErrorMsg = e.getLocalizedMessage();
 			e.printStackTrace();
 		}
+		catch (SecurityException se)
+		{
+			/* sometimes signaled as ANR.. strange. */
+			mErrorMsg = se.getLocalizedMessage();
+			se.printStackTrace();
+		}
 		return data;
 	}
 
