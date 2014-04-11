@@ -62,12 +62,6 @@ DataPoolBitmapListener,
 DataPoolErrorListener,
 RadarAnimationListener
 {
-	public final int minLatitude = GeoCoordinates.bottomRight.getLatitudeE6();
-	public final int maxLatitude = GeoCoordinates.topLeft.getLatitudeE6();
-	public final int minLongitude = GeoCoordinates.topLeft.getLongitudeE6();
-	public final int maxLongitude = GeoCoordinates.bottomRight.getLongitudeE6();
-
-
 	private float mOldZoomLevel;
 	private boolean mCenterOnUpdate;
 	private boolean mMapReady; /* a map is considered ready after first camera update */

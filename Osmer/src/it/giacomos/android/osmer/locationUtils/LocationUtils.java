@@ -13,13 +13,13 @@ public class LocationUtils {
 	
 	public boolean locationInsideRegion(double latitude, double longitude)
 	{
-		double lat = latitude * 1000000;
-		double lon = longitude * 1000000;
+		double lat = latitude;
+		double lon = longitude;
 	
-		if(lat > GeoCoordinates.bottomRight.getLatitudeE6() && 
-				lat < GeoCoordinates.topLeft.getLatitudeE6() && 
-				lon > GeoCoordinates.topLeft.getLongitudeE6() && 
-				lon < GeoCoordinates.bottomRight.getLongitudeE6())
+		if(lat > GeoCoordinates.bottomRight.latitude && 
+				lat < GeoCoordinates.topLeft.latitude && 
+				lon > GeoCoordinates.topLeft.longitude && 
+				lon < GeoCoordinates.bottomRight.longitude)
 		{
 			return true;
 		}

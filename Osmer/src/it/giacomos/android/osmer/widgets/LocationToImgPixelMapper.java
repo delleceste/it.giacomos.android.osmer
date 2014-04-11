@@ -52,13 +52,10 @@ public class LocationToImgPixelMapper
 		float imgHeight, imgWidth;
 		
 		/* get top left bottom and right latitude/longitude of the region */
-		double topLatitude = GeoCoordinates.fvgTopLeft.getLatitudeE6();
-		double leftLongitude = GeoCoordinates.fvgTopLeft.getLongitudeE6();
-		double bottomLatitude  = GeoCoordinates.fvgBottomRight.getLatitudeE6();
-		double rightLongitude = GeoCoordinates.fvgBottomRight.getLongitudeE6();
-		
-		latitude = latitude * 1E6;
-		longitude = longitude * 1E6;
+		double topLatitude = GeoCoordinates.fvgTopLeft.latitude;
+		double leftLongitude = GeoCoordinates.fvgTopLeft.longitude;
+		double bottomLatitude  = GeoCoordinates.fvgBottomRight.latitude;
+		double rightLongitude = GeoCoordinates.fvgBottomRight.longitude;
 		
 		float viewRatio = vW / vH;
 		float imgRatio = GifParamsDesc.width / GifParamsDesc.height;

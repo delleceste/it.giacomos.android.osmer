@@ -4,24 +4,23 @@ import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.maps.GeoPoint;
 
 public class GeoCoordinates {
 	
 	/** 
 	 * top left anchor coord
 	 */
-	public static final GeoPoint topLeft = new GeoPoint(46840517,11938366);
+	public static final LatLng topLeft = new LatLng(46840517/1e6, 11938366/1e6);
 	
 	/**
 	 * bottom right anchor coord
 	 */
-	public static final GeoPoint bottomRight = new GeoPoint(44597090,15029332);
+	public static final LatLng bottomRight = new LatLng(44597090/1e6, 15029332/1e6);
 	
 	/**
 	 * Fossalon radar position
 	 */
-	public static final GeoPoint center = new GeoPoint(45726700, 13477500);
+	public static final LatLng center = new LatLng(45726700/1e6, 13477500/1e6);
 	
 	/**
 	 * coordinates of the region only
@@ -31,7 +30,7 @@ public class GeoCoordinates {
 	 *   http://www.gorissen.info/Pierre/maps/googleMapLocation.php?lat=46.647917&lon=12.762669&setLatLon=Set
 	 *   
 	 */
-	public static final GeoPoint fvgTopLeft = new GeoPoint(46647917, 12321253);
+	public static final LatLng fvgTopLeft = new LatLng(46647917/1e6, 12321253/1e6);
 	
 	/**
 	 * - right taken from  45.633342, 13.918819
@@ -39,7 +38,7 @@ public class GeoCoordinates {
 	 * - bottom taken from  45.580838, 13.810244
 	 *   http://www.gorissen.info/Pierre/maps/googleMapLocation.php?lat=45.580838&lon=13.810244&setLatLon=Set
 	 */
-	public static final GeoPoint fvgBottomRight = new GeoPoint(45580838, 13918819 );
+	public static final LatLng fvgBottomRight = new LatLng(45580838/1e6, 13918819/1e6 );
 	
 	public static final LatLngBounds radarImageBounds = new LatLngBounds(new LatLng(44.6029, 11.8342), 
 			new LatLng(46.8505, 15.0559));
