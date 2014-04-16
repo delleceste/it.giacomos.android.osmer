@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.widgets.actionView;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import android.content.Context;
 import android.util.Log;
 import android.view.ActionProvider;
