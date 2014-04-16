@@ -3,7 +3,7 @@ package it.giacomos.android.osmer.pager;
 
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.View;
