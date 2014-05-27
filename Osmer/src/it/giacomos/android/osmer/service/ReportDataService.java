@@ -6,6 +6,7 @@ import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.service.sharedData.NotificationData;
 import it.giacomos.android.osmer.service.sharedData.NotificationDataFactory;
+import it.giacomos.android.osmer.service.sharedData.RainNotification;
 import it.giacomos.android.osmer.service.sharedData.ReportRequestNotification;
 import it.giacomos.android.osmer.service.sharedData.ServiceSharedData;
 
@@ -195,9 +196,11 @@ FetchRequestsTaskListener, Runnable
 			/* start the service and execute it. When the thread finishes, onServiceDataTaskComplete()
 			 * will schedule the next task.
 			 */
-			mServiceDataTask = new FetchRequestsDataTask(this, deviceId, mLocation.getLatitude(), mLocation.getLongitude());
+			mServiceDataTask = new FetchRequestsDataTask(this, deviceId, 
+					mLocation.getLatitude(), mLocation.getLongitude(),
+					mSettings.rainNotificationEnabled());
 			/* "http://www.giacomos.it/meteo.fvg/get_reports_and_requests_for_my_location.php" */
-			mServiceDataTask.execute(new Urls().getReportsAndRequestUpdatesForMyLocationUrl());
+			mServiceDataTask.execute(new Urls().getReportsRequestUpdatesAndRainProbabilityForMyLocationUrl());
 		}
 	}
 
@@ -230,7 +233,7 @@ FetchRequestsTaskListener, Runnable
 	{	
 		boolean notified = false;
 		//	if(error)
-		//   Logger.log("task complete: " + dataAsString);
+		Log.e("ReportDataService.onServiceDataTaskComplete", "data: " + dataAsString);
 
 		ServiceSharedData sharedData = ServiceSharedData.Instance(this);
 		NotificationManager mNotificationManager =
@@ -257,9 +260,12 @@ FetchRequestsTaskListener, Runnable
 			}
 		}
 
-		ArrayList<NotificationData> notifications = new NotificationDataFactory().get(dataAsString);
+		ArrayList<NotificationData> notifications = new NotificationDataFactory().parse(dataAsString);
 		for(NotificationData notificationData : notifications)
 		{
+			/* Rain alert notifications are marked valid only if they represent an alert 
+			 * (there's a chance it's going to rain).
+			 */
 			if(notificationData.isValid())
 			{
 				if(sharedData.canBeConsideredNew(notificationData, this))
@@ -284,6 +290,27 @@ FetchRequestsTaskListener, Runnable
 						iconId = R.drawable.ic_launcher_statusbar_request;
 						ledColor = Color.argb(255, 5, 220, 246); /* cyan notification */
 						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
+					}
+					else if(notificationData.isRainAlert())
+					{
+						RainNotification rainNotif = (RainNotification) notificationData;
+						float dbZ = rainNotif.getLastDbZ();
+						iconId = R.drawable.ic_launcher_statusbar_rain;
+						ledColor = Color.argb(255, 255, 0, 0); /* red notification */
+						resultIntent.putExtra("NotificationRainAlert", true);
+						
+						if(dbZ < 27)
+						{
+							message = getResources().getString(R.string.notificationRainAlert);
+						}
+						else if(dbZ < 42)
+						{
+							message = getResources().getString(R.string.notificationRainModerate);
+						}
+						else
+						{
+							message = getResources().getString(R.string.notificationRainIntense);
+						}
 					}
 					else
 					{

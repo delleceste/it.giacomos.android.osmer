@@ -283,7 +283,10 @@
     <!-- notification area -->
     <string name="notificationNewReportRequest">Report request from </string>
     <string name="notificationNewReportArrived">New report from </string>
-
+    <string name="notificationRainAlert">It may rain in a while</string>
+    <string name="notificationRainModerate">Abundant rain approaching </string>
+    <string name="notificationRainIntense">Intense rain approaching </string>
+        
         
 	<!--  active user data -->
 	<string name="activeUser">Active user</string>

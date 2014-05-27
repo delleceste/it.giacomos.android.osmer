@@ -421,6 +421,10 @@ public class Settings
 		e.putBoolean("APPLICATION_PURCHASED", purchaseth);
 		e.commit();
 	}
+
+	public boolean rainNotificationEnabled() {
+		return mSharedPreferences.getBoolean("RAIN_NOTIFICATION_ENABLED", true);
+	}
 	
 	
 	

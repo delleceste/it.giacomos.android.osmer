@@ -278,6 +278,11 @@
     <!-- notification area -->
     <string name="notificatonNewReportRequest">Richiesta segnalazione da </string>
     <string name="notificationNewReportArrived">Nuova segnalazione da </string>
+    
+    <string name="notificationRainAlert">Potrebbe piovere tra un po\'</string>
+    <string name="notificationRainModerate">Possibile pioggia abbondante in arrivo</string>
+    <string name="notificationRainIntense">Possibile pioggia intensa in arrivo</string>
+    
     <string name="reportRequestPublishedOn">Richiesta pubblicata in data </string>
 	<string name="reportLookingForLocality">cerco il nome della località&#8230;</string>
     <string name="reportPointTooCloseToMyLocation">Non puoi fare una richiesta in un punto entro 500m dalla tua posizione</string>

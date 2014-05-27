@@ -107,6 +107,11 @@ public class Urls {
 		return "http://www.giacomos.it/meteo.fvg/get_reports_and_requests_for_my_location.php";
 	}
 	
+	public String getReportsRequestUpdatesAndRainProbabilityForMyLocationUrl()
+	{
+		return "http://www.giacomos.it/meteo.fvg/get_reports_requests_rain_probability_for_my_location.php";
+	}
+	
 	public String getRemovePostUrl() 
 	{
 		return "http://www.giacomos.it/meteo.fvg/remove_post.php";

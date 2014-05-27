@@ -40,8 +40,8 @@ public class GeoCoordinates {
 	 */
 	public static final LatLng fvgBottomRight = new LatLng(45580838/1e6, 13918819/1e6 );
 	
-	public static final LatLngBounds radarImageBounds = new LatLngBounds(new LatLng(44.6029, 11.8342), 
-			new LatLng(46.8505, 15.0559));
+	public static final LatLngBounds radarImageBounds = new LatLngBounds(new LatLng(44.6052, 11.9294), 
+			new LatLng(46.8080, 15.0857));
 	
 	public static final LatLng radarImageCenter = new LatLng((radarImageBounds.northeast.latitude + 
 			radarImageBounds.southwest.latitude) / 2.0f, 

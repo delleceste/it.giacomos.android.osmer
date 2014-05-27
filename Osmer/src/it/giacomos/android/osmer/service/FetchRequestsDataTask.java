@@ -23,18 +23,21 @@ import android.util.Log;
 public class FetchRequestsDataTask extends AsyncTask<String, Integer, String> {
 
 	private String mErrorMsg;
+	private boolean mRainNotificationEnabled;
 	String mDeviceId;
 	private FetchRequestsTaskListener mServiceDataTaskListener;
 	double mLatitude, mLongitude;
 
 	private static String CLI = "afe0983der38819073rxc1900lksjd";
 
-	public FetchRequestsDataTask(FetchRequestsTaskListener sdtl, String deviceId, double lat, double longit)
+	public FetchRequestsDataTask(FetchRequestsTaskListener sdtl, String deviceId, 
+			double lat, double longit, boolean rainNotificationEnabled)
 	{
 		mServiceDataTaskListener = sdtl;
 		mDeviceId = deviceId;
 		mLatitude = lat;
 		mLongitude = longit;
+		mRainNotificationEnabled = rainNotificationEnabled;
 	}
 
 	public void removeFetchRequestTaskListener()
@@ -54,6 +57,8 @@ public class FetchRequestsDataTask extends AsyncTask<String, Integer, String> {
 		postParameters.add(new BasicNameValuePair("d", mDeviceId));
 		postParameters.add(new BasicNameValuePair("la", String.valueOf(mLatitude)));
 		postParameters.add(new BasicNameValuePair("lo", String.valueOf(mLongitude)));
+		postParameters.add(new BasicNameValuePair("rain_detect", String.valueOf(mRainNotificationEnabled)));
+		
 		UrlEncodedFormEntity form;
 		try {
 			form = new UrlEncodedFormEntity(postParameters);

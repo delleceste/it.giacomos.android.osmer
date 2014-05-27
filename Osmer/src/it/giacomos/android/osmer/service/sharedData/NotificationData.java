@@ -10,6 +10,7 @@ public abstract class NotificationData
 {
 	public static short TYPE_REQUEST = 0;
 	public static short TYPE_REPORT = 1;
+	public static short TYPE_RAIN = 2;
 	public String datetime, username;
 	public double latitude, longitude;
 	
@@ -25,6 +26,11 @@ public abstract class NotificationData
 	public boolean isRequest()
 	{
 		return getType() == NotificationData.TYPE_REQUEST;
+	}
+	
+	public boolean isRainAlert()
+	{
+		return getType() == NotificationData.TYPE_RAIN;
 	}
 	
 	public abstract short getType();
