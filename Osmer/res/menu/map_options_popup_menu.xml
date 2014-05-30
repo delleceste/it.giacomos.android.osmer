@@ -31,9 +31,9 @@
         		android:layout_marginRight="2dp"
 				android:title="@string/reportNotificationService"
         		android:id="@+id/syncServiceAction" 
-        		android:checkable="true"
-        		/>	     
-        		
+        		android:checkable="false"
+        		/>	                 		
+
  <item 
          	    android:layout_width="wrap_content"
         		android:layout_height="wrap_content"       		

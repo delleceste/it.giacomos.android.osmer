@@ -104,6 +104,7 @@
     <string name="menu_online_guide">Documentazione Online</string>
     <string name="menu_author_info">Informazioni sull\'autore</string>
     <string name="menu_config_info">Caratteristiche tecniche</string>
+    <string name="menu_settings">Impostazioni&#8230;</string>
   <!--   <string name="locality_unavailable">Località non disponibile</string> -->
     <string name="ok_button">Ok</string>
     <string name="popup_position_title">Informazioni sulla posizione</string>
@@ -227,6 +228,7 @@
     <string name="radarAnimationLocalTimeFromUTC">ora locale = UTC+</string>
     <string name="reportDialogTitle">Segnala il tempo</string>
     <string name="reportNotificationService">Servizio notifiche</string>
+    <string name="reportNotificationServiceSettings">Configura notifiche</string>
     <string name="reportDialogMessage">Segnala la situazione meteo nella tua zona</string>
     <string name="reportDialogSendButton">Invia!</string>
     <string name="reportDialogCancelButton">Annulla</string>
@@ -799,4 +801,58 @@ mio android id è il seguente:\n\n
 \n\nGrazie.\n\nNome e cognome: \n\nData odierna:  \n\nNota: Richieste prive di nome, cognome e data saranno ignorate.\n\n
 	</string>
     
+	
+	<string name="pref_enable_notification_service">Abilita il servizio di notifiche</string>
+					
+	<string name="pref_enab_notif_service_summary">Abilita globalmente il servizio di notifiche, anche all\'avvio</string>	
+				
+	<string name="pref_service_sleep_interval">Intervallo aggiornamenti</string>
+	
+	<string name="pref_service_sleep_interval_summary">Il servizio controlla la presenza di notifiche ogni N minuti</string>
+	
+	<string name="pref_service_enabled_on">Il servizio è attivo</string>
+	
+	<string name="pref_service_enabled_off">Il servizio non è attivo</string>
+		
+	<string name="pref_sleep_interval_dialog">Intervallo aggiornamento notifiche</string>
+	
+	<string name="pref_sleep_interval_message">Imposta il numero di minuti allo scadere dei quali 
+	    il servizio controlla la presenza di notifiche, periodicamente.</string>
+	
+	<string name="pref_rain_alert_enable">Notifiche possibilità di pioggia attive</string>
+	
+	<string name="pref_rain_alert_off">Notifiche possibilità di pioggia disattivate</string>
+	
+	<string name="pref_rain_notification_enable">Notifica quando è possibile che piova</string>
+	
+	<string name="pref_rain_notification_enable_summary">Se abilitato, riceverai una notifica quando viene calcolata una certa probabilità di
+	    pioggia nella tua zona (NOTA BENE: l\'autore non si assume alcuna responsabilità circa questo risultato, che 
+	    in media ha dimostrato un\'attendibilità intorno al 70-80%</string>
+	
+	<string name="pref_rain_notif_interval">Intervallo notifiche pioggia</string>
+	
+	<string name="pref_rain_notif_interval_summary">Non verrai disturbato da due notifiche di probabilità di pioggia
+	    prima che sia trascorso questo tempo, in minuti</string>
+	    
+	<string name="pref_rain_notif_interval_dialog_message">Imposta l\'intervallo minimo richiesto 
+	    tra due successive segnalazioni di possibile pioggia, in minuti, tra 1 e 180</string>
+	    
+	<string name="pref_rain_notif_interval_dialog_title">Tempo minimo tra due successive segnalazioni di pioggia</string>
+	
+	<string name="pref_default_service_sleep_interval_mins">5</string>
+	
+	<string name="pref_default_rain_alerts_interval_mins">5</string>
+	
+	<string name="pref_service_sleep_interval_summary_checks_every">Il servizio controlla gli aggiornamenti delle
+	    notifiche ogni</string>
+	
+	<string name="pref_rain_alert_summary_checks_every">Le notifiche di possibile pioggia 
+	    vengono mostrate al più ogni</string>
+	
+	<string name="minutes">minuti</string>
+	
+	<string name="notifications">Notifiche</string>
+	
+	<string name="notificationIntervalBetween0And180">L\'intervallo deve essere compreso tra 0 e 180</string>
+	
 </resources>

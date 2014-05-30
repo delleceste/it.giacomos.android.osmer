@@ -14,7 +14,7 @@ public class NotificationDataFactory
 				nDataArray.add(new ReportRequestNotification(line));
 			else if(parts.length == 5)
 				nDataArray.add(new ReportNotification(line));
-			else if(parts.length == 3)
+			else if(parts.length == 4) /* R::date-time::1|0::dbz */
 				nDataArray.add(new RainNotification(line));
 			else
 				/* nothing to do here */

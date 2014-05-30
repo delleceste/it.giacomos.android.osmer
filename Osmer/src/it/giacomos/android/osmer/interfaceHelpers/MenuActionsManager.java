@@ -3,6 +3,7 @@ package it.giacomos.android.osmer.interfaceHelpers;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressUpdateListener;
 import it.giacomos.android.osmer.locationUtils.LocationInfo;
+import it.giacomos.android.osmer.preferences.SettingsActivity;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.widgets.SituationImage;
@@ -80,6 +81,11 @@ public class MenuActionsManager implements GeocodeAddressUpdateListener
 			data.putString("text", configInfo.gatherInfo(mActivity));
 			mActivity.showDialog(TEXT_DIALOG, data);
 			configInfo = null;
+			break;
+
+		case R.id.menu_settings:
+			Intent prefsActivityIntent = new Intent(mActivity, SettingsActivity.class);
+			mActivity.startActivityForResult(prefsActivityIntent, OsmerActivity.SETTINGS_ACTIVITY_FOR_RESULT_ID);	
 			break;
 		}
 		return true;

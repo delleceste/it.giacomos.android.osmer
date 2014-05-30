@@ -97,13 +97,15 @@
     </string-array>
 
     <!-- MENU -->
-    <string name="menu_info">Application info&#8230;</string>
-    <string name="menu_refresh">About data update&#8230;</string>
+    <string name="menu_info">Application info</string>
+    <string name="menu_refresh">About data update</string>
     <string name="menu_online_guide">Online documentation</string>
     <string name="menu_author_info">Author Info</string>
     <string name="menu_config_info">Technical details</string>
+    <string name="menu_settings">Settings&#8230;</string>
     <string name="locality_unavailable">Locality unavailable</string>
     <string name="ok_button">@android:string/ok</string>
+    <string name="cancel_button">@android:string/cancel</string>
     <string name="popup_position_title">About your position</string>
     <string name="popup_info_title">App info and copyright</string>
     <string name="popup_data_update_title">Data automatic refresh</string>
@@ -228,6 +230,7 @@
     <string name="report_activity_name">Report the weather</string>
     <string name="reportDialogTitle">Report the weather</string>
     <string name="reportNotificationService">Notification service</string>
+    <string name="reportNotificationServiceSettings">Configure notifications</string>
     <string name="reportDialogMessage">Report the weather in your area</string>
     <string name="reportDialogSendButton">Report!</string>
     <string name="reportDialogCancelButton">Cancel</string>
@@ -725,5 +728,55 @@ Please note: requests devoid of the full name and date will be ignored.\n\n
 	</string>
 					
 	<string name="note_prova_users">NOTE: Meteo.FVG PROva users may have their trial period shorter or even expired</string>
+					
+	<string name="pref_enable_notification_service">Enable notification service</string>
+					
+	<string name="pref_enab_notif_service_summary">Globally enables the notification service</string>	
+				
+	<string name="pref_service_sleep_interval">Interval between notification checks (minutes)</string>
+	
+	<string name="pref_service_sleep_interval_summary">The service wakes up every time this interval elapses</string>
+	
+	<string name="pref_service_enabled_on">The service is running</string>
+	
+	<string name="pref_service_enabled_off">The service is not running</string>
+	
+	<string name="pref_"></string>
+	
+	<string name="pref_sleep_interval_dialog">Notifications check interval</string>
+	
+	<string name="pref_sleep_interval_message">Set the number of minutes between one notification check and the next</string>
+	
+	<string name="pref_rain_alert_enable">Rain alerts are enabled</string>
+	
+	<string name="pref_rain_alert_off">Rain alerts are disabled</string>
+	
+	<string name="pref_rain_notification_enable">Notify when it\'s possible that it\'s going to rain</string>
+	
+	<string name="pref_rain_notification_enable_summary">If enabled, you will be notified if rain is close to your position within a radius</string>
+	
+	<string name="pref_rain_notif_interval">Minutes between rain alerts</string>
+	
+	<string name="pref_rain_notif_interval_summary">Two different rain alerts will not be shown unless 
+	    this interval has elab</string>
+	    
+	<string name="pref_rain_notif_interval_dialog_message">Select the minimum interval, in minutes, 
+	    that must elapse between two subsequent rain alert notifications. The number must be between 1 and 180</string>
+	    
+	<string name="pref_rain_notif_interval_dialog_title">Minutes between rain alert notifications</string>
+	
+	<string name="pref_default_service_sleep_interval_mins">5</string>
+	
+	<string name="pref_default_rain_alerts_interval_mins">5</string>
+	
+	<string name="pref_service_sleep_interval_summary_checks_every">The service looks for updates every</string>
+	
+	<string name="pref_rain_alert_summary_checks_every">Rain alerts will be notified no more than once every</string>
+	
+	<string name="minutes">minutes</string>
+	
+	<string name="notifications">Notifications</string>
+	
+	<string name="notificationIntervalBetween0And180">Interval must be an integer between 0 and 180</string>
     
 </resources>

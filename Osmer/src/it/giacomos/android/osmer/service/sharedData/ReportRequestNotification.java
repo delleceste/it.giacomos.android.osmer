@@ -6,6 +6,11 @@ public class ReportRequestNotification extends NotificationData
 	public boolean isRequest;
 	private boolean mValidString;
 	private boolean mIsReadable;
+
+	public String getTag()
+	{
+		return "ReportRequestNotification";
+	}
 	
 	public boolean isValid()
 	{

@@ -289,16 +289,26 @@ public class Settings
 		return res;
 	}
 	
-	public long minTimeBetweenReportRequestNotificationsMinutes()
+	public long minTimeBetweenNotificationsMinutes(String tag)
 	{
-		long res = mSharedPreferences.getLong("MIN_TIME_BETWEEN_REPORT_REQUEST_NOTIFICATIONS", 1);
+		long res = 5L;
+		try /* if saved as long */
+		{ 
+			res = mSharedPreferences.getLong("MIN_TIME_BETWEEN_NOTIFICATIONS_" + tag, 5L);
+		}
+		catch(ClassCastException e)
+		{
+			/* Preferences saves as string... because we edit with a text edit */
+			String s = mSharedPreferences.getString("MIN_TIME_BETWEEN_NOTIFICATIONS_" + tag, "5");
+			res = Long.parseLong(s);
+		}
 		return res;
 	}
 	
-	public void setMinTimeBetweenReportRequestNotificationsMinutes(long minTime)
+	public void setMinTimeBetweenNotificationsMinutes(String tag, long minTime)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
-		e.putLong("MIN_TIME_BETWEEN_REPORT_REQUEST_NOTIFICATIONS", minTime);
+		e.putLong("MIN_TIME_BETWEEN_NOTIFICATIONS_" + tag, minTime);
 		e.commit();
 	}
 	
@@ -337,9 +347,20 @@ public class Settings
 	 * @return
 	 */
 	public long getServiceSleepIntervalMillis() 
-	{
-		long intmillis =  mSharedPreferences.getLong("SERVICE_SLEEP_INTERVAL_MILLIS", 300000);
-		return intmillis;
+	{		
+		long intmin = 5L;
+		try /* if saved as long */
+		{ 
+			intmin = mSharedPreferences.getLong("SERVICE_SLEEP_INTERVAL_MINS",  5L);
+		}
+		catch(ClassCastException e)
+		{
+			/* Preferences saves as string... because we edit with a text edit */
+			String s = mSharedPreferences.getString("SERVICE_SLEEP_INTERVAL_MINS", "5");
+			intmin = Long.parseLong(s);
+		}
+		
+		return intmin * 60 * 1000;
 	}
 	
 	public boolean notificationServiceEnabled() 

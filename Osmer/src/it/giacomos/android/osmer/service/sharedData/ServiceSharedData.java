@@ -38,8 +38,6 @@ public class ServiceSharedData
 	 * (No more than one notification at time)
 	 */
 	private HashMap<Short, NotificationData> mNotificationDataHash;
-
-	private long mLastNotifiedTimeMillis;
 	
 	public static ServiceSharedData Instance(Context ctx)
 	{
@@ -59,7 +57,6 @@ public class ServiceSharedData
 				new SharedDataSaveRestore(ctx.getSharedPreferences(Settings.PREFERENCES_NAME,
 						Context.MODE_PRIVATE));
 		mNotificationDataHash = mSharedDataSaveRestore.loadNotificationData();
-		mLastNotifiedTimeMillis = mSharedDataSaveRestore.getLastNotifiedTimeMillis();
 	}
 
 	public NotificationData getNotificationData(short type)
@@ -79,20 +76,39 @@ public class ServiceSharedData
 		
 		if(setNotified)
 		{
-			mLastNotifiedTimeMillis = System.currentTimeMillis(); /* now */
 			/* save */
-			mSharedDataSaveRestore.setLastNotifiedTimeMillis(mLastNotifiedTimeMillis);
+			mSharedDataSaveRestore.setLastNotifiedTimeMillis(notificationData.getTag(), System.currentTimeMillis());
 		}
 	}
 	
-	public boolean canBeConsideredNew(NotificationData notificationData, Context ctx) 
+	public boolean arrivesTooEarly(NotificationData notificationData, Context ctx)
+	{
+		/* we can filter out subsequent requests basing on the minimum time between notifications
+		 * desired by the user.
+		 */
+		long minMillis = new Settings(ctx).minTimeBetweenNotificationsMinutes(notificationData.getTag()) * 60 * 1000;
+		long diffTimeMs =  Calendar.getInstance().getTime().getTime() - mSharedDataSaveRestore.getLastNotifiedTimeMillis(notificationData.getTag());
+		Log.e("ServiceSharedData.canBeConsideredNew", "difftime ms = " + diffTimeMs + " min millis " + minMillis);
+		if(diffTimeMs < minMillis)
+		{
+//			Logger.log("SSD.canBeConsideredNew: no: diffTime " + diffTimeMs + " < " + minMillis);
+			Log.e("ServiceSharedData", "diffTimeMillis < minMillis TOO EARLY!!");
+			return true; /* too early */
+		}
+		
+//		Log.e("ServiceSharedData", "diffTimeMillis > minimum --> NEW");
+		Logger.log("SSD.canBeConsideredNew: yes, new");
+		return false; /* elapsed time is greater than the minimum interval required between notifications */
+	}
+	
+	public boolean alreadyNotifiedEqual(NotificationData notificationData) 
 	{
 		NotificationData inHashND;
 		short type = notificationData.getType();
 		if(!mNotificationDataHash.containsKey(type))
 		{
-//			Logger.log("SSD.canBeConsideredNew: yes: no notif. for type " + type);
-			return true;
+			Log.e("canBeConsideredNew", "SSD.canBeConsideredNew: yes: no notif. for type " + type);
+			return false;
 		}
 		else
 			inHashND = mNotificationDataHash.get(type);
@@ -101,26 +117,13 @@ public class ServiceSharedData
 		if(inHashND.equals(notificationData))
 		{
 //			Logger.log("SSD.canBeConsideredNew: no: identical notifs");
-			return false; /* exactly the same */
+			Log.e("canBeConsideredNew", "SSD.canBeConsideredNew: no: identical notifications for type " + type);
+			return true; /* exactly the same */
 		}
 
+		return false; /* not equal, not already notified */
 
-		/* we can filter out subsequent requests basing on the minimum time between notifications
-		 * desired by the user.
-		 */
-		long minMillis = new Settings(ctx).minTimeBetweenReportRequestNotificationsMinutes() * 60 * 1000;
-		long diffTimeMs =  Calendar.getInstance().getTime().getTime() - mLastNotifiedTimeMillis;
-//		Log.e("ServiceSharedData.canBeConsideredNew", "difftime ms = " + diffTimeMs + " min millis " + minMillis);
-		if(diffTimeMs < minMillis)
-		{
-//			Logger.log("SSD.canBeConsideredNew: no: diffTime " + diffTimeMs + " < " + minMillis);
-//			Log.e("ServiceSharedData", "diffTimeMillis < minMillis CANNOT BE CONSIDERETH NEW");
-			return false; /* not new */
-		}
 		
-//		Log.e("ServiceSharedData", "diffTimeMillis > minimum --> NEW");
-//		Logger.log("SSD.canBeConsideredNew: yes, new");
-		return true; /* elapsed time is greater than the minimum interval required between notifications */
 	}
 
 }

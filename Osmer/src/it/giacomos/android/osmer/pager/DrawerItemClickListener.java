@@ -17,20 +17,23 @@ public class DrawerItemClickListener implements ListView.OnItemClickListener
 		super();
 		mOsmerActivity = a;
 	}
-	
+
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
 	{
-//		Log.e("onItemClick drawer listener", "clicekd at pos " + id);
+		Log.e("onItemClick drawer listener", "clicekd at pos " + id);
 		ListView drawerListView = mOsmerActivity.getDrawerListView();
 		String[] drawerItems = mOsmerActivity.getDrawerItems();
 		drawerListView.setItemChecked(position, true);
 		mOsmerActivity.setTitle(drawerItems[position]);
+		/* calls switchView on OsmerActivity with the position passed */
+		mOsmerActivity.getActionBarPersonalizer().drawerItemChanged(position);
+
 		DrawerLayout drawerLayout = (DrawerLayout) mOsmerActivity.findViewById(R.id.drawer_layout);
 		drawerLayout.closeDrawer(drawerListView);
 		/* calls switchView on OsmerActivity with the position passed */
 		mOsmerActivity.getActionBarPersonalizer().drawerItemChanged(position);
 	}
-	
+
 	private OsmerActivity mOsmerActivity;
 }

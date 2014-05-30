@@ -49,9 +49,6 @@ implements GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener, 
 FetchRequestsTaskListener, Runnable
 {
-	public static String REPORT_REQUEST_NOTIFICATION_TAG = "ReportRequestNotification";
-	public static String REPORT_RECEIVED_NOTIFICATION_TAG = "ReportReceivedNotification";
-
 	private Location mLocation;
 	private Handler mHandler;
 	private LocationClient mLocationClient;
@@ -144,7 +141,6 @@ FetchRequestsTaskListener, Runnable
 			// log("I: run: not yet time");
 			mHandler.postDelayed(this, mCheckIfNeedRunIntervalMillis);
 		}
-
 	}
 
 	/**
@@ -232,6 +228,7 @@ FetchRequestsTaskListener, Runnable
 	public void onServiceDataTaskComplete(boolean error, String dataAsString) 
 	{	
 		boolean notified = false;
+		short requestsCount = 0;
 		//	if(error)
 		Log.e("ReportDataService.onServiceDataTaskComplete", "data: " + dataAsString);
 
@@ -239,40 +236,29 @@ FetchRequestsTaskListener, Runnable
 		NotificationManager mNotificationManager =
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-		/* a request has been withdrawn, remove notification, if present */
-		if(dataAsString.isEmpty())
-		{
-			// log("task: removing notif (empty data)");
-			/* remove notification, if present */
-			NotificationData currentNotification = sharedData.getNotificationData(NotificationData.TYPE_REQUEST);
-			if(currentNotification != null) /* a notification is present */
-			{
-				// Log.e("ReportDataService.onServiceDataTaskComplete", " removing notification with id " + currentNotification.makeId());
-				mNotificationManager.cancel(REPORT_REQUEST_NOTIFICATION_TAG, currentNotification.makeId());
-
-				/* mark as consumed. The currentNotification is not removed from sharedData because sharedData
-				 * keeps it there in order not to bother us with possibly new notifications incoming in a near
-				 * future. currentNotification thus needs to be stored in order to be used by 
-				 * canBeConsideredNew() sharedData method.
-				 * On the other hand, the map view tests this variable in order to show or not a marker.
-				 */
-				currentNotification.setConsumed(true);
-			}
-		}
-
 		ArrayList<NotificationData> notifications = new NotificationDataFactory().parse(dataAsString);
 		for(NotificationData notificationData : notifications)
 		{
 			/* Rain alert notifications are marked valid only if they represent an alert 
 			 * (there's a chance it's going to rain).
 			 */
-			if(notificationData.isValid())
+			if(notificationData.isValid() && notificationData.isRainAlert() && 
+					!((RainNotification) notificationData).IsGoingToRain())
 			{
-				if(sharedData.canBeConsideredNew(notificationData, this))
+				Log.e("onServiceDataTaskComplete", "rain alert notification to be cancelled");
+				RainNotification rainNotif = (RainNotification) notificationData;
+				mNotificationManager.cancel(rainNotif.getTag(), rainNotif.makeId());
+				Log.e("onServiceDataTaskComplete", "RAIN notification setting notified " + notificationData.getTag() + ", " + notified);
+				sharedData.updateCurrentRequest(notificationData, notified);
+			}
+			else if(notificationData.isValid())
+			{
+				if(!sharedData.alreadyNotifiedEqual(notificationData) && 
+						!sharedData.arrivesTooEarly(notificationData, this))
 				{
-					// Log.e("onServiceDataTaskComplete", "notification can be considereth new " + notificationData.username);
+					Log.e("onServiceDataTaskComplete", "notification can be considereth new " + notificationData.username);
 					/* and notify */
-					String message;
+					String message = "";
 					int iconId, ledColor;
 					// Creates an explicit intent for an Activity in your app
 					Intent resultIntent = new Intent(this, OsmerActivity.class);
@@ -281,6 +267,7 @@ FetchRequestsTaskListener, Runnable
 
 					if(notificationData.isRequest())
 					{
+						requestsCount++;
 						resultIntent.putExtra("NotificationReportRequest", true);
 						ReportRequestNotification rrnd = (ReportRequestNotification) notificationData;
 						message = getResources().getString(R.string.notificatonNewReportRequest) 
@@ -294,22 +281,25 @@ FetchRequestsTaskListener, Runnable
 					else if(notificationData.isRainAlert())
 					{
 						RainNotification rainNotif = (RainNotification) notificationData;
-						float dbZ = rainNotif.getLastDbZ();
 						iconId = R.drawable.ic_launcher_statusbar_rain;
 						ledColor = Color.argb(255, 255, 0, 0); /* red notification */
-						resultIntent.putExtra("NotificationRainAlert", true);
-						
-						if(dbZ < 27)
+						if(rainNotif.IsGoingToRain())
 						{
-							message = getResources().getString(R.string.notificationRainAlert);
-						}
-						else if(dbZ < 42)
-						{
-							message = getResources().getString(R.string.notificationRainModerate);
-						}
-						else
-						{
-							message = getResources().getString(R.string.notificationRainIntense);
+							float dbZ = rainNotif.getLastDbZ();
+							resultIntent.putExtra("NotificationRainAlert", true);
+
+							if(dbZ < 27)
+							{
+								message = getResources().getString(R.string.notificationRainAlert);
+							}
+							else if(dbZ < 42)
+							{
+								message = getResources().getString(R.string.notificationRainModerate);
+							}
+							else
+							{
+								message = getResources().getString(R.string.notificationRainIntense);
+							}
 						}
 					}
 					else
@@ -322,7 +312,9 @@ FetchRequestsTaskListener, Runnable
 						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
 					}
 
-					int notificationFlags = Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS|
+					//					int notificationFlags = Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS|
+					//							Notification.FLAG_SHOW_LIGHTS;
+					int notificationFlags = Notification.DEFAULT_SOUND|
 							Notification.FLAG_SHOW_LIGHTS;
 					NotificationCompat.Builder notificationBuilder =
 							new NotificationCompat.Builder(this)
@@ -351,19 +343,21 @@ FetchRequestsTaskListener, Runnable
 					notification.ledARGB = ledColor;
 					notification.ledOnMS = 800;
 					notification.ledOffMS = 2200;
-					mNotificationManager.notify(ReportDataService.REPORT_REQUEST_NOTIFICATION_TAG, notificationData.makeId(),  notification);
+					mNotificationManager.notify(notificationData.getTag(), notificationData.makeId(),  notification);
 					notified = true;
+
 				}
 				else
 				{
 					//   Logger.log("RDS task ok. notif not new " + notificationData.username);
 					// log("task ok. notif not new " + notificationData.username);
-					// Log.e("onServiceDataTaskComplete", "notification IS NOT NEW " + notificationData.username);
+					Log.e("onServiceDataTaskComplete", "notification IS NOT NEW " + notificationData.getType());
 				}
 				/* update the shared data notification data with the most up to date 
 				 * values of latitude, longitude, username...
 				 * If notified is true, then save the timestamp of the notification
 				 */
+				Log.e("onServiceDataTaskComplete", "notification setting notified " + notificationData.getTag() + ", " + notified);
 				sharedData.updateCurrentRequest(notificationData, notified);
 			}
 			else
@@ -372,11 +366,27 @@ FetchRequestsTaskListener, Runnable
 				Toast.makeText(this, "Notification not valid! " + 
 						dataAsString, Toast.LENGTH_LONG).show();
 			}
-		}
-		//	if(notifications.size() == 0)
-		//		log("task: no notifications");
+		} /* for(NotificationData notificationData : notifications) */
+		
+		/* a request has been withdrawn, remove notification, if present */
+		if(requestsCount == 0)
+		{
+			/* remove notification, if present */
+			NotificationData currentNotification = sharedData.getNotificationData(NotificationData.TYPE_REQUEST);
+			if(currentNotification != null) /* a notification is present */
+			{
+				// Log.e("ReportDataService.onServiceDataTaskComplete", " removing notification with id " + currentNotification.makeId());
+				mNotificationManager.cancel(currentNotification.getTag(), currentNotification.makeId());
 
-		// Log.e(">>>> ReportDataService.onServiceDataTaskComplete", "data: " + dataAsString + " error " + error);
+				/* mark as consumed. The currentNotification is not removed from sharedData because sharedData
+				 * keeps it there in order not to bother us with possibly new notifications incoming in a near
+				 * future. currentNotification thus needs to be stored in order to be used by 
+				 * canBeConsideredNew() sharedData method.
+				 * On the other hand, the map view tests this variable in order to show or not a marker.
+				 */
+				currentNotification.setConsumed(true);
+			}
+		}
 	}
 
 	@Override

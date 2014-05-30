@@ -303,7 +303,7 @@ OnClickListener
 				 */
 				Context ctx = mMapFrag.getActivity().getApplicationContext();
 				ServiceSharedData ssd = ServiceSharedData.Instance(ctx);
-				if(ssd.canBeConsideredNew(repReqN, ctx))
+				if(!ssd.alreadyNotifiedEqual(repReqN))
 				{
 					/* true, sets the Notification request notified */
 					ssd.updateCurrentRequest(repReqN, true);

@@ -65,6 +65,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 		if(selectedDrawerItem < 0)
 			selectedDrawerItem = 0;
 		
+		Log.e("ActionBarManager.init", "selected Drawer Item " + selectedDrawerItem + " force " + forceDrawerItem);
 		/* avoid calling drawerItemChanged if selectedDrawerItem is 0 because
 		 * drawerItemChanged has already been called by OsmerActivity.init at 
 		 * this point.

@@ -33,6 +33,8 @@ public abstract class NotificationData
 		return getType() == NotificationData.TYPE_RAIN;
 	}
 	
+	public abstract String getTag();
+	
 	public abstract short getType();
 	
 	public abstract boolean isValid();
@@ -46,6 +48,7 @@ public abstract class NotificationData
 	{
 		latitude = longitude = -1;
 		mIsConsumed = false;
+		datetime = username = "";
 	}
 	
 	public void setConsumed(boolean consumed)

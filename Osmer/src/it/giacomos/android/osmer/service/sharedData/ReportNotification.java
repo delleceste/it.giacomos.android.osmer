@@ -4,6 +4,10 @@ public class ReportNotification extends NotificationData
 {
 	private boolean mIsValid;
 	
+	public String getTag()
+	{
+		return "ReportReceivedNotification";
+	}
 	
 	public ReportNotification(String input)
 	{

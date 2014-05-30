@@ -165,6 +165,11 @@ InAppEventListener/*  trial version */
 		/* (re)connect the location update client */
 		mLocationService.connect();
 		m_downloadManager.onResume(this);
+
+		/* remove notifications from the notification bar */
+		NotificationManager mNotificationManager =
+				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.cancelAll();
 	}
 
 	public void onPause()
@@ -203,6 +208,8 @@ InAppEventListener/*  trial version */
 			if(extras.getBoolean("NotificationReportRequest")
 					|| extras.getBoolean("NotificationReport"))
 				forceDrawerItem = mDrawerItems.length - 1;
+			else if(extras.getBoolean("NotificationRainAlert"))
+				forceDrawerItem = 1; /* radar */
 		}
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
 	}
@@ -217,7 +224,10 @@ InAppEventListener/*  trial version */
 		{
 			if(extras.getBoolean("NotificationReportRequest")
 					|| extras.getBoolean("NotificationReport"))
-				drawerItem = mDrawerItems.length - 1;
+				drawerItem = 5;
+			else if(extras.getBoolean("NotificationRainAlert"))
+				drawerItem = 1; /* radar */
+			
 			Log.e("OsmerActivity.onNewIntent", "switching to item " + drawerItem);
 			mActionBarManager.drawerItemChanged(drawerItem);
 		}
@@ -405,11 +415,6 @@ InAppEventListener/*  trial version */
 		/* show touch forecast icons hint until a MapWithForecastImage disables this */
 		if(mSettings.isForecastIconsHintEnabled())
 			Toast.makeText(getApplicationContext(), R.string.hint_forecast_icons, Toast.LENGTH_LONG).show();
-
-		/* remove notifications from the notification bar */
-		NotificationManager mNotificationManager =
-				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.cancelAll();
 
 		/* to show alerts inside onPostResume, after onActivityResult */
 		mMyPendingAlertDialog = null;
@@ -827,8 +832,7 @@ InAppEventListener/*  trial version */
 			startRadarAnimation();
 			break;
 		case R.id.syncServiceAction:
-			mStartNotificationService(menuItem.isChecked());
-			mSettings.setNotificationServiceEnabled(menuItem.isChecked());
+			
 			break;
 		case R.id.reportUpdateAction:
 			/* this forces an update, even if just updated */
@@ -933,8 +937,8 @@ InAppEventListener/*  trial version */
 		/* tutorial */
 		menu.findItem(R.id.reportHelpAction).setVisible(mCurrentViewType == ViewType.REPORT);
 		/* enable sync action */
-		menu.findItem(R.id.syncServiceAction).setVisible(mCurrentViewType == ViewType.REPORT);
-		menu.findItem(R.id.syncServiceAction).setChecked(mSettings.notificationServiceEnabled());
+		menu.findItem(R.id.syncServiceAction).setVisible(mCurrentViewType == ViewType.REPORT 
+				|| mCurrentViewType == ViewType.RADAR);
 
 		switch(mCurrentViewType)
 		{
@@ -1002,7 +1006,7 @@ InAppEventListener/*  trial version */
 		else if (id == ViewType.ACTION_CENTER_MAP) 
 		{
 			mapFragment.centerMap();
-		} 
+		}
 		else 
 		{
 			viewFlipper.setDisplayedChild(1);
@@ -1177,7 +1181,6 @@ InAppEventListener/*  trial version */
 		}
 	}
 
-
 	public void makePendingAlertErrorDialog(String error)
 	{
 		mMyPendingAlertDialog = new MyPendingAlertDialog(MyAlertDialogType.ERROR,  error);
@@ -1330,6 +1333,7 @@ InAppEventListener/*  trial version */
 
 	public static final int REPORT_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 100;
 	public static final int TUTORIAL_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 101;
+	public static final int SETTINGS_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 102;
 
 	private MyPendingAlertDialog mMyPendingAlertDialog;
 
