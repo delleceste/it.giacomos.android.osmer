@@ -810,9 +810,11 @@ mio android id è il seguente:\n\n
 	
 	<string name="pref_service_sleep_interval_summary">Il servizio controlla la presenza di notifiche ogni N minuti</string>
 	
-	<string name="pref_service_enabled_on">Il servizio è attivo</string>
+	<string name="pref_service_enabled_on">Il servizio è attivato e verrà eseguito quando la rete sarà disponibile</string>
 	
-	<string name="pref_service_enabled_off">Il servizio non è attivo</string>
+	<string name="pref_service_enabled_off">Il servizio è disattivato</string>
+	
+	<string name="pref_service_running">Il servizio è abilitato e attualmente in esecuzione</string>
 		
 	<string name="pref_sleep_interval_dialog">Intervallo aggiornamento notifiche</string>
 	
@@ -854,5 +856,9 @@ mio android id è il seguente:\n\n
 	<string name="notifications">Notifiche</string>
 	
 	<string name="notificationIntervalBetween0And180">L\'intervallo deve essere compreso tra 0 e 180</string>
+	
+	<string name="dialogNotificationServiceEnableMovedToSettings">
+		Le opzioni per il servizio notifiche sono ora disponibili dalla voce Impostazioni del menù
+			dell\'applicazione</string>
 	
 </resources>

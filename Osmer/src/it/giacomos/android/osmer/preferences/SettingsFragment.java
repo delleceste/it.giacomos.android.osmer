@@ -3,12 +3,14 @@ package it.giacomos.android.osmer.preferences;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.service.ServiceManager;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ public class SettingsFragment extends PreferenceFragment  implements OnPreferenc
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		this.getPreferenceManager().setSharedPreferencesName(Settings.PREFERENCES_NAME);
 		this.addPreferencesFromResource(R.xml.preferences);
 	}
 
@@ -28,13 +31,14 @@ public class SettingsFragment extends PreferenceFragment  implements OnPreferenc
 		super.onActivityCreated(savedInstanceState);
 		init(getActivity());
 	}
-
+	
 	/** Initialize summaries according to the stored values */
 	public void init(Activity a)
 	{
 		String svalue;
 		findPreference("NOTIFICATION_SERVICE_ENABLED").setOnPreferenceChangeListener(this);
 		findPreference("RAIN_NOTIFICATION_ENABLED").setOnPreferenceChangeListener(this);
+		
 
 		/* initialize edit text fields */
 		EditTextPreference tep = (EditTextPreference )findPreference("SERVICE_SLEEP_INTERVAL_MINS");
@@ -55,12 +59,13 @@ public class SettingsFragment extends PreferenceFragment  implements OnPreferenc
 	@Override
 	public boolean onPreferenceChange(Preference preference, Object newValue) 
 	{
+		boolean ret = true;
 		int interval = -1;
 		if(preference.getKey().equalsIgnoreCase("NOTIFICATION_SERVICE_ENABLED"))
 		{
 			boolean checked = newValue.equals(true);
 			Log.e("onPreferenceChange", "starting service: " + checked);
-			return mStartNotificationService(checked);
+			mStartNotificationService(checked);
 		}
 		else if(preference.getKey().equalsIgnoreCase("SERVICE_SLEEP_INTERVAL_MINS"))
 		{
@@ -75,20 +80,19 @@ public class SettingsFragment extends PreferenceFragment  implements OnPreferenc
 					preference.setSummary(s);
 					/* restart service, if running */
 					ServiceManager serviceManager = new ServiceManager();
-					Log.e("onPreferenceChange", " service running " + serviceManager.isServiceRunning(getActivity()));
 					if(serviceManager.isServiceRunning(getActivity()))
 					{
-						Log.e("onPreferenceChange", " service running " + serviceManager.isServiceRunning(getActivity()));
 						serviceManager.setEnabled(getActivity(), false);
-						return mStartNotificationService(true);
+						serviceManager.setEnabled(getActivity(), true);
 					}
 				}
+				else
+					ret = false;
 			}
 			catch(NumberFormatException e)
 			{
-				
+				ret = false;
 			}
-
 		}
 		else if(preference.getKey().equalsIgnoreCase("MIN_TIME_BETWEEN_NOTIFICATIONS_RainNotificationTag"))
 		{
@@ -101,21 +105,20 @@ public class SettingsFragment extends PreferenceFragment  implements OnPreferenc
 					String s = getResources().getString(R.string.pref_rain_alert_summary_checks_every);
 					s += " " + newValue.toString() + " " + getResources().getString(R.string.minutes);
 					preference.setSummary(s);
-					return true; /* ok */
 				}
+				else
+					ret = false;
 			}
 			catch(NumberFormatException e)
 			{
-				
+				ret = false;
 			}
 		}
-		else if(preference.getKey().equalsIgnoreCase("RAIN_NOTIFICATION_ENABLED"))
-			return true;
 		
-		if(interval > 0) /* the user has edited an interval */
+		if(interval > 0 && !ret) /* the user has edited an interval */
 			Toast.makeText(getActivity(), R.string.notificationIntervalBetween0And180, Toast.LENGTH_LONG).show();
 		
-		return false;
+		return ret;
 	}	
 
 	private boolean mStartNotificationService(boolean startService) 

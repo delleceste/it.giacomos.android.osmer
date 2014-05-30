@@ -832,7 +832,7 @@ InAppEventListener/*  trial version */
 			startRadarAnimation();
 			break;
 		case R.id.syncServiceAction:
-			
+			MyAlertDialogFragment.MakeGenericInfo(R.string.dialogNotificationServiceEnableMovedToSettings, this);
 			break;
 		case R.id.reportUpdateAction:
 			/* this forces an update, even if just updated */

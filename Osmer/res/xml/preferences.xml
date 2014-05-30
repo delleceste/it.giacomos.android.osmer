@@ -1,7 +1,8 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+     android:key="Osmer.conf" >
 <PreferenceCategory 
         android:title="@string/notifications"
-        android:key="pref_key_notification_category">
+        android:key="Osmer.conf">
     
     <CheckBoxPreference
         android:defaultValue="true"

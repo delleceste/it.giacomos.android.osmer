@@ -88,9 +88,9 @@ FetchRequestsTaskListener, Runnable
 		//   Logger.log("RDS.onStartCmd: intent " + intent + "isStarted" + mIsStarted);
 		if(!mIsStarted)
 		{
-			Log.e("ReportDataService.onStartCommand", "service started");
 			mSettings = new Settings(this);
 			mSleepInterval = mSettings.getServiceSleepIntervalMillis();
+			Log.e("ReportDataService.onStartCommand", "service started sleep interval " + mSleepInterval);
 			/* the last time the network was used is saved so that if the service is killed and
 			 * then restarted, we avoid too frequent and unnecessary downloads
 			 */
@@ -253,8 +253,9 @@ FetchRequestsTaskListener, Runnable
 			}
 			else if(notificationData.isValid())
 			{
-				if(!sharedData.alreadyNotifiedEqual(notificationData) && 
-						!sharedData.arrivesTooEarly(notificationData, this))
+				boolean alreadyNotifiedEqual = sharedData.alreadyNotifiedEqual(notificationData);
+				if(!alreadyNotifiedEqual && !sharedData.arrivesTooEarly(notificationData, this))
+				
 				{
 					Log.e("onServiceDataTaskComplete", "notification can be considereth new " + notificationData.username);
 					/* and notify */
@@ -345,7 +346,9 @@ FetchRequestsTaskListener, Runnable
 					notification.ledOffMS = 2200;
 					mNotificationManager.notify(notificationData.getTag(), notificationData.makeId(),  notification);
 					notified = true;
-
+					/* update notification data */
+					Log.e("onServiceDataTaskComplete", "notification setting notified " + notificationData.getTag() + ", " + notified);
+					sharedData.updateCurrentRequest(notificationData, notified);
 				}
 				else
 				{
@@ -353,12 +356,6 @@ FetchRequestsTaskListener, Runnable
 					// log("task ok. notif not new " + notificationData.username);
 					Log.e("onServiceDataTaskComplete", "notification IS NOT NEW " + notificationData.getType());
 				}
-				/* update the shared data notification data with the most up to date 
-				 * values of latitude, longitude, username...
-				 * If notified is true, then save the timestamp of the notification
-				 */
-				Log.e("onServiceDataTaskComplete", "notification setting notified " + notificationData.getTag() + ", " + notified);
-				sharedData.updateCurrentRequest(notificationData, notified);
 			}
 			else
 			{

@@ -737,9 +737,11 @@ Please note: requests devoid of the full name and date will be ignored.\n\n
 	
 	<string name="pref_service_sleep_interval_summary">The service wakes up every time this interval elapses</string>
 	
-	<string name="pref_service_enabled_on">The service is running</string>
+	<string name="pref_service_enabled_on">The service is enabled and will run when network is available</string>
 	
-	<string name="pref_service_enabled_off">The service is not running</string>
+	<string name="pref_service_enabled_off">The service is disabled</string>
+	
+	<string name="pref_service_running">The service is enabled and running</string>
 	
 	<string name="pref_"></string>
 	
@@ -778,5 +780,8 @@ Please note: requests devoid of the full name and date will be ignored.\n\n
 	<string name="notifications">Notifications</string>
 	
 	<string name="notificationIntervalBetween0And180">Interval must be an integer between 0 and 180</string>
+	
+	<string name="dialogNotificationServiceEnableMovedToSettings">
+		Notification service options moved to Menu->Settings</string>
     
 </resources>
