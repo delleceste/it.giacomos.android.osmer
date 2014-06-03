@@ -88,6 +88,10 @@ public class SkyDrawableIdPicker {
 				id = (R.drawable.weather_variable_showers_night);
 			else
 				id = (R.drawable.weather_variable_showers);
+		}
+		else if(sky.contains("neve") && sky.contains("piogg")) /* pioggia e neve */
+		{
+				id = (R.drawable.snow_rain);
 		}	
 		else if(sky.contains("piogg"))
 		{
@@ -96,10 +100,6 @@ public class SkyDrawableIdPicker {
 		else if(sky.contains("neve"))
 		{
 				id = (R.drawable.weather_snow);
-		}
-		else if(sky.contains("neve") && sky.contains("piogg"))
-		{
-				id = (R.drawable.snow_rain);
 		}
 		else if(sky.contains("temporal"))
 		{

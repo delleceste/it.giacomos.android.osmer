@@ -44,12 +44,12 @@ public class Urls {
 	
 	public String dailyTableUrl()
 	{
-		return "http://www.osmer.fvg.it/IT/SYN/TabellaStazioniDallaMezzanotte.php?save=1";
+		return "http://www.giacomos.it/meteo.fvg/daily_observations.txt";
 	}
 
 	public String latestTableUrl()
 	{
-		return "http://www.osmer.fvg.it/IT/SYN/TabellaStazioniUltimOra.php?save=1";
+		return "http://www.giacomos.it/meteo.fvg/latest_observations.txt";
 	}
 
 	public String latestTableReferer()
