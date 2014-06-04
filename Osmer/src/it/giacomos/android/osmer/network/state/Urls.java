@@ -11,7 +11,6 @@ public class Urls {
 		return "http://www.giacomos.it/meteo.fvg/data/situazione.html";
 	}
 	
-
 	public String todayUrl()
 	{
 		return "http://www.giacomos.it/meteo.fvg/data/today_full.html";
@@ -50,16 +49,6 @@ public class Urls {
 	public String latestTableUrl()
 	{
 		return "http://www.giacomos.it/meteo.fvg/latest_observations.txt";
-	}
-
-	public String latestTableReferer()
-	{
-		return "http://www.osmer.fvg.it/IT/SYN/TabellaStazioniUltimOra.php";
-	}
-
-	public String dailyTableReferer()
-	{
-		return "http://www.osmer.fvg.it/IT/SYN/TabellaStazioniDallaMezzanotte.php";
 	}
 
 	public String radarImageUrl() 

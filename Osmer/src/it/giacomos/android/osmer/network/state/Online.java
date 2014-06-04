@@ -276,26 +276,22 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	{
 		/* start text task ... */
 		String surl = null;
-		String referer = null;
 		ViewType viewType;
 
 		if(mapMode == MapMode.DAILY_OBSERVATIONS)
 		{
 			surl = m_urls.dailyTableUrl();
-			referer = m_urls.dailyTableReferer();
 			viewType = ViewType.DAILY_TABLE;
 		}
 		else
 		{
 			surl = m_urls.latestTableUrl();
-			referer = m_urls.latestTableReferer();
 			viewType = ViewType.LATEST_TABLE;
 		}
 
 		TextTask textTask = new TextTask(this, viewType);
 		try{
 			URL url = new URL(surl);
-			textTask.setReferer(referer);
 			textTask.parallelExecute(url);
 			mTotSteps++;
 			mMyTasks.add(textTask);
