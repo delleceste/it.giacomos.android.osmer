@@ -136,7 +136,7 @@ public class Settings
 	public void setUpgradeDialogEnabled(boolean en) 
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
-		e.putBoolean("UPGRADE_TO_PRO_DIALOG_ENABLED_1_2_5", en);
+		e.putBoolean("UPGRADE_TO_PRO_DIALOG_ENABLED_1_2_8", en);
 		e.commit();
 	}
 	
