@@ -11,7 +11,7 @@ import it.giacomos.android.osmer.fragments.ForecastFragment;
 import it.giacomos.android.osmer.fragments.SituationFragment;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 
 public class ActionBarManager implements ActionBarTabChangeListener 
 {
@@ -65,7 +65,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 		if(selectedDrawerItem < 0)
 			selectedDrawerItem = 0;
 		
-		Log.e("ActionBarManager.init", "selected Drawer Item " + selectedDrawerItem + " force " + forceDrawerItem);
+	//	Log.e("ActionBarManager.init", "selected Drawer Item " + selectedDrawerItem + " force " + forceDrawerItem);
 		/* avoid calling drawerItemChanged if selectedDrawerItem is 0 because
 		 * drawerItemChanged has already been called by OsmerActivity.init at 
 		 * this point.

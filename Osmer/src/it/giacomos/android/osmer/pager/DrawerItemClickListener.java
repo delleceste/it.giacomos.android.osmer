@@ -3,7 +3,7 @@ package it.giacomos.android.osmer.pager;
 
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.View;
@@ -21,13 +21,11 @@ public class DrawerItemClickListener implements ListView.OnItemClickListener
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
 	{
-		Log.e("onItemClick drawer listener", "clicekd at pos " + id);
+		// Log.e("onItemClick drawer listener", "clicekd at pos " + id);
 		ListView drawerListView = mOsmerActivity.getDrawerListView();
 		String[] drawerItems = mOsmerActivity.getDrawerItems();
 		drawerListView.setItemChecked(position, true);
 		mOsmerActivity.setTitle(drawerItems[position]);
-		/* calls switchView on OsmerActivity with the position passed */
-		mOsmerActivity.getActionBarPersonalizer().drawerItemChanged(position);
 
 		DrawerLayout drawerLayout = (DrawerLayout) mOsmerActivity.findViewById(R.id.drawer_layout);
 		drawerLayout.closeDrawer(drawerListView);
