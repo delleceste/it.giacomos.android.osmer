@@ -20,7 +20,7 @@ public class TextViewUpdater {
 			tv = (OTextView) a.findViewById(R.id.twoDaysTextView);
 		if(tv != null)
 		{
-			tv.setHtml(tv.formatText(text));
+			tv.setHtml((text));
 		}
 	}
 }

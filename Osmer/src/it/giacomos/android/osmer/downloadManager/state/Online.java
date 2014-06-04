@@ -226,26 +226,22 @@ public class Online extends State implements BitmapListener, TextListener {
 	{
 		/* start text task ... */
 		String surl = null;
-		String referer = null;
 		StringType stringType;
 		
 		if(oTime == ObservationTime.DAILY)
 		{
 			surl = m_urls.dailyTableUrl();
-			referer = m_urls.dailyTableReferer();
 			stringType = StringType.DAILY_TABLE;
 		}
 		else
 		{
 			surl = m_urls.latestTableUrl();
-			referer = m_urls.latestTableReferer();
 			stringType = StringType.LATEST_TABLE;
 		}
 		
 		TextTask textTask = new TextTask(this, stringType);
 		try{
 			URL url = new URL(surl);
-			textTask.setReferer(referer);
 			textTask.parallelExecute(url);
 		}
 		catch(MalformedURLException e)

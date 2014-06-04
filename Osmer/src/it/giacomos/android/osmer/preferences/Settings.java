@@ -129,7 +129,7 @@ public class Settings
 	
 	public boolean isUpgradeDialogEnabled() 
 	{
-		boolean res = mSharedPreferences.getBoolean("UPGRADE_TO_PRO_DIALOG_ENABLED_1_2_5", true);
+		boolean res = mSharedPreferences.getBoolean("UPGRADE_TO_PRO_DIALOG_ENABLED_1_2_8", true);
 		return res;
 	}
 	

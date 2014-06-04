@@ -8,23 +8,23 @@ public class Urls {
 	
 	public String situationUrl()
 	{
-		return "http://www.meteo.fvg.it/IT/HOME/SituazioneGenerale.txt";
+		return "http://www.giacomos.it/meteo.fvg/data/situazione.html";
 	}
 	
 
 	public String todayUrl()
 	{
-		return "http://www.meteo.fvg.it/IT/HOME/Oggi.info";
+		return "http://www.giacomos.it/meteo.fvg/data/oggi.html";
 	}
 
 	public String tomorrowUrl()
 	{
-		return "http://www.meteo.fvg.it/IT/HOME/Domani.info";
+		return "http://www.giacomos.it/meteo.fvg/data/domani.html";
 	}
 
 	public String twoDaysUrl()
 	{
-		return "http://www.meteo.fvg.it/IT/HOME/Dopodomani.info";
+		return "http://www.giacomos.it/meteo.fvg/data/dopodomani.html";
 	}
 
 	public String todayImageUrl()
@@ -39,22 +39,12 @@ public class Urls {
 
 	public String dailyTableUrl()
 	{
-		return "http://www.osmer.fvg.it/IT/SYN/TabellaStazioniDallaMezzanotte.php?save=1";
+		return "http://www.giacomos.it/meteo.fvg/daily_observations.txt";
 	}
 
 	public String latestTableUrl()
 	{
-		return "http://www.osmer.fvg.it/IT/SYN/TabellaStazioniUltimOra.php?save=1";
-	}
-
-	public String latestTableReferer()
-	{
-		return "http://www.osmer.fvg.it/IT/SYN/TabellaStazioniUltimOra.php";
-	}
-
-	public String dailyTableReferer()
-	{
-		return "http://www.osmer.fvg.it/IT/SYN/TabellaStazioniDallaMezzanotte.php";
+		return "http://www.giacomos.it/meteo.fvg/latest_observations.txt";
 	}
 
 	public String twoDaysImageUrl()

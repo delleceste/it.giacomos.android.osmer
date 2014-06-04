@@ -326,45 +326,28 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 	    per visualizzare ancora il messaggio di upgrade alla versione 2</string>
 	
 	<string name="upgrade"><![CDATA[
-	    <h3>Meteo.FVG diventa <cite>social</cite>!!</h3>
-	    
-	    <p>Dopo le importanti novit&agrave; dell\'<font color="green">animazione radar</font>, 
-	    della <font color="green">grafica rinnovata</font> e del notevole <font color="green">miglioramento</font>
-	    delle
-	    <font color="green">prestazioni</font> e del <font color="green">tempo di download dei dati</font>,
-	    ora &egrave; possibile usare Meteo.FVG Pro per <font color="green"><strong>segnalare il tempo nel punto in cui ti
-	    trovi e richiedere una segnalazione in un punto qualsiasi della regione!</strong></font>
-	    Prima di andare in gita o al mare, pubblica una richiesta sulla tua destinazione!
-	    Riceverai una <strong>notifica</strong> quando qualcuno ti avr&agrave; risposto!</p>
-	    
-	    <h3>Da oggi puoi provare Meteo.FVG Pro per 30 giorni!</h3>
-	    <h5>Scarica gratuitamente la 
-	    versione <strong><a href="https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.prova">Meteo.FVG PROva</a></strong> 
-	    dal Play Store di google e provala subito sul tuo dispositivo per 30 giorni!</h5>
-	    <p>In seguito potrai decidere se supportare il suo sviluppo acquistando la versione ufficiale
-	    <a href="https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro">Meteo.FVG Pro</a>.
+	    <h3>IMPORTANTE</h3>
+	    <p>
+	    Dal giorno 3 giugno 2014 il sito www.meteo.fvg.it &grave; stato rinnovato.
+	    Questo potrebbe causare disservizi per gli utenti di questa vecchia versione di Meteo.FVG.
+	    L\'annuncio &egrave; stato dato allo sviluppatore, persona completamente indipendente da meteo.fvg,
+	    il giorno 29 maggio 2014.
+	    Si consiglia agli utenti di Android 4 e superiori di migrare alla versione 2.6 di Meteo.FVG.
+	    Questa &egrave; in prova gratuita per 30 giorni. Tuttavia, viste le circostanze, agli utilizzatori 
+	    di questa versione potr&agrave; essere attivata gratuitamente. Il problema deve essere indicato
+	    nell\'email che viene inviata durante la procedura di Richiesta di Attivazione per Meteo.FVG 2.6.
+	    <br/><em>La Richiesta di Attivazione gratuita sar&agrave; possibile per gli utenti di questa versione 
+	    se effettuata entro il 15 giugno 2014 escluso.</em><br/>
+	    &Egrave; previsto un aggiornamento di questa versione, ma sar&agrave; successivo a quello programmato sulla 
+	    2.6. Potrebbe richiedere settimane.
 	    </p>
-	    
-	    <p><strong>Meteo.FVG Pro &egrave; <font color="green">studiata e ottimizzata per Android 4</font>!</strong>
+	    <p>
+	    In questi giorni l\'aggiornamento stesso del sito web ha difficolt&agrave;, per cui risulta 
+	    impossibile un tempestivo intervento.
 	    </p>
-	    
-	    <h3>Statistiche</h3>
-	    <p><ul>
-	    <li>- Meteo.FVG e Meteo.FVG Pro vengono sviluppati e mantenuti da due anni e mezzo;</li><br/>
-	    <li>- oltre 6.500 persone hanno <cite>attualmente</cite> installato Meteo.FVG.</li><br/>
-	    <li>- Tra queste, oltre 5.000 hanno una versione di Android compatibile con la 
-	    <a href="https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro">Meteo.FVG Pro;</a></li><br/>
-	    <li>- 200 persone hanno attualmente installato Meteo.FVG Pro.</li></ul></p>
-	    
-	    <h3>Nota</h3>
-	    <p>La funzionalit&agrave; "social" di richieste e segnalazioni &egrave; ancora in fase
-	    sperimentale: sono necessari numerosi utenti per perfezionarne il funzionamento!</p>
-	    	    
-	    <h3>Android.Meteo.FVG Google+ community</h3>
-	    <p>Iscriviti subito alla <em>community</em> <a href="https://plus.google.com/u/0/communities/104494499218507670829">Android.Meteo.FVG</a>
-	    per fare domande, ottenere risposte e suggerire miglioramenti per la app Meteo.FVG.<br/>
-	    Entra nel tuo profilo Google+, seleziona <cite>community</cite> dal menù sulla sinistra,
-	    cerca la community <em>Android.Meteo.FVG</em> e richiedi di diventare membro.
+	    <p>
+	    La versione aggiornata di Meteo.FVG presenta numerose funzioni innovative, come l\'animazione radar 
+	    e la sezione delle segnalazioni meteo.
 	    </p>
 	    
 	    
