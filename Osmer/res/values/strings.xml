@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Meteo.FVG Pro</string>
+    <string name="app_name">Meteo.FVG</string>
     <string name="app_broadcast_receiver">Meteo.FVG.BootReceiver</string>
     <string name="version">version</string>
     <string name="data_source">Data source: http://www.meteo.fvg.it</string>
@@ -726,7 +726,9 @@ My android id is as follows:\n\n
 Date: \n\n
 Please note: requests devoid of the full name and date will be ignored.\n\n
 	</string>
-					
+				
+	<string name="title_activity_settings">Settings</string>
+		
 	<string name="note_prova_users">NOTE: Meteo.FVG PROva users may have their trial period shorter or even expired</string>
 					
 	<string name="pref_enable_notification_service">Enable notification service</string>

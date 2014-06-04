@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.widgets.map.animation;
 
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.network.DownloadStatus;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
