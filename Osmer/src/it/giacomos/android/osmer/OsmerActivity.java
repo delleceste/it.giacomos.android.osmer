@@ -170,6 +170,12 @@ InAppEventListener/*  trial version */
 		NotificationManager mNotificationManager =
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancelAll();
+		
+		if(this.mSettings.importantDialogToShow())
+		{
+			MyAlertDialogFragment.MakeGenericInfo(R.string.important_dialog_message, this);
+			this.mSettings.setImportantDialogToShow(false);
+		}
 	}
 
 	public void onPause()

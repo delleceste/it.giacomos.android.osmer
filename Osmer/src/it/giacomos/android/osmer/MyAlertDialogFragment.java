@@ -76,6 +76,7 @@ public class MyAlertDialogFragment extends DialogFragment
 		builder.setPositiveButton(R.string.ok_button,
 				new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
+				
 
 			}
 		});

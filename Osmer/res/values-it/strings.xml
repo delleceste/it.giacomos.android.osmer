@@ -860,5 +860,10 @@ mio android id è il seguente:\n\n
 	<string name="dialogNotificationServiceEnableMovedToSettings">
 		Le opzioni per il servizio notifiche sono ora disponibili dalla voce Impostazioni del menù
 			dell\'applicazione</string>
-	
+			
+	<string name="important_dialog_message">Il sito web www.meteo.fvg.it è stato aggiornato. Questo potrebbe causare
+	   malfunzionamenti transitori all\'applicazione. Si raccomanda di controllare frequentemente gli 
+	   aggiornamenti di Meteo.FVG per Android disponibili sul Play Store.\nIn particolare, è noto che il radar è in avaria e si prevede un
+	   ripristino in settimana.</string>
+	    
 </resources>

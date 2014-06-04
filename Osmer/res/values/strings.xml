@@ -784,4 +784,7 @@ Please note: requests devoid of the full name and date will be ignored.\n\n
 	<string name="dialogNotificationServiceEnableMovedToSettings">
 		Notification service options moved to Menu->Settings</string>
     
+	<string name="important_dialog_message">meteo.fvg web site has been updated. The app may not work properly.
+	    The radar is out of order.</string>
+	
 </resources>

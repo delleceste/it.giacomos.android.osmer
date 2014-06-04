@@ -446,6 +446,16 @@ public class Settings
 	public boolean rainNotificationEnabled() {
 		return mSharedPreferences.getBoolean("RAIN_NOTIFICATION_ENABLED", true);
 	}
+
+	public boolean importantDialogToShow() {
+		return mSharedPreferences.getBoolean("IMPORTANT_DIALOG_TO_SHOW_2_6_7", true);
+	}
+
+	public void setImportantDialogToShow(boolean show) {
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putBoolean("IMPORTANT_DIALOG_TO_SHOW_2_6_7", show);
+		e.commit();
+	}
 	
 	
 	
