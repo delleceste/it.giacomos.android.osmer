@@ -108,17 +108,17 @@ public class Urls {
 	
 	public String webcamImagesPath()
 	{
-		return "http://www.osmer.fvg.it/COMMON/WEBCAM/Webcam";
+		return "http://www-old.osmer.fvg.it/COMMON/WEBCAM/Webcam";
 	}
 	
 	public String webcamMapData()
 	{
-		return "http://www.osmer.fvg.it/GOOGLE/DatiWebcams1.php";
+		return "http://www-old.osmer.fvg.it/GOOGLE/DatiWebcams1.php";
 	}
 	
 	public String webcamsListXML()
 	{
-		return "http://www.osmer.fvg.it/GOOGLE/WebcamsList.xml";
+		return "http://www-old.osmer.fvg.it/GOOGLE/WebcamsList.xml";
 	}
 
 	
