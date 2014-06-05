@@ -29,12 +29,12 @@ public class Urls {
 
 	public String todayImageUrl()
 	{
-		return "http://www.osmer.fvg.it/IT/HOME/IMAGES/Oggi.gif";
+		return "http://www-old.meteo.fvg.it/IT/HOME/IMAGES/Oggi.gif";
 	}
 
 	public String tomorrowImageUrl()
 	{
-		return "http://www.osmer.fvg.it/IT/HOME/IMAGES/Domani.gif";
+		return "http://www-old.meteo.fvg.it/IT/HOME/IMAGES/Domani.gif";
 	}
 
 	public String dailyTableUrl()
@@ -49,12 +49,12 @@ public class Urls {
 
 	public String twoDaysImageUrl()
 	{
-		return "http://www.osmer.fvg.it/IT/HOME/IMAGES/Dopodomani.gif";
+		return "http://www-old.meteo.fvg.it/IT/HOME/IMAGES/Dopodomani.gif";
 	}
 
 	public String radarImageUrl() 
 	{
-		return "http://www.meteo.fvg.it/COMMON/RAD/GOOGLE.gif";
+		return "http://www-old.meteo.fvg.it/COMMON/RAD/GOOGLE.gif";
 	}
 	
 	public String minTempUrl()
@@ -93,17 +93,17 @@ public class Urls {
 	
 	public String webcamImagesPath()
 	{
-		return "http://www.osmer.fvg.it/COMMON/WEBCAM/Webcam";
+		return "http://www-old.meteo.fvg.it/COMMON/WEBCAM/Webcam";
 	}
 	
 	public String webcamMapData()
 	{
-		return "http://www.osmer.fvg.it/GOOGLE/DatiWebcams1.php";
+		return "http://www-old.meteo.fvg.it/GOOGLE/DatiWebcams1.php";
 	}
 	
 	public String webcamsListXML()
 	{
-		return "http://www.osmer.fvg.it/GOOGLE/WebcamsList.xml";
+		return "http://www-old.meteo.fvg.it/GOOGLE/WebcamsList.xml";
 	}
 	
 	
