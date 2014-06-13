@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.widgets;
 
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.network.state.ViewType;
 import android.content.Context;
 import android.util.AttributeSet;

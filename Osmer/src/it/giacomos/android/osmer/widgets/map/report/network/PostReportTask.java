@@ -34,13 +34,13 @@ public class PostReportTask extends AsyncTask<String, Integer, String>
 	private int mSky, mWind;
 	private String mUser, mComment, mTemp, mLocality;
 	private String mErrorMsg;
-	private String mDeviceId;
+	private String mDeviceId, mRegistrationId;
 	private PostReportTaskListener mPostReportTaskListener;
 	private double mLat, mLong;
 	
 	private static String CLI = "afe0983der38819073rxc1900lksjd";
 	
-	public PostReportTask(String user, String deviceId, String locality, double lat, double lng, 
+	public PostReportTask(String user, String deviceId, String registrationId, String locality, double lat, double lng, 
 			int sky, int wind, String temp, String comment, PostReportTaskListener tl)
 	{
 		mSky = sky;
@@ -53,6 +53,7 @@ public class PostReportTask extends AsyncTask<String, Integer, String>
 		mLong = lng;
 		mLocality = locality;
 		mDeviceId = deviceId;
+		mRegistrationId = registrationId;
 
 		PostReportAsyncTaskPool.Instance().registerTask(this);
 	}
@@ -67,6 +68,7 @@ public class PostReportTask extends AsyncTask<String, Integer, String>
         postParameters.add(new BasicNameValuePair("cli", CLI));
         postParameters.add(new BasicNameValuePair("n", mUser));
         postParameters.add(new BasicNameValuePair("d", mDeviceId));
+        postParameters.add(new BasicNameValuePair("rid", mRegistrationId));
         postParameters.add(new BasicNameValuePair("s", String.valueOf(mSky)));
         postParameters.add(new BasicNameValuePair("w", String.valueOf(mWind)));
         postParameters.add(new BasicNameValuePair("t", mTemp));

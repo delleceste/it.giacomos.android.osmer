@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Meteo.FVG Pro</string>
+    <string name="app_name">Meteo.FVG</string>
     <string name="app_broadcast_receiver">Meteo.FVG.BootReceiver</string>
     <string name="version">versione</string>
     <string name="data_source">Fonte dati: http://www.meteo.fvg.it</string>
@@ -871,5 +871,7 @@ mio android id è il seguente:\n\n
 	   e i risultati di attendibilità del servizio.
 	   
 	   </string>
-	    
+	   	    
+	<string name="unregisteredApp">L\'applicazione non è ancora registrata al servizio Google Cloud Messaging.
+	    Per favore riavviala e aspetta un attimo. Poi prova di nuovo.</string> 
 </resources>

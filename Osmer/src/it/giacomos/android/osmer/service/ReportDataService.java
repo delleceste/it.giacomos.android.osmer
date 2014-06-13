@@ -1,7 +1,8 @@
 package it.giacomos.android.osmer.service;
 
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
 import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.service.sharedData.NotificationData;
@@ -52,7 +53,7 @@ FetchRequestsTaskListener, Runnable
 	private Location mLocation;
 	private Handler mHandler;
 	private LocationClient mLocationClient;
-	private FetchRequestsDataTask mServiceDataTask;
+	private UpdateMyLocationTask mUpdateMyLocationTask;
 	private long mSleepInterval;
 	private boolean mIsStarted;
 	private Settings mSettings;
@@ -66,7 +67,7 @@ FetchRequestsTaskListener, Runnable
 		mHandler = null;
 		mLocationClient = null;
 		mLocation = null;
-		mServiceDataTask = null;
+		mUpdateMyLocationTask = null;
 		mIsStarted = false;
 		mCheckIfNeedRunIntervalMillis = 20000;
 	}
@@ -185,18 +186,26 @@ FetchRequestsTaskListener, Runnable
 		if(netinfo != null && netinfo.isConnected())
 		{
 			/* if a task is still running, cancel it before starting a new one */
-			if(mServiceDataTask != null && mServiceDataTask.getStatus() != AsyncTask.Status.FINISHED)
-				mServiceDataTask.cancel(false);
+			if(mUpdateMyLocationTask != null && mUpdateMyLocationTask.getStatus() != AsyncTask.Status.FINISHED)
+				mUpdateMyLocationTask.cancel(false);
 			/* get the device id */
 			String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
-			/* start the service and execute it. When the thread finishes, onServiceDataTaskComplete()
-			 * will schedule the next task.
-			 */
-			mServiceDataTask = new FetchRequestsDataTask(this, deviceId, 
-					mLocation.getLatitude(), mLocation.getLongitude(),
-					mSettings.rainNotificationEnabled());
-			/* "http://www.giacomos.it/meteo.fvg/get_reports_and_requests_for_my_location.php" */
-			mServiceDataTask.execute(new Urls().getReportsRequestUpdatesAndRainProbabilityForMyLocationUrl());
+			/* get the registration id (for new versions, to work with google cloud messaging */
+			GcmRegistrationManager gcmRm = new GcmRegistrationManager();
+			String registrationId = gcmRm.getRegistrationId(this);
+			
+			if(!registrationId.isEmpty())
+			{
+				/* start the service and execute it. When the thread finishes, onServiceDataTaskComplete()
+				 * will schedule the next task.
+				 */
+				mUpdateMyLocationTask = new UpdateMyLocationTask(this, deviceId,
+						registrationId,
+						mLocation.getLatitude(), mLocation.getLongitude(),
+						mSettings.rainNotificationEnabled());
+				/* "http://www.giacomos.it/meteo.fvg/get_reports_and_requests_for_my_location.php" */
+				mUpdateMyLocationTask.execute(new Urls().getUpdateMyLocationUrl());
+			}
 		}
 	}
 
@@ -207,10 +216,10 @@ FetchRequestsTaskListener, Runnable
 		/* clean tasks, stop scheduled repetition of data task, disconnect from 
 		 * location service.
 		 */
-		if(mServiceDataTask != null)
+		if(mUpdateMyLocationTask != null)
 		{
-			mServiceDataTask.removeFetchRequestTaskListener();
-			mServiceDataTask.cancel(false);
+			mUpdateMyLocationTask.removeFetchRequestTaskListener();
+			mUpdateMyLocationTask.cancel(false);
 		}
 		if(mHandler != null)
 			mHandler.removeCallbacks(this);

@@ -8,7 +8,7 @@ import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.observations.ObservationsCache;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.purhcase.InAppUpgradeManager;
 import it.giacomos.android.osmer.purhcase.InAppUpgradeManagerListener;
 import it.giacomos.android.osmer.trial.BuyProActivity;

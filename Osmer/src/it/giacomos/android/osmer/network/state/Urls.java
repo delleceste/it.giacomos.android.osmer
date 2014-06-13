@@ -68,7 +68,7 @@ public class Urls {
 	
 	public String postReportUrl()
 	{
-		return "http://www.giacomos.it/meteo.fvg/put_report.php";
+		return "http://www.giacomos.it/meteo.fvg/push_report.php";
 	}
 	
 	/**
@@ -91,14 +91,9 @@ public class Urls {
 		return "http://www.giacomos.it/meteo.fvg/report_request.php";
 	}
 	
-	public String getReportsAndRequestUpdatesForMyLocationUrl()
+	public String getUpdateMyLocationUrl()
 	{
-		return "http://www.giacomos.it/meteo.fvg/get_reports_and_requests_for_my_location.php";
-	}
-	
-	public String getReportsRequestUpdatesAndRainProbabilityForMyLocationUrl()
-	{
-		return "http://www.giacomos.it/meteo.fvg/get_reports_requests_rain_probability_for_my_location.php";
+		return "http://www.giacomos.it/meteo.fvg/update_my_location.php";
 	}
 	
 	public String getRemovePostUrl() 

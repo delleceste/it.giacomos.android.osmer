@@ -12,7 +12,7 @@ import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.util.Log;
 import android.widget.Toast;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.network.NetworkStatusMonitor;
 import it.giacomos.android.osmer.network.NetworkStatusMonitorListener;
 import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
@@ -192,7 +192,7 @@ ReportUpdateTaskListener
 		{
 			/* call onReportUpdateDone on ReportOverlay */
 			mReportUpdaterListener.onReportUpdateDone(data);
-			Log.e("ReportUpdater.onPostExecute", "saving to cache");
+			Log.e("ReportUpdater.onPostExecute", "saving to cache: " + data);
 			/* save data into cache */
 			DataPoolCacheUtils dataPoolCUtils = new DataPoolCacheUtils();
 			dataPoolCUtils.saveToStorage(data.getBytes(), ViewType.REPORT, mContext);

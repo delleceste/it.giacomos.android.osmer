@@ -29,7 +29,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressUpdateListener;
 import it.giacomos.android.osmer.locationUtils.LocationInfo;
@@ -193,7 +193,11 @@ OnClickListener
 			dataInterfaceList = new DataInterface[0];
 			/* restore yet unpublished markers that the user was just placing into the map */
 			mRestoreYetUnpublishedMyRequestData(myRequestsYetUnpublishedBackup);
+			
+			Log.e("OnReportOverlayTaskFinished", "list size " + dataInterfaceList.length);
 		}
+		
+		
 
 		mCheckForFreshNotifications();
 	}

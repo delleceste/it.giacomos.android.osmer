@@ -4,8 +4,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.fragments.MapFragmentListener;
+import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
 import it.giacomos.android.osmer.interfaceHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.interfaceHelpers.NetworkGuiErrorManager;
 import it.giacomos.android.osmer.interfaceHelpers.RadarImageTimestampTextBuilder;
@@ -425,6 +426,18 @@ InAppEventListener/*  trial version */
 		/* to show alerts inside onPostResume, after onActivityResult */
 		mMyPendingAlertDialog = null;
 		mReportConditionsAccepted = mSettings.reportConditionsAccepted();
+		
+		/* check for app registration for Google Cloud Messaging (GCM) */
+		GcmRegistrationManager gcmrm = new GcmRegistrationManager();
+		String registrationId = gcmrm.getRegistrationId(this);
+		if(registrationId.isEmpty())
+		{
+			/* trigger a registration in background. If it fails, will try on next init(), 
+			 * that is on next onCreate()
+			 */
+			gcmrm.registerInBackground(this);
+		}
+		Log.e("OsmerActivity.init", "reg id " + registrationId);
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -1151,10 +1164,14 @@ InAppEventListener/*  trial version */
 
 				/* ok */
 				String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
-				new PostReport(data.getStringExtra("user"), deviceId, 
+				String registrationId = new GcmRegistrationManager().getRegistrationId(this);
+				if(!registrationId.isEmpty())
+					new PostReport(data.getStringExtra("user"), deviceId, registrationId,
 						locality, reportLocation.getLatitude(), reportLocation.getLongitude(), 
 						data.getIntExtra("sky", 0), data.getIntExtra("wind", 0), 
 						data.getStringExtra("temperature"), data.getStringExtra("comment"), this);
+				else
+					MyAlertDialogFragment.MakeGenericError(R.string.unregisteredApp, this);
 			}
 		}
 		else if(requestCode == TUTORIAL_ACTIVITY_FOR_RESULT_ID)

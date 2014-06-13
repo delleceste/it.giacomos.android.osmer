@@ -6,6 +6,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 
 public class Settings 
 {
@@ -456,8 +457,29 @@ public class Settings
 		e.putBoolean("IMPORTANT_DIALOG_TO_SHOW_2_6_7_alpha2", show);
 		e.commit();
 	}
+
+	public String getGcmRegistrationId() 
+	{
+		return mSharedPreferences.getString("GCM_REGISTRATION_ID", "");
+	}
 	
-	
+	public void saveRegistrationId(String regId, Context context)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putString("GCM_REGISTRATION_ID", regId);
+		try {
+			e.putInt("LAST_GCM_REGISTERED_APP_VERSION", 
+					context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode);
+		} catch (NameNotFoundException e1) {
+			
+		}
+		e.commit();
+	}
+
+	public int getLastGCMRegisteredAppVersionId() 
+	{
+		return mSharedPreferences.getInt("LAST_GCM_REGISTERED_APP_VERSION", Integer.MIN_VALUE);
+	}
 	
 	
 

@@ -20,21 +20,22 @@ import org.apache.http.util.EntityUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class FetchRequestsDataTask extends AsyncTask<String, Integer, String> {
+public class UpdateMyLocationTask extends AsyncTask<String, Integer, String> {
 
 	private String mErrorMsg;
 	private boolean mRainNotificationEnabled;
-	String mDeviceId;
+	String mDeviceId, mRegistrationId;
 	private FetchRequestsTaskListener mServiceDataTaskListener;
 	double mLatitude, mLongitude;
 
 	private static String CLI = "afe0983der38819073rxc1900lksjd";
 
-	public FetchRequestsDataTask(FetchRequestsTaskListener sdtl, String deviceId, 
-			double lat, double longit, boolean rainNotificationEnabled)
+	public UpdateMyLocationTask(FetchRequestsTaskListener sdtl, String deviceId, 
+			String registrationId, double lat, double longit, boolean rainNotificationEnabled)
 	{
 		mServiceDataTaskListener = sdtl;
 		mDeviceId = deviceId;
+		mRegistrationId = registrationId;
 		mLatitude = lat;
 		mLongitude = longit;
 		mRainNotificationEnabled = rainNotificationEnabled;
@@ -55,10 +56,12 @@ public class FetchRequestsDataTask extends AsyncTask<String, Integer, String> {
 		List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 		postParameters.add(new BasicNameValuePair("cli", CLI));
 		postParameters.add(new BasicNameValuePair("d", mDeviceId));
+		postParameters.add(new BasicNameValuePair("rid", mRegistrationId));
 		postParameters.add(new BasicNameValuePair("la", String.valueOf(mLatitude)));
 		postParameters.add(new BasicNameValuePair("lo", String.valueOf(mLongitude)));
 		postParameters.add(new BasicNameValuePair("rain_detect", String.valueOf(mRainNotificationEnabled)));
 		
+		Log.e("UpdateMyLocationTask", "rid " + mRegistrationId + ", d " + mDeviceId);
 		UrlEncodedFormEntity form;
 		try {
 			form = new UrlEncodedFormEntity(postParameters);
@@ -110,6 +113,6 @@ public class FetchRequestsDataTask extends AsyncTask<String, Integer, String> {
 	@Override
 	public void onCancelled(String data)
 	{
-//		Log.e("FetchRequestsDataTask.onCancelled", "task cancelled");
+//		Log.e("UpdateMyLocationTask.onCancelled", "task cancelled");
 	}
 }

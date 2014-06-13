@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Meteo.FVG Pro</string>
+    <string name="app_name">Meteo.FVG</string>
     <string name="app_broadcast_receiver">Meteo.FVG.BootReceiver</string>
     <string name="version">version</string>
     <string name="data_source">Data source: http://www.meteo.fvg.it</string>
@@ -788,5 +788,8 @@ Please note: requests devoid of the full name and date will be ignored.\n\n
     
 	<string name="important_dialog_message">meteo.fvg web site has been updated. The app may not work properly.
 	    The radar is out of order.</string>
+	    
+	<string name="unregisteredApp">The application is not registered with Google Cloud Message service.
+	    Please restart the application when you\'re online, wait a moment and try again.</string>
 	
 </resources>
