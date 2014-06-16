@@ -25,7 +25,7 @@ public class RainNotification extends NotificationData {
 		{
 			datetime = parts[1];
 			mIsValid = makeDate(datetime);
-			Log.e("RainNotification", "is valid " + mIsValid);
+			Log.e("RainNotification", "is valid " + mIsValid + " om " + text);
 			try
 			{
 				if(Integer.parseInt(parts[2]) > 0)

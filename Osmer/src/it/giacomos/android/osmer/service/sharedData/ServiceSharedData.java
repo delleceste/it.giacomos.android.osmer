@@ -89,7 +89,9 @@ public class ServiceSharedData
 		long minMillis = new Settings(ctx).minTimeBetweenNotificationsMinutes(notificationData.getTag()) * 60 * 1000;
 		long diffTimeMs =  Calendar.getInstance().getTime().getTime() - mSharedDataSaveRestore.getLastNotifiedTimeMillis(notificationData.getTag());
 		Log.e("ServiceSharedData.canBeConsideredNew", "difftime ms = " + diffTimeMs + " min millis " + minMillis);
-		if(diffTimeMs < minMillis)
+		short type = notificationData.getType();
+		boolean isDifferentType = !mNotificationDataHash.containsKey(type);
+		if(diffTimeMs < minMillis && !isDifferentType)
 		{
 //			Logger.log("SSD.canBeConsideredNew: no: diffTime " + diffTimeMs + " < " + minMillis);
 			Log.e("ServiceSharedData", "diffTimeMillis < minMillis TOO EARLY!!");

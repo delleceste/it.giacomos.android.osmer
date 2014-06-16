@@ -44,8 +44,6 @@ public class RequestData extends DataInterface
 		return (writable.compareTo("w") == 0);
 	}
 
-	
-
 	@Override
 	public int getType() {
 		return DataInterface.TYPE_REQUEST;

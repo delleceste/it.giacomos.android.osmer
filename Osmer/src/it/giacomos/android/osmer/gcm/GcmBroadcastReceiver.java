@@ -60,10 +60,9 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
             {
             	boolean notified = false;
         		short requestsCount = 0;
-        		Log.e("ReportDataService.onServiceDataTaskComplete", "extras: " + intent.getExtras().toString());
         		String dataAsString = intent.getExtras().getString("message");
         		//	if(error)
-        		Log.e("ReportDataService.onServiceDataTaskComplete", "data: \"" + dataAsString + "\"");
+        		Log.e("GcmBroadcastReceiver.onReceive", "data: \"" + dataAsString + "\"");
 
         		ServiceSharedData sharedData = ServiceSharedData.Instance(ctx);
         		NotificationManager mNotificationManager =
@@ -78,10 +77,10 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         			if(notificationData.isValid() && notificationData.isRainAlert() && 
         					!((RainNotification) notificationData).IsGoingToRain())
         			{
-        				Log.e("onServiceDataTaskComplete", "rain alert notification to be cancelled");
+        				Log.e("GcmBroadcastReceiver.onReceive", "rain alert notification to be cancelled");
         				RainNotification rainNotif = (RainNotification) notificationData;
         				mNotificationManager.cancel(rainNotif.getTag(), rainNotif.makeId());
-        				Log.e("onServiceDataTaskComplete", "RAIN notification setting notified " + notificationData.getTag() + ", " + notified);
+        				Log.e("GcmBroadcastReceiver.onReceive", "RAIN notification setting notified " + notificationData.getTag() + ", " + notified);
         				sharedData.updateCurrentRequest(notificationData, notified);
         			}
         			else if(notificationData.isValid())
@@ -90,7 +89,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         				if(!alreadyNotifiedEqual && !sharedData.arrivesTooEarly(notificationData, ctx))
         				
         				{
-        					Log.e("onServiceDataTaskComplete", "notification can be considereth new " + notificationData.username);
+        					Log.e("GcmBroadcastReceiver.onReceive", "notification can be considereth new " + notificationData.username);
         					/* and notify */
         					String message = "";
         					int iconId, ledColor;
@@ -180,14 +179,14 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         					mNotificationManager.notify(notificationData.getTag(), notificationData.makeId(),  notification);
         					notified = true;
         					/* update notification data */
-        					Log.e("onServiceDataTaskComplete", "notification setting notified " + notificationData.getTag() + ", " + notified);
+        					Log.e("GcmBroadcastReceiver.onReceive", "notification setting notified " + notificationData.getTag() + ", " + notified);
         					sharedData.updateCurrentRequest(notificationData, notified);
         				}
         				else
         				{
         					//   Logger.log("RDS task ok. notif not new " + notificationData.username);
         					// log("task ok. notif not new " + notificationData.username);
-        					Log.e("onServiceDataTaskComplete", "notification IS NOT NEW " + notificationData.getType());
+        					Log.e("GcmBroadcastReceiver.onReceive", "notification IS NOT NEW " + notificationData.getType());
         				}
         			}
         			else
