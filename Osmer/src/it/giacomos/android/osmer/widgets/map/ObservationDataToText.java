@@ -82,9 +82,16 @@ public class ObservationDataToText
 				{
 					String rain = od.rain;
 					rain = rain.replaceAll("[^\\d+\\.)]", "");
-					/* when observation type is rain, show rain even if rain is 0.0 */
-					if(Float.parseFloat(rain) > 0.0f || mObservationType == ObservationType.RAIN)
-						txt += mResources.getString(R.string.rain) + ": " + od.rain + "\n";
+					try
+					{
+						/* when observation type is rain, show rain even if rain is 0.0 */
+						if(Float.parseFloat(rain) > 0.0f || mObservationType == ObservationType.RAIN)
+							txt += mResources.getString(R.string.rain) + ": " + od.rain + "\n";
+					}
+					catch(NumberFormatException e)
+					{
+						
+					}
 				}
 			}
 			else if(mObservationType == ObservationType.HUMIDITY && od.has(ObservationType.HUMIDITY))
