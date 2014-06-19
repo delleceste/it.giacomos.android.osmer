@@ -11,7 +11,7 @@ import it.giacomos.android.osmer.fragments.ForecastFragment;
 import it.giacomos.android.osmer.fragments.SituationFragment;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 
 public class ActionBarManager implements ActionBarTabChangeListener 
 {
