@@ -30,10 +30,15 @@ public class FileHelper
 		return mErrorMessage;
 	}
 	
+	private String cleanFileName(String fileName)
+	{
+		return fileName.substring(fileName.lastIndexOf('/') + 1, fileName.length());
+	}
+	
 	public Bitmap decodeImage(String fileName, String externalStorageDirPath)
 	{
 		Bitmap bmp;
-		bmp = BitmapFactory.decodeFile(externalStorageDirPath + "/" + fileName);
+		bmp = BitmapFactory.decodeFile(externalStorageDirPath + "/" + cleanFileName(fileName));
 		return bmp;
 	}
 	
@@ -61,6 +66,7 @@ public class FileHelper
 
 	public boolean exists(String fileName, String externalStorageDirPath)
 	{
+		fileName = cleanFileName(fileName);
 		if(fileName == null || externalStorageDirPath == null)
 			return false;
 		
@@ -70,7 +76,8 @@ public class FileHelper
 	
 	public boolean storeRadarImage(String fileName, byte[] image, String externalStorageDirPath)
 	{
-		File file = new File(externalStorageDirPath, fileName);
+		fileName = cleanFileName(fileName);
+		File file = new File(externalStorageDirPath, cleanFileName(fileName));
 		try
 		{
 			FileOutputStream fos;
