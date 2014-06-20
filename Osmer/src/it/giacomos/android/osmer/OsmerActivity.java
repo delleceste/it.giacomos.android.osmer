@@ -4,8 +4,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.fragments.MapFragmentListener;
+import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
 import it.giacomos.android.osmer.interfaceHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.interfaceHelpers.NetworkGuiErrorManager;
 import it.giacomos.android.osmer.interfaceHelpers.RadarImageTimestampTextBuilder;
@@ -433,8 +434,10 @@ NewsUpdateListener
 		mReportConditionsAccepted = mSettings.reportConditionsAccepted();
 		
 		/* are there any news? This AsyncTask will call onNewsUpdateAvailable on success */
-		if(mSettings.timeToFetchNews())
-			new NewsFetchTask(mSettings.lastNewsReadTimestamp(), this).execute(new Urls().newsUrl());
+	//	if(mSettings.timeToFetchNews())
+	//		new NewsFetchTask(mSettings.lastNewsReadTimestamp(), this).execute(new Urls().newsUrl());
+		
+	//	onNewsUpdateAvailable(null);
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -1158,10 +1161,12 @@ NewsUpdateListener
 				Location reportLocation = new Location("");
 				reportLocation.setLatitude(data.getDoubleExtra("latitude", 0));
 				reportLocation.setLongitude(data.getDoubleExtra("longitude", 0));
-
+				GcmRegistrationManager gcmRM = new GcmRegistrationManager();
+				
 				/* ok */
 				String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
-				new PostReport(data.getStringExtra("user"), deviceId, 
+				String registrationId = gcmRM.getRegistrationId(getApplicationContext());
+				new PostReport(data.getStringExtra("user"), deviceId, registrationId,
 						locality, reportLocation.getLatitude(), reportLocation.getLongitude(), 
 						data.getIntExtra("sky", 0), data.getIntExtra("wind", 0), 
 						data.getStringExtra("temperature"), data.getStringExtra("comment"), this);
@@ -1284,12 +1289,15 @@ NewsUpdateListener
 	{
 		// TODO Auto-generated method stub
 		mSettings.setNewsFetchedNow();
-		LinearLayout newsNotifView = (LinearLayout) this.getLayoutInflater().inflate(R.layout.newspopup, null);
+		ViewGroup vf = (ViewGroup) findViewById(R.id.homeRelativeLayout);
+		View newsNotifView = (View) this.getLayoutInflater().inflate(R.layout.newspopup, null);
 		LinearLayout.LayoutParams lp = new  LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 
 				LayoutParams.WRAP_CONTENT);
 		lp.gravity = Gravity.BOTTOM;
 		newsNotifView.setLayoutParams(lp);
 		newsNotifView.setVisibility(View.VISIBLE);
+		Log.e("OsmerActivity.onNewsUpdateAvailable", "parent view " + vf);
+		vf.addView(newsNotifView, 0);
 	}
 	
 	@Override

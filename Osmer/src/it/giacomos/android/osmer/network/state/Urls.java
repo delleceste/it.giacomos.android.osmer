@@ -116,6 +116,10 @@ public class Urls {
 		return "http://www-old.osmer.fvg.it/GOOGLE/WebcamsList.xml";
 	}
 
+	public String newsUrl() {
+		return "http://www.giacomos.it/meteo.fvg/news/get_news.php";
+	}
+
 	
 
 	

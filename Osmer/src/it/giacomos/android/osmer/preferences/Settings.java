@@ -480,6 +480,34 @@ public class Settings
 	{
 		return mSharedPreferences.getInt("LAST_GCM_REGISTERED_APP_VERSION", Integer.MIN_VALUE);
 	}
+
+	public boolean timeToFetchNews() 
+	{
+		long lastFetched = mSharedPreferences.getLong("LAST_NEWS_FETCHED_TS", 0);
+		long now = System.currentTimeMillis();
+		
+		return (now - lastFetched) > 24 * 60 * 60 * 1000;
+	}
+
+	public long lastNewsReadTimestamp() {
+		
+		return mSharedPreferences.getLong("LAST_NEWS_READ_TS", 0L);
+	}
+
+	public void setNewsReadNow()
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putLong("LAST_NEWS_READ_TS", System.currentTimeMillis());
+		e.commit();
+	}
+	
+	public void setNewsFetchedNow() 
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putLong("LAST_NEWS_FETCHED_TS", System.currentTimeMillis());
+		e.commit();
+	}
+
 	
 	
 
