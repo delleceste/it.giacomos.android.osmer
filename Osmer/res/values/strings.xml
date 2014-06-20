@@ -791,5 +791,9 @@ Please note: requests devoid of the full name and date will be ignored.\n\n
 	    
 	<string name="unregisteredApp">The application is not registered with Google Cloud Message service.
 	    Please restart the application when you\'re online, wait a moment and try again.</string>
+	    
+	<string name="news_alert_title">News</string>
+	    
+	<string name="news_alert_summary">Here goes the summary</string>
 	
 </resources>

@@ -4,9 +4,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.fragments.MapFragmentListener;
-import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
 import it.giacomos.android.osmer.interfaceHelpers.MenuActionsManager;
 import it.giacomos.android.osmer.interfaceHelpers.NetworkGuiErrorManager;
 import it.giacomos.android.osmer.interfaceHelpers.RadarImageTimestampTextBuilder;
@@ -24,6 +23,9 @@ import it.giacomos.android.osmer.network.state.BitmapType;
 import it.giacomos.android.osmer.network.state.StateName;
 import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.network.state.ViewType;
+import it.giacomos.android.osmer.news.NewsData;
+import it.giacomos.android.osmer.news.NewsFetchTask;
+import it.giacomos.android.osmer.news.NewsUpdateListener;
 import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.NearestObservationData;
 import it.giacomos.android.osmer.observations.ObservationData;
@@ -77,6 +79,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -84,6 +87,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -116,7 +120,8 @@ DataPoolErrorListener,
 RadarAnimationListener,
 PostActionResultListener,
 ReportRequestListener, 
-InAppEventListener/*  trial version */
+InAppEventListener/*  trial version */,
+NewsUpdateListener
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
@@ -427,17 +432,9 @@ InAppEventListener/*  trial version */
 		mMyPendingAlertDialog = null;
 		mReportConditionsAccepted = mSettings.reportConditionsAccepted();
 		
-		/* check for app registration for Google Cloud Messaging (GCM) */
-		GcmRegistrationManager gcmrm = new GcmRegistrationManager();
-		String registrationId = gcmrm.getRegistrationId(this);
-		if(registrationId.isEmpty())
-		{
-			/* trigger a registration in background. If it fails, will try on next init(), 
-			 * that is on next onCreate()
-			 */
-			gcmrm.registerInBackground(this);
-		}
-		Log.e("OsmerActivity.init", "reg id " + registrationId);
+		/* are there any news? This AsyncTask will call onNewsUpdateAvailable on success */
+		if(mSettings.timeToFetchNews())
+			new NewsFetchTask(mSettings.lastNewsReadTimestamp(), this).execute(new Urls().newsUrl());
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -1164,14 +1161,10 @@ InAppEventListener/*  trial version */
 
 				/* ok */
 				String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
-				String registrationId = new GcmRegistrationManager().getRegistrationId(this);
-				if(!registrationId.isEmpty())
-					new PostReport(data.getStringExtra("user"), deviceId, registrationId,
+				new PostReport(data.getStringExtra("user"), deviceId, 
 						locality, reportLocation.getLatitude(), reportLocation.getLongitude(), 
 						data.getIntExtra("sky", 0), data.getIntExtra("wind", 0), 
 						data.getStringExtra("temperature"), data.getStringExtra("comment"), this);
-				else
-					MyAlertDialogFragment.MakeGenericError(R.string.unregisteredApp, this);
 			}
 		}
 		else if(requestCode == TUTORIAL_ACTIVITY_FOR_RESULT_ID)
@@ -1287,6 +1280,19 @@ InAppEventListener/*  trial version */
 	}
 
 	@Override
+	public void onNewsUpdateAvailable(NewsData newsData) 
+	{
+		// TODO Auto-generated method stub
+		mSettings.setNewsFetchedNow();
+		LinearLayout newsNotifView = (LinearLayout) this.getLayoutInflater().inflate(R.layout.newspopup, null);
+		LinearLayout.LayoutParams lp = new  LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 
+				LayoutParams.WRAP_CONTENT);
+		lp.gravity = Gravity.BOTTOM;
+		newsNotifView.setLayoutParams(lp);
+		newsNotifView.setVisibility(View.VISIBLE);
+	}
+	
+	@Override
 	public void onRadarAnimationStart() 
 	{
 
@@ -1362,4 +1368,5 @@ InAppEventListener/*  trial version */
 
 
 	int availCnt = 0;
+
 }
