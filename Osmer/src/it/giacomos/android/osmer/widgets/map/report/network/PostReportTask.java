@@ -91,7 +91,7 @@ public class PostReportTask extends AsyncTask<String, Integer, String>
 	        HttpEntity entity = response.getEntity();
 	        String returnVal = EntityUtils.toString(entity);
 	        if(returnVal.compareTo("0") != 0)
-	        	mErrorMsg = "Server error: the server returned " + returnVal;
+	        	mErrorMsg = "PostReport: server error: " + returnVal;
 		} 
 		catch (UnsupportedEncodingException e) 
 		{

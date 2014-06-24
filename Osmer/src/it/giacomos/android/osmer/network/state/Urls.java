@@ -117,10 +117,13 @@ public class Urls {
 	}
 
 	public String newsUrl() {
-		return "http://www.giacomos.it/meteo.fvg/news/get_news.php";
+		return "http://www.giacomos.it/meteo.fvg/get_news.php";
 	}
 
-	
+	public String meteoFvgBaseUrl()
+	{
+		return "http://www.giacomos.it/meteo.fvg/";
+	}
 
 	
 	

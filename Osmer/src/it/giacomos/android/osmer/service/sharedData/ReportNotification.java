@@ -2,6 +2,8 @@ package it.giacomos.android.osmer.service.sharedData;
 
 public class ReportNotification extends NotificationData
 {
+	public static int REPORT_NOTIFICATION_ID = 10987;
+	
 	private boolean mIsValid;
 	
 	public String getTag()

@@ -486,12 +486,12 @@ public class Settings
 		long lastFetched = mSharedPreferences.getLong("LAST_NEWS_FETCHED_TS", 0);
 		long now = System.currentTimeMillis();
 		
-		return (now - lastFetched) > 24 * 60 * 60 * 1000;
+		return (now - lastFetched) >  24 * 60 *  60 * 1000;
 	}
 
 	public long lastNewsReadTimestamp() {
 		
-		return mSharedPreferences.getLong("LAST_NEWS_READ_TS", 0L);
+		return mSharedPreferences.getLong("LAST_NEWS_READ_TS", 0L) / 1000;
 	}
 
 	public void setNewsReadNow()

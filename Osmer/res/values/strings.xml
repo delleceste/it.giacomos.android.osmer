@@ -794,6 +794,6 @@ Please note: requests devoid of the full name and date will be ignored.\n\n
 	    
 	<string name="news_alert_title">News</string>
 	    
-	<string name="news_alert_summary">Here goes the summary</string>
+	<string name="news_alert_text">There are news about Meteo.FVG. Touch to read</string>
 	
 </resources>

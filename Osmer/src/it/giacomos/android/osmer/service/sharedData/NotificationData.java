@@ -102,8 +102,8 @@ public abstract class NotificationData
 		Log.e("NotificationData.equals ", "result: " + String.valueOf(other.getType() == getType()) + ", " + 
 				String.valueOf( other.latitude == latitude) + ", " + 
 				String.valueOf(other.longitude == longitude)  +", " +  String.valueOf(other.date.equals(date)));
-		Log.e("NotificationData.equals ", "date 1 " + date.toLocaleString() + ", other date " + other.date.toLocaleString());
+		//Log.e("NotificationData.equals ", "date 1 " + date.toLocaleString() + ", other date " + other.date.toLocaleString());
 		return other.getType() == getType() && other.latitude == latitude &&
-				other.longitude == longitude && other.date.equals(date);
+				other.longitude == longitude && other.date != null && date != null && other.date.equals(date);
 	}
 }

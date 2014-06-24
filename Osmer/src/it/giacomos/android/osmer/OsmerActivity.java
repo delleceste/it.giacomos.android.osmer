@@ -39,6 +39,8 @@ import it.giacomos.android.osmer.pager.TabsAdapter;
 import it.giacomos.android.osmer.pager.ViewPagerPages;
 import it.giacomos.android.osmer.preferences.*;
 import it.giacomos.android.osmer.service.ServiceManager;
+import it.giacomos.android.osmer.service.sharedData.ReportNotification;
+import it.giacomos.android.osmer.service.sharedData.ReportRequestNotification;
 import it.giacomos.android.osmer.trial.BuyProActivity;
 import it.giacomos.android.osmer.trial.ExpirationChecker;
 import it.giacomos.android.osmer.trial.ExpirationCheckerListener;
@@ -63,7 +65,9 @@ import it.giacomos.android.osmer.widgets.map.report.tutorialActivity.TutorialPre
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.Context;
@@ -71,10 +75,14 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
@@ -176,7 +184,8 @@ NewsUpdateListener
 		/* remove notifications from the notification bar */
 		NotificationManager mNotificationManager =
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.cancelAll();
+		mNotificationManager.cancel(ReportRequestNotification.REQUEST_NOTIFICATION_ID);
+		mNotificationManager.cancel(ReportNotification.REPORT_NOTIFICATION_ID);
 		
 		if(this.mSettings.importantDialogToShow())
 		{
@@ -198,6 +207,9 @@ NewsUpdateListener
 		 */
 		m_downloadManager.onPause(this);
 		mLocationService.disconnect();
+		
+		if(mNewsFetchTask != null && mNewsFetchTask.getStatus() != AsyncTask.Status.FINISHED)
+			mNewsFetchTask.cancel(false);
 	}
 
 	/**
@@ -432,12 +444,6 @@ NewsUpdateListener
 		/* to show alerts inside onPostResume, after onActivityResult */
 		mMyPendingAlertDialog = null;
 		mReportConditionsAccepted = mSettings.reportConditionsAccepted();
-		
-		/* are there any news? This AsyncTask will call onNewsUpdateAvailable on success */
-	//	if(mSettings.timeToFetchNews())
-	//		new NewsFetchTask(mSettings.lastNewsReadTimestamp(), this).execute(new Urls().newsUrl());
-		
-	//	onNewsUpdateAvailable(null);
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -568,6 +574,14 @@ NewsUpdateListener
 			/* trigger an update of the locality if Location is available */
 			if(mLocationService.getCurrentLocation() != null)
 				mLocationService.updateGeocodeAddress();
+			
+			/* if necessary, fetch news */
+			/* are there any news? This AsyncTask will call onNewsUpdateAvailable on success */
+			if(mSettings.timeToFetchNews())
+			{
+				mNewsFetchTask = new NewsFetchTask(mSettings.lastNewsReadTimestamp(), this);
+				mNewsFetchTask.execute(new Urls().newsUrl());
+			}
 		}
 	}
 
@@ -1287,17 +1301,47 @@ NewsUpdateListener
 	@Override
 	public void onNewsUpdateAvailable(NewsData newsData) 
 	{
-		// TODO Auto-generated method stub
+		Log.e("OsmerActivity", "onNewsUpdateAvailable " + System.currentTimeMillis());
+		mSettings.setNewsReadNow();
 		mSettings.setNewsFetchedNow();
-		ViewGroup vf = (ViewGroup) findViewById(R.id.homeRelativeLayout);
-		View newsNotifView = (View) this.getLayoutInflater().inflate(R.layout.newspopup, null);
-		LinearLayout.LayoutParams lp = new  LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 
-				LayoutParams.WRAP_CONTENT);
-		lp.gravity = Gravity.BOTTOM;
-		newsNotifView.setLayoutParams(lp);
-		newsNotifView.setVisibility(View.VISIBLE);
-		Log.e("OsmerActivity.onNewsUpdateAvailable", "parent view " + vf);
-		vf.addView(newsNotifView, 0);
+		/* post a notification */
+		String url = newsData.getUrl();
+		int ledColor = Color.argb(255, 255, 0, 0); /* cyan notification */
+		String text = newsData.getText();
+		Intent newsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+		int iconId = R.drawable.ic_launcher_statusbar_message;
+		NotificationManager notificationManager =
+				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		int notificationFlags = Notification.FLAG_SHOW_LIGHTS | Notification.FLAG_AUTO_CANCEL;
+		NotificationCompat.Builder notificationBuilder =
+				new NotificationCompat.Builder(this)
+		.setSmallIcon(iconId)
+		.setAutoCancel(true)
+		.setContentTitle(getResources().getString(R.string.news_alert_title))
+		.setContentText(text).setDefaults(notificationFlags);
+
+		// The stack builder object will contain an artificial back stack for the
+		// started Activity.
+		// This ensures that navigating backward from the Activity leads out of
+		// your application to the Home screen.
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		// Adds the back stack for the Intent (but not the Intent itself)
+		stackBuilder.addParentStack(OsmerActivity.class);
+		// Adds the Intent that starts the Activity to the top of the stack
+		stackBuilder.addNextIntent(newsIntent);
+
+		PendingIntent resultPendingIntent =
+				stackBuilder.getPendingIntent( 0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+		notificationBuilder.setContentIntent(resultPendingIntent);
+		notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+		// mId allows you to update the notification later on.
+
+		Notification notification = notificationBuilder.build();
+		notification.ledARGB = ledColor;
+		notification.ledOnMS = 800;
+		notification.ledOffMS = 2200;
+		notificationManager.notify("NOTIFICATION_NEWS", 13799,  notification);
 	}
 	
 	@Override
@@ -1358,6 +1402,8 @@ NewsUpdateListener
 	private DataPool mDataPool;
 	private LocationService mLocationService;
 	private PopupMenu mMapOptionsMenu;
+	
+	private NewsFetchTask mNewsFetchTask;
 
 	private int mProgressBarStep, mProgressBarTotSteps;
 	private int mAdditionalProgressBarStep, mProgressBarAdditionalSteps;

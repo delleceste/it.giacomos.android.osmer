@@ -21,17 +21,17 @@ public class RainNotification extends NotificationData {
 		
 		String [] parts = text.split("::");
 		
-		if(parts.length > 3 && parts[0].compareTo("R") == 0)
+		if(parts.length > 5 && parts[0].compareTo("R") == 0)
 		{
 			datetime = parts[1];
 			mIsValid = makeDate(datetime);
 			Log.e("RainNotification", "is valid " + mIsValid + " om " + text);
 			try
 			{
-				if(Integer.parseInt(parts[2]) > 0)
-				{
+				latitude = Double.parseDouble(parts[2]);
+				longitude = Double.parseDouble(parts[3]);
+				if(Integer.parseInt(parts[4]) > 0)
 					mGoingToRain = true;
-				}
 			}
 			catch (NumberFormatException nfe)
 			{
@@ -39,7 +39,7 @@ public class RainNotification extends NotificationData {
 			}
 			try
 			{
-				mLastDbZ = Float.parseFloat(parts[3]);
+				mLastDbZ = Float.parseFloat(parts[5]);
 			}
 			catch (NumberFormatException nfe)
 			{
@@ -77,7 +77,7 @@ public class RainNotification extends NotificationData {
 		else
 			rain = 0;
 		
-		return "R::" + datetime + "::" + rain + "::" + mLastDbZ;
+		return "R::" + datetime + "::" + latitude + "::" + longitude + "::" + rain + "::" + mLastDbZ;
 	}
 	
 	public boolean equals(NotificationData other)

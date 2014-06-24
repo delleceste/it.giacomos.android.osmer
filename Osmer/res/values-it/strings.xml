@@ -874,4 +874,9 @@ mio android id è il seguente:\n\n
 	   	    
 	<string name="unregisteredApp">L\'applicazione non è ancora registrata al servizio Google Cloud Messaging.
 	    Per favore riavviala e aspetta un attimo. Poi prova di nuovo.</string> 
+	    
+	    
+	<string name="news_alert_title">Comunicazioni da Meteo.FVG</string>
+	    
+	<string name="news_alert_text">Ci sono comunicazioni da Meteo.FVG. Tocca per leggere.</string>
 </resources>

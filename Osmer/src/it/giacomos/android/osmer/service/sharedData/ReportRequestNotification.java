@@ -2,6 +2,8 @@ package it.giacomos.android.osmer.service.sharedData;
 
 public class ReportRequestNotification extends NotificationData
 {
+	public static int REQUEST_NOTIFICATION_ID = 10988;
+	
     public String locality;
 	public boolean isRequest;
 	private boolean mValidString;

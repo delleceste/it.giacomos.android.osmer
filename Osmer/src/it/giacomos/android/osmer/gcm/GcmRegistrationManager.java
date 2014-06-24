@@ -45,7 +45,8 @@ public class GcmRegistrationManager
 			e.printStackTrace();
 		}
 	    if (registeredVersion != currentVersion) {
-	    	Log.e("GcmRegistrationManager.getRegistrationId",  "App version changed.");
+	    	Log.e("GcmRegistrationManager.getRegistrationId",  "App version changed from " + registeredVersion + " to "
+	    			+ currentVersion);
 	        return "";
 	    }
 	    return registrationId;

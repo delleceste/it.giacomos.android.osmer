@@ -61,7 +61,7 @@ public class UpdateMyLocationTask extends AsyncTask<String, Integer, String> {
 		postParameters.add(new BasicNameValuePair("lo", String.valueOf(mLongitude)));
 		postParameters.add(new BasicNameValuePair("rain_detect", String.valueOf(mRainNotificationEnabled)));
 		
-		Log.e("UpdateMyLocationTask", "rid " + mRegistrationId + ", d " + mDeviceId);
+	//	Log.e("UpdateMyLocationTask", "rid " + mRegistrationId + ", d " + mDeviceId);
 		UrlEncodedFormEntity form;
 		try {
 			form = new UrlEncodedFormEntity(postParameters);

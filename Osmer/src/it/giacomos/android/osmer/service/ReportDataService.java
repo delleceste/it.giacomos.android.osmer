@@ -264,7 +264,6 @@ FetchRequestsTaskListener, Runnable
 			{
 				boolean alreadyNotifiedEqual = sharedData.alreadyNotifiedEqual(notificationData);
 				if(!alreadyNotifiedEqual && !sharedData.arrivesTooEarly(notificationData, this))
-				
 				{
 					Log.e("onServiceDataTaskComplete", "notification can be considereth new " + notificationData.username);
 					/* and notify */
@@ -296,6 +295,7 @@ FetchRequestsTaskListener, Runnable
 						if(rainNotif.IsGoingToRain())
 						{
 							float dbZ = rainNotif.getLastDbZ();
+							Log.e("ReportDataService", "setting extra NotificationRainAlert");
 							resultIntent.putExtra("NotificationRainAlert", true);
 
 							if(dbZ < 27)
@@ -314,7 +314,7 @@ FetchRequestsTaskListener, Runnable
 					}
 					else
 					{
-						resultIntent.putExtra("NotificationReport", true);
+						resultIntent.putExtra("NotificationReport", true); 
 						message = getResources().getString(R.string.notificationNewReportArrived) 
 								+ " "  + notificationData.username;
 						iconId = R.drawable.ic_launcher_statusbar_report;
@@ -329,6 +329,7 @@ FetchRequestsTaskListener, Runnable
 					NotificationCompat.Builder notificationBuilder =
 							new NotificationCompat.Builder(this)
 					.setSmallIcon(iconId)
+					.setAutoCancel(true)
 					.setContentTitle(getResources().getString(R.string.app_name))
 					.setContentText(message).setDefaults(notificationFlags);
 
