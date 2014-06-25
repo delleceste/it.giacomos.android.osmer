@@ -203,9 +203,13 @@ FetchRequestsTaskListener, Runnable
 						registrationId,
 						mLocation.getLatitude(), mLocation.getLongitude(),
 						mSettings.rainNotificationEnabled());
-				/* "http://www.giacomos.it/meteo.fvg/get_reports_and_requests_for_my_location.php" */
+				/* old: "http://www.giacomos.it/meteo.fvg/get_reports_and_requests_for_my_location.php" 
+				 * new: "http://www.giacomos.it/meteo.fvg/update_my_location.php"
+				 */
 				mUpdateMyLocationTask.execute(new Urls().getUpdateMyLocationUrl());
 			}
+			else
+				gcmRm.registerInBackground(getApplicationContext());
 		}
 	}
 

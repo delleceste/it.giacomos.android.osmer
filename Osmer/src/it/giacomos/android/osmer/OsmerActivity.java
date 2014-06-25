@@ -236,6 +236,7 @@ NewsUpdateListener
 			else if(extras.getBoolean("NotificationRainAlert"))
 				forceDrawerItem = 1; /* radar */
 		}
+		Log.e("onPostCreate", "force drawer item " + forceDrawerItem);
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
 	}
 

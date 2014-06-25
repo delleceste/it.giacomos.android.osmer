@@ -108,14 +108,14 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         						if(rrnd.locality.length() > 0)
         							message += " - " + rrnd.locality;
         						iconId = R.drawable.ic_launcher_statusbar_request;
-        						ledColor = Color.argb(255, 5, 220, 246); /* cyan notification */
+        						ledColor = Color.argb(255, 255, 255, 0); /* cyan notification */
         						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
         					}
         					else if(notificationData.isRainAlert())
         					{
         						RainNotification rainNotif = (RainNotification) notificationData;
         						iconId = R.drawable.ic_launcher_statusbar_rain;
-        						ledColor = Color.argb(255, 255, 0, 0); /* red notification */
+        						ledColor = Color.argb(255, 0, 0, 0); /* red notification */
         						if(rainNotif.IsGoingToRain())
         						{
         							float dbZ = rainNotif.getLastDbZ();
@@ -141,7 +141,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         						message = ctx.getResources().getString(R.string.notificationNewReportArrived) 
         								+ " "  + notificationData.username;
         						iconId = R.drawable.ic_launcher_statusbar_report;
-        						ledColor = Color.argb(255, 56, 220, 5);
+        						ledColor = Color.argb(0, 255, 0, 0);
         						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
         					}
 
@@ -152,6 +152,9 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         					NotificationCompat.Builder notificationBuilder =
         							new NotificationCompat.Builder(ctx)
         					.setSmallIcon(iconId)
+        					.setAutoCancel(true)
+        					.setTicker(message)
+        					.setLights(ledColor, 500, 500)
         					.setContentTitle(ctx.getResources().getString(R.string.app_name))
         					.setContentText(message).setDefaults(notificationFlags);
 
@@ -172,11 +175,15 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         					notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
         					// mId allows you to update the notification later on.
 
+        					int notifId = notificationData.makeId();
+        					String notifTag = notificationData.getTag();
         					Notification notification = notificationBuilder.build();
         					notification.ledARGB = ledColor;
         					notification.ledOnMS = 800;
         					notification.ledOffMS = 2200;
-        					mNotificationManager.notify(notificationData.getTag(), notificationData.makeId(),  notification);
+        					/* remove previous similar notifications if present */
+        					mNotificationManager.cancel(notifTag, notifId);
+        					mNotificationManager.notify(notifTag, notifId,  notification);
         					notified = true;
         					/* update notification data */
         					Log.e("GcmBroadcastReceiver.onReceive", "notification setting notified " + notificationData.getTag() + ", " + notified);

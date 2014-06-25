@@ -113,6 +113,7 @@ public class Urls {
 	
 	public String webcamsListXML()
 	{
+		/*  NEW: www.meteo.fvg.it/json/webcam_json.php?tipo=2 */
 		return "http://www-old.osmer.fvg.it/GOOGLE/WebcamsList.xml";
 	}
 
