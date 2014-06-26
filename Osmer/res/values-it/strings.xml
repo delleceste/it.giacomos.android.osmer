@@ -45,6 +45,10 @@
     <string name="webcam_list_error">Errore scaricamento lista webcam</string>
     <string name="webcam_updating">Scarico la lista delle webcam&#8230;</string>
     <string name="lcation_service_error">Errore nel sistema di localizzazione</string>
+    <string name="server_error">Errore del server</string>
+    <string name="xml_error">Errore nel documento XML</string>
+    <string name="location_disabled">Il servizio di geolocalizzazione non è attivo. L\'aggiornamento
+        delle segnalazioni non è possibile. Abilita la geolocalizzazione nelle impostazioni di sistema.</string>
     <string name="data_missing">Dati mancanti</string>
     <string name="min_temp">Temperatura Minima</string>
     <string name="max_temp">Temperatura Massima</string>
@@ -273,6 +277,7 @@
         \nAltrimenti tocca un altro punto della mappa per\nrimuovere il marker.</string>
         <string name="reportTouchBaloonToCancel">Tocca il fumetto per cancellare questa richiesta.</string>
     <string name="reportTouchBaloonToReport">Tocca il fumetto per rispondere a </string>
+    <string name="users_poked">utenti sono stati invitati a pubblicare una segnalazione nell\'area desiderata</string>
     <string name="reportRequestCorrectlySent">Richiesta di segnalazione inviata</string>
     <string name="reportRemoveConfirm">Sei sicuro di cancellare la richiesta?</string>
     <string name="thereAreNReports">Numero di segnalazioni: </string>
@@ -292,6 +297,7 @@
 	<string name="notificationServiceStopped">Servizio di notifica segnalazioni correttamente disattivato</string>
 	<string name="notificationServiceWillStartOnNetworkAvailable">La notifica delle segnalazioni verrà attivata quando la rete sarà disponibile</string>
     
+	
 	<!--  active user data -->
 	<string name="activeUser">Utente attivo</string>
 	<string name="activeUsers">utenti attivi</string>
@@ -879,4 +885,7 @@ mio android id è il seguente:\n\n
 	<string name="news_alert_title">Comunicazioni da Meteo.FVG</string>
 	    
 	<string name="news_alert_text">Ci sono comunicazioni da Meteo.FVG. Tocca per leggere.</string>
+	
+		<string name="gcm_registered_ok">Registrazione Google Cloud Messaging per il servizio notifiche correttamente effettuata.</string>
+	
 </resources>

@@ -445,6 +445,16 @@ NewsUpdateListener
 		/* to show alerts inside onPostResume, after onActivityResult */
 		mMyPendingAlertDialog = null;
 		mReportConditionsAccepted = mSettings.reportConditionsAccepted();
+		
+		/* if there is an application upgrade, the registration id must be regenerated.
+		 * The service may not be immediately restarted (the service also requests a new
+		 * registration id if necessary), and so it is better to generate a new one if 
+		 * the registrationId is empty.
+		 */
+		GcmRegistrationManager gcmRM = new GcmRegistrationManager();
+		String registrationId = gcmRM.getRegistrationId(getApplicationContext());
+		if(registrationId.isEmpty())
+			gcmRM.registerInBackground(this);
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -707,7 +717,15 @@ NewsUpdateListener
 	@Override
 	public void onPostActionResult(boolean error, String message, PostType postType) 
 	{
-		if(!error && (postType == PostType.REPORT || postType == PostType.REQUEST))
+		/* the message in the REQUEST contains the number of users to which the request has been
+		 * pushed by means of the Google Cloud Messaging. If > 0 (may be 0 if no users are currently
+		 * available in that area or if the present users have recently received a request or published
+		 * a report) show a message telling how many users have been pushed, else, if 0, simply tell that
+		 * the request was successful.
+		 */
+		if(!error && postType == PostType.REQUEST && Integer.parseInt(message) > 0)
+			Toast.makeText(this, message + " " + getString(R.string.users_poked), Toast.LENGTH_SHORT).show();
+		else if(!error && (postType == PostType.REQUEST || postType == PostType.REPORT) )
 			Toast.makeText(this, R.string.reportDataSentOk, Toast.LENGTH_SHORT).show();
 		else if(error)
 		{
@@ -1181,6 +1199,7 @@ NewsUpdateListener
 				/* ok */
 				String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
 				String registrationId = gcmRM.getRegistrationId(getApplicationContext());
+				Log.e("onActivityResult", " my reg id is " + registrationId);
 				new PostReport(data.getStringExtra("user"), deviceId, registrationId,
 						locality, reportLocation.getLatitude(), reportLocation.getLongitude(), 
 						data.getIntExtra("sky", 0), data.getIntExtra("wind", 0), 

@@ -43,8 +43,12 @@
     <string name="webcam_wait_for_image">please wait for image to load</string>
     <string name="webcam_updating">Downloading webcams list</string>
     <string name="webcam_list_error">Error downloading webcam list</string>
+    <string name="server_error">Server error</string>
+    <string name="xml_error">XML error</string>
     <string name="lcation_service_error">There was an error obtaining the location service</string>
     <string name="location_not_available">The current location is not available</string>
+    <string name="location_disabled">The location service is disabled. Enable it through the system settings.
+        The displayed information will not be updated.</string>
     <string name="data_missing">Data missing</string>
     <string name="min_temp">Minimum Temperature</string>
     <string name="max_temp">Maximum Temperature</string>
@@ -275,6 +279,7 @@
     <string name="notificationServiceWillStartOnNetworkAvailable">Notification service will be started upon network connection</string>
     <string name="include_locality">Include locality</string>
     <string name="locality_unavailable_dash">-</string>
+    <string name="users_poked">users asked for a notification</string>
 
     <!-- report tutorial activity and terms and conditions -->
     <string name="tutorial_publish_report">Publish report</string>
@@ -795,5 +800,8 @@ Please note: requests devoid of the full name and date will be ignored.\n\n
 	<string name="news_alert_title">News</string>
 	    
 	<string name="news_alert_text">There are news about Meteo.FVG. Touch to read</string>
+	
+	<string name="gcm_registered_ok">Correctly registered with Google Cloud Messaging for notification service</string>
+	
 	
 </resources>

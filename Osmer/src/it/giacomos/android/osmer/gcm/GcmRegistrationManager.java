@@ -9,6 +9,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.preferences.Settings;
 
 public class GcmRegistrationManager 
@@ -94,7 +95,7 @@ public class GcmRegistrationManager
 	        {
 	        	Settings s = new Settings(context);
 	    	    s.saveRegistrationId(regId, context);
-	    	    Toast.makeText(context, "Registered on GCM: id " + regId, Toast.LENGTH_LONG).show();
+	    	    Toast.makeText(context, context.getString(R.string.gcm_registered_ok), Toast.LENGTH_LONG).show();
 	        }
 
 			

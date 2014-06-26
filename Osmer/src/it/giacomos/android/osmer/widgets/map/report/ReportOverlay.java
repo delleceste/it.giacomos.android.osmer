@@ -28,6 +28,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+import it.giacomos.android.osmer.MyAlertDialogFragment;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressTask;
@@ -341,7 +342,8 @@ OnClickListener
 	@Override
 	public void onReportUpdateError(String error)
 	{
-		((OsmerActivity) mMapFrag.getActivity()).makePendingAlertErrorDialog(error);
+		MyAlertDialogFragment.MakeGenericError(error, mMapFrag.getActivity());
+		mRemoveMarkers();
 	}
 
 	/** This is invoked when the report data in textual form has completed downloading.

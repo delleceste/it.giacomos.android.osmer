@@ -46,7 +46,7 @@ public class RadarOverlay extends Overlay implements OOverlayInterface
 		mGroundOverlayCircle = null;
 		mGroundOverlayOptions = new GroundOverlayOptions();
 		mGroundOverlayOptions.positionFromBounds(GeoCoordinates.radarImageBounds);
-		mGroundOverlayOptions.transparency(0.65f);
+		mGroundOverlayOptions.transparency(0.58f);
 		
 		/* circle: delimits the radar area */
 		int color = Color.argb(120, 150, 160, 245);

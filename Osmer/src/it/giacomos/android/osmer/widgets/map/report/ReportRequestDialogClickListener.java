@@ -4,6 +4,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
 import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.widgets.map.report.network.PostReportRequestTask;
@@ -56,7 +57,9 @@ public class ReportRequestDialogClickListener implements OnClickListener {
 				Log.e("ReportRequestDialogClickListener.onClick", " locality " + locality);
 				PostReportRequestTask postReportRequestTask = new PostReportRequestTask(user, locality, llng.latitude, llng.longitude, oActivity);
 				String deviceId = Secure.getString(mReportRequestDialogFragment.getActivity().getContentResolver(), Secure.ANDROID_ID);
+				String registrationId = new GcmRegistrationManager().getRegistrationId(oActivity);
 				postReportRequestTask.setDeviceId(deviceId);
+				postReportRequestTask.setRegistrationId(registrationId);
 				postReportRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().getPostReportRequestUrl());
 			}
 			else

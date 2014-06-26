@@ -35,7 +35,7 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 	private String mErrorMsg;
 	private String mUser, mLocality;
 	double mLatitude, mLongitude;
-	private String mDeviceId;
+	private String mDeviceId, mRegistrationId;
 	
 	private static String CLI = "afe0983der38819073rxc1900lksjd";
 	
@@ -46,6 +46,7 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 		mLocality = locality;
 		mLatitude = latitude;
 		mLongitude = longitude;
+		mRegistrationId = "";
 		mReportPublishedListener = oActivity;
 		
 		PostReportAsyncTaskPool.Instance().registerTask(this);
@@ -56,21 +57,29 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 		mDeviceId = id;
 	}
 	
+	public void setRegistrationId(String regId)
+	{
+		mRegistrationId = regId;
+	}
+	
 	@Override
 	protected String doInBackground(String... urls) 
 	{
 		mErrorMsg = "";
 		if(mLocality.length() < 2)
 			mLocality="";
+		String returnVal = "0";
 		HttpClient httpClient = new DefaultHttpClient();
         HttpPost request = new HttpPost(urls[0]);
         List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
         postParameters.add(new BasicNameValuePair("cli", CLI));
         postParameters.add(new BasicNameValuePair("n", mUser));
         postParameters.add(new BasicNameValuePair("d", mDeviceId));
+        postParameters.add(new BasicNameValuePair("rid", mRegistrationId));
         postParameters.add(new BasicNameValuePair("l", mLocality));
         postParameters.add(new BasicNameValuePair("la", String.valueOf(mLatitude)));
         postParameters.add(new BasicNameValuePair("lo", String.valueOf(mLongitude)));
+        
         UrlEncodedFormEntity form;
 		try {
 			form = new UrlEncodedFormEntity(postParameters);
@@ -83,8 +92,8 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 	        	mErrorMsg = "Server error";
 	        /* check the echo result */
 	        HttpEntity entity = response.getEntity();
-	        String returnVal = EntityUtils.toString(entity);
-	        if(returnVal.compareTo("0") != 0)
+	        returnVal = EntityUtils.toString(entity);
+	        if(Integer.parseInt(returnVal) < 0)
 	        	mErrorMsg = "Server error: the server returned " + returnVal;
 		} 
 		catch (UnsupportedEncodingException e) 
@@ -98,7 +107,7 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 			mErrorMsg = e.getLocalizedMessage();
 			e.printStackTrace();
 		}
-		return null;
+		return returnVal;
 		
 	}
 
@@ -113,7 +122,7 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 	public void onPostExecute(String doc)
 	{
 		if(mErrorMsg.isEmpty())
-			mReportPublishedListener.onPostActionResult(false, "", PostType.REQUEST);
+			mReportPublishedListener.onPostActionResult(false, doc, PostType.REQUEST);
 		else
 			mReportPublishedListener.onPostActionResult(true, mErrorMsg, PostType.REQUEST);
 		

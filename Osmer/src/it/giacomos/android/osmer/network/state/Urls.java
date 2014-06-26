@@ -88,7 +88,7 @@ public class Urls {
 	
 	public String getPostReportRequestUrl() {
 		
-		return "http://www.giacomos.it/meteo.fvg/report_request.php";
+		return "http://www.giacomos.it/meteo.fvg/publish_request.php";
 	}
 	
 	public String getUpdateMyLocationUrl()

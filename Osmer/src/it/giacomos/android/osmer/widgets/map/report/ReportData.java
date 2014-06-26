@@ -180,7 +180,6 @@ public class ReportData extends DataInterface
 			if(bitmapDescriptor != null)
 			{
 				mMarkerOptions.icon(bitmapDescriptor);
-				Log.e("anchoring ", "anchoring");
 				mMarkerOptions.anchor(0.5f, 0.5f);
 			}
 		}

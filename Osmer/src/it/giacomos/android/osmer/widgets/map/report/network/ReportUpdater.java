@@ -58,19 +58,19 @@ ReportUpdateTaskListener
 		 * from location client. We can also cancel the report update task, since 
 		 * when the activity is resumed an update is performed.
 		 */
-		Log.e("ReportUpdater.onPause", "calling clear()");
+		// Log.e("ReportUpdater.onPause", "calling clear()");
 		clear();
 	}
-	
+
 	public void onResume()
 	{
-		Log.e("onResume", "registering network status monitor in onResume");
+		// Log.e("onResume", "registering network status monitor in onResume");
 		/* must (re)connect with the network status monitor in order to be notified when the network 
 		 * goes up or down
 		 */
 		mContext.registerReceiver(mNetworkStatusMonitor, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 	}
-	
+
 	public void clear()
 	{
 		Log.e("ReportUpdater.clear()", "unregistering network status monitor receiver and location client");
@@ -145,22 +145,27 @@ ReportUpdateTaskListener
 	 */
 	public void onConnected(Bundle arg0) 
 	{
-		/* if a task is already running or about to run, do not do anything, because an update is on
-		 * the way.
-		 */
-		if(mReportUpdateTask != null && (mReportUpdateTask.getStatus() == AsyncTask.Status.PENDING 
-				|| mReportUpdateTask.getStatus() == AsyncTask.Status.RUNNING))
-			return;
+		if(mLocationClient.getLastLocation() != null)
+		{
+			/* if a task is already running or about to run, do not do anything, because an update is on
+			 * the way.
+			 */
+			if(mReportUpdateTask != null && (mReportUpdateTask.getStatus() == AsyncTask.Status.PENDING 
+					|| mReportUpdateTask.getStatus() == AsyncTask.Status.RUNNING))
+				return;
 
-		String deviceId = Secure.getString(mContext.getContentResolver(), Secure.ANDROID_ID);
-		
-		if(mReportUpdateTask != null && mReportUpdateTask.getStatus() != AsyncTask.Status.FINISHED)
-			mReportUpdateTask.cancel(false);
-		
-		mReportUpdateTask = new ReportUpdateTask(this, mLocationClient.getLastLocation(), deviceId);
-		/* "http://www.giacomos.it/meteo.fvg/get_report_2_6_1.php" */
-		mReportUpdateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().getReportUrl());
+			String deviceId = Secure.getString(mContext.getContentResolver(), Secure.ANDROID_ID);
 
+			if(mReportUpdateTask != null && mReportUpdateTask.getStatus() != AsyncTask.Status.FINISHED)
+				mReportUpdateTask.cancel(false);
+
+			mReportUpdateTask = new ReportUpdateTask(this, mLocationClient.getLastLocation(), deviceId);
+			/* "http://www.giacomos.it/meteo.fvg/get_report_2_6_1.php" */
+			mReportUpdateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().getReportUrl());
+		}
+		else /* popup an error message */
+			mReportUpdaterListener.onReportUpdateError(mContext.getString(R.string.location_disabled));
+		
 		/* no more interested in location updates, the task has been starting with the last known
 		 * location.
 		 */
@@ -192,7 +197,7 @@ ReportUpdateTaskListener
 		{
 			/* call onReportUpdateDone on ReportOverlay */
 			mReportUpdaterListener.onReportUpdateDone(data);
-			Log.e("ReportUpdater.onPostExecute", "saving to cache: " + data);
+//			Log.e("ReportUpdater.onPostExecute", "saving to cache: " + data);
 			/* save data into cache */
 			DataPoolCacheUtils dataPoolCUtils = new DataPoolCacheUtils();
 			dataPoolCUtils.saveToStorage(data.getBytes(), ViewType.REPORT, mContext);
