@@ -99,7 +99,6 @@ public class ServiceSharedData
 		}
 		
 //		Log.e("ServiceSharedData", "diffTimeMillis > minimum --> NEW");
-		Logger.log("SSD.canBeConsideredNew: yes, new");
 		return false; /* elapsed time is greater than the minimum interval required between notifications */
 	}
 	
@@ -118,14 +117,10 @@ public class ServiceSharedData
 		/* if the notification is exactly the same, never trigger it again. */
 		if(inHashND.equals(notificationData))
 		{
-//			Logger.log("SSD.canBeConsideredNew: no: identical notifs");
 			Log.e("canBeConsideredNew", "SSD.canBeConsideredNew: no: identical notifications for type " + type);
 			return true; /* exactly the same */
 		}
-
 		return false; /* not equal, not already notified */
-
-		
 	}
 
 }

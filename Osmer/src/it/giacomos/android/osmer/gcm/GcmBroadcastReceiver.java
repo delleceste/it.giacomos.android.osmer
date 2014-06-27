@@ -107,7 +107,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         								+ " " + notificationData.username;
         						if(rrnd.locality.length() > 0)
         							message += " - " + rrnd.locality;
-        						iconId = R.drawable.ic_launcher_statusbar_request;
+        						iconId = R.drawable.ic_launcher_statusbar_request_new;
         						ledColor = Color.argb(255, 255, 255, 0); /* cyan notification */
         						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
         					}
@@ -140,7 +140,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         						resultIntent.putExtra("NotificationReport", true);
         						message = ctx.getResources().getString(R.string.notificationNewReportArrived) 
         								+ " "  + notificationData.username;
-        						iconId = R.drawable.ic_launcher_statusbar_report;
+        						iconId = R.drawable.ic_launcher_statusbar_report_new;
         						ledColor = Color.argb(0, 255, 0, 0);
         						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
         					}
@@ -154,7 +154,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         					.setSmallIcon(iconId)
         					.setAutoCancel(true)
         					.setTicker(message)
-        					.setLights(ledColor, 500, 500)
+        					.setLights(0x0000ff00, 500, 500)
         					.setContentTitle(ctx.getResources().getString(R.string.app_name))
         					.setContentText(message).setDefaults(notificationFlags);
 

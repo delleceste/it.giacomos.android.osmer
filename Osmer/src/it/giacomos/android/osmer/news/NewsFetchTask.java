@@ -56,6 +56,7 @@ public class NewsFetchTask extends AsyncTask<String, Integer, String>
         List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
         postParameters.add(new BasicNameValuePair("cli", CLI));
         postParameters.add(new BasicNameValuePair("last_read_on", String.valueOf(mLastNewsReadTimestamp)));
+        Log.e("NewsFetchTask", "timestamp last was " + mLastNewsReadTimestamp);
         UrlEncodedFormEntity form;
 		try {
 			form = new UrlEncodedFormEntity(postParameters);

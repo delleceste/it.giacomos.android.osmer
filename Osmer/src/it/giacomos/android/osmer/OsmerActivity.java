@@ -588,8 +588,9 @@ NewsUpdateListener
 			
 			/* if necessary, fetch news */
 			/* are there any news? This AsyncTask will call onNewsUpdateAvailable on success */
-			if(mSettings.timeToFetchNews())
+			//if(mSettings.timeToFetchNews())
 			{
+				Log.e("OsmerActivity", "fetching news...");
 				mNewsFetchTask = new NewsFetchTask(mSettings.lastNewsReadTimestamp(), this);
 				mNewsFetchTask.execute(new Urls().newsUrl());
 			}

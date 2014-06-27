@@ -37,20 +37,29 @@ public class GcmRegistrationManager
 	    // Check if app was updated; if so, it must clear the registration ID
 	    // since the existing regID is not guaranteed to work with the new
 	    // app version.
-	    int registeredVersion = s.getLastGCMRegisteredAppVersionId();
+	    
+	    if (versionChanged(context)) 
+	    	registrationId = "";
+	    
+	    return registrationId;
+	}
+	
+	public boolean versionChanged(Context context)
+	{
+		Settings s = new Settings(context);
+		int registeredVersion = s.getLastGCMRegisteredAppVersionId();
 	    int currentVersion = 0;
 		try {
 			currentVersion = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
 		} catch (NameNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	    if (registeredVersion != currentVersion) {
-	    	Log.e("GcmRegistrationManager.getRegistrationId",  "App version changed from " + registeredVersion + " to "
+	    	Log.e("GcmRegistrationManager.versionChanged",  "App version changed from " + registeredVersion + " to "
 	    			+ currentVersion);
-	        return "";
+	        return true;
 	    }
-	    return registrationId;
+	    return false;
 	}
 	
 	public void saveRegistrationId(Context context, String regId)
