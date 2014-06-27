@@ -186,12 +186,6 @@ NewsUpdateListener
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(ReportRequestNotification.REQUEST_NOTIFICATION_ID);
 		mNotificationManager.cancel(ReportNotification.REPORT_NOTIFICATION_ID);
-		
-		if(this.mSettings.importantDialogToShow())
-		{
-			MyAlertDialogFragment.MakeGenericInfo(R.string.important_dialog_message, this);
-			this.mSettings.setImportantDialogToShow(false);
-		}
 	}
 
 	public void onPause()
