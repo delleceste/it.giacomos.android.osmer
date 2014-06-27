@@ -264,7 +264,7 @@ FetchRequestsTaskListener, Runnable
 				Log.e("onServiceDataTaskComplete", "RAIN notification setting notified " + notificationData.getTag() + ", " + notified);
 				sharedData.updateCurrentRequest(notificationData, notified);
 			}
-			else if(notificationData.isValid())
+			else if(notificationData.isValid() && notificationData.isRainAlert())
 			{
 				boolean alreadyNotifiedEqual = sharedData.alreadyNotifiedEqual(notificationData);
 				if(!alreadyNotifiedEqual && !sharedData.arrivesTooEarly(notificationData, this))
@@ -278,24 +278,24 @@ FetchRequestsTaskListener, Runnable
 					resultIntent.putExtra("ptLatitude", notificationData.latitude);
 					resultIntent.putExtra("ptLongitude", notificationData.longitude);
 
-					if(notificationData.isRequest())
-					{
-						requestsCount++;
-						resultIntent.putExtra("NotificationReportRequest", true);
-						ReportRequestNotification rrnd = (ReportRequestNotification) notificationData;
-						message = getResources().getString(R.string.notificatonNewReportRequest) 
-								+ " " + notificationData.username;
-						if(rrnd.locality.length() > 0)
-							message += " - " + rrnd.locality;
-						iconId = R.drawable.ic_launcher_statusbar_request;
-						ledColor = Color.argb(255, 5, 220, 246); /* cyan notification */
-						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
-					}
-					else if(notificationData.isRainAlert())
+//					if(notificationData.isRequest())
+//					{
+//						requestsCount++;
+//						resultIntent.putExtra("NotificationReportRequest", true);
+//						ReportRequestNotification rrnd = (ReportRequestNotification) notificationData;
+//						message = getResources().getString(R.string.notificatonNewReportRequest) 
+//								+ " " + notificationData.username;
+//						if(rrnd.locality.length() > 0)
+//							message += " - " + rrnd.locality;
+//						iconId = R.drawable.ic_launcher_statusbar_request;
+//						ledColor = Color.argb(0, 0, 255, 0); /* cyan notification */
+//						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
+//					}
+//					else if(notificationData.isRainAlert())
 					{
 						RainNotification rainNotif = (RainNotification) notificationData;
 						iconId = R.drawable.ic_launcher_statusbar_rain;
-						ledColor = Color.argb(255, 255, 0, 0); /* red notification */
+						ledColor = Color.argb(255, 0, 0, 0); /* red notification */
 						if(rainNotif.IsGoingToRain())
 						{
 							float dbZ = rainNotif.getLastDbZ();
@@ -316,15 +316,15 @@ FetchRequestsTaskListener, Runnable
 							}
 						}
 					}
-					else
-					{
-						resultIntent.putExtra("NotificationReport", true); 
-						message = getResources().getString(R.string.notificationNewReportArrived) 
-								+ " "  + notificationData.username;
-						iconId = R.drawable.ic_launcher_statusbar_report;
-						ledColor = Color.argb(255, 56, 220, 5);
-						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
-					}
+//					else
+//					{
+//						resultIntent.putExtra("NotificationReport", true); 
+//						message = getResources().getString(R.string.notificationNewReportArrived) 
+//								+ " "  + notificationData.username;
+//						iconId = R.drawable.ic_launcher_statusbar_report;
+//						ledColor = Color.argb(0, 255, 0, 0);
+//						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
+//					}
 
 					//					int notificationFlags = Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS|
 					//							Notification.FLAG_SHOW_LIGHTS;
