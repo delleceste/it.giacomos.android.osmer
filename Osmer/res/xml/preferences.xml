@@ -14,7 +14,7 @@
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
     <EditTextPreference
         android:capitalize="words"
-        android:defaultValue="@string/pref_default_service_sleep_interval_mins"
+        android:defaultValue="5"
         android:inputType="number"
         android:key="SERVICE_SLEEP_INTERVAL_MINS"
         android:maxLines="1"
@@ -27,9 +27,19 @@
          dismiss it.
     -->
     <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
-    <CheckBoxPreference android:summaryOff="@string/pref_rain_alert_off" android:summaryOn="@string/pref_rain_alert_enable" android:title="@string/pref_rain_notification_enable" android:key="RAIN_NOTIFICATION_ENABLED" android:summary="@string/pref_rain_notification_enable_summary" android:dependency="NOTIFICATION_SERVICE_ENABLED" android:disableDependentsState="false" android:persistent="true"/><EditTextPreference
+    <CheckBoxPreference android:summaryOff="@string/pref_rain_alert_off" 
+        android:defaultValue="true"
+        android:summaryOn="@string/pref_rain_alert_enable" 
+        android:title="@string/pref_rain_notification_enable" 
+        android:key="RAIN_NOTIFICATION_ENABLED" 
+        android:summary="@string/pref_rain_notification_enable_summary" 
+        android:dependency="NOTIFICATION_SERVICE_ENABLED" 
+        android:disableDependentsState="false" 
+        android:persistent="true"/>
+    
+    <EditTextPreference
         android:capitalize="words"
-        android:defaultValue="@string/pref_default_rain_alerts_interval_mins"
+        android:defaultValue="30"
         android:inputType="number"
         android:key="MIN_TIME_BETWEEN_NOTIFICATIONS_RainNotificationTag"
         android:maxLines="1"

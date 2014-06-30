@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.util.Log;
 
 public class Settings 
 {
@@ -272,7 +273,7 @@ public class Settings
 		e.commit();
 	}
 	
-	public float getMapWithForecastImageTextFontSize() 
+	public float getMapWithForecastImageTextFontSize()
 	{
 		return mSharedPreferences.getFloat("MAP_WITH_FOREACAST_IMAGE_TEXT_FONT_SIZE", 100.0f);
 	}
@@ -292,15 +293,19 @@ public class Settings
 	
 	public long minTimeBetweenNotificationsMinutes(String tag)
 	{
-		long res = 5L;
+		long res;
+		if(tag.contains("RainNotificationTag"))
+			res = 30L;
+		else
+			res = 5L;
 		try /* if saved as long */
 		{ 
-			res = mSharedPreferences.getLong("MIN_TIME_BETWEEN_NOTIFICATIONS_" + tag, 5L);
+			res = mSharedPreferences.getLong("MIN_TIME_BETWEEN_NOTIFICATIONS_" + tag, res);
 		}
 		catch(ClassCastException e)
 		{
 			/* Preferences saves as string... because we edit with a text edit */
-			String s = mSharedPreferences.getString("MIN_TIME_BETWEEN_NOTIFICATIONS_" + tag, "5");
+			String s = mSharedPreferences.getString("MIN_TIME_BETWEEN_NOTIFICATIONS_" + tag, String.valueOf(res));
 			res = Long.parseLong(s);
 		}
 		return res;
@@ -416,25 +421,11 @@ public class Settings
 		e.commit();
 	}
 	
-		/** 
-	 * Trial version
-	 */
-	public int getTrialDaysLeft() 
-	{
-		int daysLeft =  mSharedPreferences.getInt("TRIAL_DAYS_LEFT", 30);
-		return daysLeft;
-	}
-	
 	public void setTrialDaysLeft(int daysLeft) 
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
 		e.putInt("TRIAL_DAYS_LEFT", daysLeft);
 		e.commit();
-	}
-
-	public boolean getApplicationPurchased() 
-	{
-		return mSharedPreferences.getBoolean("APPLICATION_PURCHASED", false);
 	}
 	
 	public void setApplicationPurchased(boolean purchaseth) 

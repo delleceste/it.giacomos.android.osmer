@@ -42,12 +42,9 @@ public class ConnectivityChangedReceiver extends BroadcastReceiver
 		
 		Settings s = new Settings(context);
 		boolean notificationServiceEnabled = s.notificationServiceEnabled();
-		/* trial version */
-		boolean trialPeriodNotExpired = (s.getTrialDaysLeft() > 0);
-		boolean applicationPurchasedCached = s.getApplicationPurchased();
-		if(notificationServiceEnabled && (trialPeriodNotExpired || applicationPurchasedCached))
+		if(notificationServiceEnabled)
 			new ServiceManager().setEnabled(context, true);
 		else
-			Log.e("ConnectivityChangedReceiver.onReceive", "not starting service. Expired trial period or not purchased");
+			Log.e("ConnectivityChangedReceiver.onReceive", "not starting service. (disabled)");
 	}
 }

@@ -49,7 +49,7 @@ public class SettingsFragment extends PreferenceFragment  implements OnPreferenc
 		tep.setOnPreferenceChangeListener(this);
 
 		tep = (EditTextPreference) findPreference("MIN_TIME_BETWEEN_NOTIFICATIONS_RainNotificationTag");
-		svalue = tep.getSharedPreferences().getString("MIN_TIME_BETWEEN_NOTIFICATIONS_RainNotificationTag", "5");
+		svalue = tep.getSharedPreferences().getString("MIN_TIME_BETWEEN_NOTIFICATIONS_RainNotificationTag", "30");
 		s = getResources().getString(R.string.pref_service_sleep_interval_summary_checks_every);
 		s += " " + svalue + " " + getResources().getString(R.string.minutes);
 		tep.setSummary(s);
@@ -59,6 +59,7 @@ public class SettingsFragment extends PreferenceFragment  implements OnPreferenc
 	@Override
 	public boolean onPreferenceChange(Preference preference, Object newValue) 
 	{
+		Log.e("onPreferenceChange", "key " + preference.getKey());
 		boolean ret = true;
 		int interval = -1;
 		if(preference.getKey().equalsIgnoreCase("NOTIFICATION_SERVICE_ENABLED"))
@@ -96,7 +97,7 @@ public class SettingsFragment extends PreferenceFragment  implements OnPreferenc
 		}
 		else if(preference.getKey().equalsIgnoreCase("MIN_TIME_BETWEEN_NOTIFICATIONS_RainNotificationTag"))
 		{
-			interval = 5;
+			interval = 30;
 			try
 			{
 				interval = Integer.parseInt(newValue.toString());
