@@ -30,7 +30,7 @@ import android.widget.Button;
 import android.widget.Toast;
 import it.giacomos.android.osmer.MyAlertDialogFragment;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressUpdateListener;
 import it.giacomos.android.osmer.locationUtils.LocationInfo;

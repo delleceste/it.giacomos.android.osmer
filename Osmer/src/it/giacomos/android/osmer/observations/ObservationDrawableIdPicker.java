@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.observations;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 
 public class ObservationDrawableIdPicker {
 	

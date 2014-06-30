@@ -3,7 +3,7 @@ package it.giacomos.android.osmer;
 import android.util.Log;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.pager.FlipperChildren;

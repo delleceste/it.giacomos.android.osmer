@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="it.giacomos.android.osmer"
+    package="it.giacomos.android.osmer.pro"
     android:installLocation="auto"
     android:versionCode="742"
     android:versionName="2.8.0" >
@@ -35,7 +35,7 @@
     <!--  <uses-permission android:name="com.android.vending.BILLING" /> -->
 
     <!--  CHANGE THIS ONE WHEN SWITCHING TO PRO!! -->
-    <uses-permission android:name="it.giacomos.android.osmer.permission.C2D_MESSAGE" />
+    <uses-permission android:name="it.giacomos.android.osmer.pro.permission.C2D_MESSAGE" />
     
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -91,19 +91,18 @@
         -->
 
 
-     <!-- <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCO_r5ZYrWaqA5ExtIxAVHwRn6KiGAJ_Ps"/>
+      <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCO_r5ZYrWaqA5ExtIxAVHwRn6KiGAJ_Ps"/>
 
--->
 
         <!--
               Meteo.FVG package (old and alpha/beta versions) 
 			it.giacomos.android.osmer package name
-        -->
+        
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBhRcwqzgppnwzQApAHcV7-Rer1JhXiDQs" />
-	
+	-->
  
         <receiver
             android:name="it.giacomos.android.osmer.service.ConnectivityChangedReceiver"
@@ -174,14 +173,14 @@
         
         
         <receiver
-            android:name=".gcm.GcmBroadcastReceiver"
+            android:name="it.giacomos.android.osmer.gcm.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <category android:name="com.example.gcm" />
             </intent-filter>
         </receiver>
-        <service android:name=".GcmIntentService" />
+        <service android:name="it.giacomos.android.osmer.GcmIntentService" />
         
         
     </application>
