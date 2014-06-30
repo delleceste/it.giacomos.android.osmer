@@ -59,7 +59,6 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
             else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) 
             {
             	boolean notified = false;
-        		short requestsCount = 0;
         		String dataAsString = intent.getExtras().getString("message");
         		//	if(error)
         		Log.e("GcmBroadcastReceiver.onReceive", "data: \"" + dataAsString + "\"");
@@ -79,7 +78,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         			{
         				Log.e("GcmBroadcastReceiver.onReceive", "rain alert notification to be cancelled");
         				RainNotification rainNotif = (RainNotification) notificationData;
-        				mNotificationManager.cancel(rainNotif.getTag(), rainNotif.makeId());
+        				mNotificationManager.cancel(rainNotif.getTag(), rainNotif.getId());
         				Log.e("GcmBroadcastReceiver.onReceive", "RAIN notification setting notified " + notificationData.getTag() + ", " + notified);
         				sharedData.updateCurrentRequest(notificationData, notified);
         			}
@@ -100,7 +99,6 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
 
         					if(notificationData.isRequest())
         					{
-        						requestsCount++;
         						resultIntent.putExtra("NotificationReportRequest", true);
         						ReportRequestNotification rrnd = (ReportRequestNotification) notificationData;
         						message = ctx.getResources().getString(R.string.notificatonNewReportRequest) 
@@ -108,14 +106,14 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         						if(rrnd.locality.length() > 0)
         							message += " - " + rrnd.locality;
         						iconId = R.drawable.ic_launcher_statusbar_request_new;
-        						ledColor = Color.argb(255, 255, 255, 0); /* cyan notification */
+        						ledColor = Color.BLUE; /* blue notification */
         						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
         					}
         					else if(notificationData.isRainAlert())
         					{
         						RainNotification rainNotif = (RainNotification) notificationData;
         						iconId = R.drawable.ic_launcher_statusbar_rain;
-        						ledColor = Color.argb(255, 0, 0, 0); /* red notification */
+        						ledColor = Color.RED; /* red notification */
         						if(rainNotif.IsGoingToRain())
         						{
         							float dbZ = rainNotif.getLastDbZ();
@@ -141,20 +139,19 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         						message = ctx.getResources().getString(R.string.notificationNewReportArrived) 
         								+ " "  + notificationData.username;
         						iconId = R.drawable.ic_launcher_statusbar_report_new;
-        						ledColor = Color.argb(0, 255, 0, 0);
+        						ledColor = Color.GREEN;
         						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
         					}
 
         					//					int notificationFlags = Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS|
         					//							Notification.FLAG_SHOW_LIGHTS;
-        					int notificationFlags = Notification.DEFAULT_SOUND|
-        							Notification.FLAG_SHOW_LIGHTS;
+        					int notificationFlags = Notification.DEFAULT_SOUND| Notification.FLAG_SHOW_LIGHTS;
         					NotificationCompat.Builder notificationBuilder =
         							new NotificationCompat.Builder(ctx)
         					.setSmallIcon(iconId)
         					.setAutoCancel(true)
         					.setTicker(message)
-        					.setLights(0x0000ff00, 500, 500)
+        					.setLights(ledColor, 1000, 1000)
         					.setContentTitle(ctx.getResources().getString(R.string.app_name))
         					.setContentText(message).setDefaults(notificationFlags);
 
@@ -175,14 +172,10 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         					notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
         					// mId allows you to update the notification later on.
 
-        					int notifId = notificationData.makeId();
+        					int notifId = notificationData.getId();
         					String notifTag = notificationData.getTag();
         					Notification notification = notificationBuilder.build();
-        					notification.ledARGB = ledColor;
-        					notification.ledOnMS = 800;
-        					notification.ledOffMS = 2200;
         					/* remove previous similar notifications if present */
-        					mNotificationManager.cancel(notifTag, notifId);
         					mNotificationManager.notify(notifTag, notifId,  notification);
         					notified = true;
         					/* update notification data */
@@ -203,26 +196,6 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         						dataAsString, Toast.LENGTH_LONG).show();
         			}
         		} /* for(NotificationData notificationData : notifications) */
-        		
-        		/* a request has been withdrawn, remove notification, if present */
-        		if(requestsCount == 0)
-        		{
-        			/* remove notification, if present */
-        			NotificationData currentNotification = sharedData.getNotificationData(NotificationData.TYPE_REQUEST);
-        			if(currentNotification != null) /* a notification is present */
-        			{
-        				// Log.e("ReportDataService.onServiceDataTaskComplete", " removing notification with id " + currentNotification.makeId());
-        				mNotificationManager.cancel(currentNotification.getTag(), currentNotification.makeId());
-
-        				/* mark as consumed. The currentNotification is not removed from sharedData because sharedData
-        				 * keeps it there in order not to bother us with possibly new notifications incoming in a near
-        				 * future. currentNotification thus needs to be stored in order to be used by 
-        				 * canBeConsideredNew() sharedData method.
-        				 * On the other hand, the map view tests this variable in order to show or not a marker.
-        				 */
-        				currentNotification.setConsumed(true);
-        			}
-        		}
             }
         } /* !extras.isEmpty */
 

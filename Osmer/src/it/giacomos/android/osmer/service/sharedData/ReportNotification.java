@@ -11,6 +11,11 @@ public class ReportNotification extends NotificationData
 		return "ReportReceivedNotification";
 	}
 	
+	public int getId()
+	{
+		return 1001;
+	}
+	
 	public ReportNotification(String input)
 	{
 		super();

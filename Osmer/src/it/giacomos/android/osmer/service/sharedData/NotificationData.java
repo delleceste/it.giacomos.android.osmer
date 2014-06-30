@@ -35,6 +35,8 @@ public abstract class NotificationData
 	
 	public abstract String getTag();
 	
+	public abstract int getId();
+	
 	public abstract short getType();
 	
 	public abstract boolean isValid();
@@ -58,6 +60,7 @@ public abstract class NotificationData
 	
 	public abstract String toString();
 	
+	
 	/**
 	 * @return true if this NotificationData has been consumed (i.e. a request
 	 * satisfied or a report visited).
@@ -74,14 +77,6 @@ public abstract class NotificationData
 		return mIsConsumed;
 	}
 	
-	public int makeId()
-	{
-		int id = -1;
-		/* need to check: a malformed string may have lead to a null date in makeDate */
-		if(date != null)
-			id = (int) getDate().getTime();
-		return id;
-	}
 	
 	public boolean makeDate(String datestr)
 	{

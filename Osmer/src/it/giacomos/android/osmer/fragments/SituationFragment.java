@@ -33,14 +33,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class SituationFragment extends Fragment implements DataPoolTextListener,
-ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
+ExpirationCheckerListener, InAppUpgradeManagerListener
 {
 	private SituationImage mSituationImage;
 	private OTextView mHomeTextView;
-	private ExpirationChecker mExpirationChecker;
 	private InAppEventListener mTrialDaysLeftListener; /* trial version */
 	private InAppUpgradeManager mInAppUpgradeManager;
-	private String mInAppUpgradeManagerErrorMsg;
+	private ExpirationChecker mExpirationChecker;
 	private boolean mIsUnlimited;
 
 	public SituationFragment() 
@@ -73,34 +72,6 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 		LocationService locationService = oActivity.getLocationService();
 		locationService.registerLocationServiceAddressUpdateListener(mSituationImage);
 		locationService.registerLocationServiceUpdateListener(mSituationImage);
-
-		mExpirationChecker = null;
-		mInAppUpgradeManager = null;
-		mTrialDaysLeftListener = (InAppEventListener) getActivity();
-	}
-
-	public void onResume()
-	{	
-		super.onResume();
-		/* if package is not it.giacomos.android.osmer, check for purchase
-		 * 
-		 */
-		if(getActivity().getPackageName().compareTo("it.giacomos.android.osmer.pro") != 0)
-		{
-			mInAppUpgradeManager = new InAppUpgradeManager();
-			mInAppUpgradeManager.addInAppUpgradeManagerListener(this);
-			mInAppUpgradeManager.checkIfPurchased(getActivity());
-		}
-	}
-
-	public void onPause()
-	{
-		super.onPause();
-		/* trial version */
-		if(mExpirationChecker != null)
-			mExpirationChecker.stop(getActivity()); /* unregister from network status monitor */
-		if(mInAppUpgradeManager != null)
-			mInAppUpgradeManager.dispose();
 	}
 
 	@Override
@@ -153,32 +124,7 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 	@Override
 	public void onTrialDaysRemaining(int days) 
 	{
-		mTrialDaysLeftListener.onTrialDaysRemaining(days);
-		/* if days > 365, assume this is an unlimited version */
-		if(days <= 365)
-		{
-			View trialView = getActivity().findViewById(R.id.trialLayout);
-			if(trialView == null)
-				trialView = mSetupTrialInterface();
-			trialView.setVisibility(View.VISIBLE);
-			Button buyButton = (Button) getActivity().findViewById(R.id.btBuy);
-			if(buyButton != null) /* not present in landscape mode */
-				buyButton.setOnClickListener(this);
-			updateTrialDaysRemainingText(days);
-		}
-	}
-
-	/** 
-	 * This function is the 2nd  one related to the trial version
-	 */
-	private void updateTrialDaysRemainingText(int days)
-	{
-		String expiringMsg = getString(R.string.trial_version) + ": " + days + " " +
-				getString(R.string.days_left);
-		TextView expiTV = (TextView) getActivity().findViewById(R.id.tvdaysLeft);
-		if(days < 3)
-			expiTV.setTextColor(Color.RED);
-		expiTV.setText(expiringMsg);
+		
 	}
 
 	public void onDestroy()
@@ -209,16 +155,6 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 		mHomeTextView.setHtml(error);
 	}
 
-	@Override
-	public void onClick(View v) 
-	{
-		if(v.getId() == R.id.btBuy)
-		{
-			Intent resultIntent = new Intent(getActivity(), BuyProActivity.class);
-			resultIntent.putExtra("daysLeft", mExpirationChecker.getDaysLeft());
-			this.startActivity(resultIntent);
-		}
-	}
 
 	@Override
 	public void onPurchaseComplete(boolean ok, String error, boolean purchased) 
@@ -232,11 +168,6 @@ ExpirationCheckerListener, OnClickListener, InAppUpgradeManagerListener
 	@Override
 	public void onCheckComplete(boolean ok, String error, boolean purchased) 
 	{
-		if(!ok)
-			mInAppUpgradeManagerErrorMsg = error;
-		else
-			mInAppUpgradeManagerErrorMsg = "";
-
 		mIsUnlimited = purchased;
 
 

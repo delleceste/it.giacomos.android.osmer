@@ -260,7 +260,7 @@ FetchRequestsTaskListener, Runnable
 			{
 				Log.e("onServiceDataTaskComplete", "rain alert notification to be cancelled");
 				RainNotification rainNotif = (RainNotification) notificationData;
-				mNotificationManager.cancel(rainNotif.getTag(), rainNotif.makeId());
+				mNotificationManager.cancel(rainNotif.getTag(), rainNotif.getId());
 				Log.e("onServiceDataTaskComplete", "RAIN notification setting notified " + notificationData.getTag() + ", " + notified);
 				sharedData.updateCurrentRequest(notificationData, notified);
 			}
@@ -278,20 +278,11 @@ FetchRequestsTaskListener, Runnable
 					resultIntent.putExtra("ptLatitude", notificationData.latitude);
 					resultIntent.putExtra("ptLongitude", notificationData.longitude);
 
-//					if(notificationData.isRequest())
-//					{
-//						requestsCount++;
-//						resultIntent.putExtra("NotificationReportRequest", true);
-//						ReportRequestNotification rrnd = (ReportRequestNotification) notificationData;
-//						message = getResources().getString(R.string.notificatonNewReportRequest) 
-//								+ " " + notificationData.username;
-//						if(rrnd.locality.length() > 0)
-//							message += " - " + rrnd.locality;
-//						iconId = R.drawable.ic_launcher_statusbar_request;
-//						ledColor = Color.argb(0, 0, 255, 0); /* cyan notification */
-//						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
-//					}
-//					else if(notificationData.isRainAlert())
+					if(notificationData.isRequest())
+					{
+						requestsCount++;
+					}
+					else if(notificationData.isRainAlert())
 					{
 						RainNotification rainNotif = (RainNotification) notificationData;
 						iconId = R.drawable.ic_launcher_statusbar_rain;
@@ -315,54 +306,39 @@ FetchRequestsTaskListener, Runnable
 								message = getResources().getString(R.string.notificationRainIntense);
 							}
 						}
+						int notificationFlags = Notification.DEFAULT_SOUND|
+								Notification.FLAG_SHOW_LIGHTS;
+						NotificationCompat.Builder notificationBuilder =
+								new NotificationCompat.Builder(this)
+						.setSmallIcon(iconId)
+						.setAutoCancel(true)
+						.setLights(Color.RED, 1000, 1000)
+						.setContentTitle(getResources().getString(R.string.app_name))
+						.setContentText(message).setDefaults(notificationFlags);
+
+						// The stack builder object will contain an artificial back stack for the
+						// started Activity.
+						// This ensures that navigating backward from the Activity leads out of
+						// your application to the Home screen.
+						TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+						// Adds the back stack for the Intent (but not the Intent itself)
+						stackBuilder.addParentStack(OsmerActivity.class);
+						// Adds the Intent that starts the Activity to the top of the stack
+						stackBuilder.addNextIntent(resultIntent);
+
+						PendingIntent resultPendingIntent =
+								stackBuilder.getPendingIntent( 0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+						notificationBuilder.setContentIntent(resultPendingIntent);
+						notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+						Notification notification = notificationBuilder.build();
+						mNotificationManager.notify(notificationData.getTag(), notificationData.getId(),  notification);
+						notified = true;
+						/* update notification data */
+						Log.e("onServiceDataTaskComplete", "notification setting notified " + notificationData.getTag() + ", " + notified);
+						sharedData.updateCurrentRequest(notificationData, notified);
 					}
-//					else
-//					{
-//						resultIntent.putExtra("NotificationReport", true); 
-//						message = getResources().getString(R.string.notificationNewReportArrived) 
-//								+ " "  + notificationData.username;
-//						iconId = R.drawable.ic_launcher_statusbar_report;
-//						ledColor = Color.argb(0, 255, 0, 0);
-//						//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
-//					}
-
-					//					int notificationFlags = Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS|
-					//							Notification.FLAG_SHOW_LIGHTS;
-					int notificationFlags = Notification.DEFAULT_SOUND|
-							Notification.FLAG_SHOW_LIGHTS;
-					NotificationCompat.Builder notificationBuilder =
-							new NotificationCompat.Builder(this)
-					.setSmallIcon(iconId)
-					.setAutoCancel(true)
-					.setContentTitle(getResources().getString(R.string.app_name))
-					.setContentText(message).setDefaults(notificationFlags);
-
-					// The stack builder object will contain an artificial back stack for the
-					// started Activity.
-					// This ensures that navigating backward from the Activity leads out of
-					// your application to the Home screen.
-					TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-					// Adds the back stack for the Intent (but not the Intent itself)
-					stackBuilder.addParentStack(OsmerActivity.class);
-					// Adds the Intent that starts the Activity to the top of the stack
-					stackBuilder.addNextIntent(resultIntent);
-
-					PendingIntent resultPendingIntent =
-							stackBuilder.getPendingIntent( 0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-					notificationBuilder.setContentIntent(resultPendingIntent);
-					notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-					// mId allows you to update the notification later on.
-
-					Notification notification = notificationBuilder.build();
-					notification.ledARGB = ledColor;
-					notification.ledOnMS = 800;
-					notification.ledOffMS = 2200;
-					mNotificationManager.notify(notificationData.getTag(), notificationData.makeId(),  notification);
-					notified = true;
-					/* update notification data */
-					Log.e("onServiceDataTaskComplete", "notification setting notified " + notificationData.getTag() + ", " + notified);
-					sharedData.updateCurrentRequest(notificationData, notified);
 				}
 				else
 				{
@@ -371,7 +347,7 @@ FetchRequestsTaskListener, Runnable
 					Log.e("onServiceDataTaskComplete", "notification IS NOT NEW " + notificationData.getType());
 				}
 			}
-			else
+			else if(!notificationData.isValid())
 			{
 				// log("service task: notification not valid: " + dataAsString);
 				Toast.makeText(this, "Notification not valid! " + 
@@ -387,7 +363,7 @@ FetchRequestsTaskListener, Runnable
 			if(currentNotification != null) /* a notification is present */
 			{
 				// Log.e("ReportDataService.onServiceDataTaskComplete", " removing notification with id " + currentNotification.makeId());
-				mNotificationManager.cancel(currentNotification.getTag(), currentNotification.makeId());
+				mNotificationManager.cancel(currentNotification.getTag(), currentNotification.getId());
 
 				/* mark as consumed. The currentNotification is not removed from sharedData because sharedData
 				 * keeps it there in order not to bother us with possibly new notifications incoming in a near
@@ -435,7 +411,4 @@ FetchRequestsTaskListener, Runnable
 			e.printStackTrace();
 		}
 	}
-
-
-
 }

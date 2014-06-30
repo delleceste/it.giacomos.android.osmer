@@ -91,6 +91,11 @@ public class ServiceSharedData
 		Log.e("ServiceSharedData.canBeConsideredNew", "difftime ms = " + diffTimeMs + " min millis " + minMillis);
 		short type = notificationData.getType();
 		boolean isDifferentType = !mNotificationDataHash.containsKey(type);
+		
+		
+		/// TEMP!!
+		minMillis = 10000;
+		
 		if(diffTimeMs < minMillis && !isDifferentType)
 		{
 //			Logger.log("SSD.canBeConsideredNew: no: diffTime " + diffTimeMs + " < " + minMillis);

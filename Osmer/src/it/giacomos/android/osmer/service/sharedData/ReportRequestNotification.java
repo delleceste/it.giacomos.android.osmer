@@ -14,6 +14,11 @@ public class ReportRequestNotification extends NotificationData
 		return "ReportRequestNotification";
 	}
 	
+	public int getId()
+	{
+		return 1002;
+	}
+	
 	public boolean isValid()
 	{
 		return mValidString && latitude > 0 && longitude > 0 && getDate() != null;

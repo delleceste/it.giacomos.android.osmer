@@ -8,7 +8,7 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
 import it.giacomos.android.osmer.interfaceHelpers.MenuActionsManager;
-import it.giacomos.android.osmer.interfaceHelpers.NetworkGuiErrorManager;
+import it.giacomos.android.osmer.interfaceHelpers.ToastMessageManager;
 import it.giacomos.android.osmer.interfaceHelpers.RadarImageTimestampTextBuilder;
 import it.giacomos.android.osmer.interfaceHelpers.TitlebarUpdater;
 import it.giacomos.android.osmer.locationUtils.LocationInfo;
@@ -129,7 +129,6 @@ DataPoolErrorListener,
 RadarAnimationListener,
 PostActionResultListener,
 ReportRequestListener, 
-InAppEventListener/*  trial version */,
 NewsUpdateListener
 {
 	private final DownloadManager m_downloadManager;
@@ -300,50 +299,6 @@ NewsUpdateListener
 		super.onStart();
 		if(!mGoogleServicesAvailable)
 			return;
-	}
-
-
-	@Override
-	public void onAppPurchased(boolean ok) 
-	{
-		if(ok)
-		{
-			
-		}
-		
-	}
-	
-	/* 
-	 * This method is triggered by SituationFragment only when the application
-	 * has not been purchased.
-	 */
-	@Override
-	public void onTrialDaysRemaining(int days) 
-	{
-		mSettings.setTrialDaysLeft(days);
-		mTrialDaysChanged(days);
-	}
-	
-	private void mTrialDaysChanged(int days)
-	{
-		if(days <= 0)
-		{
-			Toast.makeText(this, R.string.trial_expired, Toast.LENGTH_LONG).show();
-			Intent activityIntent = new Intent(this, BuyProActivity.class);
-			startActivity(activityIntent);
-			/* stop notification service, if running.
-			 * The ConnectivityChangedReceiver will not start the service anymore
-			 * if the trial period has expired.
-			 */
-			mStartNotificationService(false);
-			/* finish app */
-			this.finish();
-		}
-		if(days < 3)
-		{
-			TrialExpiringNotification ten = new TrialExpiringNotification();
-			ten.show(this, days);
-		}
 	}
 	
 	public void init()
@@ -566,11 +521,7 @@ NewsUpdateListener
 		titlebarUpdater.update(this);
 		titlebarUpdater = null;
 
-		if(!online)
-		{
-			Toast.makeText(getApplicationContext(), R.string.netUnavailableToast, Toast.LENGTH_LONG).show();	
-		}
-		else
+		if(online)
 		{
 			MapViewUpdater currenvViewUpdater = new MapViewUpdater();
 			currenvViewUpdater.update(this);
@@ -582,9 +533,8 @@ NewsUpdateListener
 			
 			/* if necessary, fetch news */
 			/* are there any news? This AsyncTask will call onNewsUpdateAvailable on success */
-			//if(mSettings.timeToFetchNews())
+			if(mSettings.timeToFetchNews())
 			{
-				Log.e("OsmerActivity", "fetching news...");
 				mNewsFetchTask = new NewsFetchTask(mSettings.lastNewsReadTimestamp(), this);
 				mNewsFetchTask.execute(new Urls().newsUrl());
 			}
@@ -625,7 +575,7 @@ NewsUpdateListener
 
 	void radar()
 	{
-		Toast.makeText(this, R.string.radarUpdateToast, Toast.LENGTH_SHORT).show();
+		new ToastMessageManager().onShortMessage(getApplicationContext(), R.string.radarUpdateToast);
 		m_downloadManager.getRadarImage();
 	}
 
@@ -644,7 +594,7 @@ NewsUpdateListener
 		WebcamDataHelper webcamDataHelper = new WebcamDataHelper();
 		if(webcamDataHelper.dataIsOld(getApplicationContext()))
 		{
-			Toast.makeText(getApplicationContext(), R.string.webcam_updating, Toast.LENGTH_SHORT).show();
+			new ToastMessageManager().onShortMessage(getApplicationContext(), R.string.webcam_updating);
 			m_downloadManager.getWebcamList();
 		}
 	}
@@ -668,7 +618,7 @@ NewsUpdateListener
 	@Override
 	public void onTextUpdateError(ViewType t, String errorMessage)
 	{
-		NetworkGuiErrorManager ngem = new NetworkGuiErrorManager();
+		ToastMessageManager ngem = new ToastMessageManager();
 		ngem.onError(this, errorMessage);
 		ngem = null;
 	}
@@ -676,7 +626,7 @@ NewsUpdateListener
 	@Override
 	public void onBitmapUpdateError(BitmapType bType, String errorMessage)
 	{
-		NetworkGuiErrorManager ngem = new NetworkGuiErrorManager();
+		ToastMessageManager ngem = new ToastMessageManager();
 		ngem.onError(this, errorMessage);
 		ngem = null;
 	}
@@ -684,12 +634,13 @@ NewsUpdateListener
 	@Override
 	public void onDownloadStart(DownloadReason reason)
 	{
+		ToastMessageManager tmm = new ToastMessageManager();
 		if(reason == DownloadReason.Init)
-			Toast.makeText(getApplicationContext(), R.string.downloadingToast, Toast.LENGTH_SHORT).show();
+			tmm.onShortMessage(getApplicationContext(), R.string.downloadingToast);
 		else if(reason == DownloadReason.Incomplete)
-			Toast.makeText(getApplicationContext(), R.string.completingDownloadToast, Toast.LENGTH_SHORT).show();
+			tmm.onShortMessage(getApplicationContext(),  R.string.completingDownloadToast);
 		else if(reason == DownloadReason.DataExpired)
-			Toast.makeText(getApplicationContext(), R.string.dataExpiredToast, Toast.LENGTH_SHORT).show();
+			tmm.onShortMessage(getApplicationContext(),  R.string.dataExpiredToast);
 
 		setProgressBarVisibility(true);
 		ProgressBarParams.currentValue = 0;

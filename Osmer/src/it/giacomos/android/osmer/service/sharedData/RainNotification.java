@@ -13,6 +13,11 @@ public class RainNotification extends NotificationData {
 		return "RainNotificationTag";
 	}
 	
+	public int getId()
+	{
+		return 1000;
+	}
+	
 	public RainNotification(String text)
 	{
 		mGoingToRain = false;
