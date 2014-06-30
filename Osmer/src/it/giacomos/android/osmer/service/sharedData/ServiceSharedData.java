@@ -93,8 +93,8 @@ public class ServiceSharedData
 		boolean isDifferentType = !mNotificationDataHash.containsKey(type);
 		
 		
-		/// TEMP!!
-		minMillis = 10000;
+		/// TEMP!! To test notifications without waiting minTimeBetweenNotificationsMinutes
+		/// minMillis = 10000;
 		
 		if(diffTimeMs < minMillis && !isDifferentType)
 		{
