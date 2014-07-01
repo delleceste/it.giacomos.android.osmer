@@ -1,7 +1,7 @@
 package it.giacomos.android.osmer.service;
 
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
 import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.preferences.Settings;

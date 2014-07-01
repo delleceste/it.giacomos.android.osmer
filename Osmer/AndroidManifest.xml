@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="it.giacomos.android.osmer"
+    package="it.giacomos.android.osmer.pro"
     android:installLocation="auto"
     android:versionCode="744"
     android:versionName="2.8.1" >
@@ -35,7 +35,7 @@
     <!--  <uses-permission android:name="com.android.vending.BILLING" /> -->
 
     <!--  CHANGE THIS ONE WHEN SWITCHING TO PRO!! -->
-    <uses-permission android:name="it.giacomos.android.osmer.permission.C2D_MESSAGE" />
+    <uses-permission android:name="it.giacomos.android.osmer.pro.permission.C2D_MESSAGE" />
     
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -91,17 +91,19 @@
         -->
 
 
-  <!--    <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCO_r5ZYrWaqA5ExtIxAVHwRn6KiGAJ_Ps"/>
--->
+     <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCO_r5ZYrWaqA5ExtIxAVHwRn6KiGAJ_Ps"/>
+
 
         <!--
               Meteo.FVG package (old and alpha/beta versions) 
 			it.giacomos.android.osmer package name
         -->
 
+ <!--
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBhRcwqzgppnwzQApAHcV7-Rer1JhXiDQs" />
+	-->
 	
  
         <receiver
