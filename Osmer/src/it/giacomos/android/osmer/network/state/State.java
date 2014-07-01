@@ -41,6 +41,16 @@ public abstract class State
 		
 	}
 
+	public void getThreeDaysForecast()
+	{
+		
+	}
+
+	public void getFourDaysForecast()
+	{
+		
+	}
+
 	public void getObservationsTable(MapMode mapMode) 
 	{
 		

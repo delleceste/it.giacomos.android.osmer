@@ -93,6 +93,17 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 		m_state.getTwoDaysForecast();
 	}
 
+
+	public void getThreeDaysForecast()
+	{
+		m_state.getThreeDaysForecast();
+	}
+
+	public void getFourDaysForecast()
+	{
+		m_state.getFourDaysForecast();
+	}
+	
 	public void getRadarImage()
 	{
 		m_state.getRadarImage();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Meteo.FVG Pro</string>
+    <string name="app_name">Meteo.FVG</string>
     <string name="app_broadcast_receiver">Meteo.FVG.BootReceiver</string>
     <string name="version">versione</string>
     <string name="data_source">Fonte dati: http://www.meteo.fvg.it</string>
@@ -14,6 +14,8 @@
     <string name="today_title">Oggi</string>
     <string name="tomorrow_title">Domani</string>
     <string name="two_days_title">Dopodomani</string>
+    <string name="three_days_title">3 Giorni</string>
+    <string name="four_days_title">4 Giorni</string>
     <string name="radar_title">Radar</string>
     <string name="forecast_title">Previsioni</string>
     <string name="observations_title_daily">Giornaliere</string>

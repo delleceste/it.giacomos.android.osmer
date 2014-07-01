@@ -4,7 +4,7 @@ import it.giacomos.android.osmer.network.DownloadStatus;
 import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.widgets.CurrentScreen;
 import it.giacomos.android.osmer.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
@@ -27,7 +27,10 @@ public class TitleBuilder
 				&& (scr == CurrentScreen.HOME_SCREEN || 
 				scr == CurrentScreen.TODAY_SCREEN
 				|| scr == CurrentScreen.TOMORROW_SCREEN || 
-				scr == CurrentScreen.TWODAYS_SCREEN)) 
+				scr == CurrentScreen.TWODAYS_SCREEN || 
+				scr == CurrentScreen.THREEDAYS_SCREEN || 
+				scr == CurrentScreen.FOURDAYS_SCREEN)
+				) 
 		{
 			t += res.getString(R.string.forecast_title);
 			

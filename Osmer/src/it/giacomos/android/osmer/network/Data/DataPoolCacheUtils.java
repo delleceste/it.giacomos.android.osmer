@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.network.Data;
 
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.network.state.BitmapType;
 import it.giacomos.android.osmer.network.state.ViewType;
 
@@ -33,6 +33,8 @@ public class DataPoolCacheUtils
 		textIdMap.put(ViewType.TODAY_SYMTABLE, R.id.todayImageView);
 		textIdMap.put(ViewType.TOMORROW_SYMTABLE, R.id.tomorrowImageView);
 		textIdMap.put(ViewType.TWODAYS_SYMTABLE, R.id.twoDaysImageView);
+		textIdMap.put(ViewType.THREEDAYS_SYMTABLE, R.id.threeDaysImageView);
+		textIdMap.put(ViewType.FOURDAYS_SYMTABLE, R.id.fourDaysImageView);
 
 		/* bitmapIdMap must contain entries also for bitmap types that are treated in
 		 * a special way, such as the radar image, whose file name must be 
@@ -45,6 +47,8 @@ public class DataPoolCacheUtils
 		textIdMap.put(ViewType.TODAY, R.id.todayTextView);
 		textIdMap.put(ViewType.TOMORROW, R.id.tomorrowTextView);
 		textIdMap.put(ViewType.TWODAYS, R.id.twoDaysTextView);
+		textIdMap.put(ViewType.THREEDAYS, R.id.threeDaysTextView);
+		textIdMap.put(ViewType.FOURDAYS, R.id.fourDaysTextView);
 		/* As stated above for the radar bitmap, let's put two fictitious entries for
 		 * the observations (daily and latest) and for the webcams (osmer and other)
 		 */

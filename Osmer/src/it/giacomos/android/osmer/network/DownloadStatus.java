@@ -48,9 +48,13 @@ public class DownloadStatus {
 	public boolean todayDownloaded() { return (state & TODAY_DOWNLOADED) != 0; }
 	public boolean tomorrowDownloaded() { return (state & TOMORROW_DOWNLOADED) != 0; }
 	public boolean twoDaysDownloaded() { return (state & TWODAYS_DOWNLOADED) != 0; }
+	public boolean threeDaysDownloaded() { return (state & THREEDAYS_DOWNLOADED) != 0; }
+	public boolean fourDaysDownloaded() { return (state & FOURDAYS_DOWNLOADED) != 0; }
 	public boolean todaySymtableDownloaded() { return (state & TODAY_SYMTABLE_DOWNLOADED) != 0; }
 	public boolean tomorrowSymtableDownloaded() { return (state & TOMORROW_SYMTABLE_DOWNLOADED) != 0; }
 	public boolean twoDaysSymtableDownloaded() { return (state & TWODAYS_SYMTABLE_DOWNLOADED) != 0; }
+	public boolean threeDaysSymtableDownloaded() { return (state & THREEDAYS_SYMTABLE_DOWNLOADED) != 0; }
+	public boolean fourDaysSymtableDownloaded() { return (state & FOURDAYS_SYMTABLE_DOWNLOADED) != 0; }
 	public boolean latestTableDownloaded() { return (state & LATEST_TABLE_DOWNLOADED) != 0; }
 	public boolean downloadErrorCondition() { return (state & DOWNLOAD_ERROR_CONDITION) != 0; }
 
@@ -162,6 +166,10 @@ public class DownloadStatus {
 				state = (state | TOMORROW_DOWNLOADED);
 			else if(st == ViewType.TWODAYS)
 				state = (state | TWODAYS_DOWNLOADED);
+			else if(st == ViewType.THREEDAYS)
+				state = (state | THREEDAYS_DOWNLOADED);
+			else if(st == ViewType.FOURDAYS)
+				state = (state | FOURDAYS_DOWNLOADED);
 			else if(st == ViewType.WEBCAMLIST_OSMER)
 				state = (state | WEBCAM_OSMER_DOWNLOADED);
 			else if(st == ViewType.WEBCAMLIST_OTHER)
@@ -172,6 +180,10 @@ public class DownloadStatus {
 				state = (state | TOMORROW_SYMTABLE_DOWNLOADED);
 			else if(st == ViewType.TWODAYS_SYMTABLE)
 				state = (state | TWODAYS_SYMTABLE_DOWNLOADED);
+			else if(st == ViewType.THREEDAYS_SYMTABLE)
+				state = (state | THREEDAYS_SYMTABLE_DOWNLOADED);
+			else if(st == ViewType.FOURDAYS_SYMTABLE)
+				state = (state | FOURDAYS_SYMTABLE_DOWNLOADED);
 			else if(st == ViewType.LATEST_TABLE)
 				state = (state | LATEST_TABLE_DOWNLOADED);
 		}
@@ -185,6 +197,10 @@ public class DownloadStatus {
 				state = (state & ~TOMORROW_DOWNLOADED);
 			else if(st == ViewType.TWODAYS)
 				state = (state & ~TWODAYS_DOWNLOADED);
+			else if(st == ViewType.THREEDAYS)
+				state = (state & ~THREEDAYS_DOWNLOADED);
+			else if(st == ViewType.FOURDAYS)
+				state = (state & ~FOURDAYS_DOWNLOADED);
 			else if(st == ViewType.WEBCAMLIST_OSMER)
 				state = (state & ~WEBCAM_OSMER_DOWNLOADED);
 			else if(st == ViewType.WEBCAMLIST_OTHER)
@@ -195,6 +211,10 @@ public class DownloadStatus {
 				state = (state & ~TOMORROW_SYMTABLE_DOWNLOADED);
 			else if(st == ViewType.TWODAYS_SYMTABLE)
 				state = (state & ~TWODAYS_SYMTABLE_DOWNLOADED);
+			else if(st == ViewType.THREEDAYS_SYMTABLE)
+				state = (state & ~THREEDAYS_SYMTABLE_DOWNLOADED);
+			else if(st == ViewType.FOURDAYS_SYMTABLE)
+				state = (state & ~FOURDAYS_SYMTABLE_DOWNLOADED);
 			else if(st == ViewType.LATEST_TABLE)
 				state = (state & ~LATEST_TABLE_DOWNLOADED);
 		}
@@ -255,9 +275,14 @@ public class DownloadStatus {
 	public static final long WEBCAM_OTHER_DOWNLOAD_REQUESTED = 0x400;
 	public static final long WEBCAM_OSMER_DOWNLOADED = 0x800;
 	public static final long WEBCAM_OTHER_DOWNLOADED = 0x1000;
+	public static final long THREEDAYS_DOWNLOADED = 0x2000;
+	public static final long FOURDAYS_DOWNLOADED = 0x4000;
+	public static final long FOURDAYS_SYMTABLE_DOWNLOADED = 0x8000;
+	public static final long THREEDAYS_SYMTABLE_DOWNLOADED = 0x10000;
 
 	public static final long DOWNLOAD_ERROR_CONDITION = 0x10000000;
 
 	private Date m_observationsSavedOn;
+
 
 }

@@ -7,4 +7,6 @@ public class ViewPagerPages {
 
 	public static final int TOMORROW = 2;
 	public static final int TWODAYS = 3;
+	public static final int THREEDAYS = 4;
+	public static final int FOURDAYS = 5;
 }

@@ -11,7 +11,7 @@ import it.giacomos.android.osmer.fragments.ForecastFragment;
 import it.giacomos.android.osmer.fragments.SituationFragment;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 
 public class ActionBarManager implements ActionBarTabChangeListener 
 {
@@ -187,6 +187,10 @@ public class ActionBarManager implements ActionBarTabChangeListener
         	viewType = ViewType.TOMORROW;
         else if(tab == 3)
         	viewType = ViewType.TWODAYS;
+        else if(tab == 4)
+        	viewType = ViewType.THREEDAYS;
+        else if(tab == 5)
+        	viewType = ViewType.FOURDAYS;
         mActivity.switchView(viewType);
 	}
 
@@ -197,10 +201,14 @@ public class ActionBarManager implements ActionBarTabChangeListener
 		Bundle bToday = new Bundle();
 		Bundle bTomorrow = new Bundle();
 		Bundle bTwodays = new Bundle();
+		Bundle bThreedays = new Bundle();
+		Bundle bFourdays = new Bundle();
 		
 		bToday.putInt("type", R.string.today_title);
 		bTomorrow.putInt("type", R.string.tomorrow_title);
 		bTwodays.putInt("type", R.string.two_days_title);
+		bThreedays.putInt("type", R.string.three_days_title);
+		bFourdays.putInt("type", R.string.four_days_title);
 		
 		mTabsAdapter = new TabsAdapter(mActivity, mActivity.getViewPager());	
 		mTabsAdapter.setActionBarTabChangeListener(this);
@@ -212,6 +220,10 @@ public class ActionBarManager implements ActionBarTabChangeListener
         		ForecastFragment.class, bTomorrow);
         mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.two_days_title)),
         		ForecastFragment.class, bTwodays);
+        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.three_days_title)),
+        		ForecastFragment.class, bThreedays);
+        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.four_days_title)),
+        		ForecastFragment.class, bFourdays);
 	}
 	
 	private OsmerActivity mActivity;

@@ -7,4 +7,6 @@ public class CurrentScreen {
      public static final int TOMORROW_SCREEN = 2;
      public static final int TWODAYS_SCREEN = 3;
      public static final int MAPVIEW_SCREEN = 4;
+	public static final int THREEDAYS_SCREEN = 5;
+	public static final int FOURDAYS_SCREEN = 6;
 }

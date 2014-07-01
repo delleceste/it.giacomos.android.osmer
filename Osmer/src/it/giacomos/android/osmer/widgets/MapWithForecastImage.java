@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.forecastRepr.Area;
 import it.giacomos.android.osmer.forecastRepr.ForecastDataFactory;
 import it.giacomos.android.osmer.forecastRepr.ForecastDataInterface;
@@ -217,7 +217,8 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 		/* mForecastData may be null if an error occurred or if o
 		 * the two days symbol table is empty.
 		 */
-		if(mForecastData != null && mForecastData.size() == 0 && mViewType == ViewType.TWODAYS_SYMTABLE)
+		if(mForecastData != null && mForecastData.size() == 0 && (mViewType == ViewType.TWODAYS_SYMTABLE
+				|| mViewType == ViewType.FOURDAYS_SYMTABLE))
 		{
 			drawTextOnMap(canvas, getResources().getString(R.string.forecast_map_avail_afternoon)); /* draw "Forecast available in the afternoon */
 		}

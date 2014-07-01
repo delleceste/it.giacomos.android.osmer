@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/threeDaysMainScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@+id/buttonsScrollView"
+    android:layout_alignParentTop="true"
+    android:fillViewport="true" >
+
+    <LinearLayout
+        android:id="@+id/threeDaysRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+       <it.giacomos.android.osmer.widgets.MapWithForecastImage
+           android:id="@+id/threeDaysImageView"
+           android:layout_width="match_parent"
+           android:layout_height="330dp"
+           android:src="@drawable/fvg_background2" />
+
+        <it.giacomos.android.osmer.widgets.ForecastTextView
+            android:id="@+id/threeDaysTextView"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="6dp"
+            android:background="@drawable/shape_textview"
+            android:inputType="none" />
+
+    </LinearLayout>
+
+</ScrollView>

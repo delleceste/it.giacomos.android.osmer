@@ -3,7 +3,7 @@
  */
 package it.giacomos.android.osmer.widgets.map;
 
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
 import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.ObservationData;

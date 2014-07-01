@@ -4,7 +4,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
 import it.giacomos.android.osmer.interfaceHelpers.MenuActionsManager;
@@ -35,17 +35,11 @@ import it.giacomos.android.osmer.observations.ObservationsCache;
 import it.giacomos.android.osmer.pager.ActionBarManager;
 import it.giacomos.android.osmer.pager.DrawerItemClickListener;
 import it.giacomos.android.osmer.pager.MyActionBarDrawerToggle;
-import it.giacomos.android.osmer.pager.TabsAdapter;
 import it.giacomos.android.osmer.pager.ViewPagerPages;
 import it.giacomos.android.osmer.preferences.*;
 import it.giacomos.android.osmer.service.ServiceManager;
 import it.giacomos.android.osmer.service.sharedData.ReportNotification;
 import it.giacomos.android.osmer.service.sharedData.ReportRequestNotification;
-import it.giacomos.android.osmer.trial.BuyProActivity;
-import it.giacomos.android.osmer.trial.ExpirationChecker;
-import it.giacomos.android.osmer.trial.ExpirationCheckerListener;
-import it.giacomos.android.osmer.trial.InAppEventListener;
-import it.giacomos.android.osmer.trial.TrialExpiringNotification;
 import it.giacomos.android.osmer.webcams.WebcamDataHelper;
 import it.giacomos.android.osmer.widgets.AnimatedImageView;
 import it.giacomos.android.osmer.widgets.OAnimatedTextView;
@@ -88,15 +82,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -592,6 +582,16 @@ NewsUpdateListener
 		m_downloadManager.getTwoDaysForecast();
 	}
 
+	public void getThreeDaysForecast()
+	{
+		m_downloadManager.getThreeDaysForecast();
+	}
+
+	public void getFourDaysForecast()
+	{
+		m_downloadManager.getFourDaysForecast();
+	}
+
 	void radar()
 	{
 		new ToastMessageManager().onShortMessage(getApplicationContext(), R.string.radarUpdateToast);
@@ -923,6 +923,8 @@ NewsUpdateListener
 		case TODAY:
 		case TOMORROW:
 		case TWODAYS:
+		case THREEDAYS:
+		case FOURDAYS:
 			if(buttonMapsOveflowMenu != null)
 				buttonMapsOveflowMenu.setVisibility(View.GONE);
 			break;
@@ -959,7 +961,7 @@ NewsUpdateListener
 
 		switch(mCurrentViewType)
 		{
-		case HOME: case TODAY: case TOMORROW: case TWODAYS:
+		case HOME: case TODAY: case TOMORROW: case TWODAYS: case THREEDAYS: case FOURDAYS:
 			menu.findItem(R.id.satelliteViewButton).setVisible(false);
 			menu.findItem(R.id.terrainViewButton).setVisible(false);
 			menu.findItem(R.id.mapNormalViewButton).setVisible(false);
@@ -1012,6 +1014,18 @@ NewsUpdateListener
 		{
 			viewFlipper.setDisplayedChild(0);
 			mViewPager.setCurrentItem(ViewPagerPages.TWODAYS);
+			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
+		} 
+		else if (id == ViewType.THREEDAYS) 
+		{
+			viewFlipper.setDisplayedChild(0);
+			mViewPager.setCurrentItem(ViewPagerPages.THREEDAYS);
+			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
+		} 
+		else if (id == ViewType.FOURDAYS) 
+		{
+			viewFlipper.setDisplayedChild(0);
+			mViewPager.setCurrentItem(ViewPagerPages.FOURDAYS);
 			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
 		} 
 		else if (id == ViewType.RADAR) 
@@ -1082,6 +1096,10 @@ NewsUpdateListener
 				getTomorrowForecast();
 			else if(id == ViewType.TWODAYS)
 				getTwoDaysForecast();
+			else if(id == ViewType.THREEDAYS)
+				getThreeDaysForecast();
+			else if(id == ViewType.FOURDAYS)
+				getFourDaysForecast();
 			else if(id == ViewType.HOME)
 			{ }
 			else if(id == ViewType.WEBCAM)
@@ -1396,7 +1414,6 @@ NewsUpdateListener
 	private boolean mReportConditionsAccepted;
 
 	ViewPager mViewPager;
-	TabsAdapter mTabsAdapter;
 	LinearLayout mMainLayout;
 
 	public static final int REPORT_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 100;

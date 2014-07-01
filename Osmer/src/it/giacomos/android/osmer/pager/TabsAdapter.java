@@ -115,7 +115,7 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 	@Override
 	public void onPageSelected(int position) 
 	{
-		if(position < 4 && mActionBar.getNavigationMode() == ActionBar.NAVIGATION_MODE_TABS)
+		if(position < mTabs.size() && mActionBar.getNavigationMode() == ActionBar.NAVIGATION_MODE_TABS)
 		{
 			mViewPager.setCurrentItem(position);
 			mActionBar.setSelectedNavigationItem(position);

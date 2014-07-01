@@ -126,6 +126,24 @@ public class Urls {
 		return "http://www.giacomos.it/meteo.fvg/";
 	}
 
+	public String threeDaysSymtableUrl() 
+	{
+		return "http://www.giacomos.it/meteo.fvg/data/piu_3_symtable.txt";
+	}
+
+	public String fourDaysSymtableUrl() 
+	{
+		return "http://www.giacomos.it/meteo.fvg/data/piu_4_symtable.txt";
+	}
+
+	public String threeDaysUrl() 
+	{
+		return "http://www.giacomos.it/meteo.fvg/data/piu_3.html";
+	}
 	
+	public String fourDaysUrl() 
+	{
+		return "http://www.giacomos.it/meteo.fvg/data/piu_4.html";
+	}
 	
 }

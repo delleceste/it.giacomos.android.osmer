@@ -107,6 +107,30 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 		}
 	}
 
+	public void getThreeDaysForecast()
+	{
+		if(!dDownloadStatus.threeDaysSymtableDownloaded() && !mIsTextTaskExecuting(ViewType.THREEDAYS_SYMTABLE))
+		{
+			startTextTask(m_urls.twoDaysSymtableUrl(), ViewType.THREEDAYS_SYMTABLE);
+		}
+		if(!dDownloadStatus.threeDaysDownloaded() && !mIsTextTaskExecuting(ViewType.THREEDAYS))
+		{
+			startTextTask(m_urls.twoDaysUrl(), ViewType.THREEDAYS);
+		}
+	}
+
+	public void getFourDaysForecast()
+	{
+		if(!dDownloadStatus.fourDaysSymtableDownloaded() && !mIsTextTaskExecuting(ViewType.FOURDAYS_SYMTABLE))
+		{
+			startTextTask(m_urls.twoDaysSymtableUrl(), ViewType.FOURDAYS_SYMTABLE);
+		}
+		if(!dDownloadStatus.fourDaysDownloaded() && !mIsTextTaskExecuting(ViewType.FOURDAYS))
+		{
+			startTextTask(m_urls.twoDaysUrl(), ViewType.FOURDAYS);
+		}
+	}
+
 	public void getTodayTextOnly()
 	{
 		if(!dDownloadStatus.todayDownloaded()  && !mIsTextTaskExecuting(ViewType.TODAY))
@@ -183,8 +207,20 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			if(!mIsTextTaskExecuting(ViewType.TWODAYS_SYMTABLE))
 				startTextTask(m_urls.twoDaysSymtableUrl(), ViewType.TWODAYS_SYMTABLE);
 			
+			if(!mIsTextTaskExecuting(ViewType.THREEDAYS_SYMTABLE))
+				startTextTask(m_urls.threeDaysSymtableUrl(), ViewType.THREEDAYS_SYMTABLE);
+			
+			if(!mIsTextTaskExecuting(ViewType.FOURDAYS_SYMTABLE))
+				startTextTask(m_urls.fourDaysSymtableUrl(), ViewType.FOURDAYS_SYMTABLE);
+			
 			if(!mIsTextTaskExecuting(ViewType.TWODAYS))
 				startTextTask(m_urls.twoDaysUrl(), ViewType.TWODAYS);
+			
+			if(!mIsTextTaskExecuting(ViewType.THREEDAYS))
+				startTextTask(m_urls.threeDaysUrl(), ViewType.THREEDAYS);
+			
+			if(!mIsTextTaskExecuting(ViewType.FOURDAYS))
+				startTextTask(m_urls.fourDaysUrl(), ViewType.FOURDAYS);
 			
 			if(!mIsTextTaskExecuting(ViewType.DAILY_TABLE))
 				mGetObservationsTable(MapMode.DAILY_OBSERVATIONS);

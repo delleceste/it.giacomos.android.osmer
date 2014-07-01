@@ -6,7 +6,7 @@ import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
 import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.widgets.ForecastTextView;
 import it.giacomos.android.osmer.widgets.MapWithForecastImage;
 import android.support.v4.app.Fragment;
@@ -70,6 +70,24 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 				mTextView.setData(text);
 			}
 		}
+		else if(mType == R.string.three_days_title)
+		{
+			dataPool.registerTextListener(ViewType.THREEDAYS, this);
+			if(!dataPool.isTextValid(ViewType.THREEDAYS))
+			{
+				text = dataCacheUtils.loadFromStorage(ViewType.THREEDAYS, getActivity().getApplicationContext());
+				mTextView.setData(text);
+			}
+		}
+		else if(mType == R.string.four_days_title)
+		{
+			dataPool.registerTextListener(ViewType.FOURDAYS, this);
+			if(!dataPool.isTextValid(ViewType.FOURDAYS))
+			{
+				text = dataCacheUtils.loadFromStorage(ViewType.FOURDAYS, getActivity().getApplicationContext());
+				mTextView.setData(text);
+			}
+		}
 
 		dataCacheUtils = null;
 
@@ -120,6 +138,30 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 				mImageView.setSymTable(symtab);
 			}
 		}
+		else if(mType == R.string.three_days_title)
+		{
+			dataPool.registerTextListener(ViewType.THREEDAYS_SYMTABLE, this);
+			if(!dataPool.isTextValid(ViewType.THREEDAYS_SYMTABLE))		
+			{
+				symtab = dataCacheUtils.loadFromStorage(ViewType.THREEDAYS_SYMTABLE, getActivity().getApplicationContext());
+				/* load symtab even if empty, because in twodays symtable it means data available
+				 * in the afternoon.
+				 */
+				mImageView.setSymTable(symtab);
+			}
+		}
+		else if(mType == R.string.four_days_title)
+		{
+			dataPool.registerTextListener(ViewType.FOURDAYS_SYMTABLE, this);
+			if(!dataPool.isTextValid(ViewType.FOURDAYS_SYMTABLE))		
+			{
+				symtab = dataCacheUtils.loadFromStorage(ViewType.FOURDAYS_SYMTABLE, getActivity().getApplicationContext());
+				/* load symtab even if empty, because in twodays symtable it means data available
+				 * in the afternoon.
+				 */
+				mImageView.setSymTable(symtab);
+			}
+		}
 		dataCacheUtils = null;
 	}
 
@@ -156,6 +198,22 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			mImageView = (MapWithForecastImage) view.findViewById(R.id.twoDaysImageView);
 			mImageView.setViewType(ViewType.TWODAYS_SYMTABLE);
 		}
+		else if(mType == R.string.three_days_title)
+		{
+			view = inflater.inflate(R.layout.threedays, null);
+			mTextView = (ForecastTextView)view.findViewById(R.id.threeDaysTextView);
+			mTextView.setViewType(ViewType.THREEDAYS);
+			mImageView = (MapWithForecastImage) view.findViewById(R.id.threeDaysImageView);
+			mImageView.setViewType(ViewType.THREEDAYS_SYMTABLE);
+		}
+		else if(mType == R.string.four_days_title)
+		{
+			view = inflater.inflate(R.layout.fourdays, null);
+			mTextView = (ForecastTextView)view.findViewById(R.id.fourDaysTextView);
+			mTextView.setViewType(ViewType.FOURDAYS);
+			mImageView = (MapWithForecastImage) view.findViewById(R.id.fourDaysImageView);
+			mImageView.setViewType(ViewType.FOURDAYS_SYMTABLE);
+		}
 
 		mImageView.setAreaTouchListener(mTextView);
 		return view;
@@ -186,9 +244,11 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
 	{
 		//		Log.e("ForecastFragment.onTextChanged", "viewType " + t + " fromCache " + fromCache);
-		if(t == ViewType.TODAY || t == ViewType.TOMORROW || t == ViewType.TWODAYS)
+		if(t == ViewType.TODAY || t == ViewType.TOMORROW || t == ViewType.TWODAYS
+				|| t == ViewType.THREEDAYS || t == ViewType.FOURDAYS)
 			mTextView.setData(txt);
-		else if(t == ViewType.TODAY_SYMTABLE || t == ViewType.TOMORROW_SYMTABLE || t == ViewType.TWODAYS_SYMTABLE)
+		else if(t == ViewType.TODAY_SYMTABLE || t == ViewType.TOMORROW_SYMTABLE || t == ViewType.TWODAYS_SYMTABLE
+				|| t == ViewType.THREEDAYS_SYMTABLE || t == ViewType.FOURDAYS_SYMTABLE)
 			mImageView.setSymTable(txt);
 
 	}
