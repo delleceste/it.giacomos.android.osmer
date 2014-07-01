@@ -4,7 +4,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
 import it.giacomos.android.osmer.interfaceHelpers.MenuActionsManager;
@@ -223,13 +223,23 @@ NewsUpdateListener
 		/* force to switch to Reports mode */
 		if(extras != null)
 		{
-			if(extras.getBoolean("NotificationReportRequest")
-					|| extras.getBoolean("NotificationReport"))
+			if(extras.getBoolean("NotificationReportRequest"))
+			{
 				forceDrawerItem = mDrawerItems.length - 1;
+				getIntent().removeExtra("NotificationReportRequest");
+			}
+			if(extras.getBoolean("NotificationReport"))
+			{
+				forceDrawerItem = 5;
+				getIntent().removeExtra("NotificationReport");
+			}
 			else if(extras.getBoolean("NotificationRainAlert"))
+			{
 				forceDrawerItem = 1; /* radar */
+				getIntent().removeExtra("NotificationRainAlert");
+			}
 		}
-		Log.e("onPostCreate", "force drawer item " + forceDrawerItem);
+//		Log.e("onPostCreate", "force drawer item " + forceDrawerItem);
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
 	}
 
@@ -241,13 +251,22 @@ NewsUpdateListener
 		/* force to switch to Reports mode */
 		if(extras != null)
 		{
-			if(extras.getBoolean("NotificationReportRequest")
-					|| extras.getBoolean("NotificationReport"))
+			if(extras.getBoolean("NotificationReportRequest"))
+			{
+				drawerItem = mDrawerItems.length - 1;
+				getIntent().removeExtra("NotificationReportRequest");
+			}
+			if(extras.getBoolean("NotificationReport"))
+			{
 				drawerItem = 5;
+				getIntent().removeExtra("NotificationReport");
+			}
 			else if(extras.getBoolean("NotificationRainAlert"))
+			{
 				drawerItem = 1; /* radar */
-			
-			Log.e("OsmerActivity.onNewIntent", "switching to item " + drawerItem);
+				getIntent().removeExtra("NotificationRainAlert");
+			}
+//			Log.e("OsmerActivity.onNewIntent", "switching to item " + drawerItem);
 			mActionBarManager.drawerItemChanged(drawerItem);
 		}
 	}
