@@ -111,11 +111,11 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	{
 		if(!dDownloadStatus.threeDaysSymtableDownloaded() && !mIsTextTaskExecuting(ViewType.THREEDAYS_SYMTABLE))
 		{
-			startTextTask(m_urls.twoDaysSymtableUrl(), ViewType.THREEDAYS_SYMTABLE);
+			startTextTask(m_urls.threeDaysSymtableUrl(), ViewType.THREEDAYS_SYMTABLE);
 		}
 		if(!dDownloadStatus.threeDaysDownloaded() && !mIsTextTaskExecuting(ViewType.THREEDAYS))
 		{
-			startTextTask(m_urls.twoDaysUrl(), ViewType.THREEDAYS);
+			startTextTask(m_urls.threeDaysUrl(), ViewType.THREEDAYS);
 		}
 	}
 
@@ -123,11 +123,11 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	{
 		if(!dDownloadStatus.fourDaysSymtableDownloaded() && !mIsTextTaskExecuting(ViewType.FOURDAYS_SYMTABLE))
 		{
-			startTextTask(m_urls.twoDaysSymtableUrl(), ViewType.FOURDAYS_SYMTABLE);
+			startTextTask(m_urls.fourDaysSymtableUrl(), ViewType.FOURDAYS_SYMTABLE);
 		}
 		if(!dDownloadStatus.fourDaysDownloaded() && !mIsTextTaskExecuting(ViewType.FOURDAYS))
 		{
-			startTextTask(m_urls.twoDaysUrl(), ViewType.FOURDAYS);
+			startTextTask(m_urls.fourDaysUrl(), ViewType.FOURDAYS);
 		}
 	}
 
