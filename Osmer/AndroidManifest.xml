@@ -3,7 +3,7 @@
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
     android:versionCode="751"
-    android:versionName="2.8.1_alpha0" >
+    android:versionName="2.9.0_alpha0" >
 
     <uses-sdk
         android:minSdkVersion="14"
