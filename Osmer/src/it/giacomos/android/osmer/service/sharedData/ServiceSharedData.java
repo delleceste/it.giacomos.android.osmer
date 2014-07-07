@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.service.sharedData;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import android.content.Context;
@@ -126,6 +127,13 @@ public class ServiceSharedData
 			return true; /* exactly the same */
 		}
 		return false; /* not equal, not already notified */
+	}
+
+	public boolean arrivesTooLate(NotificationData notificationData) 
+	{
+		Date notifDate = notificationData.getDate();
+		Log.e("ServiceSharedData.arrivesTooLate", " notif delay ms " + (System.currentTimeMillis() - notifDate.getTime()));
+		return (System.currentTimeMillis() - notifDate.getTime()) > 1000 * 60 * 60 * 3;
 	}
 
 }

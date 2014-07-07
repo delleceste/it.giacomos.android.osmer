@@ -85,7 +85,8 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         			else if(notificationData.isValid())
         			{
         				boolean alreadyNotifiedEqual = sharedData.alreadyNotifiedEqual(notificationData);
-        				if(!alreadyNotifiedEqual && !sharedData.arrivesTooEarly(notificationData, ctx))
+        				boolean arrivesTooLate = sharedData.arrivesTooLate(notificationData);
+        				if(!alreadyNotifiedEqual && !arrivesTooLate && !sharedData.arrivesTooEarly(notificationData, ctx))
         				
         				{
         					Log.e("GcmBroadcastReceiver.onReceive", "notification can be considereth new " + notificationData.username);
