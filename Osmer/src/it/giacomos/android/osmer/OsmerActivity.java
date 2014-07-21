@@ -139,7 +139,7 @@ NewsUpdateListener
 	{
 		super.onCreate(savedInstanceState);
 
-//		Log.e("OsmerActivity.onCreate", "onCreate called");
+		//		Log.e("OsmerActivity.onCreate", "onCreate called");
 		requestWindowFeature(Window.FEATURE_PROGRESS);
 		this.setProgressBarVisibility(true);
 
@@ -162,7 +162,7 @@ NewsUpdateListener
 	public void onResume()
 	{	
 		super.onResume();
-//		Log.e("OsmerActivity.onResume", "onResume called");
+		//		Log.e("OsmerActivity.onResume", "onResume called");
 		if(!mGoogleServicesAvailable)
 			return;
 
@@ -190,7 +190,7 @@ NewsUpdateListener
 		 */
 		m_downloadManager.onPause(this);
 		mLocationService.disconnect();
-		
+
 		if(mNewsFetchTask != null && mNewsFetchTask.getStatus() != AsyncTask.Status.FINISHED)
 			mNewsFetchTask.cancel(false);
 	}
@@ -229,7 +229,7 @@ NewsUpdateListener
 				getIntent().removeExtra("NotificationRainAlert");
 			}
 		}
-//		Log.e("onPostCreate", "force drawer item " + forceDrawerItem);
+		//		Log.e("onPostCreate", "force drawer item " + forceDrawerItem);
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
 	}
 
@@ -256,7 +256,7 @@ NewsUpdateListener
 				drawerItem = 1; /* radar */
 				getIntent().removeExtra("NotificationRainAlert");
 			}
-//			Log.e("OsmerActivity.onNewIntent", "switching to item " + drawerItem);
+			//			Log.e("OsmerActivity.onNewIntent", "switching to item " + drawerItem);
 			mActionBarManager.drawerItemChanged(drawerItem);
 		}
 	}
@@ -309,7 +309,7 @@ NewsUpdateListener
 		if(!mGoogleServicesAvailable)
 			return;
 	}
-	
+
 	public void init()
 	{
 		mProgressBarStep = mProgressBarTotSteps = 0;
@@ -403,7 +403,7 @@ NewsUpdateListener
 		/* to show alerts inside onPostResume, after onActivityResult */
 		mMyPendingAlertDialog = null;
 		mReportConditionsAccepted = mSettings.reportConditionsAccepted();
-		
+
 		/* if there is an application upgrade, the registration id must be regenerated.
 		 * The service may not be immediately restarted (the service also requests a new
 		 * registration id if necessary), and so it is better to generate a new one if 
@@ -508,12 +508,15 @@ NewsUpdateListener
 	public void onCameraReady()
 	{
 		Intent i = getIntent();
-		Bundle extras = i.getExtras();
-		if(extras != null && extras.containsKey("ptLatitude") && extras.containsKey("ptLongitude"))
+		if(i != null)
 		{
-			getMapFragment().moveTo(extras.getDouble("ptLatitude"), extras.getDouble("ptLongitude"));
-			i.removeExtra("ptLatitude");
-			i.removeExtra("ptLongitude");
+			Bundle extras = i.getExtras();
+			if(extras != null && extras.containsKey("ptLatitude") && extras.containsKey("ptLongitude"))
+			{
+				getMapFragment().moveTo(extras.getDouble("ptLatitude"), extras.getDouble("ptLongitude"));
+				i.removeExtra("ptLatitude");
+				i.removeExtra("ptLongitude");
+			}
 		}
 	}
 
@@ -539,7 +542,7 @@ NewsUpdateListener
 			/* trigger an update of the locality if Location is available */
 			if(mLocationService.getCurrentLocation() != null)
 				mLocationService.updateGeocodeAddress();
-			
+
 			/* if necessary, fetch news */
 			/* are there any news? This AsyncTask will call onNewsUpdateAvailable on success */
 			if(mSettings.timeToFetchNews())
@@ -1157,8 +1160,8 @@ NewsUpdateListener
 			{
 				i.putExtra("locality", loci.locality);
 			}
-//			else
-//				Log.e("OsmerActivity.startReportActivity", "startingActivity without locality");
+			//			else
+			//				Log.e("OsmerActivity.startReportActivity", "startingActivity without locality");
 			this.startActivityForResult(i, REPORT_ACTIVITY_FOR_RESULT_ID);
 		}
 	}
@@ -1166,7 +1169,7 @@ NewsUpdateListener
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{
-//		Log.e("onActivityResult", "result " + resultCode);
+		//		Log.e("onActivityResult", "result " + resultCode);
 		if(requestCode == REPORT_ACTIVITY_FOR_RESULT_ID)
 		{
 			if(resultCode == Activity.RESULT_OK)
@@ -1178,7 +1181,7 @@ NewsUpdateListener
 				reportLocation.setLatitude(data.getDoubleExtra("latitude", 0));
 				reportLocation.setLongitude(data.getDoubleExtra("longitude", 0));
 				GcmRegistrationManager gcmRM = new GcmRegistrationManager();
-				
+
 				/* ok */
 				String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
 				String registrationId = gcmRM.getRegistrationId(getApplicationContext());
@@ -1191,8 +1194,8 @@ NewsUpdateListener
 		}
 		else if(requestCode == TUTORIAL_ACTIVITY_FOR_RESULT_ID)
 		{
-//			Log.e("OsmerActivity.onActivityResult", "resultCode " + resultCode + " data " + data + " OK " +
-//					RESULT_OK + " cancelled " + RESULT_CANCELED);
+			//			Log.e("OsmerActivity.onActivityResult", "resultCode " + resultCode + " data " + data + " OK " +
+			//					RESULT_OK + " cancelled " + RESULT_CANCELED);
 			boolean conditionsAccepted = false;
 			if(data != null)
 				conditionsAccepted = data.getBooleanExtra("conditionsAccepted", false);
@@ -1203,12 +1206,12 @@ NewsUpdateListener
 				mStartNotificationService(conditionsAccepted && mSettings.notificationServiceEnabled());
 			}
 
-//			Log.e("OsmerActivity.onActivityResult", "conditionsAccepted " + conditionsAccepted);
+			//			Log.e("OsmerActivity.onActivityResult", "conditionsAccepted " + conditionsAccepted);
 			if(conditionsAccepted)
 			{
 				mDrawerList.performItemClick(mDrawerList, 5, mDrawerList.getItemIdAtPosition(5));
-//				mDrawerList.setItemChecked(5, true);
-//				mActionBarManager.drawerItemChanged(5);
+				//				mDrawerList.setItemChecked(5, true);
+				//				mActionBarManager.drawerItemChanged(5);
 			}
 			else
 			{
@@ -1346,7 +1349,7 @@ NewsUpdateListener
 		notification.ledOffMS = 2200;
 		notificationManager.notify("NOTIFICATION_NEWS", 13799,  notification);
 	}
-	
+
 	@Override
 	public void onRadarAnimationStart() 
 	{
@@ -1405,7 +1408,7 @@ NewsUpdateListener
 	private DataPool mDataPool;
 	private LocationService mLocationService;
 	private PopupMenu mMapOptionsMenu;
-	
+
 	private NewsFetchTask mNewsFetchTask;
 
 	private int mProgressBarStep, mProgressBarTotSteps;

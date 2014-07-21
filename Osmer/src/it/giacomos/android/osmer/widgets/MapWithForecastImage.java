@@ -58,9 +58,9 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 		else if(densityDpi == DisplayMetrics.DENSITY_HIGH)
 			mFontSize = 20;
 		else if(densityDpi == DisplayMetrics.DENSITY_XHIGH)
-			mFontSize = 24;
+			mFontSize = 25;
 		else if(densityDpi == DisplayMetrics.DENSITY_XXHIGH)
-			mFontSize = 28;
+			mFontSize = 30;
 		else if(densityDpi == DisplayMetrics.DENSITY_XXXHIGH)
 			mFontSize = 32;
 		else /* shouldn't happen */

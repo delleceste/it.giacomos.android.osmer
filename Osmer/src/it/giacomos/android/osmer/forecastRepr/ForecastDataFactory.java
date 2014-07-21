@@ -151,10 +151,14 @@ public class ForecastDataFactory
 					{
 						layers[layerIdx] = mResources.getDrawable(R.drawable.weather_mist_15);
 						layerIdx++;
-					}	
+					}
+					
+					if(layers != null)
+					{
+						LayerDrawable layeredSymbol = new LayerDrawable(layers);
+						a.setSymbol(layeredSymbol);
+					}
 
-					LayerDrawable layeredSymbol = new LayerDrawable(layers);
-					a.setSymbol(layeredSymbol);
 
 					/* generate wind symbol */
 					Bitmap windBmp = null;
