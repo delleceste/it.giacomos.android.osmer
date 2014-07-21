@@ -2,7 +2,7 @@ package it.giacomos.android.osmer.widgets;
 
 import java.util.HashMap;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.observations.ObservationData;

@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.preferences;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.service.ServiceManager;
 import android.app.Activity;
 import android.content.Context;
