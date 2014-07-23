@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -153,7 +153,7 @@ public class ForecastDataFactory
 						layerIdx++;
 					}
 					
-					if(layers != null)
+					if(layerIdx > 0)
 					{
 						LayerDrawable layeredSymbol = new LayerDrawable(layers);
 						a.setSymbol(layeredSymbol);

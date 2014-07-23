@@ -2,7 +2,7 @@ package it.giacomos.android.osmer.widgets.map.report;
 
 import it.giacomos.android.osmer.Logger;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.observations.ObservationData;
 import it.giacomos.android.osmer.preferences.Settings;
 import android.app.Activity;
