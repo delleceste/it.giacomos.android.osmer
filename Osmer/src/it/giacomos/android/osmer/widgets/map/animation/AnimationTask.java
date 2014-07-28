@@ -151,6 +151,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 		{			
 			if(fileHelper.exists(fName, mExternalStorageDirPath))
 			{
+				Log.e("AnimationTask.doInBackground", " file " + fName + " already exists on " + mExternalStorageDirPath);
 				/* file exists, no need to download it */
 				stepCnt++;
 
@@ -204,6 +205,8 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 
 							break;
 						}
+						else
+							Log.e("AnimationTask.doInBackground", "saved file " + fName + " on " + mExternalStorageDirPath);
 						/* if the task is cancelled, return before incrementing stepCnt and publishProgress, because the task
 						 * may have been cancelled on screen rotation. This ensures that the current step is not taken into account
 						 * (can be incomplete if the activity is destroyed here) when the activity is restarted.

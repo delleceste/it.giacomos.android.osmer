@@ -11,6 +11,7 @@ public abstract class NotificationData
 	public static short TYPE_REQUEST = 0;
 	public static short TYPE_REPORT = 1;
 	public static short TYPE_RAIN = 2;
+	public static short TYPE_NEW_RADAR_IMG = 3;
 	public String datetime, username;
 	public double latitude, longitude;
 	

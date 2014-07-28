@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 public class NotificationDataFactory 
 {
+	public boolean isNewRadarImageNotification(String input)
+	{
+		return input.startsWith("I:");
+	}
+	
 	public ArrayList<NotificationData> parse(String input)
 	{
 		/* return an allocated array even if no data is valuable */

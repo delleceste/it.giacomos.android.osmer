@@ -5,6 +5,8 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
 import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.preferences.Settings;
+import it.giacomos.android.osmer.rainAlert.SyncImages;
+import it.giacomos.android.osmer.rainAlert.SyncImagesListener;
 import it.giacomos.android.osmer.service.sharedData.NotificationData;
 import it.giacomos.android.osmer.service.sharedData.NotificationDataFactory;
 import it.giacomos.android.osmer.service.sharedData.RainNotification;
@@ -48,7 +50,8 @@ import android.widget.Toast;
 public class ReportDataService extends Service 
 implements GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener, 
-FetchRequestsTaskListener, Runnable
+FetchRequestsTaskListener, Runnable,
+SyncImagesListener
 {
 	private Location mLocation;
 	private Handler mHandler;
@@ -110,6 +113,9 @@ FetchRequestsTaskListener, Runnable
 			mHandler.postDelayed(this, 3000);
 			mIsStarted = true;
 
+			/* sync radar images for rain detection */
+			SyncImages syncer = new SyncImages(this.getApplicationContext().getCacheDir().getPath(), this);
+			syncer.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().radarHistoricalFileListUrl());
 		}
 		else
 		{
@@ -411,5 +417,17 @@ FetchRequestsTaskListener, Runnable
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onImagesSynced(String[] filepaths) 
+	{
+		if(filepaths != null)
+		{
+			Log.e("ReportDataService.onImagesSynced", " saved images " + filepaths[0] + " and " + filepaths[1]);
+		}
+		else
+			Log.e("ReportDataService.onImagesSynced", " failed to saved images!");
+		
 	}
 }
