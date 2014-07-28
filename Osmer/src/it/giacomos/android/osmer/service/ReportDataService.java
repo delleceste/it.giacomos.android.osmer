@@ -278,14 +278,12 @@ FetchRequestsTaskListener, Runnable
 					resultIntent.putExtra("ptLatitude", notificationData.latitude);
 					resultIntent.putExtra("ptLongitude", notificationData.longitude);
 
-					/*
+				
 					if(notificationData.isRequest())
 					{
 						requestsCount++;
 					}
-					else 
-					*/
-					if(notificationData.isRainAlert())
+					else  if(notificationData.isRainAlert())
 					{
 						RainNotification rainNotif = (RainNotification) notificationData;
 						iconId = R.drawable.ic_launcher_statusbar_rain;
@@ -358,25 +356,25 @@ FetchRequestsTaskListener, Runnable
 			}
 		} /* for(NotificationData notificationData : notifications) */
 		
-//		/* a request has been withdrawn, remove notification, if present */
-//		if(requestsCount == 0)
-//		{
-//			/* remove notification, if present */
-//			NotificationData currentNotification = sharedData.getNotificationData(NotificationData.TYPE_REQUEST);
-//			if(currentNotification != null) /* a notification is present */
-//			{
-//				// Log.e("ReportDataService.onServiceDataTaskComplete", " removing notification with id " + currentNotification.makeId());
-//				mNotificationManager.cancel(currentNotification.getTag(), currentNotification.getId());
-//
-//				/* mark as consumed. The currentNotification is not removed from sharedData because sharedData
-//				 * keeps it there in order not to bother us with possibly new notifications incoming in a near
-//				 * future. currentNotification thus needs to be stored in order to be used by 
-//				 * canBeConsideredNew() sharedData method.
-//				 * On the other hand, the map view tests this variable in order to show or not a marker.
-//				 */
-//				currentNotification.setConsumed(true);
-//			}
-//		}
+		/* a request has been withdrawn, remove notification, if present */
+		if(requestsCount == 0)
+		{
+			/* remove notification, if present */
+			NotificationData currentNotification = sharedData.getNotificationData(NotificationData.TYPE_REQUEST);
+			if(currentNotification != null) /* a notification is present */
+			{
+				// Log.e("ReportDataService.onServiceDataTaskComplete", " removing notification with id " + currentNotification.makeId());
+				mNotificationManager.cancel(currentNotification.getTag(), currentNotification.getId());
+
+				/* mark as consumed. The currentNotification is not removed from sharedData because sharedData
+				 * keeps it there in order not to bother us with possibly new notifications incoming in a near
+				 * future. currentNotification thus needs to be stored in order to be used by 
+				 * canBeConsideredNew() sharedData method.
+				 * On the other hand, the map view tests this variable in order to show or not a marker.
+				 */
+			currentNotification.setConsumed(true);
+			}
+		}
 	}
 
 	@Override
