@@ -499,7 +499,16 @@ public class Settings
 		e.commit();
 	}
 
-	
+	public long lastRadarImageSyncRequestTimestampMillis() {
+		return mSharedPreferences.getLong("LAST_RADAR_IMAGE_SYNC_REQUEST", 60 * 60 * 1000L);
+	}
+
+	public void setLastRadarImageSyncRequestedNow()
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putLong("LAST_RADAR_IMAGE_SYNC_REQUEST", System.currentTimeMillis());
+		e.commit();
+	}
 	
 
 }

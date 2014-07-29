@@ -25,20 +25,15 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
-public class SyncImages extends AsyncTask <String, Integer, String[]>
+public class SyncImages
 {
 	private String mErrorMsg = "";
-	private String mCacheDirPath;
-	SyncImagesListener mSyncImagesListener;
 	private static final String CLI = "afe0983der38819073rxc1900lksjd";
 
-	public SyncImages(String cacheDirPath, SyncImagesListener sil)
+	public SyncImages()
 	{
-		mCacheDirPath = cacheDirPath;
-		mSyncImagesListener = sil;
 	}
 	
 	/**
@@ -48,14 +43,13 @@ public class SyncImages extends AsyncTask <String, Integer, String[]>
 	 * 
 	 * @return filenames an array of two strings. The first string is the path 
 	 */
-	@Override
-	protected String[] doInBackground(String... urls) 
+	public String[] sync(String url, String cacheDir) 
 	{
 		boolean file1Success = true, file0Success = true;
 		String document = "";
 		String[] filepaths = null;
 		HttpClient httpClient = new DefaultHttpClient();
-        HttpPost request = new HttpPost(urls[0]);
+        HttpPost request = new HttpPost(url);
         List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
         postParameters.add(new BasicNameValuePair("cli", CLI));
         postParameters.add(new BasicNameValuePair("nfiles", "2"));
@@ -84,11 +78,11 @@ public class SyncImages extends AsyncTask <String, Integer, String[]>
 	        	FileHelper fileHelper = new FileHelper();
 	        	String file1 = "radar-" + remoteFilePath1.substring(remoteFilePath1.lastIndexOf('/') + 1);
 	        	String file0 = "radar-" + remoteFilePath0.substring(remoteFilePath1.lastIndexOf('/') + 1);
-	        	if(!fileHelper.exists(file1, mCacheDirPath))
+	        	if(!fileHelper.exists(file1, cacheDir))
 	        		/* try to download it */
-	        		file1Success = SaveImage(remoteFilePath1, file1);
-	        	if(!fileHelper.exists(file0, this.mCacheDirPath))
-	        		file0Success = SaveImage(remoteFilePath0, file0);
+	        		file1Success = SaveImage(remoteFilePath1, file1, cacheDir);
+	        	if(!fileHelper.exists(file0, cacheDir))
+	        		file0Success = SaveImage(remoteFilePath0, file0, cacheDir);
 	        	
 	        	/* if file0 or file1 already exist, then the file1Success and file0Success retain their 'true'
 	        	 * value from initialization at the beginning of the method.
@@ -103,13 +97,13 @@ public class SyncImages extends AsyncTask <String, Integer, String[]>
 	        		ArrayList<String> neededFiles = new ArrayList<String>();
 	        		neededFiles.add(file1);
 	        		neededFiles.add(file0);
-	        		int removed = removeUnneededFiles(neededFiles);
+	        		int removed = removeUnneededFiles(neededFiles, cacheDir);
 	        		Log.e("SyncImages.doInBackground", "Successfully saved " + file1 + " and " + 
-	        				file0 + " into " + mCacheDirPath + " and removed files " + removed);
+	        				file0 + " into " + cacheDir + " and removed files " + removed);
 	        	}
 	        	else
 	        	{
-	        		Log.e("SyncImages.doInBackground", "FAILED to save " + file1 + " and " + file0 + " into " + mCacheDirPath);
+	        		Log.e("SyncImages.doInBackground", "FAILED to save " + file1 + " and " + file0 + " into " + cacheDir);
 	        	}
 	        }
 	        
@@ -128,11 +122,11 @@ public class SyncImages extends AsyncTask <String, Integer, String[]>
 		return filepaths;
 	}
 
-	private int removeUnneededFiles(ArrayList<String> needed)
+	private int removeUnneededFiles(ArrayList<String> needed, String cacheDirPath)
 	{
 		boolean deleted;
 		int removed = 0;
-		File dir = new File(mCacheDirPath);
+		File dir = new File(cacheDirPath);
 		File [] files = dir.listFiles();
 		for(File file : files)
 		{
@@ -153,7 +147,7 @@ public class SyncImages extends AsyncTask <String, Integer, String[]>
 		return removed;
 	}
 	
-	private boolean SaveImage(String relativePath, String outFileName)
+	private boolean SaveImage(String relativePath, String outFileName, String cacheDirP)
 	{
 		FileHelper fileHelper = new FileHelper();
 		try
@@ -172,7 +166,7 @@ public class SyncImages extends AsyncTask <String, Integer, String[]>
 				byteBuffer.flush();
 				/* back to bytes again */
 				bytes = byteBuffer.toByteArray();
-				if(!fileHelper.storeRadarImage(outFileName, bytes, mCacheDirPath))
+				if(!fileHelper.storeRadarImage(outFileName, bytes, cacheDirP))
 				{
 					mErrorMsg = "Error saving image on external storage " +
 							fileHelper.getErrorMessage();
@@ -193,11 +187,6 @@ public class SyncImages extends AsyncTask <String, Integer, String[]>
 			mErrorMsg = "IOException: URL: \"" + relativePath + "\":\n\"" + e.getLocalizedMessage() + "\"";
 		}
 		return false;
-	}
-	
-	protected void onPostExecute(String[] filenames) 
-	{
-		mSyncImagesListener.onImagesSynced(filenames);
 	}
 	
 }

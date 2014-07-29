@@ -3,9 +3,11 @@ package it.giacomos.android.osmer.gcm;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.network.state.Urls;
+import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.rainAlert.NewRadarImageNotification;
 import it.giacomos.android.osmer.rainAlert.SyncImages;
 import it.giacomos.android.osmer.rainAlert.SyncImagesListener;
+import it.giacomos.android.osmer.service.RadarSyncAndRainDetectIntentService;
 import it.giacomos.android.osmer.service.sharedData.NotificationData;
 import it.giacomos.android.osmer.service.sharedData.NotificationDataFactory;
 import it.giacomos.android.osmer.service.sharedData.RainNotification;
@@ -35,7 +37,6 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 	@Override
 	public void onReceive(Context ctx, Intent intent) 
 	{
-
 		Bundle extras = intent.getExtras();
 		GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(ctx);
 		// The getMessageType() intent parameter must be the intent you received
@@ -65,6 +66,16 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 			{
 				boolean notified = false;
 				String dataAsString = intent.getExtras().getString("message");
+				long timestampSeconds = 0;
+				long currentTimestampSecs = System.currentTimeMillis() / 1000;
+				try
+				{	
+					timestampSeconds = Long.parseLong(intent.getExtras().getString("timestamp"));
+				}
+				catch(NumberFormatException e)
+				{
+					
+				}
 				//	if(error)
 				Log.e("GcmBroadcastReceiver.onReceive", "data: \"" + dataAsString + "\"");
 
@@ -75,9 +86,22 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 				NotificationDataFactory notificationDataFactory = new NotificationDataFactory();
 				if(notificationDataFactory.isNewRadarImageNotification(dataAsString))
 				{
-					NewRadarImageNotification newImageNotif = new NewRadarImageNotification(dataAsString);
-					SyncImages syncImages = new SyncImages(ctx.getCacheDir().getPath(), this);
-					syncImages.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().radarHistoricalImagesFolderUrl());
+					/* many notifications may have been queued and delivered within a short time.
+					 * Check that two notifications do not arrive too close to each other.
+					 */
+					Settings s = new Settings(ctx);
+					if(currentTimestampSecs - timestampSeconds < 5 * 60) /* the notification has been recently sent */
+					{
+						Log.e("GcmBroadcastReceiver.onReceive", "****** RADAR SYNC ******* data timestamp "
+								+ timestampSeconds + " is " + (currentTimestampSecs - timestampSeconds) + " seconds old " + 
+								" current ts is " + currentTimestampSecs);
+					///	NewRadarImageNotification newImageNotif = new NewRadarImageNotification(dataAsString);
+						Intent radarSyncRainDetectIntent = new Intent(ctx, RadarSyncAndRainDetectIntentService.class);
+						ctx.startService(radarSyncRainDetectIntent);
+					}
+					else
+						Log.e("GcmBroadcastReceiver.onReceive", "!!! RADAR SYNC !!! data timestamp "+ timestampSeconds + " is " 
+								+ (currentTimestampSecs - timestampSeconds) + " seconds: TOO old");
 				}
 				else
 				{

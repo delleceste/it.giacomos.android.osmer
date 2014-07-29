@@ -50,8 +50,7 @@ import android.widget.Toast;
 public class ReportDataService extends Service 
 implements GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener, 
-FetchRequestsTaskListener, Runnable,
-SyncImagesListener
+FetchRequestsTaskListener, Runnable
 {
 	private Location mLocation;
 	private Handler mHandler;
@@ -112,10 +111,6 @@ SyncImagesListener
 			mHandler = new Handler();
 			mHandler.postDelayed(this, 3000);
 			mIsStarted = true;
-
-			/* sync radar images for rain detection */
-			SyncImages syncer = new SyncImages(this.getApplicationContext().getCacheDir().getPath(), this);
-			syncer.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().radarHistoricalFileListUrl());
 		}
 		else
 		{
@@ -419,15 +414,4 @@ SyncImagesListener
 		}
 	}
 
-	@Override
-	public void onImagesSynced(String[] filepaths) 
-	{
-		if(filepaths != null)
-		{
-			Log.e("ReportDataService.onImagesSynced", " saved images " + filepaths[0] + " and " + filepaths[1]);
-		}
-		else
-			Log.e("ReportDataService.onImagesSynced", " failed to saved images!");
-		
-	}
 }
