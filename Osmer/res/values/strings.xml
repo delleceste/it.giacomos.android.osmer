@@ -332,6 +332,7 @@
     </string-array>
     <string-array name="report_wind_textitems">
         <item>don\'t report</item>
+        <item>no wind</item>
         <item>breeze</item>
         <item>moderate</item>
         <item>strong</item>
@@ -612,7 +613,7 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
 ]]>
     </string>
     
-    <string name="report_accept_terms_and_conditions">I accept the terms and conditions</string>
+    <string name="report_accept_terms_and_conditions">I accept the terms\nand conditions</string>
     
     <string name="report_recall_from_menu">NOTE: you can recall this from the "Reports" section,
         drop down menu in the action bar, "Reports tutorial".</string>

@@ -656,7 +656,7 @@ che diventa intensa nelle zone con riflettività superiori ai 40 dBZ e molto int
 </string>
 
     
-    <string name="report_accept_terms_and_conditions">Ho letto e accetto i termini e le condizioni d\'uso</string>
+    <string name="report_accept_terms_and_conditions">Ho letto e accetto i termini \ne le condizioni d\'uso</string>
     
     <string name="report_recall_from_menu">NOTA: puoi richiamare questa guida dalla sezione "Segnalazioni",
         attivando il menu` a tendina e selezionando "Tutorial segnalazioni".</string>
