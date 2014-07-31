@@ -332,6 +332,7 @@
     </string-array>
     <string-array name="report_wind_textitems">
         <item>don\'t report</item>
+        <item>no wind</item>
         <item>breeze</item>
         <item>moderate</item>
         <item>strong</item>
