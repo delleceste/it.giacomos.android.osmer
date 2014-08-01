@@ -4,7 +4,7 @@ import it.giacomos.android.osmer.rainAlert.interfaces.ImgOverlayInterface;
 
 public abstract class ImgOverlayBase implements ImgOverlayInterface
 {
-	public ImgOverlayBase(String imgFilename, String fileSuffi, int imgWi, int imgHe, 
+	public ImgOverlayBase(String imgFilename, int imgWi, int imgHe, 
 			double topLeftLa,  double topLeftLo, 
 			double botRightLa, double $botRightLo,
 			double widthK, double heightK, double radiusK,
@@ -13,7 +13,6 @@ public abstract class ImgOverlayBase implements ImgOverlayInterface
 		imgW = imgWi;
 		imgH = imgHe;
 		image_filename = imgFilename;
-		file_suffix = fileSuffi;
 		
 		topLeftLat = topLeftLa;
 		topLeftLon = topLeftLo;
@@ -35,7 +34,7 @@ public abstract class ImgOverlayBase implements ImgOverlayInterface
 	
 	protected double widthKm = 0.0,  heightKm = 0.0,  radiusKm = 0.0;
 	
-	protected String image_filename = "", file_suffix = "";
+	protected String image_filename = "";
 	
 	public int getImgW()
 	{

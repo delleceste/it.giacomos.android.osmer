@@ -9,7 +9,10 @@ import android.util.Log;
 public class Element {
 
 	public Index index;
-	public double $xend = 0.0, $xstart = 0.0, $ystart = 0.0, $yend = 0.0;
+	public double xend = 0.0, xstart = 0.0, ystart = 0.0, yend = 0.0;
+	public double dbz;
+	private boolean increased;
+	
 	public ArrayList<ContiguousElementData> contiguousElementDataList; /* contiguousElementData */
 	
 	public Element(int nrows, int ncols) {
@@ -24,6 +27,16 @@ public class Element {
 		
 	}
 
+	public void setHasIncreased(boolean has)
+	{
+		increased = has;
+	}
+	
+	public boolean hasIncreased()
+	{
+		return increased;
+	}
+	
 	public void initFromString(String section) 
 	{
 		int commaCnt = section.length() - section.replace(",", "").length();
@@ -47,6 +60,11 @@ public class Element {
 			this.contiguousElementDataList.add(contiguousElementData);
 		else
 			Log.e("Element.addContiguousData","Element.addContiguousData: element not valid");
+	}
+
+	public ArrayList<ContiguousElementData> getLinks() 
+	{
+		return this.contiguousElementDataList;
 	}
 	
 	

@@ -41,7 +41,8 @@ public class SyncImages
 	 * If one or both files already exist locally, nothing is done. Otherwise, the
 	 * missing files are downloaded from the server and saved locally.
 	 * 
-	 * @return filenames an array of two strings. The first string is the path 
+	 * @return filenames an array of two strings. The first string is the path of the previous 
+	 * file, the second is the path of the last file.
 	 */
 	public String[] sync(String url, String cacheDir) 
 	{
@@ -70,14 +71,16 @@ public class SyncImages
 	        if(document.length() - document.replace("->", "").length() == 4)
 	        {
 	        	String [] lines = document.split("\n");
+	        	/* previous image */
 	        	String date1 = lines[0].split("->")[0];
 	        	String remoteFilePath1 = lines[0].split("->")[1];
+	        	/* last image */
 	        	String date0 = lines[1].split("->")[0];
 	        	String remoteFilePath0 = lines[1].split("->")[1];
 	        	
 	        	FileHelper fileHelper = new FileHelper();
 	        	String file1 = "radar-" + remoteFilePath1.substring(remoteFilePath1.lastIndexOf('/') + 1);
-	        	String file0 = "radar-" + remoteFilePath0.substring(remoteFilePath1.lastIndexOf('/') + 1);
+	        	String file0 = "radar-" + remoteFilePath0.substring(remoteFilePath0.lastIndexOf('/') + 1);
 	        	if(!fileHelper.exists(file1, cacheDir))
 	        		/* try to download it */
 	        		file1Success = SaveImage(remoteFilePath1, file1, cacheDir);

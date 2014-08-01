@@ -7,7 +7,7 @@ import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.rainAlert.NewRadarImageNotification;
 import it.giacomos.android.osmer.rainAlert.SyncImages;
 import it.giacomos.android.osmer.rainAlert.SyncImagesListener;
-import it.giacomos.android.osmer.service.RadarSyncAndRainDetectIntentService;
+import it.giacomos.android.osmer.service.RadarSyncAndRainDetectService;
 import it.giacomos.android.osmer.service.sharedData.NotificationData;
 import it.giacomos.android.osmer.service.sharedData.NotificationDataFactory;
 import it.giacomos.android.osmer.service.sharedData.RainNotification;
@@ -96,7 +96,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 								+ timestampSeconds + " is " + (currentTimestampSecs - timestampSeconds) + " seconds old " + 
 								" current ts is " + currentTimestampSecs);
 					///	NewRadarImageNotification newImageNotif = new NewRadarImageNotification(dataAsString);
-						Intent radarSyncRainDetectIntent = new Intent(ctx, RadarSyncAndRainDetectIntentService.class);
+						Intent radarSyncRainDetectIntent = new Intent(ctx, RadarSyncAndRainDetectService.class);
 						ctx.startService(radarSyncRainDetectIntent);
 					}
 					else

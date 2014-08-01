@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="765"
-    android:versionName="2.9.2" >
+    android:versionCode="801"
+    android:versionName="2.10.0-alpha0" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -200,7 +200,7 @@
         
         <service android:name="it.giacomos.android.osmer.GcmIntentService" />
         
-        <service android:name="it.giacomos.android.osmer.service.RadarSyncAndRainDetectIntentService" />
+        <service android:name="it.giacomos.android.osmer.service.RadarSyncAndRainDetectService" />
         
     </application>
 
