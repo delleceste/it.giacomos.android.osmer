@@ -1,5 +1,7 @@
 package it.giacomos.android.osmer.service.sharedData;
 
+import java.util.Date;
+
 import android.util.Log;
 
 public class RainNotification extends NotificationData {
@@ -53,6 +55,20 @@ public class RainNotification extends NotificationData {
 		}
 	}
 	
+	public RainNotification(boolean goingToRain, 
+			long timestampSec, 
+			float dbZ,
+			double lat,
+			double lon) 
+	{
+		mGoingToRain = goingToRain;
+		date = new Date(timestampSec * 1000); /* date wants ms */
+		mIsValid = (timestampSec > 0);
+		mLastDbZ = dbZ;
+		latitude = lat;
+		longitude = lon;
+	}
+
 	public float getLastDbZ()
 	{
 		return mLastDbZ;

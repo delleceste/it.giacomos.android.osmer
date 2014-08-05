@@ -4,7 +4,6 @@ import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.preferences.Settings;
-import it.giacomos.android.osmer.rainAlert.NewRadarImageNotification;
 import it.giacomos.android.osmer.rainAlert.SyncImages;
 import it.giacomos.android.osmer.rainAlert.SyncImagesListener;
 import it.giacomos.android.osmer.service.RadarSyncAndRainDetectService;
@@ -68,6 +67,10 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 				String dataAsString = intent.getExtras().getString("message");
 				long timestampSeconds = 0;
 				long currentTimestampSecs = System.currentTimeMillis() / 1000;
+				/* many notifications may have been queued and delivered within a short time.
+				 * Check that two notifications do not arrive too close to each other.
+				 */
+				Settings s = new Settings(ctx);
 				try
 				{	
 					timestampSeconds = Long.parseLong(intent.getExtras().getString("timestamp"));
@@ -84,20 +87,17 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 						(NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
 				NotificationDataFactory notificationDataFactory = new NotificationDataFactory();
-				if(notificationDataFactory.isNewRadarImageNotification(dataAsString))
+				if(s.rainNotificationEnabled() && notificationDataFactory.isNewRadarImageNotification(dataAsString))
 				{
-					/* many notifications may have been queued and delivered within a short time.
-					 * Check that two notifications do not arrive too close to each other.
-					 */
-					Settings s = new Settings(ctx);
-					if(currentTimestampSecs - timestampSeconds < 5 * 60) /* the notification has been recently sent */
+					
+					if(currentTimestampSecs - timestampSeconds < 1 * 60) /* the notification has been recently sent */
 					{
 						Log.e("GcmBroadcastReceiver.onReceive", "****** RADAR SYNC ******* data timestamp "
 								+ timestampSeconds + " is " + (currentTimestampSecs - timestampSeconds) + " seconds old " + 
 								" current ts is " + currentTimestampSecs);
-					///	NewRadarImageNotification newImageNotif = new NewRadarImageNotification(dataAsString);
-						Intent radarSyncRainDetectIntent = new Intent(ctx, RadarSyncAndRainDetectService.class);
-						ctx.startService(radarSyncRainDetectIntent);
+						Intent radarSyncRainDetectService = new Intent(ctx, RadarSyncAndRainDetectService.class);
+						radarSyncRainDetectService.putExtra("timestamp", timestampSeconds);
+						ctx.startService(radarSyncRainDetectService);
 					}
 					else
 						Log.e("GcmBroadcastReceiver.onReceive", "!!! RADAR SYNC !!! data timestamp "+ timestampSeconds + " is " 

@@ -10,6 +10,10 @@ import com.google.android.gms.location.LocationClient;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.network.state.Urls;
+import it.giacomos.android.osmer.preferences.Settings;
+import it.giacomos.android.osmer.rainAlert.RainNotificationBuilder;
+import it.giacomos.android.osmer.service.sharedData.RainNotification;
+import it.giacomos.android.osmer.service.sharedData.ServiceSharedData;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -33,6 +37,7 @@ RadarImageSyncAndCalculationTaskListener
 	private boolean mIsStarted;
 	private LocationClient mLocationClient;
 	private Location mLocation;
+	private long mTimestampSecs;
 
 	public RadarSyncAndRainDetectService()
 	{
@@ -48,6 +53,7 @@ RadarImageSyncAndCalculationTaskListener
 		Log.e("RadarSyncAndRainDetectService", "onStartCommand");
 		if(!mIsStarted)
 		{
+			mTimestampSecs = intent.getLongExtra("timestamp", 0L);
 			if(mLocationClient == null)
 				mLocationClient = new LocationClient(this, this, this);
 			/* wait for location client to be connected before syncing images and 
@@ -77,7 +83,7 @@ RadarImageSyncAndCalculationTaskListener
 			gridConf = new String(buffer);
 			String radarImgFilePath = this.getApplicationContext().getCacheDir().getPath();
 			RadarImageSyncAndGridCalculationTask mCalcTask = new RadarImageSyncAndGridCalculationTask(mylatitude,
-					mylongitude, this, gridConf);
+					mylongitude, this);
 			String [] configurations = {gridConf, radarImgFilePath, new Urls().radarHistoricalFileListUrl()};
 			mCalcTask.execute(configurations);
 		} 
@@ -107,10 +113,11 @@ RadarImageSyncAndCalculationTaskListener
 		mLocationClient.disconnect(); /* immediately */
 		if(mLocation != null)
 		{
-			startSyncImagesAndRainDetect(mLocation.getLatitude(), mLocation.getLongitude());
+			/// startSyncImagesAndRainDetect(mLocation.getLatitude(), mLocation.getLongitude());
+			startSyncImagesAndRainDetect(45.645547,13.849061);
 			Log.e("RadarSyncAndRainDetectService.onConnected", " location is good: lat " + mLocation.getLatitude() + 
 					" lon " + mLocation.getLongitude());
-			
+
 		}
 		else/* wait an entire mSleepInterval before retrying */
 			Log.e("RadarSyncAndRainDetectService", "location is not available. Cannot calculate rain probability");
@@ -129,48 +136,43 @@ RadarImageSyncAndCalculationTaskListener
 	@Override
 	public void onRainDetectionDone(boolean willRain) 
 	{
-		if(willRain)
+		if(new Settings(this).useInternalRainDetection())
 		{
-			NotificationManager mNotificationManager =
-					(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			Intent resultIntent = new Intent(this, OsmerActivity.class);
-			resultIntent.putExtra("ptLatitude", mLocation.getLatitude());
-			resultIntent.putExtra("ptLongitude", mLocation.getLongitude());
-			int iconId = R.drawable.ic_blue_pin;
-			/*  */
-			Log.e("RadarSyncAndRainDetectService", " it will rain!");
-			int notificationFlags = Notification.DEFAULT_SOUND|
-					Notification.FLAG_SHOW_LIGHTS;
-			NotificationCompat.Builder notificationBuilder =
-					new NotificationCompat.Builder(this)
-			.setSmallIcon(iconId)
-			.setAutoCancel(true)
-			.setLights(Color.RED, 1000, 1000)
-			.setContentTitle(getResources().getString(R.string.app_name))
-			.setContentText("RAIN DETECTED FROM APP!!").setDefaults(notificationFlags);
+			RainNotification rainNotif = new RainNotification(willRain, mTimestampSecs, 0, 
+					mLocation.getLatitude(), 
+					mLocation.getLongitude());
 
-			// The stack builder object will contain an artificial back stack for the
-			// started Activity.
-			// This ensures that navigating backward from the Activity leads out of
-			// your application to the Home screen.
-			TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-			// Adds the back stack for the Intent (but not the Intent itself)
-			stackBuilder.addParentStack(OsmerActivity.class);
-			// Adds the Intent that starts the Activity to the top of the stack
-			stackBuilder.addNextIntent(resultIntent);
+			ServiceSharedData sharedData = ServiceSharedData.Instance(this);
+			boolean alreadyNotifiedEqual = sharedData.alreadyNotifiedEqual(rainNotif);
+			boolean arrivesTooLate = sharedData.arrivesTooLate(rainNotif);
+			if(!alreadyNotifiedEqual && !arrivesTooLate && !sharedData.arrivesTooEarly(rainNotif, this))
+			{
+				if(willRain)
+				{
+					NotificationManager mNotificationManager =
+							(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+					Intent resultIntent = new Intent(this, OsmerActivity.class);
+					resultIntent.putExtra("ptLatitude", mLocation.getLatitude());
+					resultIntent.putExtra("ptLongitude", mLocation.getLongitude());
+					int iconId = R.drawable.ic_blue_pin;
 
-			PendingIntent resultPendingIntent =
-					stackBuilder.getPendingIntent( 0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-			notificationBuilder.setContentIntent(resultPendingIntent);
-			notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-			Notification notification = notificationBuilder.build();
-			mNotificationManager.notify("RainNotificationFromApp", 2343,  notification);
-		}
-		else
-		{
-			Log.e("RadarSyncAndRainDetectService", " it will NOT rain!");
+					iconId = R.drawable.ic_launcher_statusbar_message_filled;
+					float dbZ = rainNotif.getLastDbZ();
+
+					RainNotificationBuilder rainNotifBuilder = new RainNotificationBuilder();
+					Notification notification = rainNotifBuilder.build(this,  dbZ, iconId, rainNotif.latitude, rainNotif.longitude);
+					mNotificationManager.notify(rainNotif.getTag(), rainNotif.getId(),  notification);
+					/* update notification data */
+					Log.e("RadarSyncAndRainDetectService.onRainDetectionDone", "notification setting notified " + rainNotif.getTag() + ", " + true);
+					sharedData.updateCurrentRequest(rainNotif, true);
+				}
+				else
+				{
+					Log.e("RadarSyncAndRainDetectService", " it will NOT rain!");
+				}
+			}
 		}
 	}
 

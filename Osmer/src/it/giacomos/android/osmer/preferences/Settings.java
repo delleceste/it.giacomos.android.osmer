@@ -14,7 +14,7 @@ public class Settings
 	public static final int TRIAL_DAYS = 20;
 	public static final String PREFERENCES_NAME = "Osmer.conf";
 	private SharedPreferences mSharedPreferences;
-	
+
 	public Settings(Context ctx)
 	{
 		mSharedPreferences = ctx.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -32,7 +32,7 @@ public class Settings
 		e.putBoolean("HINT_FORECAST_ICONS", en);
 		e.commit();
 	}
-	
+
 	public boolean isZoneLongPressHintEnabled()
 	{
 		boolean res = mSharedPreferences.getBoolean("HINT_ZONE_LONG_PRESS", true);
@@ -63,7 +63,7 @@ public class Settings
 	{
 		return mSharedPreferences.contains("MEASURE_MARKER_LAT1");
 	}
-	
+
 	public void setMeasureMarker1LatLng(float lat1, float long1)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
@@ -79,14 +79,14 @@ public class Settings
 		res[1] = mSharedPreferences.getFloat("MEASURE_MARKER_LONG1", -1.0f);
 		return res;
 	}
-	
+
 	public void setMapType(int mapType)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
 		e.putInt("MAP_TYPE", mapType);
 		e.commit();
 	}
-	
+
 	public int getMapType()
 	{
 		return mSharedPreferences.getInt("MAP_TYPE", GoogleMap.MAP_TYPE_NORMAL);
@@ -135,13 +135,13 @@ public class Settings
 	{
 		return mSharedPreferences.contains("MAP_WEBCAM_MARKER_FONT_SIZE");
 	}
-	
+
 	public float mapWebcamMarkerFontSize()
 	{
 		float res = mSharedPreferences.getFloat("MAP_WEBCAM_MARKER_FONT_SIZE", 21);
 		return res;
 	}
-	
+
 	public void setMapWebcamMarkerFontSize(float size) 
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
@@ -153,32 +153,32 @@ public class Settings
 	{
 		return mSharedPreferences.getLong("WEBCAM_LAST_UPDATE_TIMESTAMP_MILLIS", 0);
 	}
-	
+
 	public void setWebcamLastUpdateTimestampMillis(long timestampMillis)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
 		e.putLong("WEBCAM_LAST_UPDATE_TIMESTAMP_MILLIS", timestampMillis);
 		e.commit();
 	}
-	
+
 	public boolean hasObservationsMarkerFontSize()
 	{
 		return mSharedPreferences.contains("MAP_OBSERVATIONS_MARKER_FONT_SIZE");
 	}
-	
+
 	public float observationsMarkerFontSize()
 	{
 		float res = mSharedPreferences.getFloat("MAP_OBSERVATIONS_MARKER_FONT_SIZE", 25.0f);
 		return res;
 	}
-	
+
 	public void setObservationsMarkerFontSize(float size) 
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
 		e.putFloat("MAP_OBSERVATIONS_MARKER_FONT_SIZE", size);
 		e.commit();
 	}
-	
+
 	public void setMapClickOnBaloonImageHintEnabled(boolean b) 
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
@@ -210,7 +210,7 @@ public class Settings
 		e.putLong("RADAR_IMAGE_TIMESTAMP", currentTimeMillis);
 		e.commit();
 	}
-	
+
 	public long getRadarImageTimestamp()
 	{
 		long radarImageTs;
@@ -232,7 +232,7 @@ public class Settings
 		}
 		return radarImageTs;
 	}
-	
+
 	/** returns true if this is the first execution. Then sets the first execution flag to 
 	 * false for the next invocations
 	 * @return true/false
@@ -245,7 +245,7 @@ public class Settings
 		e.commit();
 		return ret;
 	}
-	
+
 	public CameraPosition getCameraPosition()
 	{
 		CameraPosition pos;
@@ -272,7 +272,7 @@ public class Settings
 		e.putFloat("MAP_WITH_FOREACAST_IMAGE_TEXT_FONT_SIZE", fontSize);
 		e.commit();
 	}
-	
+
 	public float getMapWithForecastImageTextFontSize()
 	{
 		return mSharedPreferences.getFloat("MAP_WITH_FOREACAST_IMAGE_TEXT_FONT_SIZE", 100.0f);
@@ -290,7 +290,7 @@ public class Settings
 		String res = mSharedPreferences.getString("REPORTER_USER_NAME", "");
 		return res;
 	}
-	
+
 	public long minTimeBetweenNotificationsMinutes(String tag)
 	{
 		long res;
@@ -310,14 +310,14 @@ public class Settings
 		}
 		return res;
 	}
-	
+
 	public void setMinTimeBetweenNotificationsMinutes(String tag, long minTime)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
 		e.putLong("MIN_TIME_BETWEEN_NOTIFICATIONS_" + tag, minTime);
 		e.commit();
 	}
-	
+
 	public void saveMyReportRequestMarkerAttributes(double latitude,
 			double longitude) 
 	{
@@ -326,9 +326,9 @@ public class Settings
 		e.putFloat("MY_REPORT_REQUEST_MARKER_LONG", (float)longitude);
 		e.putLong("MY_REPORT_REQUEST_TIME_MILLIS", System.currentTimeMillis());
 		e.commit();
-		
+
 	}
-	
+
 	/** If marker older than 3 hours, throw it away */
 	public double getMyReportRequestMarkerLatitude()
 	{
@@ -338,7 +338,7 @@ public class Settings
 		float lat =  mSharedPreferences.getFloat("MY_REPORT_REQUEST_MARKER_LAT", -1.0f);
 		return (double) lat;
 	}
-	
+
 	public double getMyReportRequestMarkerLongitude()
 	{
 		long lastRequestTSMillis = mSharedPreferences.getLong("MY_REPORT_REQUEST_TIME_MILLIS", 0);
@@ -347,7 +347,7 @@ public class Settings
 		float lat =  mSharedPreferences.getFloat("MY_REPORT_REQUEST_MARKER_LONG", -1.0f);
 		return (double) lat;
 	}
-	
+
 	/** the service sleep interval in milliseconds between two subsequent updates of the 
 	 * data on the web server. Defaults to four minutes.
 	 * @return
@@ -365,69 +365,69 @@ public class Settings
 			String s = mSharedPreferences.getString("SERVICE_SLEEP_INTERVAL_MINS", "5");
 			intmin = Long.parseLong(s);
 		}
-		
+
 		return intmin * 60 * 1000;
 	}
-	
+
 	public boolean notificationServiceEnabled() 
 	{
 		boolean ret = mSharedPreferences.getBoolean("NOTIFICATION_SERVICE_ENABLED", true);
 		return ret;
 	}
-	
+
 	public void setNotificationServiceEnabled(boolean en)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
 		e.putBoolean("NOTIFICATION_SERVICE_ENABLED", en);
 		e.commit();
 	}
-	
+
 	public boolean reportConditionsAccepted()
 	{
 		boolean ret = mSharedPreferences.getBoolean("REPORT_CONDITIONS_ACCEPTED_V_2_6_1", false);
 		return ret;
 	}
-	
+
 	public void setReportConditionsAccepted(boolean en)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
 		e.putBoolean("REPORT_CONDITIONS_ACCEPTED_V_2_6_1", en);
 		e.commit();
 	}
-	
+
 	public long getLastReportDataServiceStartedTimeMillis() 
 	{
 		long intmillis =  mSharedPreferences.getLong("LAST_REPORT_DATA_SERVICE_STARTED_TIME_MILLIS", 0);
 		return intmillis;
 	}
-	
+
 	public void setLastReportDataServiceStartedTimeMillis(long timeMillis)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
 		e.putLong("LAST_REPORT_DATA_SERVICE_STARTED_TIME_MILLIS", timeMillis);
 		e.commit();
 	}
-	
+
 	public boolean tiltTutorialShown() 
 	{
 		boolean ret = mSharedPreferences.getBoolean("TILT_TUTORIAL_SHOWN", false);
 		return ret;
 	}
-	
+
 	public void setTiltTutorialShown(boolean b)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
 		e.putBoolean("TILT_TUTORIAL_SHOWN", b);
 		e.commit();
 	}
-	
+
 	public void setTrialDaysLeft(int daysLeft) 
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
 		e.putInt("TRIAL_DAYS_LEFT", daysLeft);
 		e.commit();
 	}
-	
+
 	public void setApplicationPurchased(boolean purchaseth) 
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
@@ -437,6 +437,11 @@ public class Settings
 
 	public boolean rainNotificationEnabled() {
 		return mSharedPreferences.getBoolean("RAIN_NOTIFICATION_ENABLED", true);
+	}
+
+	public boolean useInternalRainDetection() {
+
+		return mSharedPreferences.getBoolean("USE_INTERNAL_RAIN_DETECTION", true);	
 	}
 
 	public boolean importantDialogToShow() {
@@ -453,7 +458,7 @@ public class Settings
 	{
 		return mSharedPreferences.getString("GCM_REGISTRATION_ID", "");
 	}
-	
+
 	public void saveRegistrationId(String regId, Context context)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
@@ -462,7 +467,7 @@ public class Settings
 			e.putInt("LAST_GCM_REGISTERED_APP_VERSION", 
 					context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode);
 		} catch (NameNotFoundException e1) {
-			
+
 		}
 		e.commit();
 	}
@@ -476,12 +481,12 @@ public class Settings
 	{
 		long lastFetched = mSharedPreferences.getLong("LAST_NEWS_FETCHED_TS", 0);
 		long now = System.currentTimeMillis();
-		
+
 		return (now - lastFetched) >  24 * 60 *  60 * 1000;
 	}
 
 	public long lastNewsReadTimestamp() {
-		
+
 		return mSharedPreferences.getLong("LAST_NEWS_READ_TS", 0L) / 1000;
 	}
 
@@ -491,7 +496,7 @@ public class Settings
 		e.putLong("LAST_NEWS_READ_TS", System.currentTimeMillis());
 		e.commit();
 	}
-	
+
 	public void setNewsFetchedNow() 
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
@@ -509,6 +514,8 @@ public class Settings
 		e.putLong("LAST_RADAR_IMAGE_SYNC_REQUEST", System.currentTimeMillis());
 		e.commit();
 	}
-	
+
+
+
 
 }

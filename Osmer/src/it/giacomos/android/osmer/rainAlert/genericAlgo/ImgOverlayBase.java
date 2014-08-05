@@ -1,5 +1,6 @@
 package it.giacomos.android.osmer.rainAlert.genericAlgo;
 
+import android.util.Log;
 import it.giacomos.android.osmer.rainAlert.interfaces.ImgOverlayInterface;
 
 public abstract class ImgOverlayBase implements ImgOverlayInterface
@@ -61,6 +62,7 @@ public abstract class ImgOverlayBase implements ImgOverlayInterface
 		/* map latitude/longitude lat, lon coordinates to x and y pixel coordinates between 0 and $limg (501 pixels wide) */
 		mCenterX = (double) imgW * (lon - topLeftLon) /  (botRightLon - topLeftLon);
 		mCenterY = (double) imgH - imgH * (lat - botRightLat) / (topLeftLat - botRightLat);
+//		Log.e("ImgOverlayBase.mMapCenterToPix", "lat " + lat + ", lon " + lon + " mapped to " + mCenterX + ", "  + mCenterY);
 	}
 	
 	public double getWidth()

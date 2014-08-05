@@ -806,5 +806,14 @@ Please note: requests devoid of the full name and date will be ignored.\n\n
 	
 	<string name="gcm_registered_ok">Correctly registered with Google Cloud Messaging for notification service</string>
 	
+	<string name="pref_internal_rain_calc_checkbox">The phone calculates probability for rain alerts. This choice is faster, calculations are performed as soon as a new radar image is available. Recommended</string>
+	
+	<string name="pref_internal_rain_calc_checkbox_off">The rain possibility is calculated by the remote Meteo.FVG server. Notifications may arrive late, depending on the time interval set for the service. For slow devices.</string>
+	
+	<string name="pref_use_internal_rain_detection">Use the device to calculate the rain probability. Note: this service is implemented
+	    by the application author. Data is not taken from Osmer/Meteo.FVG</string>
+	
+	<string name="pref_use_internal_rain_detection_summary">It is recommended that the rain possibility detection is calculated by the device. This guarantees the most fast and up to date notifications</string>
+	
 	
 </resources>

@@ -839,7 +839,7 @@ mio android id è il seguente:\n\n
 	
 	<string name="pref_rain_notification_enable_summary">Se abilitato, riceverai una notifica quando viene calcolata una certa probabilità di
 	    pioggia nella tua zona (NOTA BENE: l\'autore non si assume alcuna responsabilità circa questo risultato, che 
-	    in media ha dimostrato un\'attendibilità intorno al 70-80%</string>
+	    in media ha dimostrato un\'attendibilità intorno al 80-85%</string>
 	
 	<string name="pref_rain_notif_interval">Intervallo notifiche pioggia</string>
 	
@@ -860,6 +860,24 @@ mio android id è il seguente:\n\n
 	
 	<string name="pref_rain_alert_summary_checks_every">Le notifiche di possibile pioggia 
 	    vengono mostrate al più ogni</string>
+	
+<string name="pref_internal_rain_calc_checkbox">
+    La possibilità di pioggia viene calcolata dal telefono. Questa opzione è più veloce, perché i calcoli sono 
+    effettuati non appena una nuova immagine radar diventa disponibile sul server. È l\'impostazione raccomandata.
+    </string>
+	
+	<string name="pref_internal_rain_calc_checkbox_off">
+	    La possibilità di pioggia è calcolata remotamente dal server della app Meteo.FVG.
+	    Le notifiche possono arrivare con un ritardo pari al valore impostato nell\'opzione Intervallo aggiornamenti.
+	    Questa opzione è indicata solo per dispositivi lenti.</string>
+	
+	<string name="pref_use_internal_rain_detection">Usa il dispositivo per calcolare la possibilità di pioggia 
+	    (funzione implementata dallo sviluppatore, indipendente da Osmer/Meteo.FVG)</string>
+	
+	<string name="pref_use_internal_rain_detection_summary">
+	    È raccomandata l\'opzione che abilita il calcolo della possibilità di pioggia sul dispositivo, per ricevere
+	    notifiche più tempestivamente.</string>
+	
 	
 	<string name="minutes">minuti</string>
 	

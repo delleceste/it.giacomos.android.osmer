@@ -5,6 +5,7 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
 import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.preferences.Settings;
+import it.giacomos.android.osmer.rainAlert.RainNotificationBuilder;
 import it.giacomos.android.osmer.rainAlert.SyncImages;
 import it.giacomos.android.osmer.rainAlert.SyncImagesListener;
 import it.giacomos.android.osmer.service.sharedData.NotificationData;
@@ -194,7 +195,7 @@ FetchRequestsTaskListener, Runnable
 			/* get the registration id (for new versions, to work with google cloud messaging */
 			GcmRegistrationManager gcmRm = new GcmRegistrationManager();
 			String registrationId = gcmRm.getRegistrationId(this);
-			
+
 			if(!registrationId.isEmpty())
 			{
 				/* start the service and execute it. When the thread finishes, onServiceDataTaskComplete()
@@ -272,69 +273,25 @@ FetchRequestsTaskListener, Runnable
 				{
 					Log.e("onServiceDataTaskComplete", "notification can be considereth new " + notificationData.username);
 					/* and notify */
-					String message = "";
-					int iconId, ledColor;
+					int iconId;
 					// Creates an explicit intent for an Activity in your app
 					Intent resultIntent = new Intent(this, OsmerActivity.class);
 					resultIntent.putExtra("ptLatitude", notificationData.latitude);
 					resultIntent.putExtra("ptLongitude", notificationData.longitude);
 
-				
+
 					if(notificationData.isRequest())
 					{
 						requestsCount++;
 					}
-					else  if(notificationData.isRainAlert())
+					else  if(notificationData.isRainAlert() && mSettings.useInternalRainDetection())
 					{
 						RainNotification rainNotif = (RainNotification) notificationData;
 						iconId = R.drawable.ic_launcher_statusbar_rain;
-						ledColor = Color.argb(255, 0, 0, 0); /* red notification */
-						if(rainNotif.IsGoingToRain())
-						{
-							float dbZ = rainNotif.getLastDbZ();
-							Log.e("ReportDataService", "setting extra NotificationRainAlert");
-							resultIntent.putExtra("NotificationRainAlert", true);
+						float dbZ = rainNotif.getLastDbZ();
 
-							if(dbZ < 27)
-							{
-								message = getResources().getString(R.string.notificationRainAlert);
-							}
-							else if(dbZ < 42)
-							{
-								message = getResources().getString(R.string.notificationRainModerate);
-							}
-							else
-							{
-								message = getResources().getString(R.string.notificationRainIntense);
-							}
-						}
-						int notificationFlags = Notification.DEFAULT_SOUND|
-								Notification.FLAG_SHOW_LIGHTS;
-						NotificationCompat.Builder notificationBuilder =
-								new NotificationCompat.Builder(this)
-						.setSmallIcon(iconId)
-						.setAutoCancel(true)
-						.setLights(Color.RED, 1000, 1000)
-						.setContentTitle(getResources().getString(R.string.app_name))
-						.setContentText(message).setDefaults(notificationFlags);
-
-						// The stack builder object will contain an artificial back stack for the
-						// started Activity.
-						// This ensures that navigating backward from the Activity leads out of
-						// your application to the Home screen.
-						TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-						// Adds the back stack for the Intent (but not the Intent itself)
-						stackBuilder.addParentStack(OsmerActivity.class);
-						// Adds the Intent that starts the Activity to the top of the stack
-						stackBuilder.addNextIntent(resultIntent);
-
-						PendingIntent resultPendingIntent =
-								stackBuilder.getPendingIntent( 0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-						notificationBuilder.setContentIntent(resultPendingIntent);
-						notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-						Notification notification = notificationBuilder.build();
+						RainNotificationBuilder rainNotifBuilder = new RainNotificationBuilder();
+						Notification notification = rainNotifBuilder.build(this,  dbZ, iconId, rainNotif.latitude, rainNotif.longitude);
 						mNotificationManager.notify(notificationData.getTag(), notificationData.getId(),  notification);
 						notified = true;
 						/* update notification data */
@@ -356,7 +313,7 @@ FetchRequestsTaskListener, Runnable
 						dataAsString, Toast.LENGTH_LONG).show();
 			}
 		} /* for(NotificationData notificationData : notifications) */
-		
+
 		/* a request has been withdrawn, remove notification, if present */
 		if(requestsCount == 0)
 		{
@@ -373,7 +330,7 @@ FetchRequestsTaskListener, Runnable
 				 * canBeConsideredNew() sharedData method.
 				 * On the other hand, the map view tests this variable in order to show or not a marker.
 				 */
-			currentNotification.setConsumed(true);
+				currentNotification.setConsumed(true);
 			}
 		}
 	}

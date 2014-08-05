@@ -1,5 +1,6 @@
 package it.giacomos.android.osmer.rainAlert.genericAlgo;
 
+import android.util.Log;
 import it.giacomos.android.osmer.rainAlert.interfaces.ImgParamsInterface;
 
 public class MeteoFvgImgParams implements ImgParamsInterface {
@@ -86,7 +87,6 @@ public class MeteoFvgImgParams implements ImgParamsInterface {
 			dbz = 62.5;
 		else if(closeColors(arr_rgb,  b2))
 			dbz = 67.5;
-			
 		return dbz;
 				
 	}

@@ -14,7 +14,6 @@ public class ImgCompareGrids implements ImgCompareI {
 			ImgParamsInterface img_params_i,
 			double last_dbz) 
 	{
-		String txt;
 		ImgOverlayGrid glast = (ImgOverlayGrid) lastGridI;
 		ImgOverlayGrid gprev = (ImgOverlayGrid) prevGridI;
 		
@@ -77,19 +76,12 @@ public class ImgCompareGrids implements ImgCompareI {
 					if(increase && lastEldbz > last_dbz)
 						last_dbz = lastEldbz;
 					
-//					if(debug)
-//					{
-//						peDBZ = sprintf("%.1f", prevEldbz);
-//						leDBZ = sprintf("%.1f", lastEldbz);
-//						txt .= "<li>(linkedElWeight) [r,c] (peDBZ).[{contiguousElement.index.i},{contiguousElement.index.j}] (leDBZ) rain: ";
-//						increase ? txt .= "yes" : txt .= "no";
-//						bigIncrease ? txt .=  " (big increase: yes) " : txt .=  " (big increase: no)";
-//						txt .= "</li>";
-//					}
-					
+//					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: ("  + prevEldbz + ") -> [" +
+//							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastEldbz + ")"
+//					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret); 
+					 
 					if(increase)
 						ret++;
-					
 				}
 			}
 			
@@ -119,16 +111,10 @@ public class ImgCompareGrids implements ImgCompareI {
 					if(increase && lastEldbz > last_dbz)
 						last_dbz = lastEldbz;
 					
-//					if(debug)
-//					{	
-//						peDBZ = sprintf("%.1f", prevEldbz);
-//						leDBZ = sprintf("%.1f", lastEldbz);
-//						txt .= "<li>(linkedElWeight) [r,c] (peDBZ).[{contiguousElement.index.i},{contiguousElement.index.j}] (leDBZ) rain: ";
-//						increase ? txt .= "yes" : txt .= "no";
-//						bigIncrease ? txt .=  " (big increase: yes) " : txt .=  " (big increase: no)";
-//						txt .= "</li>";
-//					}
-					
+//					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: ("  + prevEldbz + ")  -> [" +
+//							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastEldbz + ")"
+//					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret); 
+
 					if(increase)
 						ret++;
 					
@@ -161,16 +147,10 @@ public class ImgCompareGrids implements ImgCompareI {
 					if(increase && lastEldbz > last_dbz)
 						last_dbz = lastEldbz;
 						
-//					if(debug)
-//					{
-//						peDBZ = sprintf("%.1f", prevEldbz);
-//						leDBZ = sprintf("%.1f", lastEldbz);
-//						txt .= "<li>(linkedElWeight) [r,c] (peDBZ).[{contiguousElement.index.i},{contiguousElement.index.j}] (leDBZ) rain: ";
-//						increase ? txt .= "yes" : txt .= "no";
-//						bigIncrease ? txt .=  " (big increase: yes) " : txt .=  " (big increase: no)";
-//						txt .= "</li>";
-//					}
-					
+//					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: (" + prevEldbz + ") -> [" +
+//							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastEldbz + ")"
+//					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret); 
+
 					if(increase)
 						ret++;
 					
@@ -201,31 +181,20 @@ public class ImgCompareGrids implements ImgCompareI {
 						
 					if(increase && lastEldbz > last_dbz)
 						last_dbz = lastEldbz;
-						
 					
-//					if(debug)
-//					{
-//						peDBZ = sprintf("%.1f", prevEldbz);
-//						leDBZ = sprintf("%.1f", lastEldbz);
-//						txt .= "<li>(linkedElWeight) [r,c] (peDBZ).[{contiguousElement.index.i},{contiguousElement.index.j}] (leDBZ) rain: ";
-//						increase ? txt .= "yes" : txt .= "no";
-//						bigIncrease ? txt .=  " (big increase: yes) " : txt .=  " (big increase: no)";
-//						txt .= "</li>";
-//					}
+//					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: ("  + prevEldbz + ") ->  [" +
+//							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastEldbz + ")"
+//					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret); 
 					
 					if(increase)
 						ret++;
-					
 				}
-			}
-			
-			
+			}			
 		}
 		else
 			Log.e("ImgCompareGrids", "grid dimensions differ");
 			
 		/* detected an increase towards the center (and not already raining)? */
-		Log.e("ImgCompareGrids", "ret " + ret + ", last_dbz " + last_dbz);
 		return ret > 0;
 	
 	}

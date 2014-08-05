@@ -40,6 +40,7 @@ public class GeoCoordinates {
 	 */
 	public static final LatLng fvgBottomRight = new LatLng(45580838/1e6, 13918819/1e6 );
 	
+	/* LatLngBounds southwest, northeast */
 	public static final LatLngBounds radarImageBounds = new LatLngBounds(new LatLng(44.6052, 11.9294), 
 			new LatLng(46.8080, 15.0857));
 	

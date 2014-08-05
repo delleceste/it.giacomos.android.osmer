@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import it.giacomos.android.osmer.rainAlert.interfaces.ImgParamsInterface;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.Log;
 
 public class Element {
@@ -20,11 +21,53 @@ public class Element {
 		contiguousElementDataList = new ArrayList<ContiguousElementData>();
 	}
 
+	/** Calculates the average value of dbz of this element.
+	 * 
+	 * @param image the bitmap to analyze 
+	 * @param xc
+	 * @param yc
+	 * @param imgParams a specific implementation of ImgParamsInterface representing the 
+	 *        color map that associates dbz to colors. For instance MeteoFVGParams, that
+	 *        uses tones from violet to green to yellow to red to brown.
+	 *        
+	 * This method calculates the value of dbz inside the region of interest enclosed inside this Element.
+	 *        
+	 */
 	public void calculateDbz(Bitmap image, double xc, double yc,
 			ImgParamsInterface imgParams) 
 	{
+		int argb = 0;
 		
+		int startX = (int) Math.floor(this.xstart);
+		int endX   = (int) Math.ceil(this.xend);
 		
+		int startY = (int) Math.floor(this.ystart);
+		int endY   = (int) Math.ceil(this.yend);
+		
+		int nr = endX - startX; 
+		int nc = endY - startY;
+		int npix = nr * nc;
+		
+		this.dbz = 0;
+		
+		for(int r = startX; r < endX; r++)
+		{
+			for(int c = startY; c < endY; c++)
+			{
+				argb = image.getPixel(r, c);
+				int [] arr_rgb = {Color.red(argb), Color.green(argb), Color.blue(argb)};
+				this.dbz += imgParams.getDbzForColor(arr_rgb);
+			}
+		}
+		
+		/* normalize dBZ */
+		this.dbz /= npix;
+		
+	//	Log.e("Element.calculateDbz", "index [ " + index.i  + ", " + index.j + "] "  + " [" + startX +"," + startY + ", " + endX + "," + endY  + "], dbz " + dbz);
+		
+		/* Functions drawing on image would follow. See img_overlay_grid.php, Element class.
+		 * 
+		 */
 	}
 
 	public void setHasIncreased(boolean has)

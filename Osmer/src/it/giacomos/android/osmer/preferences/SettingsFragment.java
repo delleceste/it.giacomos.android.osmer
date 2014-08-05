@@ -38,7 +38,7 @@ public class SettingsFragment extends PreferenceFragment  implements OnPreferenc
 		String svalue;
 		findPreference("NOTIFICATION_SERVICE_ENABLED").setOnPreferenceChangeListener(this);
 		findPreference("RAIN_NOTIFICATION_ENABLED").setOnPreferenceChangeListener(this);
-		
+		//findPreference("USE_INTERNAL_RAIN_DETECTION").setOnPreferenceChangeListener(this);
 
 		/* initialize edit text fields */
 		EditTextPreference tep = (EditTextPreference )findPreference("SERVICE_SLEEP_INTERVAL_MINS");
