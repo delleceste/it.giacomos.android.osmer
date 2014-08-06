@@ -52,7 +52,6 @@ RadarImageSyncAndCalculationTaskListener
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{
-		Log.e("RadarSyncAndRainGridDetectService", "onStartCommand");
 		if(!mIsStarted)
 		{
 			mTimestampSecs = intent.getLongExtra("timestamp", 0L);
@@ -115,17 +114,13 @@ RadarImageSyncAndCalculationTaskListener
 		mLocationClient.disconnect(); /* immediately */
 		if(mLocation != null)
 		{
-			/// startSyncImagesAndRainDetect(mLocation.getLatitude(), mLocation.getLongitude());
 			startSyncImagesAndRainDetect(45.645547,13.849061);
-			Log.e("RadarSyncAndRainGridDetectService.onConnected", " location is good: lat " + mLocation.getLatitude() + 
-					" lon " + mLocation.getLongitude());
 
 		}
-		else/* wait an entire mSleepInterval before retrying */
+		else  /* wait an entire mSleepInterval before retrying */
 			Log.e("RadarSyncAndRainGridDetectService", "location is not available. Cannot calculate rain probability");
 
 		/* in any case, our work stops here */
-		Log.e("RadarSyncAndRainGridDetectService", "stopping service...");
 		this.stopSelf();
 	}
 
@@ -176,7 +171,6 @@ RadarImageSyncAndCalculationTaskListener
 					RainNotification previousRainNotification = (RainNotification) sharedData.get(NotificationData.TYPE_RAIN);
 					if(previousRainNotification != null && previousRainNotification.IsGoingToRain())
 						mNotificationManager.cancel(rainNotif.getTag(), rainNotif.getId());
-					Log.e("RadarSyncAndRainGridDetectService.onRainDetectionDone", "RAIN notification setting notified " + rainNotif.getTag() + ", " + rainNotif);
 					sharedData.updateCurrentRequest(rainNotif, false);
 				}
 			}

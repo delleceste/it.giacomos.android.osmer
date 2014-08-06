@@ -28,7 +28,6 @@ public class MapBaloonInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
 	@Override
 	public View getInfoContents(Marker marker) 
 	{
-		Log.e("MapBaloonInfoWindowAdapter.getInfoContents", marker.getTitle());
 		setText(marker.getSnippet());
 		setTitle(marker.getTitle());
 		return mView;

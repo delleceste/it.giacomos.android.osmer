@@ -71,23 +71,23 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 				 * Check that two notifications do not arrive too close to each other.
 				 */
 				Settings s = new Settings(ctx);
+				boolean useInternalRainDetection = s.useInternalRainDetection();
+				boolean rainNotificationEnabled = s.rainNotificationEnabled();
 				try
 				{	
 					timestampSeconds = Long.parseLong(intent.getExtras().getString("timestamp"));
 				}
 				catch(NumberFormatException e)
 				{
-					
+
 				}
-				Log.e("GcmBroadcastReceiver.onReceive", "data: \"" + dataAsString + "\"");
 
 				ServiceSharedData sharedData = ServiceSharedData.Instance(ctx);
 				NotificationManager mNotificationManager =
 						(NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
 				NotificationDataFactory notificationDataFactory = new NotificationDataFactory();
-				if(s.useInternalRainDetection() && 
-						s.rainNotificationEnabled() && 
+				if(useInternalRainDetection && rainNotificationEnabled && 
 						notificationDataFactory.isNewRadarImageNotification(dataAsString))
 				{
 					if(currentTimestampSecs - timestampSeconds < 1 * 60) /* the notification has been recently sent */
@@ -95,7 +95,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 						Log.e("GcmBroadcastReceiver.onReceive", "****** RADAR SYNC ******* data timestamp "
 								+ timestampSeconds + " is " + (currentTimestampSecs - timestampSeconds) + " seconds old " + 
 								" current ts is " + currentTimestampSecs);
-						
+
 						/* Start the radar sync and rain detect service. It will compare the two last radar images
 						 * and try to guess if it is going to rain in the next future. The service takes care of
 						 * notifications when calculations are completed.
@@ -116,16 +116,49 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 						/* Rain alert notifications are marked valid only if they represent an alert 
 						 * (there's a chance it's going to rain).
 						 */
-						if(notificationData.isValid() && notificationData.isRainAlert() && 
-								!((RainNotification) notificationData).IsGoingToRain())
+						String message = "";
+						int iconId = -1, ledColor = 0;
+						// Creates an explicit intent for an Activity in your app
+						Intent resultIntent = null;
+
+						if(notificationData.isValid() && notificationData.isRainAlert())
 						{
-							Log.e("GcmBroadcastReceiver.onReceive", "rain alert notification to be cancelled");
-							RainNotification rainNotif = (RainNotification) notificationData;
-							mNotificationManager.cancel(rainNotif.getTag(), rainNotif.getId());
-							Log.e("GcmBroadcastReceiver.onReceive", "RAIN notification setting notified " + notificationData.getTag() + ", " + notified);
-							sharedData.updateCurrentRequest(notificationData, notified);
-						}
-						else if(notificationData.isValid())
+							/* internally managed? discard rain notification data here */
+							if(!useInternalRainDetection && rainNotificationEnabled)
+							{
+								RainNotification rainNotif = (RainNotification) notificationData;
+								if(!rainNotif.IsGoingToRain())
+								{
+									Log.e("GcmBroadcastReceiver.onReceive", "rain alert notification to be cancelled");
+									mNotificationManager.cancel(rainNotif.getTag(), rainNotif.getId());
+									Log.e("GcmBroadcastReceiver.onReceive", "RAIN notification setting notified " + notificationData.getTag() + ", " + notified);
+									sharedData.updateCurrentRequest(notificationData, notified);
+								}
+								else
+								{
+									iconId = R.drawable.ic_launcher_statusbar_rain;
+									ledColor = Color.RED; /* red notification */
+									float dbZ = rainNotif.getLastDbZ();
+									/* allocate a result intent */
+									resultIntent = new Intent(ctx, OsmerActivity.class);
+									resultIntent.putExtra("NotificationRainAlert", true);
+
+									if(dbZ < 27)
+									{
+										message = ctx.getResources().getString(R.string.notificationRainAlert);
+									}
+									else if(dbZ < 42)
+									{
+										message = ctx.getResources().getString(R.string.notificationRainModerate);
+									}
+									else
+									{
+										message = ctx.getResources().getString(R.string.notificationRainIntense);
+									}
+								}
+							}
+						} /* end rain notification alert */
+						else if(notificationData.isValid()) /* not a rain alert */
 						{
 							boolean alreadyNotifiedEqual = sharedData.alreadyNotifiedEqual(notificationData);
 							boolean arrivesTooLate = sharedData.arrivesTooLate(notificationData);
@@ -133,14 +166,9 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 
 							{
 								Log.e("GcmBroadcastReceiver.onReceive", "notification can be considereth new " + notificationData.username);
-								/* and notify */
-								String message = "";
-								int iconId, ledColor;
-								// Creates an explicit intent for an Activity in your app
-								Intent resultIntent = new Intent(ctx, OsmerActivity.class);
-								resultIntent.putExtra("ptLatitude", notificationData.latitude);
-								resultIntent.putExtra("ptLongitude", notificationData.longitude);
-
+								/* allocate a result intent */
+								resultIntent = new Intent(ctx, OsmerActivity.class);
+								/* request or report */
 								if(notificationData.isRequest())
 								{
 									resultIntent.putExtra("NotificationReportRequest", true);
@@ -149,34 +177,11 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 											+ " " + notificationData.username;
 									if(rrnd.locality.length() > 0)
 										message += " - " + rrnd.locality;
+
 									iconId = R.drawable.ic_launcher_statusbar_request_new;
 									ledColor = Color.BLUE; /* blue notification */
-									//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
 								}
-								else if(notificationData.isRainAlert())
-								{
-									RainNotification rainNotif = (RainNotification) notificationData;
-									iconId = R.drawable.ic_launcher_statusbar_rain;
-									ledColor = Color.RED; /* red notification */
-									if(rainNotif.IsGoingToRain())
-									{
-										float dbZ = rainNotif.getLastDbZ();
-										resultIntent.putExtra("NotificationRainAlert", true);
 
-										if(dbZ < 27)
-										{
-											message = ctx.getResources().getString(R.string.notificationRainAlert);
-										}
-										else if(dbZ < 42)
-										{
-											message = ctx.getResources().getString(R.string.notificationRainModerate);
-										}
-										else
-										{
-											message = ctx.getResources().getString(R.string.notificationRainIntense);
-										}
-									}
-								}
 								else
 								{
 									resultIntent.putExtra("NotificationReport", true);
@@ -184,67 +189,68 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 											+ " "  + notificationData.username;
 									iconId = R.drawable.ic_launcher_statusbar_report_new;
 									ledColor = Color.GREEN;
-									//   Logger.log("RDS task ok.new req.notif " + notificationData.username);
 								}
-
-								//					int notificationFlags = Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS|
-								//							Notification.FLAG_SHOW_LIGHTS;
-								int notificationFlags = Notification.DEFAULT_SOUND| Notification.FLAG_SHOW_LIGHTS;
-								NotificationCompat.Builder notificationBuilder =
-										new NotificationCompat.Builder(ctx)
-								.setSmallIcon(iconId)
-								.setAutoCancel(true)
-								.setTicker(message)
-								.setLights(ledColor, 1000, 1000)
-								.setContentTitle(ctx.getResources().getString(R.string.app_name))
-								.setContentText(message).setDefaults(notificationFlags);
-
-								// The stack builder object will contain an artificial back stack for the
-								// started Activity.
-								// This ensures that navigating backward from the Activity leads out of
-								// your application to the Home screen.
-								TaskStackBuilder stackBuilder = TaskStackBuilder.create(ctx);
-								// Adds the back stack for the Intent (but not the Intent itself)
-								stackBuilder.addParentStack(OsmerActivity.class);
-								// Adds the Intent that starts the Activity to the top of the stack
-								stackBuilder.addNextIntent(resultIntent);
-
-								PendingIntent resultPendingIntent =
-										stackBuilder.getPendingIntent( 0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-								notificationBuilder.setContentIntent(resultPendingIntent);
-								notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-								// mId allows you to update the notification later on.
-
-								int notifId = notificationData.getId();
-								String notifTag = notificationData.getTag();
-								Notification notification = notificationBuilder.build();
-								/* remove previous similar notifications if present */
-								mNotificationManager.notify(notifTag, notifId,  notification);
-								notified = true;
-								/* update notification data */
-								Log.e("GcmBroadcastReceiver.onReceive", "notification setting notified " + notificationData.getTag() + ", " + notified);
-								sharedData.updateCurrentRequest(notificationData, notified);
-							}
-							else
-							{
-								//   Logger.log("RDS task ok. notif not new " + notificationData.username);
-								// log("task ok. notif not new " + notificationData.username);
-								Log.e("GcmBroadcastReceiver.onReceive", "notification IS NOT NEW " + notificationData.getType());
 							}
 						}
-						else
+						else /* notification is not valid */
 						{
-							// log("service task: notification not valid: " + dataAsString);
 							Toast.makeText(ctx, "Notification not valid! " + 
 									dataAsString, Toast.LENGTH_LONG).show();
 						}
-					} /* for(NotificationData notificationData : notifications) */
-				}
-			} /* else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType))  */
-		} /* !extras.isEmpty */
 
-	}
+						/* if we entered one of the cases above, resultIntent will be not null
+						 * We can build and post the notification. 
+						 */
+						if(resultIntent != null)
+						{
+							/* latitude and longitude needed in every kind of notification */
+							resultIntent.putExtra("ptLatitude", notificationData.latitude);
+							resultIntent.putExtra("ptLongitude", notificationData.longitude);
+
+							int notificationFlags = Notification.DEFAULT_SOUND| Notification.FLAG_SHOW_LIGHTS;
+							NotificationCompat.Builder notificationBuilder =
+									new NotificationCompat.Builder(ctx)
+							.setSmallIcon(iconId)
+							.setAutoCancel(true)
+							.setTicker(message)
+							.setLights(ledColor, 1000, 1000)
+							.setContentTitle(ctx.getResources().getString(R.string.app_name))
+							.setContentText(message).setDefaults(notificationFlags);
+
+							// The stack builder object will contain an artificial back stack for the
+							// started Activity.
+							// This ensures that navigating backward from the Activity leads out of
+							// your application to the Home screen.
+							TaskStackBuilder stackBuilder = TaskStackBuilder.create(ctx);
+							// Adds the back stack for the Intent (but not the Intent itself)
+							stackBuilder.addParentStack(OsmerActivity.class);
+							// Adds the Intent that starts the Activity to the top of the stack
+							stackBuilder.addNextIntent(resultIntent);
+
+							PendingIntent resultPendingIntent =
+									stackBuilder.getPendingIntent( 0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+							notificationBuilder.setContentIntent(resultPendingIntent);
+							notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+							// mId allows you to update the notification later on.
+
+							int notifId = notificationData.getId();
+							String notifTag = notificationData.getTag();
+							Notification notification = notificationBuilder.build();
+							/* remove previous similar notifications if present */
+							mNotificationManager.notify(notifTag, notifId,  notification);
+							notified = true;
+							/* update notification data */
+							Log.e("GcmBroadcastReceiver.onReceive", "notification setting notified " + notificationData.getTag() + ", " + notified);
+							sharedData.updateCurrentRequest(notificationData, notified);
+						}
+					} /* for(NotificationData notificationData : notifications) */
+				} 
+			} /* else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType))  */
+		}  /* !extras.isEmpty */
+	} 
+
+
 
 	@Override
 	public void onImagesSynced(String[] filepaths) 
@@ -255,7 +261,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 		}
 		else
 			Log.e("GcmBroadcastReceiver.onImagesSynced", " failed to saved images!");
-		
+
 	}
 
 }

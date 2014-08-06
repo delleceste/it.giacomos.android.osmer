@@ -246,7 +246,6 @@ FetchRequestsTaskListener, Runnable
 		boolean notified = false;
 		short requestsCount = 0;
 		boolean rainDetectionOnDevice = mSettings.useInternalRainDetection();
-		//	if(error)
 		Log.e("ReportDataService.onServiceDataTaskComplete", "data: " + dataAsString);
 
 		ServiceSharedData sharedData = ServiceSharedData.Instance(this);

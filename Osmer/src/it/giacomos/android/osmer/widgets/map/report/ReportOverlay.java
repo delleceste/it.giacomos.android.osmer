@@ -194,8 +194,6 @@ OnClickListener
 			dataInterfaceList = new DataInterface[0];
 			/* restore yet unpublished markers that the user was just placing into the map */
 			mRestoreYetUnpublishedMyRequestData(myRequestsYetUnpublishedBackup);
-			
-			Log.e("OnReportOverlayTaskFinished", "list size " + dataInterfaceList.length);
 		}
 		
 		
@@ -328,7 +326,7 @@ OnClickListener
 	@Override
 	public boolean onMarkerClick(Marker m) 
 	{
-		Log.e("ReportOverlay.OnmarkerClick", m.getTitle());
+		// Log.e("ReportOverlay.OnmarkerClick", m.getTitle());
 		mMapBaloonInfoWindowAdapter.setTitle(m.getTitle());
 		mMapBaloonInfoWindowAdapter.setText(m.getSnippet());
 		return false;
