@@ -27,6 +27,8 @@
          dismiss it.
     -->
     <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+    
+    
     <CheckBoxPreference android:summaryOff="@string/pref_rain_alert_off" 
         android:defaultValue="true"
         android:summaryOn="@string/pref_rain_alert_enable" 
@@ -53,4 +55,5 @@
     <CheckBoxPreference android:dependency="RAIN_NOTIFICATION_ENABLED" android:persistent="true" android:defaultValue="true" android:summaryOff="@string/pref_internal_rain_calc_checkbox_off" android:key="USE_INTERNAL_RAIN_DETECTION" android:summary="@string/pref_use_internal_rain_detection_summary" android:title="@string/pref_use_internal_rain_detection" android:summaryOn="@string/pref_internal_rain_calc_checkbox"/>
 
     </PreferenceCategory>
+    
 </PreferenceScreen>

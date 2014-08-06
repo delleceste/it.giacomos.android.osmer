@@ -50,7 +50,7 @@ public class SettingsFragment extends PreferenceFragment  implements OnPreferenc
 
 		tep = (EditTextPreference) findPreference("MIN_TIME_BETWEEN_NOTIFICATIONS_RainNotificationTag");
 		svalue = tep.getSharedPreferences().getString("MIN_TIME_BETWEEN_NOTIFICATIONS_RainNotificationTag", "30");
-		s = getResources().getString(R.string.pref_service_sleep_interval_summary_checks_every);
+		s = getResources().getString(R.string.pref_rain_notif_interval);
 		s += " " + svalue + " " + getResources().getString(R.string.minutes);
 		tep.setSummary(s);
 		tep.setOnPreferenceChangeListener(this);
@@ -74,7 +74,7 @@ public class SettingsFragment extends PreferenceFragment  implements OnPreferenc
 			try
 			{
 				interval = Integer.parseInt(newValue.toString());
-				if(interval >= 1 && interval <= 180)
+				if(interval >= 1 && interval <= 15)
 				{
 					String s = getResources().getString(R.string.pref_service_sleep_interval_summary_checks_every);
 					s += " " + newValue.toString() + " " + getResources().getString(R.string.minutes);
@@ -101,7 +101,7 @@ public class SettingsFragment extends PreferenceFragment  implements OnPreferenc
 			try
 			{
 				interval = Integer.parseInt(newValue.toString());
-				if(interval >= 1 && interval <= 180)
+				if(interval >= 1 && interval <= 60 * 24)
 				{
 					String s = getResources().getString(R.string.pref_rain_alert_summary_checks_every);
 					s += " " + newValue.toString() + " " + getResources().getString(R.string.minutes);

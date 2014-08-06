@@ -65,11 +65,18 @@ public class ServiceSharedData
 		return mNotificationDataHash.get(type);
 	}
 
+	public NotificationData get(short type)
+	{
+		if(mNotificationDataHash.containsKey(type))
+			return mNotificationDataHash.get(type);
+		return null;
+	}
+	
 	public void updateCurrentRequest(NotificationData notificationData, boolean setNotified) 
 	{
 		short type = notificationData.getType();
 		/* replace old notificationData for the specified type.
-		 * Remember that only one notificationData per type can be considered.
+		 * Remember that only one notificationData per type can be tracked.
 		 */
 		mNotificationDataHash.put(type, notificationData);
 		/* save data on shared preferences */

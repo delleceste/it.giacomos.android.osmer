@@ -204,7 +204,8 @@ FetchRequestsTaskListener, Runnable
 				mUpdateMyLocationTask = new UpdateMyLocationTask(this, deviceId,
 						registrationId,
 						mLocation.getLatitude(), mLocation.getLongitude(),
-						mSettings.rainNotificationEnabled());
+						mSettings.rainNotificationEnabled(),
+						mSettings.useInternalRainDetection());
 				/* old: "http://www.giacomos.it/meteo.fvg/get_reports_and_requests_for_my_location.php" 
 				 * new: "http://www.giacomos.it/meteo.fvg/update_my_location.php"
 				 */
@@ -244,6 +245,7 @@ FetchRequestsTaskListener, Runnable
 	{	
 		boolean notified = false;
 		short requestsCount = 0;
+		boolean rainDetectionOnDevice = mSettings.useInternalRainDetection();
 		//	if(error)
 		Log.e("ReportDataService.onServiceDataTaskComplete", "data: " + dataAsString);
 
@@ -254,15 +256,20 @@ FetchRequestsTaskListener, Runnable
 		ArrayList<NotificationData> notifications = new NotificationDataFactory().parse(dataAsString);
 		for(NotificationData notificationData : notifications)
 		{
-			/* Rain alert notifications are marked valid only if they represent an alert 
-			 * (there's a chance it's going to rain).
+			/* ignore rain alerts coming from the server data if rain detection is made on the device,
+			 * because in that case it's the GCM service pushing a new radar image notification.
 			 */
+			if(notificationData.isRainAlert() && rainDetectionOnDevice)
+				continue; 
+			
 			if(notificationData.isValid() && notificationData.isRainAlert() && 
 					!((RainNotification) notificationData).IsGoingToRain())
 			{
 				Log.e("onServiceDataTaskComplete", "rain alert notification to be cancelled");
 				RainNotification rainNotif = (RainNotification) notificationData;
-				mNotificationManager.cancel(rainNotif.getTag(), rainNotif.getId());
+				RainNotification previousRainNotification = (RainNotification) sharedData.get(NotificationData.TYPE_RAIN);
+				if(previousRainNotification != null && previousRainNotification.IsGoingToRain())
+					mNotificationManager.cancel(rainNotif.getTag(), rainNotif.getId());
 				Log.e("onServiceDataTaskComplete", "RAIN notification setting notified " + notificationData.getTag() + ", " + notified);
 				sharedData.updateCurrentRequest(notificationData, notified);
 			}
@@ -284,7 +291,7 @@ FetchRequestsTaskListener, Runnable
 					{
 						requestsCount++;
 					}
-					else  if(notificationData.isRainAlert() && mSettings.useInternalRainDetection())
+					else  if(notificationData.isRainAlert())
 					{
 						RainNotification rainNotif = (RainNotification) notificationData;
 						iconId = R.drawable.ic_launcher_statusbar_rain;

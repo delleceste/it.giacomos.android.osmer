@@ -11,7 +11,9 @@ import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.preferences.Settings;
+import it.giacomos.android.osmer.rainAlert.RainDetectResult;
 import it.giacomos.android.osmer.rainAlert.RainNotificationBuilder;
+import it.giacomos.android.osmer.service.sharedData.NotificationData;
 import it.giacomos.android.osmer.service.sharedData.RainNotification;
 import it.giacomos.android.osmer.service.sharedData.ServiceSharedData;
 import android.app.Notification;
@@ -29,7 +31,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
-public class RadarSyncAndRainDetectService extends Service 
+public class RadarSyncAndRainGridDetectService extends Service 
 implements GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener, 
 RadarImageSyncAndCalculationTaskListener
@@ -39,7 +41,7 @@ RadarImageSyncAndCalculationTaskListener
 	private Location mLocation;
 	private long mTimestampSecs;
 
-	public RadarSyncAndRainDetectService()
+	public RadarSyncAndRainGridDetectService()
 	{
 		super();
 		mLocationClient = null;
@@ -50,7 +52,7 @@ RadarImageSyncAndCalculationTaskListener
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{
-		Log.e("RadarSyncAndRainDetectService", "onStartCommand");
+		Log.e("RadarSyncAndRainGridDetectService", "onStartCommand");
 		if(!mIsStarted)
 		{
 			mTimestampSecs = intent.getLongExtra("timestamp", 0L);
@@ -64,7 +66,7 @@ RadarImageSyncAndCalculationTaskListener
 		}
 		else
 		{
-			Log.e("RadarSyncAndRainDetectService.onStartCommand", "* service is already running");
+			Log.e("RadarSyncAndRainGridDetectService.onStartCommand", "* service is already running");
 		}
 		return Service.START_STICKY;
 	}
@@ -102,28 +104,28 @@ RadarImageSyncAndCalculationTaskListener
 	@Override
 	public void onConnectionFailed(ConnectionResult arg0) {
 		// TODO Auto-generated method stub
-		Log.e("RadarSyncAndRainDetectService.onConnectionFailed", "connection to location failed. Stopping service. Will wait for the next time");
+		Log.e("RadarSyncAndRainGridDetectService.onConnectionFailed", "connection to location failed. Stopping service. Will wait for the next time");
 		this.stopSelf();
 	}
 
 	@Override
 	public void onConnected(Bundle arg0) {
-		Log.e("RadarSyncAndRainDetectService.onConnected", "getting last location");
+		Log.e("RadarSyncAndRainGridDetectService.onConnected", "getting last location");
 		mLocation = mLocationClient.getLastLocation();
 		mLocationClient.disconnect(); /* immediately */
 		if(mLocation != null)
 		{
 			/// startSyncImagesAndRainDetect(mLocation.getLatitude(), mLocation.getLongitude());
 			startSyncImagesAndRainDetect(45.645547,13.849061);
-			Log.e("RadarSyncAndRainDetectService.onConnected", " location is good: lat " + mLocation.getLatitude() + 
+			Log.e("RadarSyncAndRainGridDetectService.onConnected", " location is good: lat " + mLocation.getLatitude() + 
 					" lon " + mLocation.getLongitude());
 
 		}
 		else/* wait an entire mSleepInterval before retrying */
-			Log.e("RadarSyncAndRainDetectService", "location is not available. Cannot calculate rain probability");
+			Log.e("RadarSyncAndRainGridDetectService", "location is not available. Cannot calculate rain probability");
 
 		/* in any case, our work stops here */
-		Log.e("RadarSyncAndRainDetectService", "stopping service...");
+		Log.e("RadarSyncAndRainGridDetectService", "stopping service...");
 		this.stopSelf();
 	}
 
@@ -134,43 +136,48 @@ RadarImageSyncAndCalculationTaskListener
 	}
 
 	@Override
-	public void onRainDetectionDone(boolean willRain) 
+	public void onRainDetectionDone(RainDetectResult result) 
 	{
+		boolean willRain = result.willRain;
+		float dbZ = result.dbz;
 		if(new Settings(this).useInternalRainDetection())
 		{
-			RainNotification rainNotif = new RainNotification(willRain, mTimestampSecs, 0, 
+			RainNotification rainNotif = new RainNotification(result.willRain, mTimestampSecs, dbZ, 
 					mLocation.getLatitude(), 
 					mLocation.getLongitude());
 
 			ServiceSharedData sharedData = ServiceSharedData.Instance(this);
 			boolean alreadyNotifiedEqual = sharedData.alreadyNotifiedEqual(rainNotif);
 			boolean arrivesTooLate = sharedData.arrivesTooLate(rainNotif);
+
 			if(!alreadyNotifiedEqual && !arrivesTooLate && !sharedData.arrivesTooEarly(rainNotif, this))
 			{
+				NotificationManager mNotificationManager =
+						(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 				if(willRain)
 				{
-					NotificationManager mNotificationManager =
-							(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+					int iconId = R.drawable.ic_launcher_statusbar_message_filled;
+				
 					Intent resultIntent = new Intent(this, OsmerActivity.class);
 					resultIntent.putExtra("ptLatitude", mLocation.getLatitude());
 					resultIntent.putExtra("ptLongitude", mLocation.getLongitude());
-					int iconId = R.drawable.ic_blue_pin;
-
-
-
-					iconId = R.drawable.ic_launcher_statusbar_message_filled;
-					float dbZ = rainNotif.getLastDbZ();
 
 					RainNotificationBuilder rainNotifBuilder = new RainNotificationBuilder();
 					Notification notification = rainNotifBuilder.build(this,  dbZ, iconId, rainNotif.latitude, rainNotif.longitude);
+					
 					mNotificationManager.notify(rainNotif.getTag(), rainNotif.getId(),  notification);
 					/* update notification data */
-					Log.e("RadarSyncAndRainDetectService.onRainDetectionDone", "notification setting notified " + rainNotif.getTag() + ", " + true);
+					Log.e("RadarSyncAndRainGridDetectService.onRainDetectionDone", "notification setting notified " + rainNotif.getTag() + ", " + true);
 					sharedData.updateCurrentRequest(rainNotif, true);
 				}
-				else
+				else /* it will not rain, remove notification if present */
 				{
-					Log.e("RadarSyncAndRainDetectService", " it will NOT rain!");
+					Log.e("RadarSyncAndRainGridDetectService.onRainDetectionDone", "rain alert notification to be cancelled");
+					RainNotification previousRainNotification = (RainNotification) sharedData.get(NotificationData.TYPE_RAIN);
+					if(previousRainNotification != null && previousRainNotification.IsGoingToRain())
+						mNotificationManager.cancel(rainNotif.getTag(), rainNotif.getId());
+					Log.e("RadarSyncAndRainGridDetectService.onRainDetectionDone", "RAIN notification setting notified " + rainNotif.getTag() + ", " + rainNotif);
+					sharedData.updateCurrentRequest(rainNotif, false);
 				}
 			}
 		}

@@ -6,7 +6,7 @@ import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.rainAlert.SyncImages;
 import it.giacomos.android.osmer.rainAlert.SyncImagesListener;
-import it.giacomos.android.osmer.service.RadarSyncAndRainDetectService;
+import it.giacomos.android.osmer.service.RadarSyncAndRainGridDetectService;
 import it.giacomos.android.osmer.service.sharedData.NotificationData;
 import it.giacomos.android.osmer.service.sharedData.NotificationDataFactory;
 import it.giacomos.android.osmer.service.sharedData.RainNotification;
@@ -79,7 +79,6 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 				{
 					
 				}
-				//	if(error)
 				Log.e("GcmBroadcastReceiver.onReceive", "data: \"" + dataAsString + "\"");
 
 				ServiceSharedData sharedData = ServiceSharedData.Instance(ctx);
@@ -87,15 +86,21 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 						(NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
 				NotificationDataFactory notificationDataFactory = new NotificationDataFactory();
-				if(s.rainNotificationEnabled() && notificationDataFactory.isNewRadarImageNotification(dataAsString))
+				if(s.useInternalRainDetection() && 
+						s.rainNotificationEnabled() && 
+						notificationDataFactory.isNewRadarImageNotification(dataAsString))
 				{
-					
 					if(currentTimestampSecs - timestampSeconds < 1 * 60) /* the notification has been recently sent */
 					{
 						Log.e("GcmBroadcastReceiver.onReceive", "****** RADAR SYNC ******* data timestamp "
 								+ timestampSeconds + " is " + (currentTimestampSecs - timestampSeconds) + " seconds old " + 
 								" current ts is " + currentTimestampSecs);
-						Intent radarSyncRainDetectService = new Intent(ctx, RadarSyncAndRainDetectService.class);
+						
+						/* Start the radar sync and rain detect service. It will compare the two last radar images
+						 * and try to guess if it is going to rain in the next future. The service takes care of
+						 * notifications when calculations are completed.
+						 */
+						Intent radarSyncRainDetectService = new Intent(ctx, RadarSyncAndRainGridDetectService.class);
 						radarSyncRainDetectService.putExtra("timestamp", timestampSeconds);
 						ctx.startService(radarSyncRainDetectService);
 					}

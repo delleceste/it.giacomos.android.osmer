@@ -1,15 +1,15 @@
 package it.giacomos.android.osmer.service;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
+import it.giacomos.android.osmer.rainAlert.RainDetectResult;
 import it.giacomos.android.osmer.rainAlert.SyncImages;
 import it.giacomos.android.osmer.rainAlert.genericAlgo.MeteoFvgImgParams;
 import it.giacomos.android.osmer.rainAlert.gridAlgo.ImgCompareGrids;
 import it.giacomos.android.osmer.rainAlert.gridAlgo.ImgOverlayGrid;
 
 public class RadarImageSyncAndGridCalculationTask extends
-		AsyncTask<String, Integer, Boolean> 
+		AsyncTask<String, Integer, RainDetectResult> 
 {
 	private RadarImageSyncAndCalculationTaskListener mRadarImageSyncTaskListener;
 	private double mMyLatitude, mMyLongitude;
@@ -24,7 +24,7 @@ public class RadarImageSyncAndGridCalculationTask extends
 	}
 	
 	@Override
-	protected Boolean doInBackground(String... configurations) 
+	protected RainDetectResult doInBackground(String... configurations) 
 	{
 		boolean willRain = false; /* by default, if something fails, no notification */
 		/* some configuration file names and the grid configuration are passed inside configurations arg */
@@ -56,8 +56,6 @@ public class RadarImageSyncAndGridCalculationTask extends
 
 			double defaultRadius = 20; /* 20km */
 
-			double last_dbz = 0.0; /* reference passed to compare */
-
 			ImgOverlayGrid imgoverlaygrid_0 = new ImgOverlayGrid(lastImgFileName, 
 					501, 501, topLeftLat, topLeftLon, botRightLat, botRightLon, 
 					widthKm, heightKm, defaultRadius, mMyLatitude, mMyLongitude);
@@ -75,29 +73,30 @@ public class RadarImageSyncAndGridCalculationTask extends
 			imgoverlaygrid_0.processImage(imgParams);
 
 			ImgCompareGrids imgCmpGrids = new ImgCompareGrids();
-			willRain = imgCmpGrids.compare(imgoverlaygrid_0,  imgoverlaygrid_1, imgParams, last_dbz);
+			return imgCmpGrids.compare(imgoverlaygrid_0,  imgoverlaygrid_1, imgParams);
 
 //			Log.e("RadarImageSync... ", "last " + lastImgFileName + ", prev " + prevImgFileName + " last dbz " + 
 //					last_dbz + ", rain: " + willRain + " tlLa " + topLeftLat + " tlLon " + topLeftLon + ", brla " +
-//					botRightLat + ", brlon " + botRightLon);
+//		 			botRightLat + ", brlon " + botRightLon);
+			
 		}
 		else
 			Log.e("RadarImageSync... ", "filenames is null!");
 
-		return willRain;
+		return new RainDetectResult(false, 0.0f); 
 	}
 	
 	@Override
-	public void onPostExecute(Boolean willRain)
+	public void onPostExecute(RainDetectResult result)
 	{
-		mRadarImageSyncTaskListener.onRainDetectionDone(willRain);
+		mRadarImageSyncTaskListener.onRainDetectionDone(result);
 	}
 	
 	@Override
-	public void onCancelled(Boolean willRain)
+	public void onCancelled(RainDetectResult result)
 	{
 		Log.e("RadarImageSyncAndGridCalculationTask.onCancelled", "task cancelled");
-		mRadarImageSyncTaskListener.onRainDetectionDone(false);
+		mRadarImageSyncTaskListener.onRainDetectionDone(result);
 	}
 
 }

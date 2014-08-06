@@ -54,7 +54,7 @@ public class SyncImages
         List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
         postParameters.add(new BasicNameValuePair("cli", CLI));
         /* test! */
-        postParameters.add(new BasicNameValuePair("before_datetime", "2014-07-30 02:41:00"));
+        // postParameters.add(new BasicNameValuePair("before_datetime", "2014-07-30 02:41:00"));
         
         UrlEncodedFormEntity form;
 		try {

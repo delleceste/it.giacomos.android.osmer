@@ -812,13 +812,18 @@ mio android id è il seguente:\n\n
 	
 	<string name="title_activity_settings">Impostazioni</string>
 	
+	<string name="pref_rain_notifications">Notifiche pioggia in arrivo</string>
+	
 	<string name="pref_enable_notification_service">Abilita il servizio di notifiche</string>
 					
 	<string name="pref_enab_notif_service_summary">Abilita globalmente il servizio di notifiche, anche all\'avvio</string>	
 				
-	<string name="pref_service_sleep_interval">Intervallo aggiornamenti</string>
+	<string name="pref_service_sleep_interval">Intervallo aggiornamenti posizione</string>
 	
-	<string name="pref_service_sleep_interval_summary">Il servizio controlla la presenza di notifiche ogni N minuti</string>
+	<string name="pref_service_sleep_interval_summary">Il servizio aggiorna la tua posizione sul server della app ogni N minuti.
+	    Affinché il servizio notifiche funzioni, è necessario aggiornare periodicamente la tua posizione sul
+	    server della app. I dati sulla posizione sono completamente anonimi. L\'impatto sulla batteria è del tutto 
+	    trascurabile. Il servizio è attivo solo quando sei connesso sulla rete.</string>
 	
 	<string name="pref_service_enabled_on">Il servizio è attivato e verrà eseguito quando la rete sarà disponibile</string>
 	
@@ -831,23 +836,24 @@ mio android id è il seguente:\n\n
 	<string name="pref_sleep_interval_message">Imposta il numero di minuti allo scadere dei quali 
 	    il servizio controlla la presenza di notifiche, periodicamente.</string>
 	
-	<string name="pref_rain_alert_enable">Notifiche possibilità di pioggia attive</string>
+	<string name="pref_rain_alert_enable">Notifiche possibilità di pioggia in arrivo attive 
+	    (funzione implementata dallo sviluppatore, indipendente da Osmer/Meteo.FVG)</string>
 	
-	<string name="pref_rain_alert_off">Notifiche possibilità di pioggia disattivate</string>
+	<string name="pref_rain_alert_off">Notifiche possibilità di pioggia in arrivo disattivate</string>
 	
-	<string name="pref_rain_notification_enable">Notifica quando è possibile che piova</string>
+	<string name="pref_rain_notification_enable">Notifica pioggia</string>
 	
 	<string name="pref_rain_notification_enable_summary">Se abilitato, riceverai una notifica quando viene calcolata una certa probabilità di
 	    pioggia nella tua zona (NOTA BENE: l\'autore non si assume alcuna responsabilità circa questo risultato, che 
 	    in media ha dimostrato un\'attendibilità intorno al 80-85%</string>
 	
-	<string name="pref_rain_notif_interval">Intervallo notifiche pioggia</string>
+	<string name="pref_rain_notif_interval">Intervallo minimo tra due notifiche di pioggia in arrivo</string>
 	
-	<string name="pref_rain_notif_interval_summary">Non verrai disturbato da due notifiche di probabilità di pioggia
-	    prima che sia trascorso questo tempo, in minuti</string>
+	<string name="pref_rain_notif_interval_summary">Non verrai disturbato da due notifiche di possibile pioggia
+	    prima che sia trascorso questo tempo, in minuti (1 - 1440 [24 ore])</string>
 	    
 	<string name="pref_rain_notif_interval_dialog_message">Imposta l\'intervallo minimo richiesto 
-	    tra due successive segnalazioni di possibile pioggia, in minuti, tra 1 e 180</string>
+	    tra due successive segnalazioni di possibile pioggia, in minuti, tra 1 e 1440 (24 ore))</string>
 	    
 	<string name="pref_rain_notif_interval_dialog_title">Tempo minimo tra due successive segnalazioni di pioggia</string>
 	
@@ -855,24 +861,28 @@ mio android id è il seguente:\n\n
 	
 	<string name="pref_default_rain_alerts_interval_mins">5</string>
 	
-	<string name="pref_service_sleep_interval_summary_checks_every">Il servizio controlla gli aggiornamenti delle
-	    notifiche ogni</string>
+	<string name="pref_service_sleep_interval_summary_checks_every">
+	    Affinché il servizio notifiche funzioni, è necessario aggiornare periodicamente la tua posizione sul
+	    server della app. I dati sulla posizione sono completamente anonimi. L\'impatto sulla batteria è del tutto 
+	    trascurabile. Il servizio è attivo solo quando sei connesso sulla rete.
+	    Intervallo valido: 1-15 minuti.
+	    Il servizio aggiorna la tua posizione sul server della applicazione ogni</string>
 	
 	<string name="pref_rain_alert_summary_checks_every">Le notifiche di possibile pioggia 
 	    vengono mostrate al più ogni</string>
 	
 <string name="pref_internal_rain_calc_checkbox">
-    La possibilità di pioggia viene calcolata dal telefono. Questa opzione è più veloce, perché i calcoli sono 
+    Il dispositivo esegue i calcoli della probabilità di pioggia. Questa opzione è più veloce, perché i calcoli sono 
     effettuati non appena una nuova immagine radar diventa disponibile sul server. È l\'impostazione raccomandata.
     </string>
 	
 	<string name="pref_internal_rain_calc_checkbox_off">
 	    La possibilità di pioggia è calcolata remotamente dal server della app Meteo.FVG.
-	    Le notifiche possono arrivare con un ritardo pari al valore impostato nell\'opzione Intervallo aggiornamenti.
-	    Questa opzione è indicata solo per dispositivi lenti.</string>
+	    Le notifiche possono arrivare con un ritardo pari al valore impostato nell\'opzione Intervallo aggiornamenti posizione. 
+	    Questa opzione è indicata solo per dispositivi molto lenti.</string>
 	
-	<string name="pref_use_internal_rain_detection">Usa il dispositivo per calcolare la possibilità di pioggia 
-	    (funzione implementata dallo sviluppatore, indipendente da Osmer/Meteo.FVG)</string>
+	<string name="pref_use_internal_rain_detection">Il dispositivo esegue i calcoli 
+	    </string>
 	
 	<string name="pref_use_internal_rain_detection_summary">
 	    È raccomandata l\'opzione che abilita il calcolo della possibilità di pioggia sul dispositivo, per ricevere

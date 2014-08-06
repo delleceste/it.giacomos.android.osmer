@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.rainAlert.gridAlgo;
 
 import android.util.Log;
+import it.giacomos.android.osmer.rainAlert.RainDetectResult;
 import it.giacomos.android.osmer.rainAlert.interfaces.ImgCompareI;
 import it.giacomos.android.osmer.rainAlert.interfaces.ImgOverlayInterface;
 import it.giacomos.android.osmer.rainAlert.interfaces.ImgParamsInterface;
@@ -9,10 +10,9 @@ import it.giacomos.android.osmer.rainAlert.interfaces.ImgParamsInterface;
 public class ImgCompareGrids implements ImgCompareI {
 
 	@Override
-	public boolean compare(ImgOverlayInterface lastGridI,
+	public RainDetectResult compare(ImgOverlayInterface lastGridI,
 			ImgOverlayInterface prevGridI, 
-			ImgParamsInterface img_params_i,
-			double last_dbz) 
+			ImgParamsInterface img_params_i) 
 	{
 		ImgOverlayGrid glast = (ImgOverlayGrid) lastGridI;
 		ImgOverlayGrid gprev = (ImgOverlayGrid) prevGridI;
@@ -28,7 +28,7 @@ public class ImgCompareGrids implements ImgCompareI {
 		
 		int ret = 0;
 		
-		last_dbz = 0.0;
+		float last_dbz = 0.0f;
 				
 		if(lr == pr && lc == pc) /* grids must be same size */
 		{
@@ -42,7 +42,7 @@ public class ImgCompareGrids implements ImgCompareI {
 			Element pe; /* previous grid element */
 			Element lastLinkedEl; /* an element of the previous grid, linked to pe */
 			double linkedElWeight; /* the weight factor of the element linked to pe in the grid */
-			double lastEldbz, prevEldbz; /* the dbz value of the last && previous element in the grid */
+			float lastEldbz, prevEldbz; /* the dbz value of the last && previous element in the grid */
 			double requiredDbz; /* the value of dbz above which we can consider the rain is approaching */
 			boolean bigIncrease; /* if true, a big increase of the dbz towards the center has been detected */
 			boolean increase; /* if true, an increase of the dbz value has been detected while moving towards the center */
@@ -195,7 +195,7 @@ public class ImgCompareGrids implements ImgCompareI {
 			Log.e("ImgCompareGrids", "grid dimensions differ");
 			
 		/* detected an increase towards the center (and not already raining)? */
-		return ret > 0;
+		return new RainDetectResult( (ret > 0), last_dbz);
 	
 	}
 

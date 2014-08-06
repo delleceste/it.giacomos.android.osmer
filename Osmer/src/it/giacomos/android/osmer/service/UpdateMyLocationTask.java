@@ -23,7 +23,7 @@ import android.util.Log;
 public class UpdateMyLocationTask extends AsyncTask<String, Integer, String> {
 
 	private String mErrorMsg;
-	private boolean mRainNotificationEnabled;
+	private boolean mRainNotificationEnabled, mPushRainNotificationEnabled;
 	String mDeviceId, mRegistrationId;
 	private FetchRequestsTaskListener mServiceDataTaskListener;
 	double mLatitude, mLongitude;
@@ -31,7 +31,9 @@ public class UpdateMyLocationTask extends AsyncTask<String, Integer, String> {
 	private static String CLI = "afe0983der38819073rxc1900lksjd";
 
 	public UpdateMyLocationTask(FetchRequestsTaskListener sdtl, String deviceId, 
-			String registrationId, double lat, double longit, boolean rainNotificationEnabled)
+			String registrationId, double lat, double longit, 
+			boolean rainNotificationEnabled,
+			boolean pushRainNotificationEnabled)
 	{
 		mServiceDataTaskListener = sdtl;
 		mDeviceId = deviceId;
@@ -39,6 +41,7 @@ public class UpdateMyLocationTask extends AsyncTask<String, Integer, String> {
 		mLatitude = lat;
 		mLongitude = longit;
 		mRainNotificationEnabled = rainNotificationEnabled;
+		mPushRainNotificationEnabled = pushRainNotificationEnabled;
 	}
 
 	public void removeFetchRequestTaskListener()
@@ -60,6 +63,7 @@ public class UpdateMyLocationTask extends AsyncTask<String, Integer, String> {
 		postParameters.add(new BasicNameValuePair("la", String.valueOf(mLatitude)));
 		postParameters.add(new BasicNameValuePair("lo", String.valueOf(mLongitude)));
 		postParameters.add(new BasicNameValuePair("rain_detect", String.valueOf(mRainNotificationEnabled)));
+		postParameters.add(new BasicNameValuePair("push_rain_notification", String.valueOf(mPushRainNotificationEnabled)));
 		
 	//	Log.e("UpdateMyLocationTask", "rid " + mRegistrationId + ", d " + mDeviceId);
 		UrlEncodedFormEntity form;

@@ -11,7 +11,7 @@ public class Element {
 
 	public Index index;
 	public double xend = 0.0, xstart = 0.0, ystart = 0.0, yend = 0.0;
-	public double dbz;
+	public float dbz;
 	private boolean increased;
 	
 	public ArrayList<ContiguousElementData> contiguousElementDataList; /* contiguousElementData */
