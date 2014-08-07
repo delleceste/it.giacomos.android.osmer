@@ -41,8 +41,8 @@ public class SyncImages
 	 * If one or both files already exist locally, nothing is done. Otherwise, the
 	 * missing files are downloaded from the server and saved locally.
 	 * 
-	 * @return filenames an array of two strings. The first string is the path of the previous 
-	 * file, the second is the path of the last file.
+	 * @return filenames an array of two strings. The first string is the path of the newest 
+	 * file, the second is the path of the oldest file.
 	 */
 	public String[] sync(String url, String cacheDir) 
 	{
@@ -53,6 +53,7 @@ public class SyncImages
         HttpPost request = new HttpPost(url);
         List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
         postParameters.add(new BasicNameValuePair("cli", CLI));
+        postParameters.add(new BasicNameValuePair("nfiles", "2"));
         /* test! */
         // postParameters.add(new BasicNameValuePair("before_datetime", "2014-07-30 02:41:00"));
         
@@ -72,8 +73,13 @@ public class SyncImages
 	        /* test if the document contains two "->" */
 	        if(document.length() - document.replace("->", "").length() == 4)
 	        {
+	        	/* sample document obtained from wget www.giacomos.it/meteo.fvg/get_radar_files.php?nfiles=2
+	        	 * 07/08 09:00->2014/08/20140807_0700  <- first line: oldest
+	        	 * 07/08 09:30->2014/08/20140807_0730  <- last line:  newest
+				 *
+	        	 */
 	        	String [] lines = document.split("\n");
-	        	/* previous image */
+	        	/* oldest image */
 	        	String date1 = lines[0].split("->")[0];
 	        	String remoteFilePath1 = lines[0].split("->")[1];
 	        	/* last image */
@@ -96,14 +102,14 @@ public class SyncImages
 	        	{
 	        		/* successfully downloaded and saved images into storage */
 	        		filepaths = new String[2];
-	        		filepaths[0] = file1;
-	        		filepaths[1] = file0;
+	        		filepaths[0] = file0;
+	        		filepaths[1] = file1;
 	        		/* remove unneeded files left over by precedent downloads */
 	        		ArrayList<String> neededFiles = new ArrayList<String>();
 	        		neededFiles.add(file1);
 	        		neededFiles.add(file0);
 	        		int removed = removeUnneededFiles(neededFiles, cacheDir);
-	        		Log.e("SyncImages.doInBackground", "Successfully saved " + file1 + " and " + 
+	        		Log.e("SyncImages.doInBackground", "Successfully saved file1  " + file1 + " and file0 " + 
 	        				file0 + " into " + cacheDir + " and removed files " + removed);
 	        	}
 	        	else

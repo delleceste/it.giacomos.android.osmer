@@ -40,7 +40,6 @@ public class RadarImageSyncAndGridCalculationTask extends
 		{
 			String lastImgFileName = radarImgLocalPath + "/" + filenames[0];
 			String prevImgFileName = radarImgLocalPath + "/" + filenames[1];
-			
  
 			/* From GeoCoordinates.java:
 			 * public static final LatLngBounds radarImageBounds = new LatLngBounds(new LatLng(44.6052, 11.9294), 
@@ -73,12 +72,12 @@ public class RadarImageSyncAndGridCalculationTask extends
 			imgoverlaygrid_0.processImage(imgParams);
 
 			ImgCompareGrids imgCmpGrids = new ImgCompareGrids();
-			return imgCmpGrids.compare(imgoverlaygrid_0,  imgoverlaygrid_1, imgParams);
-
-//			Log.e("RadarImageSync... ", "last " + lastImgFileName + ", prev " + prevImgFileName + " last dbz " + 
-//					last_dbz + ", rain: " + willRain + " tlLa " + topLeftLat + " tlLon " + topLeftLon + ", brla " +
+			
+//			Log.e("RadarImageSync... ", "last " + lastImgFileName + ", prev " + prevImgFileName + 
+//					", rain: " + willRain + " tlLa " + topLeftLat + " tlLon " + topLeftLon + ", brla " +
 //		 			botRightLat + ", brlon " + botRightLon);
 			
+			return imgCmpGrids.compare(imgoverlaygrid_0,  imgoverlaygrid_1, imgParams);
 		}
 		else
 			Log.e("RadarImageSync... ", "filenames is null!");
