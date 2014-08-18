@@ -368,7 +368,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		{
 			ProgressState ps = (ProgressState) mState;
 			int curFrameNo = ps.getFrameNo();
-			if(curFrameNo < mAnimationData.size())
+			if(curFrameNo < mAnimationData.size() && curFrameNo >= 0)
 				ret = true;
 		}
 		return ret;
@@ -457,7 +457,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	private void mMakeStep(int frameNo)
 	{
 //		Log.e("RadarAnimation.mmakeStep", "frameNo is " + frameNo + " mAnimationData,size is " + mAnimationData.size());
-		if(mAnimationData != null && frameNo < mAnimationData.size())
+		if(mAnimationData != null && frameNo < mAnimationData.size() && frameNo >= 0)
 		{
 			String text = mAnimationData.valueAt(frameNo).time + " [" + (frameNo + 1) + "/" + mAnimationData.size() + "]";
 //			String text = "[" + (frameNo + 1) + "/" + mAnimationData.size() + "] " + 

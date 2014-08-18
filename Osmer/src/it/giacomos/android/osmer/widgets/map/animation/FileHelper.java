@@ -32,13 +32,19 @@ public class FileHelper
 	
 	private String cleanFileName(String fileName)
 	{
-		return fileName.substring(fileName.lastIndexOf('/') + 1, fileName.length());
+		if(fileName != null)
+			return fileName.substring(fileName.lastIndexOf('/') + 1, fileName.length());
+		else
+			return "";
 	}
 	
 	public Bitmap decodeImage(String fileName, String externalStorageDirPath)
 	{
-		Bitmap bmp;
-		bmp = BitmapFactory.decodeFile(externalStorageDirPath + "/" + cleanFileName(fileName));
+		Bitmap bmp = null;
+		fileName = cleanFileName(fileName);
+		if(fileName != null)
+			bmp = BitmapFactory.decodeFile(externalStorageDirPath + "/" + fileName);
+		
 		return bmp;
 	}
 	
@@ -77,6 +83,9 @@ public class FileHelper
 	public boolean storeRadarImage(String fileName, byte[] image, String externalStorageDirPath)
 	{
 		fileName = cleanFileName(fileName);
+		if(fileName == null)
+			return false;
+		
 		File file = new File(externalStorageDirPath, cleanFileName(fileName));
 		try
 		{

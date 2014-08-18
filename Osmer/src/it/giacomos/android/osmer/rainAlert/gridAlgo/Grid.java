@@ -49,11 +49,6 @@ public class Grid
 		return null;
 	}
 	
-	public Rect boundingRect()
-	{
-		return new Rect(this.xc - this.width / 2.0, this.yc - this.height / 2.0, this.width, this.height);
-	}
-	
 	public double getCenterX()
 	{
 		return this.xc;
@@ -71,7 +66,7 @@ public class Grid
 		this.xc = xc;
 		this.yc = yc;
 		
-		if(this.width > 0 && this.height > 0)
+		if(this.width > 0 && this.height > 0 && xc >= 0.0 && yc >= 0.0)
 		{
 			
 			if(config.length() > 0)

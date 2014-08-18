@@ -12,8 +12,15 @@ testo="Tarcento, zona stazione dei treni, Osteria Sul Ronc. Punta verso Ovest-No
 link="http://79.38.107.56/record/current.jpg" />
 
 <marker nome="Roveredo"
-id="110" lat="46.010254" lng="12.61986" 
+id="120" lat="46.010254" lng="12.61986" 
 testo="Roveredo" category="additional"
 link="http://icons.wunderground.com/webcamramdisk/r/o/robdal/1/current.jpg" />
+
+<marker nome="Promotur - Piani del Montasio"
+id="130" lat="46.374472" lng="13.463889" 
+testo="Piani del Montasio - Nicola Blasuttigh" category="additional"
+link="http://promotur.digitalwebland.com/webcam/sellavecchiafunivia.jpg" />
+
+
 
 </markers>

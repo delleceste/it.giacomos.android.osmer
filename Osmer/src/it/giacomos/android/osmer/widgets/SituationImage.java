@@ -50,7 +50,7 @@ implements LatestObservationCacheChangeListener
 		mTxtRect = new Rect(); /* used in draw */
 		mSensibleArea = new RectF(); /* used in draw */
 		mLocationToImgPixelMapper = new LocationToImgPixelMapper(); /* used in draw */
-		
+
 		int densityDpi = this.getResources().getDisplayMetrics().densityDpi;
 		/* adjust font according to density... */
 		if(densityDpi == DisplayMetrics.DENSITY_MEDIUM ||
@@ -80,17 +80,17 @@ implements LatestObservationCacheChangeListener
 	{
 		return mViewType;
 	}
-	
+
 	public void onCacheUpdate(ObservationsCache oCache) 
 	{
 		dClearObservationsDataMap();
-		
+
 		Resources res = this.getResources();
 		final String[] locations = { "Trieste", "Udine", "Gradisca d'Is.", "Pordenone",
 				"Tolmezzo", "Tarvisio", "Grado",
 				"Lignano", "Chievolis"
 		};
-		
+
 		LocationNamesMap locMap = new LocationNamesMap();
 		for(int i = 0; i < locations.length; i++)
 		{
@@ -117,14 +117,14 @@ implements LatestObservationCacheChangeListener
 					}
 					if(drawableId > -1)
 						iconBitmap = BitmapFactory.decodeResource(res, drawableId);
-					
+
 					String temp = od.get(ObservationType.TEMP);
 					String watTemp = od.get(ObservationType.SEA);
 					String snow = od.get(ObservationType.SNOW);	
 					String rain = od.get(ObservationType.RAIN);
 
 					mMap.put(loc, new SituationImageObservationData(od.location,
-								od.time, iconBitmap, temp, watTemp, snow, rain));
+							od.time, iconBitmap, temp, watTemp, snow, rain));
 				}
 			}
 		}
@@ -147,7 +147,7 @@ implements LatestObservationCacheChangeListener
 		}
 		mMap.clear();
 	}
-	
+
 	protected void onDraw(Canvas canvas)
 	{
 		super.onDraw(canvas);
@@ -159,7 +159,7 @@ implements LatestObservationCacheChangeListener
 
 		float startOfXText = 0;
 		float yCopyrightText = this.getHeight() - 5;
-		
+
 		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
 		{
 			/* data source drawing on home screen has been disabled.
@@ -175,9 +175,9 @@ implements LatestObservationCacheChangeListener
 			canvas.drawText(author, startOfXText, yCopyrightText, mPaint);
 			yCopyrightText -= mTxtRect.height();
 		}
-		
-		
-		
+
+
+
 		/* draw observation icons and text ! */
 		for(Location l : mMap.keySet())
 		{
@@ -242,8 +242,8 @@ implements LatestObservationCacheChangeListener
 				if(nextX + mTxtRect.width() > xMax)
 					xMax = nextX + mTxtRect.width();
 				/* xMin not changed */
-				
-				
+
+
 			}
 			if(d.hasSnow())
 			{
@@ -268,18 +268,18 @@ implements LatestObservationCacheChangeListener
 			mSensibleArea.top = yMin - 2;
 			mSensibleArea.right = xMax + 2;
 			mSensibleArea.bottom = yMax + 2;
-			
+
 			//canvas.drawRoundRect(sensibleArea, 6, 6, mPaint);
 			mObsRects.put(mSensibleArea, d);
 			/* calculate text height using a capital X */
 			mPaint.getTextBounds("X", 0, 1, mTxtRect);
-			
+
 			/* start of painting: copyright top */
 			y = yCopyrightText - 8;
-			
+
 			/* colour for text and circles */
 			mPaint.setARGB(255, 10, 255, 10);
-			
+
 			if(mSensibleArea.contains(mCurrentTouchedPoint.x, mCurrentTouchedPoint.y))
 			{
 				mPaint.setStyle(Paint.Style.STROKE);
@@ -287,16 +287,24 @@ implements LatestObservationCacheChangeListener
 				mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 				mPaint.setARGB(255, 16, 85, 45);
 				String text = "";
-				
+
 				if(d.hasRain())
 				{
 					String rain = d.getRain();
 					rain = rain.replaceAll("[^\\d+\\.)]", "");
+
 					if(Float.parseFloat(rain) > 0.0f)
 					{
-						text =  mRainStr + ": " + d.getRain();
-						canvas.drawText(text, 4, y, mPaint);
-						y -= (mTxtRect.height() + 5);
+						try
+						{
+							text =  mRainStr + ": " + d.getRain();
+							canvas.drawText(text, 4, y, mPaint);
+							y -= (mTxtRect.height() + 5);
+						}
+						catch(NumberFormatException nfe)
+						{
+
+						}
 					}
 				}
 				if(d.hasSnow())
@@ -318,7 +326,7 @@ implements LatestObservationCacheChangeListener
 					y -= (mTxtRect.height() + 5); 
 				}
 				canvas.drawText(d.getLocation() + " [" + d.getTime() + "]", 4, y, mPaint);
-				
+
 				/* disable forecast icon hint */
 				if(mHintForecastIconEnabled)
 					this.disableForecastIconsHint();
@@ -345,7 +353,7 @@ implements LatestObservationCacheChangeListener
 		 * and then the map is cleared
 		 */
 		dClearObservationsDataMap();
-		
+
 		for(SituationImageObservationData siod : mObsRects.values())
 		{
 			Bitmap bmp = siod.getIcon();
@@ -365,15 +373,15 @@ implements LatestObservationCacheChangeListener
 		s.setForecastIconsHintEnabled(false);
 		s = null;
 	}
-	
+
 	private Rect mTxtRect;
 	private RectF mSensibleArea;
 	private ViewType mViewType;
 	LocationToImgPixelMapper mLocationToImgPixelMapper;
-	
+
 	private HashMap<Location, SituationImageObservationData> mMap;
 	private HashMap<RectF, SituationImageObservationData> mObsRects;
-	
+
 	private PointF mCurrentTouchedPoint;
 	private final String mSnowStr = getResources().getString(R.string.snow);
 	private final String mSeaStr = getResources().getString(R.string.sea);

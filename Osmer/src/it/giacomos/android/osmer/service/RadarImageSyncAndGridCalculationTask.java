@@ -26,7 +26,6 @@ public class RadarImageSyncAndGridCalculationTask extends
 	@Override
 	protected RainDetectResult doInBackground(String... configurations) 
 	{
-		boolean willRain = false; /* by default, if something fails, no notification */
 		/* some configuration file names and the grid configuration are passed inside configurations arg */
 		String gridConf = configurations[0];
 		String radarImgLocalPath = configurations[1];
@@ -66,18 +65,24 @@ public class RadarImageSyncAndGridCalculationTask extends
 			imgoverlaygrid_1.init(gridConf);
 			imgoverlaygrid_0.init(gridConf);
 
-			MeteoFvgImgParams	imgParams = new MeteoFvgImgParams();
-
-			imgoverlaygrid_1.processImage(imgParams);
-			imgoverlaygrid_0.processImage(imgParams);
-
-			ImgCompareGrids imgCmpGrids = new ImgCompareGrids();
+			if(imgoverlaygrid_1.isValid() && imgoverlaygrid_0.isValid())
+			{
 			
-//			Log.e("RadarImageSync... ", "last " + lastImgFileName + ", prev " + prevImgFileName + 
-//					", rain: " + willRain + " tlLa " + topLeftLat + " tlLon " + topLeftLon + ", brla " +
-//		 			botRightLat + ", brlon " + botRightLon);
-			
-			return imgCmpGrids.compare(imgoverlaygrid_0,  imgoverlaygrid_1, imgParams);
+				MeteoFvgImgParams	imgParams = new MeteoFvgImgParams();
+	
+				imgoverlaygrid_1.processImage(imgParams);
+				imgoverlaygrid_0.processImage(imgParams);
+	
+				ImgCompareGrids imgCmpGrids = new ImgCompareGrids();
+				
+	//			Log.e("RadarImageSync... ", "last " + lastImgFileName + ", prev " + prevImgFileName + 
+	//					", rain: " + willRain + " tlLa " + topLeftLat + " tlLon " + topLeftLon + ", brla " +
+	//		 			botRightLat + ", brlon " + botRightLon);
+				
+				return imgCmpGrids.compare(imgoverlaygrid_0,  imgoverlaygrid_1, imgParams);
+			}
+			else /* latitude and longitude of the user outside the valid radar area */
+				return new RainDetectResult(false, 0.0f);
 		}
 		else
 			Log.e("RadarImageSync... ", "filenames is null!");

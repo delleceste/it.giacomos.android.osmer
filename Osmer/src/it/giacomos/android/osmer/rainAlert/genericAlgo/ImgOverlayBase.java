@@ -25,17 +25,24 @@ public abstract class ImgOverlayBase implements ImgOverlayInterface
 		heightKm = heightK;
 		radiusKm = radiusK;
 		
-		mMapCenterToPix(la, lo);
+		/* latitude and longitude of the user must be a point inside the region */
+		if(la >= botRightLat && la <= topLeftLat && lo >= topLeftLon && lo <= botRightLon)
+			mMapCenterToPix(la, lo);
 	}
 	
 	private int imgW = 0, imgH = 0;
 	private double topLeftLat = 0,  topLeftLon = 0,  botRightLat =  0, botRightLon = -1;
 	
-	private double mCenterX = 0.0,  mCenterY = 0.0;
+	private double mCenterX = -1.0,  mCenterY = -1.0;
 	
 	protected double widthKm = 0.0,  heightKm = 0.0,  radiusKm = 0.0;
 	
 	protected String image_filename = "";
+	
+	public boolean isValid()
+	{
+		return mCenterX >= 0.0 && mCenterY >= 0.0;
+	}
 	
 	public int getImgW()
 	{
@@ -59,10 +66,10 @@ public abstract class ImgOverlayBase implements ImgOverlayInterface
 	
 	private void mMapCenterToPix(double lat, double lon)
 	{
-		/* map latitude/longitude lat, lon coordinates to x and y pixel coordinates between 0 and $limg (501 pixels wide) */
-		mCenterX = (double) imgW * (lon - topLeftLon) /  (botRightLon - topLeftLon);
-		mCenterY = (double) imgH - imgH * (lat - botRightLat) / (topLeftLat - botRightLat);
-//		Log.e("ImgOverlayBase.mMapCenterToPix", "lat " + lat + ", lon " + lon + " mapped to " + mCenterX + ", "  + mCenterY);
+			/* map latitude/longitude lat, lon coordinates to x and y pixel coordinates between 0 and $limg (501 pixels wide) */
+			mCenterX = (double) imgW * (lon - topLeftLon) /  (botRightLon - topLeftLon);
+			mCenterY = (double) imgH - imgH * (lat - botRightLat) / (topLeftLat - botRightLat);
+			//		Log.e("ImgOverlayBase.mMapCenterToPix", "lat " + lat + ", lon " + lon + " mapped to " + mCenterX + ", "  + mCenterY);
 	}
 	
 	public double getWidth()

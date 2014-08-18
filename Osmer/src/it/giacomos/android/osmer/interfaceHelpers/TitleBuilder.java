@@ -5,7 +5,7 @@ import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.widgets.CurrentScreen;
+import it.giacomos.android.osmer.widgets.ForecastTabs;
 import it.giacomos.android.osmer.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
 
@@ -24,12 +24,12 @@ public class TitleBuilder
 		String t = "";
 		
 		if (a.getDrawerListView().getCheckedItemPosition() == 0
-				&& (scr == CurrentScreen.HOME_SCREEN || 
-				scr == CurrentScreen.TODAY_SCREEN
-				|| scr == CurrentScreen.TOMORROW_SCREEN || 
-				scr == CurrentScreen.TWODAYS_SCREEN || 
-				scr == CurrentScreen.THREEDAYS_SCREEN || 
-				scr == CurrentScreen.FOURDAYS_SCREEN)
+				&& (scr == ForecastTabs.HOME_TAB || 
+				scr == ForecastTabs.TODAY_TAB|| 
+				scr == ForecastTabs.TOMORROW_TAB || 
+				scr == ForecastTabs.TWODAYS_TAB || 
+				scr == ForecastTabs.THREEDAYS_TAB || 
+				scr == ForecastTabs.FOURDAYS_TAB)
 				) 
 		{
 			t += res.getString(R.string.forecast_title);

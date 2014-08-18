@@ -103,7 +103,8 @@ public class ImgCompareGrids implements ImgCompareI {
 					/* if it already rains set increase to true only if a big increase is foreseen.
 					 * Otherwise, if it already rains, no need to warn
 					 */
-					increase = ( (!rainAlready && (lastEldbz > img_params_i.getThreshold() && lastEldbz >= requiredDbz) ) || bigIncrease);
+					increase = ( (!rainAlready && (lastEldbz > img_params_i.getThreshold() && lastEldbz >= requiredDbz) ) 
+							|| bigIncrease);
 					
 					if(increase)
 						lastLinkedEl.setHasIncreased(increase);
@@ -139,7 +140,8 @@ public class ImgCompareGrids implements ImgCompareI {
 					/* if it already rains set increase to true only if a big increase is foreseen.
 					 * Otherwise, if it already rains, no need to warn
 					 */
-					increase = ( (!rainAlready && (lastEldbz > img_params_i.getThreshold() && lastEldbz >= requiredDbz) ) || bigIncrease);
+					increase = ( (!rainAlready && (lastEldbz > img_params_i.getThreshold() && lastEldbz >= requiredDbz) ) 
+							|| bigIncrease);
 					
 					if(increase)
 						lastLinkedEl.setHasIncreased(increase);
@@ -174,7 +176,8 @@ public class ImgCompareGrids implements ImgCompareI {
 					/* if it already rains set increase to true only if a big increase is foreseen.
 					 * Otherwise, if it already rains, no need to warn
 					 */
-					increase = ( (!rainAlready && (lastEldbz > img_params_i.getThreshold() && lastEldbz >= requiredDbz) ) || bigIncrease);
+					increase = ( (!rainAlready && (lastEldbz > img_params_i.getThreshold() && lastEldbz >= requiredDbz) ) 
+							|| bigIncrease);
 					
 					if(increase)
 						lastLinkedEl.setHasIncreased(increase);
