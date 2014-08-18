@@ -16,7 +16,10 @@ public class Element {
 	
 	public ArrayList<ContiguousElementData> contiguousElementDataList; /* contiguousElementData */
 	
-	public Element(int nrows, int ncols) {
+	public Element(int nrows, int ncols) 
+	{
+		/* if calculateDbz is not called (null bitmap), init dbz to 0.0 */
+		dbz = 0.0f; 
 		index = new Index(nrows, ncols);
 		contiguousElementDataList = new ArrayList<ContiguousElementData>();
 	}
@@ -33,8 +36,7 @@ public class Element {
 	 * This method calculates the value of dbz inside the region of interest enclosed inside this Element.
 	 *        
 	 */
-	public void calculateDbz(Bitmap image, double xc, double yc,
-			ImgParamsInterface imgParams) 
+	public void calculateDbz(Bitmap image,	ImgParamsInterface imgParams) 
 	{
 		int argb = 0;
 		

@@ -24,7 +24,7 @@ public class Grid
 	{
 		for(Element e : elements)
 		{
-			e.calculateDbz(image, this.xc, this.yc, imgParams);
+			e.calculateDbz(image, imgParams);
 		}
 	}
 	

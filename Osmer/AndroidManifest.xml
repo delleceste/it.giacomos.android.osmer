@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="805"
+    android:versionCode="807"
     android:versionName="2.10.0-alpha2" >
 
     <uses-sdk
