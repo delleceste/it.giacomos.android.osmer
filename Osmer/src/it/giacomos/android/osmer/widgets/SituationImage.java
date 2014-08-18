@@ -292,19 +292,19 @@ implements LatestObservationCacheChangeListener
 				{
 					String rain = d.getRain();
 					rain = rain.replaceAll("[^\\d+\\.)]", "");
-
-					if(Float.parseFloat(rain) > 0.0f)
+					try
 					{
-						try
+						if(Float.parseFloat(rain) > 0.0f)
 						{
+
 							text =  mRainStr + ": " + d.getRain();
 							canvas.drawText(text, 4, y, mPaint);
 							y -= (mTxtRect.height() + 5);
 						}
-						catch(NumberFormatException nfe)
-						{
+					}
+					catch(NumberFormatException nfe)
+					{
 
-						}
 					}
 				}
 				if(d.hasSnow())
