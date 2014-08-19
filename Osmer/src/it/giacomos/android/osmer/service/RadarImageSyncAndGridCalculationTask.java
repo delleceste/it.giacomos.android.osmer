@@ -21,15 +21,34 @@ public class RadarImageSyncAndGridCalculationTask extends
 		mRadarImageSyncTaskListener = radarImageSyncAndCalculationTaskListener;
 		mMyLatitude = mylatitude;
 		mMyLongitude = mylongitude;
+		
+//		mMyLatitude = 46.06009;
+//		mMyLongitude = 12.079811;
 	}
 	
 	@Override
 	protected RainDetectResult doInBackground(String... configurations) 
 	{
+		RainDetectResult rainDetectRes = null;
 		/* some configuration file names and the grid configuration are passed inside configurations arg */
 		String gridConf = configurations[0];
 		String radarImgLocalPath = configurations[1];
 		String radarImgRemotePath = configurations[2];
+		String lastImgFileName = "";
+		String prevImgFileName = "";
+		/* From GeoCoordinates.java:
+		 * public static final LatLngBounds radarImageBounds = new LatLngBounds(new LatLng(44.6052, 11.9294), 
+		 *		new LatLng(46.8080, 15.0857));
+		 */
+		double topLeftLat = GeoCoordinates.radarImageBounds.northeast.latitude;
+		double topLeftLon = GeoCoordinates.radarImageBounds.southwest.longitude;
+		double botRightLat = GeoCoordinates.radarImageBounds.southwest.latitude;
+		double botRightLon = GeoCoordinates.radarImageBounds.northeast.longitude;
+
+		double widthKm = 240.337;
+		double heightKm = 244.153;
+
+		double defaultRadius = 20; /* 20km */
 		
 		/* sync radar images for rain detection */
 		SyncImages syncer = new SyncImages();
@@ -37,22 +56,8 @@ public class RadarImageSyncAndGridCalculationTask extends
 		
 		if(filenames != null)
 		{
-			String lastImgFileName = radarImgLocalPath + "/" + filenames[0];
-			String prevImgFileName = radarImgLocalPath + "/" + filenames[1];
- 
-			/* From GeoCoordinates.java:
-			 * public static final LatLngBounds radarImageBounds = new LatLngBounds(new LatLng(44.6052, 11.9294), 
-			 *		new LatLng(46.8080, 15.0857));
-			 */
-			double topLeftLat = GeoCoordinates.radarImageBounds.northeast.latitude;
-			double topLeftLon = GeoCoordinates.radarImageBounds.southwest.longitude;
-			double botRightLat = GeoCoordinates.radarImageBounds.southwest.latitude;
-			double botRightLon = GeoCoordinates.radarImageBounds.northeast.longitude;
-
-			double widthKm = 240.337;
-			double heightKm = 244.153;
-
-			double defaultRadius = 20; /* 20km */
+			lastImgFileName = radarImgLocalPath + "/" + filenames[0];
+			prevImgFileName = radarImgLocalPath + "/" + filenames[1];
 
 			ImgOverlayGrid imgoverlaygrid_0 = new ImgOverlayGrid(lastImgFileName, 
 					501, 501, topLeftLat, topLeftLon, botRightLat, botRightLon, 
@@ -75,19 +80,21 @@ public class RadarImageSyncAndGridCalculationTask extends
 	
 				ImgCompareGrids imgCmpGrids = new ImgCompareGrids();
 				
-	//			Log.e("RadarImageSync... ", "last " + lastImgFileName + ", prev " + prevImgFileName + 
-	//					", rain: " + willRain + " tlLa " + topLeftLat + " tlLon " + topLeftLon + ", brla " +
-	//		 			botRightLat + ", brlon " + botRightLon);
+	
 				
-				return imgCmpGrids.compare(imgoverlaygrid_0,  imgoverlaygrid_1, imgParams);
+				rainDetectRes = imgCmpGrids.compare(imgoverlaygrid_0,  imgoverlaygrid_1, imgParams);
 			}
 			else /* latitude and longitude of the user outside the valid radar area */
-				return new RainDetectResult(false, 0.0f);
+				rainDetectRes = new RainDetectResult(false, 0.0f);
 		}
 		else
 			Log.e("RadarImageSync... ", "filenames is null!");
 
-		return new RainDetectResult(false, 0.0f); 
+		Log.e("RadarImageSync... ", "last " + lastImgFileName + ", prev " + prevImgFileName + 
+					", rain: " + rainDetectRes.willRain + " dbz: " + rainDetectRes.dbz + " tlLa " + topLeftLat + " tlLon " + topLeftLon + ", brla " +
+		 			botRightLat + ", brlon " + botRightLon + " myLa " + mMyLatitude + ", myLon " + mMyLongitude);
+		
+		return rainDetectRes; 
 	}
 	
 	@Override

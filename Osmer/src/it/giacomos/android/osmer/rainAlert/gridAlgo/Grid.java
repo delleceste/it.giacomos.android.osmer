@@ -66,7 +66,7 @@ public class Grid
 		this.xc = xc;
 		this.yc = yc;
 		
-		if(this.width > 0 && this.height > 0 && xc >= 0.0 && yc >= 0.0)
+		if(this.width > 0 && this.height > 0 /* && xc >= 0.0 && yc >= 0.0 */)
 		{
 			
 			if(config.length() > 0)
@@ -121,15 +121,42 @@ public class Grid
 				double ystep = this.height / this.nrows; /* height of a single cell */
 				
 				Element ele = null;
+				double xs, xe, ys, ye;
 				for(int r = 0; r < this.nrows; r++)
 				{
 					for(int c = 0; c < this.ncols; c++)
 					{
 						ele = this.get(r, c);
-						ele.xstart = xc - d/2 + c * xstep;
-						ele.xend = ele.xstart + xstep;
-						ele.ystart = yc - e/2 + r * ystep;
-						ele.yend = ele.ystart + ystep;
+						xs = xc - d/2 + c * xstep;
+						xe = xs + xstep;
+						ys = yc - e/2 + r * ystep;
+						ye = ys + ystep;
+						
+						if(xs < 0)
+							xs = 0;
+						else if(xs > this.width)
+							xs = this.width;
+						ele.xstart = xs;
+						
+						if(xe < 0)
+							xe = 0;
+						else if(xe > this.width)
+							xe = this.width;
+						ele.xend = xe;
+						
+						if(ys < 0)
+							ys = 0;
+						else if(ys > this.height)
+							ys = this.height;
+						ele.ystart = ys;
+						
+						if(ye < 0)
+							ye = 0;
+						else if(ye > this.height)
+							ye = this.height;
+						
+						ele.ystart = ys;
+						ele.yend = ye;
 					}
 				}
 			}

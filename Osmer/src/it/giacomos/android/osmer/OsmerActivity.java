@@ -851,9 +851,6 @@ NewsUpdateListener
 			findViewById(R.id.radarTimestampTextView).setVisibility(View.GONE);
 			startRadarAnimation();
 			break;
-		case R.id.syncServiceAction:
-			MyAlertDialogFragment.MakeGenericInfo(R.string.dialogNotificationServiceEnableMovedToSettings, this);
-			break;
 		case R.id.reportUpdateAction:
 			/* this forces an update, even if just updated */
 			updateReport(true);
@@ -958,9 +955,6 @@ NewsUpdateListener
 		menu.findItem(R.id.reportUpdateAction).setVisible(mCurrentViewType == ViewType.REPORT);
 		/* tutorial */
 		menu.findItem(R.id.reportHelpAction).setVisible(mCurrentViewType == ViewType.REPORT);
-		/* enable sync action */
-		menu.findItem(R.id.syncServiceAction).setVisible(mCurrentViewType == ViewType.REPORT 
-				|| mCurrentViewType == ViewType.RADAR);
 
 		switch(mCurrentViewType)
 		{

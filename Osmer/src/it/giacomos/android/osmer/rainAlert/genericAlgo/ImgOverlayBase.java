@@ -26,7 +26,7 @@ public abstract class ImgOverlayBase implements ImgOverlayInterface
 		radiusKm = radiusK;
 		
 		/* latitude and longitude of the user must be a point inside the region */
-		if(la >= botRightLat && la <= topLeftLat && lo >= topLeftLon && lo <= botRightLon)
+		//if(la >= botRightLat && la <= topLeftLat && lo >= topLeftLon && lo <= botRightLon)
 			mMapCenterToPix(la, lo);
 	}
 	
@@ -69,7 +69,7 @@ public abstract class ImgOverlayBase implements ImgOverlayInterface
 			/* map latitude/longitude lat, lon coordinates to x and y pixel coordinates between 0 and $limg (501 pixels wide) */
 			mCenterX = (double) imgW * (lon - topLeftLon) /  (botRightLon - topLeftLon);
 			mCenterY = (double) imgH - imgH * (lat - botRightLat) / (topLeftLat - botRightLat);
-			//		Log.e("ImgOverlayBase.mMapCenterToPix", "lat " + lat + ", lon " + lon + " mapped to " + mCenterX + ", "  + mCenterY);
+//			Log.e("ImgOverlayBase.mMapCenterToPix", "lat " + lat + ", lon " + lon + " mapped to " + mCenterX + ", "  + mCenterY);
 	}
 	
 	public double getWidth()

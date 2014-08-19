@@ -47,7 +47,7 @@ public class ImgOverlayGrid extends ImgOverlayBase
 	public void processImage(ImgParamsInterface imgParams) 
 	{
 //		Log.e("ImgOverlayGrid.processImage", "decoding bitmap " + image_filename);
-		Bitmap radar_image = BitmapFactory.decodeFile(this.image_filename);
+		Bitmap radar_image = BitmapFactory.decodeFile(this.image_filename);		
 		if(radar_image != null)
 		{			
 			this.mGrid.calculateDbz(radar_image, imgParams);
