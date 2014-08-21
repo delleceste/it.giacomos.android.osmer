@@ -79,9 +79,6 @@ public class RadarImageSyncAndGridCalculationTask extends
 				imgoverlaygrid_0.processImage(imgParams);
 	
 				ImgCompareGrids imgCmpGrids = new ImgCompareGrids();
-				
-	
-				
 				rainDetectRes = imgCmpGrids.compare(imgoverlaygrid_0,  imgoverlaygrid_1, imgParams);
 			}
 			else /* latitude and longitude of the user outside the valid radar area */

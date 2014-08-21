@@ -52,7 +52,6 @@ public class Element {
 		
 		this.dbz = 0;
 		
-//		Log.e("Element.calculateDbz", "index [ " + index.i  + ", " + index.j + "] "  + " [" + startX +"," + startY + ", " + endX + "," + endY  + "], dbz " + dbz);
 		
 		for(int r = startX; r < endX; r++)
 		{
@@ -63,11 +62,11 @@ public class Element {
 				this.dbz += imgParams.getDbzForColor(arr_rgb);
 			}
 		}
-		
+
 		/* normalize dBZ */
 		this.dbz /= npix;
 		
-	
+	//	Log.e("Element.calculateDbz", "index [ " + index.i  + ", " + index.j + "] "  + " [" + startX +"," + startY + ", " + endX + "," + endY  + "], dbz " + dbz);	
 		
 		/* Functions drawing on image would follow. See img_overlay_grid.php, Element class.
 		 * 

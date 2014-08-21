@@ -14,7 +14,9 @@ public class Grid
 	
 	private double xc = 0, yc = 0; /* center coordinates in the image of the radar */
 	
-	public double width = 0, height = 0; /* default osmer img size */
+	public double imgWidth = 0, imgHeight = 0; /* default osmer img size */
+	
+	public double width = 0, height  = 0;
 	
 	public ArrayList<Element>elements; /* array of Element */
 	
@@ -28,10 +30,16 @@ public class Grid
 		}
 	}
 	
-	public void setImgSize(int w, int h)
+	public void setSize(double w, double h)
 	{
-		this.width = w;
-		this.height = h;
+		width = w;
+		height = h;
+	}
+	
+	public void setImgSize(double iw, double ih)
+	{
+		imgWidth = iw;
+		imgHeight = ih;
 	}
 	
 	public Element idxGet(Index idx)
@@ -59,14 +67,12 @@ public class Grid
 		return this.yc;
 	}
 	
-	public void init(String config, double xc, double yc, double d, double e)
+	public void init(String config, double xc, double yc)
 	{
-		this.width = d;
-		this.height = e;
 		this.xc = xc;
 		this.yc = yc;
 		
-		if(this.width > 0 && this.height > 0 /* && xc >= 0.0 && yc >= 0.0 */)
+		if(this.width > 0 && this.height > 0)
 		{
 			
 			if(config.length() > 0)
@@ -120,6 +126,7 @@ public class Grid
 				double xstep = this.width / this.ncols;
 				double ystep = this.height / this.nrows; /* height of a single cell */
 				
+				Log.e("Grid.init", "width " + this.width + ", hei " + this.height + " img w " + imgWidth + ", h " + imgHeight);
 				Element ele = null;
 				double xs, xe, ys, ye;
 				for(int r = 0; r < this.nrows; r++)
@@ -127,34 +134,33 @@ public class Grid
 					for(int c = 0; c < this.ncols; c++)
 					{
 						ele = this.get(r, c);
-						xs = xc - d/2 + c * xstep;
+						xs = xc - width/2 + c * xstep;
 						xe = xs + xstep;
-						ys = yc - e/2 + r * ystep;
+						ys = yc - height/2 + r * ystep;
 						ye = ys + ystep;
 						
 						if(xs < 0)
 							xs = 0;
-						else if(xs > this.width)
-							xs = this.width;
-						ele.xstart = xs;
+						else if(xs > this.imgWidth)
+							xs = this.imgWidth;
 						
 						if(xe < 0)
 							xe = 0;
-						else if(xe > this.width)
-							xe = this.width;
-						ele.xend = xe;
+						else if(xe > this.imgWidth)
+							xe = this.imgWidth;
 						
 						if(ys < 0)
 							ys = 0;
-						else if(ys > this.height)
-							ys = this.height;
-						ele.ystart = ys;
+						else if(ys > this.imgHeight)
+							ys = this.imgHeight;
 						
 						if(ye < 0)
 							ye = 0;
-						else if(ye > this.height)
-							ye = this.height;
+						else if(ye > this.imgHeight)
+							ye = this.imgHeight;
 						
+						ele.xstart = xs;
+						ele.xend = xe;
 						ele.ystart = ys;
 						ele.yend = ye;
 					}

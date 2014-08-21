@@ -37,7 +37,9 @@ public class ImgOverlayGrid extends ImgOverlayBase
 	public void init(String configurationAsString)
 	{
 		mGrid = new Grid();
-		mGrid.init(configurationAsString, this.getCenterX(), this.getCenterY(), this.getWidth(), this.getHeight());
+		mGrid.setImgSize(getImgH(), getImgH());
+		mGrid.setSize(getWidth(), getHeight());
+		mGrid.init(configurationAsString, this.getCenterX(), this.getCenterY());
 	}
 	
 	/** Calculates the value of the dbz in the grid. After this call ends, all the elements
