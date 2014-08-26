@@ -32,7 +32,10 @@ public class FileHelper
 	
 	private String cleanFileName(String fileName)
 	{
-		return fileName.substring(fileName.lastIndexOf('/') + 1, fileName.length());
+		if(fileName != null)
+			return fileName.substring(fileName.lastIndexOf('/') + 1, fileName.length());
+		else
+			return "";
 	}
 	
 	public Bitmap decodeImage(String fileName, String externalStorageDirPath)

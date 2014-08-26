@@ -102,7 +102,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver
         					{
         						resultIntent.putExtra("NotificationReportRequest", true);
         						ReportRequestNotification rrnd = (ReportRequestNotification) notificationData;
-        						message = ctx.getResources().getString(R.string.notificatonNewReportRequest) 
+        						message = ctx.getResources().getString(R.string.notificationNewReportRequest) 
         								+ " " + notificationData.username;
         						if(rrnd.locality.length() > 0)
         							message += " - " + rrnd.locality;
