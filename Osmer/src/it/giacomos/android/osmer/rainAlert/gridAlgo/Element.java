@@ -94,8 +94,15 @@ public class Element {
 				String [] parts = contig.split(",");
 				if(parts.length > 2)
 				{
-					this.addContiguousData(new ContiguousElementData(Integer.parseInt(parts[0]),
+					try{
+						this.addContiguousData(new ContiguousElementData(Integer.parseInt(parts[0]),
 							Integer.parseInt(parts[1]), Double.parseDouble(parts[2])));
+					}
+					catch(NumberFormatException nfe)
+					{
+						Log.e("Element.initFromString", "unable to parse document and create Element: "
+								+ nfe.getLocalizedMessage());
+					}
 				}
 			}
 		}

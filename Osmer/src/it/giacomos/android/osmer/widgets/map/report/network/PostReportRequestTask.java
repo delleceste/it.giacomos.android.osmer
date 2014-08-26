@@ -93,8 +93,15 @@ public class PostReportRequestTask extends AsyncTask<String, Integer, String>{
 	        /* check the echo result */
 	        HttpEntity entity = response.getEntity();
 	        returnVal = EntityUtils.toString(entity);
-	        if(Integer.parseInt(returnVal) < 0)
+	        try
+	        {
+	        	if(Integer.parseInt(returnVal) < 0)
+	        		mErrorMsg = "Server error: the server returned " + returnVal;
+	        }
+	        catch(NumberFormatException nfe)
+	        {
 	        	mErrorMsg = "Server error: the server returned " + returnVal;
+	        }
 		} 
 		catch (UnsupportedEncodingException e) 
 		{

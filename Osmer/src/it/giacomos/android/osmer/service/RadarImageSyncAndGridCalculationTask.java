@@ -87,7 +87,8 @@ public class RadarImageSyncAndGridCalculationTask extends
 		else
 			Log.e("RadarImageSync... ", "filenames is null!");
 
-		Log.e("RadarImageSync... ", "last " + lastImgFileName + ", prev " + prevImgFileName + 
+		if(rainDetectRes != null)
+			Log.e("RadarImageSync... ", "last " + lastImgFileName + ", prev " + prevImgFileName + 
 					", rain: " + rainDetectRes.willRain + " dbz: " + rainDetectRes.dbz + " tlLa " + topLeftLat + " tlLon " + topLeftLon + ", brla " +
 		 			botRightLat + ", brlon " + botRightLon + " myLa " + mMyLatitude + ", myLon " + mMyLongitude);
 		
