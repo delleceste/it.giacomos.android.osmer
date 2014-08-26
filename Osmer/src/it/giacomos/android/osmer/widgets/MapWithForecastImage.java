@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.forecastRepr.Area;
 import it.giacomos.android.osmer.forecastRepr.ForecastDataFactory;
 import it.giacomos.android.osmer.forecastRepr.ForecastDataInterface;

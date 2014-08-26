@@ -1,7 +1,7 @@
 package it.giacomos.android.osmer.gcm;
 
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import it.giacomos.android.osmer.service.sharedData.NotificationData;
 import it.giacomos.android.osmer.service.sharedData.NotificationDataFactory;
 import it.giacomos.android.osmer.service.sharedData.RainNotification;

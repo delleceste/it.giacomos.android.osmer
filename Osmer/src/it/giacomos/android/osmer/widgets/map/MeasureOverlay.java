@@ -5,7 +5,7 @@ import it.giacomos.android.osmer.locationUtils.LocationServiceAddressUpdateListe
 import it.giacomos.android.osmer.locationUtils.LocationServiceUpdateListener;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.pro.R;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
