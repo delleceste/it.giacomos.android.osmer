@@ -5,7 +5,7 @@ import android.support.v4.app.DialogFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.LocationService;
 import it.giacomos.android.osmer.locationUtils.LocationServiceAddressUpdateListener;
 import it.giacomos.android.osmer.locationUtils.LocationServiceUpdateListener;

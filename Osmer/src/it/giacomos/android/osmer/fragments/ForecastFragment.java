@@ -6,7 +6,7 @@ import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
 import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.pro.R;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.widgets.ForecastTextView;
 import it.giacomos.android.osmer.widgets.MapWithForecastImage;
 import android.support.v4.app.Fragment;
