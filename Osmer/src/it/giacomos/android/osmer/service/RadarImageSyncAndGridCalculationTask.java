@@ -98,7 +98,8 @@ public class RadarImageSyncAndGridCalculationTask extends
 	@Override
 	public void onPostExecute(RainDetectResult result)
 	{
-		mRadarImageSyncTaskListener.onRainDetectionDone(result);
+		if(result != null)
+			mRadarImageSyncTaskListener.onRainDetectionDone(result);
 	}
 	
 	@Override
