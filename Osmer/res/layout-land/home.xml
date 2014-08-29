@@ -6,7 +6,7 @@
     android:orientation="horizontal" >
 
     <it.giacomos.android.osmer.widgets.SituationImage
-        android:id="@+id/child1ImageView"
+        android:id="@+id/situationImageView"
         android:layout_width="0dip"
         android:layout_height="fill_parent"
         android:layout_weight="1.0"

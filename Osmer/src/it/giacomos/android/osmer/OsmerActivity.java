@@ -42,6 +42,7 @@ import it.giacomos.android.osmer.service.sharedData.ReportNotification;
 import it.giacomos.android.osmer.service.sharedData.ReportRequestNotification;
 import it.giacomos.android.osmer.webcams.WebcamDataHelper;
 import it.giacomos.android.osmer.widgets.AnimatedImageView;
+import it.giacomos.android.osmer.widgets.MapWithForecastImage;
 import it.giacomos.android.osmer.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
@@ -395,10 +396,6 @@ NewsUpdateListener
 				ViewType.DAILY_TABLE, true);
 		m_observationsCache.onTextChanged(dataPoolCacheUtils.loadFromStorage(ViewType.LATEST_TABLE, getApplicationContext()),
 				ViewType.LATEST_TABLE, true);
-
-		/* show touch forecast icons hint until a MapWithForecastImage disables this */
-		if(mSettings.isForecastIconsHintEnabled())
-			Toast.makeText(getApplicationContext(), R.string.hint_forecast_icons, Toast.LENGTH_LONG).show();
 
 		/* to show alerts inside onPostResume, after onActivityResult */
 		mMyPendingAlertDialog = null;
@@ -988,7 +985,7 @@ NewsUpdateListener
 		mCurrentViewType = id;
 		ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 		OMapFragment mapFragment = getMapFragment();
-
+		MapWithForecastImage mapWithForecastImage = null;
 		if (id == ViewType.HOME) 
 		{
 			viewFlipper.setDisplayedChild(0);
@@ -1000,30 +997,35 @@ NewsUpdateListener
 			viewFlipper.setDisplayedChild(0);
 			mViewPager.setCurrentItem(ViewPagerPages.TODAY);
 			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
+			mapWithForecastImage  = (MapWithForecastImage) findViewById(R.id.todayImageView);
 		} 
 		else if (id == ViewType.TOMORROW) 
 		{
 			viewFlipper.setDisplayedChild(0);
 			mViewPager.setCurrentItem(ViewPagerPages.TOMORROW);
 			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
+			mapWithForecastImage  = (MapWithForecastImage)findViewById(R.id.tomorrowImageView);
 		} 
 		else if (id == ViewType.TWODAYS) 
 		{
 			viewFlipper.setDisplayedChild(0);
 			mViewPager.setCurrentItem(ViewPagerPages.TWODAYS);
 			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
+			mapWithForecastImage  = (MapWithForecastImage)findViewById(R.id.twoDaysImageView);
 		} 
 		else if (id == ViewType.THREEDAYS) 
 		{
 			viewFlipper.setDisplayedChild(0);
 			mViewPager.setCurrentItem(ViewPagerPages.THREEDAYS);
 			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
+			mapWithForecastImage  = (MapWithForecastImage)findViewById(R.id.threeDaysImageView);
 		} 
 		else if (id == ViewType.FOURDAYS) 
 		{
 			viewFlipper.setDisplayedChild(0);
 			mViewPager.setCurrentItem(ViewPagerPages.FOURDAYS);
 			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
+			mapWithForecastImage  = (MapWithForecastImage)findViewById(R.id.fourDaysImageView);
 		} 
 		else if (id == ViewType.RADAR) 
 		{
@@ -1107,15 +1109,15 @@ NewsUpdateListener
 			}
 		}
 
-		if(mSettings.isZoneLongPressHintEnabled() && id == ViewType.TODAY)
-			Toast.makeText(getApplicationContext(), R.string.hint_zone_longpress, Toast.LENGTH_LONG).show();
-
 		TitlebarUpdater titleUpdater = new TitlebarUpdater();
 		titleUpdater.update(this);
 		titleUpdater = null;
 
 		/* show or hide maps menu button according to the current view type */
 		mInitButtonMapsOverflowMenu();
+		
+		if(mapWithForecastImage != null)
+			mapWithForecastImage.restoreTouchState();
 	}
 
 	public DownloadManager stateMachine() { return m_downloadManager; }

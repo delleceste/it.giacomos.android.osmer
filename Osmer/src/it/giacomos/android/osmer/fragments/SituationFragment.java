@@ -68,7 +68,7 @@ public class SituationFragment extends Fragment implements DataPoolTextListener,
 		/* Get the reference to the data pool in order to register for events */
 		view = inflater.inflate(R.layout.home, null);
 		mHomeTextView  = (HomeTextView)view.findViewById(R.id.homeTextView);
-		mSituationImage = (SituationImage) view.findViewById(R.id.child1ImageView);
+		mSituationImage = (SituationImage) view.findViewById(R.id.situationImageView);
 		mSituationImage.setViewType(ViewType.HOME);
 
 		return view;

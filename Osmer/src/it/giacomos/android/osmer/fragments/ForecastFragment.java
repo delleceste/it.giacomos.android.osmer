@@ -181,6 +181,8 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			mTextView.setViewType(ViewType.TODAY);
 			mImageView = (MapWithForecastImage) view.findViewById(R.id.todayImageView);
 			mImageView.setViewType(ViewType.TODAY_SYMTABLE);
+			/* area touch listener only for today, tomorrow, two days */
+			mImageView.setAreaTouchListener(mTextView);
 		}
 		else if(mType == R.string.tomorrow_title)
 		{
@@ -189,6 +191,8 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			mTextView.setViewType(ViewType.TOMORROW);
 			mImageView = (MapWithForecastImage) view.findViewById(R.id.tomorrowImageView);
 			mImageView.setViewType(ViewType.TOMORROW_SYMTABLE);
+			/* area touch listener only for today, tomorrow, two days */
+			mImageView.setAreaTouchListener(mTextView);
 		}
 		else if(mType == R.string.two_days_title)
 		{
@@ -197,6 +201,8 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			mTextView.setViewType(ViewType.TWODAYS);
 			mImageView = (MapWithForecastImage) view.findViewById(R.id.twoDaysImageView);
 			mImageView.setViewType(ViewType.TWODAYS_SYMTABLE);
+			/* area touch listener only for today, tomorrow, two days */
+			mImageView.setAreaTouchListener(mTextView);
 		}
 		else if(mType == R.string.three_days_title)
 		{
@@ -215,7 +221,6 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			mImageView.setViewType(ViewType.FOURDAYS_SYMTABLE);
 		}
 
-		mImageView.setAreaTouchListener(mTextView);
 		return view;
 	}
 

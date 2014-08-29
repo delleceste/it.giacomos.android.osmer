@@ -21,7 +21,7 @@
         		 -->
         		 
          <it.giacomos.android.osmer.widgets.SituationImage
-             android:id="@+id/child1ImageView"
+             android:id="@+id/situationImageView"
              style="@style/ImageView"
              android:layout_width="match_parent"
              android:layout_height="330dp"

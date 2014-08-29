@@ -55,7 +55,7 @@ public class SyncImages
         postParameters.add(new BasicNameValuePair("cli", CLI));
         postParameters.add(new BasicNameValuePair("nfiles", "2"));
         /* test! */
-        // postParameters.add(new BasicNameValuePair("before_datetime", "2014-07-30 02:41:00"));
+        // postParameters.add(new BasicNameValuePair("before_datetime", "2014-08-23 21:11:00"));
         
         UrlEncodedFormEntity form;
 		try {

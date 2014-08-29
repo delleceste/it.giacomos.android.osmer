@@ -296,21 +296,20 @@
     <string name="notificationRainAlert">It may rain in a while</string>
     <string name="notificationRainModerate">Abundant rain approaching </string>
     <string name="notificationRainIntense">Intense rain approaching </string>
-        
-        
-	<!--  active user data -->
-	<string name="activeUser">Active user</string>
-	<string name="activeUsers">active users</string>
-	<string name="inTheLast10Min">in the last 10 min.</string>
-	<string name="inTheLast20Min">in the last 20 min.</string>
-	<string name="inTheLastHour">in the last hour</string>
-	<string name="activeUserSeemdAvailableInThisZone">a user seemed to be active\nin this area.</string>
-	<string name="activeUsersSeemdAvailableInThisZone"> users seemed to be active\nin this area.</string>
+
+    <!-- active user data -->
+    <string name="activeUser">Active user</string>
+    <string name="activeUsers">active users</string>
+    <string name="inTheLast10Min">in the last 10 min.</string>
+    <string name="inTheLast20Min">in the last 20 min.</string>
+    <string name="inTheLastHour">in the last hour</string>
+    <string name="activeUserSeemdAvailableInThisZone">a user seemed to be active\nin this area.</string>
+    <string name="activeUsersSeemdAvailableInThisZone"> users seemed to be active\nin this area.</string>
     <string name="touchBaloonToMakeRequestInThisArea">Touch to make a request in this area</string>
     <string name="active_users">active users</string>
     <string name="grouped_in">grouped in</string>
     <string name="markers">markers</string>
-    
+
     <string-array name="report_sky_textitems">
         <item>don\'t report</item>
         <item>clear</item>
@@ -539,7 +538,6 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
 
 ]]>
     </string>
-    
     <string name="tutorial_report">Publish a report</string>
     <string name="tutorial_request">Publish a report request</string>
     <string name="tutorial_notification">Report notifications</string>
@@ -547,32 +545,27 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
     <string name="title_scenario_list">Scenarios</string>
     <string name="title_scenario_detail">Scenario Detail</string>
     <string name="reports_terms_and_conditions">Weather reports terms and conditions of use</string>
- 
     <string name="special_reports">Special</string>
-    
     <string name="special_reports_title">Automatic report publishing for individuals</string>
-    
     <string name="special_reports_text">
-        <![CDATA[
+<![CDATA[
         Have you got a personal weather station and want to
         automatically publish data? Contact the author by 
         <a href="mailto:delleceste@gmail.com?subject=Info about automatic report publishing for individuals">email</a>.
         If you are a private individual user, it is free.
         ]]>
-        </string>
-        
+    </string>
     <string name="special_reports_for_companies_title">Automatic report publishing for business</string>
-     <string name="special_reports_for_companies_text">
-        <![CDATA[
+    <string name="special_reports_for_companies_text">
+<![CDATA[
         Are you a touristic enterprise and want to publish meteorological data 
         on Meteo.FVG in behalf of your customers? Contact the author by
         <a href="mailto:delleceste@gmail.com?subject=Info about automatic report publishing for companies">email</a> to get information about 
         costs and terms of use.
         ]]>
-        </string>
-        
-<string name="report_terms_and_conditions_text">        
-		<![CDATA[
+    </string>
+    <string name="report_terms_and_conditions_text">
+<![CDATA[
 		
 		<h6>Disclaimer</h6>
 		<p>The author of the Android applications named "Meteo.FVG", "Meteo.FVG Pro" and "Meteo.FVG prova", 
@@ -612,43 +605,31 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
 
 ]]>
     </string>
-    
     <string name="report_accept_terms_and_conditions">I accept the terms and conditions</string>
-    
     <string name="report_recall_from_menu">NOTE: you can recall this from the "Reports" section,
         drop down menu in the action bar, "Reports tutorial".</string>
-        
     <string name="report_carefully_read_all">NOTE: carefully read through all the sections in this tutorial.</string>
-        
     <string name="tutorial_start_report">Click on the pencil icon in the action bar on the tpo 
         to start reporting the weather in your area.
         You can report the sky observations, the temprature, the wind strength and add a comment.
-        It is also possible to indicate the locality, if it is available.
-        </string>
-        
+        It is also possible to indicate the locality, if it is available.</string>
     <string name="tutorial_report_done">After filling in the report form, a weather icon will appear
         on the map at your location. Click on the icon to see the details and to remove the
         report. The report will remain valid for 3 hours and will be visible to all users.
         To change your report, you must first remove it and
-        publish another one.</string>    
-    
+        publish another one.</string>
     <string name="tutorial_request_long_press">Long press on a point on the map to start. 
         Long press the marker to move it.</string>
     <string name="tutorial_request_dialog">Just confirm your request. You can disable the location name.</string>
-    
     <string name="tutorial_request_done">The users within a radius of 3 kilometers around the marker 
         will be notified if possible. If somebody replies, you will be notified too. Your request will
         remain valid for 3 hours.</string>
-        
     <string name="tutorial_notifcation_request">Requests\n\nWhen a user asks for a weather report in your area 
         within 3 km you receive a notification in the status bar. Activate it to directly go to the weather 
         reports section and reply to her. A request lasts for 3 hours and is represented by a blue marker.</string>
-     
-        <string name="tutorial_report_notification">Replies\n\nSomeone replied to your report request. 
+    <string name="tutorial_report_notification">Replies\n\nSomeone replied to your report request. 
             Activate the notification to watch the report. Click on the weather icon to see the 
             detailed report.</string>
-    
-    
     <string name="tutorial_disable_notification_service">How to disable notifications</string>
     <string name="tutorial_howto_disable_notifications">The notification service checks for 
         new notifications every five minutes. 
@@ -670,22 +651,18 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
     <string name="tutorial_tab3_title">Requests</string>
     <string name="tutorial_tab4_title">Notifications</string>
     <string name="tutorial_tab5_title">Special</string>
-    
-    
     <string name="quickstart_publish1">Long press on a point in the map to start the request. 
         An orange marker will appear. Long press on the marker to change its position. Click on the baloon
         to start the request procedure.</string>
-     
     <string name="quickstart_publish_from_active_user">You can start the request procedure
         by tilting the map (touch it with two fingers and drag it downwards) and touching
         a point where users are active.</string>
-    
     <string name="quickstart_publish2">Once successfully published, the marker turns to green.
         You can touch the marker and follow the instructions to remove your request.
         The request will stay valid for 3 hours.</string>
 
-    <!--  TRIAL -->
-    
+    <!-- TRIAL -->
+
     <string name="title_activity_buy_pro">Buy Meteo.FVG</string>
     <string name="trial_version">Trial version</string>
     <string name="days_left">days left.</string>
@@ -700,7 +677,6 @@ Source <a href="http://www.meteo.fvg.it/EN/RAD/StrutturaRadar.php"> http://www.m
     <string name="trial_expired">Trial version has expired!</string>
     <string name="buy_now_promotional_text">Buy Meteo.FVG now at the special price of 1,50 euros, 
         enjoy its fantastic features and support its future development!</string>
-        
     <string name="thanks_for_purchasing">Thanks for purchasing Meteo.FVG!</string>
     <string name="purchase_ok_title">Meteo.FVG successfully bought</string>
     <string name="whats_new">What\'s new?</string>
@@ -710,112 +686,65 @@ the result of two years of work. It features:\n
 - google maps code rewritten with new API v2;\n
 - radar animation;\n
 - meteorological conditions reports: you can be a meteo reporter;\n
-- user interface completely rewritten for Android 4.
-        </string>
+- user interface completely rewritten for Android 4.</string>
     <string name="authorized_to_get_promo">I\'ve been previously authorized by the author to get this version for free&#42;</string>
     <string name="request_authorization_for_free">Request activation now!</string>
     <string name="contributed_to_devel">"I contributed to the development of 
 the app through the Android.Meteo.FVG Google+ community&#42;&#42; "</string>
     <string name="previously_authorized_footnote">* You must have been previously authorized by the author. This request is not aimed at requesting authorization. Unauthorized requests will be ignored and blacklisted.</string>
     <string name="contributed_to_devel_footnote">** Please indicate your name and the date of your comment on G+ in the precompiled email message.</string>
-
-    <string name="activation_mail_title">
-        Activation request for Android Meteo.FVG by 
-    </string>
-    
+    <string name="activation_mail_title">        Activation request for Android Meteo.FVG by </string>
     <string name="activation_mail_text_1">"Hello.\nI kindly request the authorization
 to activate Meteo.FVG for Android for free.
 I have read and accepted all the conditions of use of the application.
-My android id is as follows:\n\n
-	</string>
-					
-	<string name="activation_mail_text_2">				
-\nThanks.\n\nMy full name: \n\n
+My android id is as follows:\n\n</string>
+    <string name="activation_mail_text_2">\nThanks.\n\nMy full name: \n\n
 Date: \n\n
-Please note: requests devoid of the full name and date will be ignored.\n\n
-	</string>
-				
-	<string name="title_activity_settings">Settings</string>
-		
-	<string name="note_prova_users">NOTE: Meteo.FVG PROva users may have their trial period shorter or even expired</string>
-					
-	<string name="pref_enable_notification_service">Enable notification service</string>
-					
-	<string name="pref_enab_notif_service_summary">Globally enables the notification service</string>	
-				
-	<string name="pref_service_sleep_interval">Interval between notification checks (minutes)</string>
-	
-	<string name="pref_service_sleep_interval_summary">The service wakes up every time this interval elapses</string>
-	
-	<string name="pref_service_enabled_on">The service is enabled and will run when network is available</string>
-	
-	<string name="pref_service_enabled_off">The service is disabled</string>
-	
-	<string name="pref_service_running">The service is enabled and running</string>
-	
-	<string name="pref_"></string>
-
-	<string name="pref_rain_notifications">Rain approaching alerts</string>
-	
-	<string name="pref_sleep_interval_dialog">Notifications check interval</string>
-	
-	<string name="pref_sleep_interval_message">Set the number of minutes between one notification check and the next</string>
-	
-	<string name="pref_rain_alert_enable">Rain alerts are enabled</string>
-	
-	<string name="pref_rain_alert_off">Rain alerts are disabled</string>
-	
-	<string name="pref_rain_notification_enable">Notify when it\'s possible that it\'s going to rain</string>
-	
-	<string name="pref_rain_notification_enable_summary">If enabled, you will be notified if rain is close to your position within a radius</string>
-	
-	<string name="pref_rain_notif_interval">Minutes between rain alerts</string>
-	
-	<string name="pref_rain_notif_interval_summary">Two different rain alerts will not be shown unless 
+Please note: requests devoid of the full name and date will be ignored.\n\n</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="note_prova_users">NOTE: Meteo.FVG PROva users may have their trial period shorter or even expired</string>
+    <string name="pref_enable_notification_service">Enable notification service</string>
+    <string name="pref_enab_notif_service_summary">Globally enables the notification service</string>
+    <string name="pref_service_sleep_interval">Interval between notification checks (minutes)</string>
+    <string name="pref_service_sleep_interval_summary">The service wakes up every time this interval elapses</string>
+    <string name="pref_service_enabled_on">The service is enabled and will run when network is available</string>
+    <string name="pref_service_enabled_off">The service is disabled</string>
+    <string name="pref_service_running">The service is enabled and running</string>
+    <string name="pref_"></string>
+    <string name="pref_rain_notifications">Rain approaching alerts</string>
+    <string name="pref_sleep_interval_dialog">Notifications check interval</string>
+    <string name="pref_sleep_interval_message">Set the number of minutes between one notification check and the next</string>
+    <string name="pref_rain_alert_enable">Rain alerts are enabled</string>
+    <string name="pref_rain_alert_off">Rain alerts are disabled</string>
+    <string name="pref_rain_notification_enable">Notify when it\'s possible that it\'s going to rain</string>
+    <string name="pref_rain_notification_enable_summary">If enabled, you will be notified if rain is close to your position within a radius</string>
+    <string name="pref_rain_notif_interval">Minutes between rain alerts</string>
+    <string name="pref_rain_notif_interval_summary">Two different rain alerts will not be shown unless 
 	    this interval has elab</string>
-	    
-	<string name="pref_rain_notif_interval_dialog_message">Select the minimum interval, in minutes, 
+    <string name="pref_rain_notif_interval_dialog_message">Select the minimum interval, in minutes, 
 	    that must elapse between two subsequent rain alert notifications. The number must be between 1 and 180</string>
-	    
-	<string name="pref_rain_notif_interval_dialog_title">Minutes between rain alert notifications</string>
-	
-	<string name="pref_default_service_sleep_interval_mins">5</string>
-	
-	<string name="pref_default_rain_alerts_interval_mins">5</string>
-	
-	<string name="pref_service_sleep_interval_summary_checks_every">The service looks for updates every</string>
-	
-	<string name="pref_rain_alert_summary_checks_every">Rain alerts will be notified no more than once every</string>
-	
-	<string name="minutes">minutes</string>
-	
-	<string name="notifications">Notifications</string>
-	
-	<string name="notificationIntervalBetween0And180">Interval must be an integer between 0 and 180</string>
-	
-	<string name="dialogNotificationServiceEnableMovedToSettings">
-		Notification service options moved to Menu->Settings</string>
-    
-	<string name="important_dialog_message">meteo.fvg web site has been updated. The app may not work properly.
+    <string name="pref_rain_notif_interval_dialog_title">Minutes between rain alert notifications</string>
+    <string name="pref_default_service_sleep_interval_mins">5</string>
+    <string name="pref_default_rain_alerts_interval_mins">5</string>
+    <string name="pref_service_sleep_interval_summary_checks_every">The service looks for updates every</string>
+    <string name="pref_rain_alert_summary_checks_every">Rain alerts will be notified no more than once every</string>
+    <string name="minutes">minutes</string>
+    <string name="notifications">Notifications</string>
+    <string name="notificationIntervalBetween0And180">Interval must be an integer between 0 and 180</string>
+    <string name="dialogNotificationServiceEnableMovedToSettings">		Notification service options moved to Menu->Settings</string>
+    <string name="important_dialog_message">meteo.fvg web site has been updated. The app may not work properly.
 	    The radar is out of order.</string>
-	    
-	<string name="unregisteredApp">The application is not registered with Google Cloud Message service.
+    <string name="unregisteredApp">The application is not registered with Google Cloud Message service.
 	    Please restart the application when you\'re online, wait a moment and try again.</string>
-	    
-	<string name="news_alert_title">News</string>
-	    
-	<string name="news_alert_text">There are news about Meteo.FVG. Touch to read</string>
-	
-	<string name="gcm_registered_ok">Correctly registered with Google Cloud Messaging for notification service</string>
-	
-	<string name="pref_internal_rain_calc_checkbox">The phone calculates probability for rain alerts. This choice is faster, calculations are performed as soon as a new radar image is available. Recommended</string>
-	
-	<string name="pref_internal_rain_calc_checkbox_off">The rain possibility is calculated by the remote Meteo.FVG server. Notifications may arrive late, depending on the time interval set for the service. For slow devices.</string>
-	
-	<string name="pref_use_internal_rain_detection">Use the device to calculate the rain probability. Note: this service is implemented
+    <string name="news_alert_title">News</string>
+    <string name="news_alert_text">There are news about Meteo.FVG. Touch to read</string>
+    <string name="gcm_registered_ok">Correctly registered with Google Cloud Messaging for notification service</string>
+    <string name="pref_internal_rain_calc_checkbox">The phone calculates probability for rain alerts. This choice is faster, calculations are performed as soon as a new radar image is available. Recommended</string>
+    <string name="pref_internal_rain_calc_checkbox_off">The rain possibility is calculated by the remote Meteo.FVG server. Notifications may arrive late, depending on the time interval set for the service. For slow devices.</string>
+    <string name="pref_use_internal_rain_detection">Use the device to calculate the rain probability. Note: this service is implemented
 	    by the application author. Data is not taken from Osmer/Meteo.FVG</string>
-	
-	<string name="pref_use_internal_rain_detection_summary">It is recommended that the rain possibility detection is calculated by the device. This guarantees the most fast and up to date notifications</string>
-	
-	
+    <string name="pref_use_internal_rain_detection_summary">It is recommended that the rain possibility detection is calculated by the device. This guarantees the most fast and up to date notifications</string>
+    <string name="title_activity_rain_detect">RainDetectActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

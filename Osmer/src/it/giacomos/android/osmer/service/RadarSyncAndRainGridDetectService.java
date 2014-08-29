@@ -108,13 +108,14 @@ RadarImageSyncAndCalculationTaskListener
 	}
 
 	@Override
-	public void onConnected(Bundle arg0) {
+	public void onConnected(Bundle arg0) 
+	{
 		Log.e("RadarSyncAndRainGridDetectService.onConnected", "getting last location");
 		mLocation = mLocationClient.getLastLocation();
 		mLocationClient.disconnect(); /* immediately */
 		if(mLocation != null)
 		{
-			startSyncImagesAndRainDetect(45.645547,13.849061);
+			startSyncImagesAndRainDetect(mLocation.getLatitude(), mLocation.getLongitude());
 
 		}
 		else  /* wait an entire mSleepInterval before retrying */

@@ -20,32 +20,6 @@ public class Settings
 		mSharedPreferences = ctx.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
 	}
 
-	public boolean isForecastIconsHintEnabled()
-	{
-		boolean res = mSharedPreferences.getBoolean("HINT_FORECAST_ICONS", true);
-		return res;
-	}
-
-	public void setForecastIconsHintEnabled(boolean en)
-	{
-		SharedPreferences.Editor e = mSharedPreferences.edit();
-		e.putBoolean("HINT_FORECAST_ICONS", en);
-		e.commit();
-	}
-
-	public boolean isZoneLongPressHintEnabled()
-	{
-		boolean res = mSharedPreferences.getBoolean("HINT_ZONE_LONG_PRESS", true);
-		return res;
-	}
-
-	public void setZoneLongPressHintEnabled(boolean en)
-	{
-		SharedPreferences.Editor e = mSharedPreferences.edit();
-		e.putBoolean("HINT_ZONE_LONG_PRESS", en);
-		e.commit();
-	}
-
 	public boolean isSwipeHintEnabled()
 	{
 		boolean res = mSharedPreferences.getBoolean("HINT_SWIPE", true);
@@ -515,7 +489,44 @@ public class Settings
 		e.commit();
 	}
 
+	public void setCurrentTouchedPoint(float x, float y) {
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putFloat("FORECAST_MAP_PRESSED_X", x);
+		e.putFloat("FORECAST_MAP_PRESSED_Y", y);
+		e.commit();
+	}
 
+	public void setOnLongPress(boolean longPress) {
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putBoolean("FORECAST_MAP_LONG_PRESS", longPress);
+		e.commit();
+	}
 
+	public float getCurrentXTouchedPointNormalized() {
+		return mSharedPreferences.getFloat("FORECAST_MAP_PRESSED_X", -1.0f);
+	}
+
+	public float getCurrentYTouchedPointNormalized() {
+		return mSharedPreferences.getFloat("FORECAST_MAP_PRESSED_Y", -1.0f);
+	}
+
+	public boolean getOnLongPressed() {
+		return mSharedPreferences.getBoolean("FORECAST_MAP_LONG_PRESS", false);
+	}
+
+	public void setCurrentDownPoint(float x, float y) 
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putFloat("FORECAST_MAP_DOWN_X", x);
+		e.putFloat("FORECAST_MAP_DOWN_Y", y);
+		e.commit();	
+	}
+	public float getCurrentXDownPointNormalized() {
+		return mSharedPreferences.getFloat("FORECAST_MAP_DOWN_X", -1.0f);
+	}
+
+	public float getCurrentYDownPointNormalized() {
+		return mSharedPreferences.getFloat("FORECAST_MAP_DOWN_Y", -1.0f);
+	}
 
 }

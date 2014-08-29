@@ -68,7 +68,6 @@ implements LatestObservationCacheChangeListener
 			mFontSize = 36;
 		/* in this class we use mPaint which is allocated in superclass */
 		mViewType = ViewType.HOME;
-		mHintForecastIconEnabled = new Settings(context).isForecastIconsHintEnabled();
 	}
 
 	public void setViewType(ViewType vt)
@@ -326,10 +325,6 @@ implements LatestObservationCacheChangeListener
 					y -= (mTxtRect.height() + 5); 
 				}
 				canvas.drawText(d.getLocation() + " [" + d.getTime() + "]", 4, y, mPaint);
-
-				/* disable forecast icon hint */
-				if(mHintForecastIconEnabled)
-					this.disableForecastIconsHint();
 			}
 		}
 		/* finally, call drawLocation */
@@ -366,14 +361,6 @@ implements LatestObservationCacheChangeListener
 		mObsRects.clear();
 	}
 
-	protected void disableForecastIconsHint()
-	{
-		mHintForecastIconEnabled = false;
-		Settings s = new Settings(getContext());
-		s.setForecastIconsHintEnabled(false);
-		s = null;
-	}
-
 	private Rect mTxtRect;
 	private RectF mSensibleArea;
 	private ViewType mViewType;
@@ -387,5 +374,4 @@ implements LatestObservationCacheChangeListener
 	private final String mSeaStr = getResources().getString(R.string.sea);
 	private final String mRainStr = getResources().getString(R.string.rain);	
 	private int mFontSize;
-	private boolean mHintForecastIconEnabled;
 }
