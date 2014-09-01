@@ -10,7 +10,6 @@ import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCache;
 import it.giacomos.android.osmer.observations.SituationImageObservationData;
 import it.giacomos.android.osmer.observations.SkyDrawableIdPicker;
-import it.giacomos.android.osmer.preferences.*;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -21,16 +20,10 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.MotionEvent;
-import android.widget.Toast;
 import android.location.Location;
-import android.os.Bundle;
-import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
 

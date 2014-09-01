@@ -24,31 +24,29 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
-import android.widget.Toast;
 
 public class MapWithForecastImage extends MapWithLocationImage implements OnLongClickListener
 {
 	public MapWithForecastImage(Context context, AttributeSet attrs) 
 	{
 		super(context, attrs);
-		mOnLongPress = false;
+		mTouchEventData = new ImgTouchEventData();
 		Settings s = new Settings(context);
 		mCachedTextFontSize = s.getMapWithForecastImageTextFontSize();
+
 		/* will contain the rectangles in the image that are associated to a 
 		 * forecast data interface, area, locality or strip.
 		 */
-		mCurrentTouchedPointNormalized = new PointF(-1.0f, -1.0f);
-		mDownPointNormalized = new PointF(-1.0f, -1.0f);
 		mForecastDataStringMap = new ForecastDataStringMap(getResources());
 		int densityDpi = this.getResources().getDisplayMetrics().densityDpi;
 		/* adjust font according to density... */
@@ -76,9 +74,24 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 		mAreaTouchListener = null;
 	}
 
-	public void restoreTouchState()
+	public void saveTouchEventData(Bundle outState)
 	{
-		this.loadTouchState();
+		mTouchEventData.saveState(outState);
+	}
+
+	public void restoreTouchEventState(Bundle inState)
+	{
+		mTouchEventData.restoreState(inState);
+		touchEventDataChanged();
+//		Log.e("restoreTouceVentState in MapWith...", "long press " + mTouchEventData.longPressed + " down x " +
+//				mTouchEventData.downPointNormalizedX);
+	}
+
+	public void setTouchEventData(ImgTouchEventData ted)
+	{
+		mTouchEventData = ted;
+		touchEventDataChanged();
+//		Log.e("MapWith.setToucheEventData", " toucheevent data " + ted.repr());
 		this.invalidate();
 	}
 
@@ -92,6 +105,11 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 		return mViewType;
 	}
 
+	public void setForecastImgTouchEventListener(ForecastImgTouchEventListener fite)
+	{
+		mForecastImgTouchEventListener = fite;
+	}
+
 	public void setSymTable(String symtab)
 	{
 		unbindDrawables();
@@ -99,14 +117,13 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 		ArrayList<ForecastDataInterface > forecastDataIfList =  forecastDataFactory.getForecastData(symtab);
 		for(ForecastDataInterface fdi : forecastDataIfList)
 			mForecastData.put(fdi, null);
+		touchEventDataChanged();
 		this.invalidate();
 	}
 
 	public void setAreaTouchListener(AreaTouchListener atl)
 	{
-		Log.e("setAreaTouchListener", "restore state again");
 		mAreaTouchListener = atl;
-		restoreTouchState();
 	}
 
 	/** sets a null callback on the drawables.
@@ -364,9 +381,8 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 				else if(fdi.getType() == ForecastDataType.ZONE)
 				{
 					Zone z = (Zone) fdi;
-					if(mOnLongPress)
+					if(mTouchEventData.longPressed)
 					{
-						Log.e("MapWith..", "onLongPress is true");
 						mPaint.setStyle(Paint.Style.STROKE);
 						mPaint.setARGB(160, 100, 115, 75);
 						Path pa = zoneMapper.getAreaPath(z.getId());
@@ -379,7 +395,6 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 							canvas.drawPath(pa, mPaint);
 						}
 					}
-
 				}
 			} /* end for(ForecastDataInterface fdi : mForecastData) */
 
@@ -547,123 +562,112 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 
 	private float getDownPointX()
 	{
-		return mDownPointNormalized.x * getWidth();
+		return mTouchEventData.downPointNormalizedX * getWidth();
 	}
 
 	private float getDownPointY()
 	{
-		return mDownPointNormalized.y * getHeight();
+		return mTouchEventData.downPointNormalizedY * getHeight();
 	}
 
 	private float getTouchedPointX()
 	{
-		return mCurrentTouchedPointNormalized.x * getWidth();
+		return mTouchEventData.touchPointNormalizedX * getWidth();
 	}
 
 	private float getTouchedPointY()
 	{
-		return mCurrentTouchedPointNormalized.y * getHeight();
+		return mTouchEventData.touchPointNormalizedY  * getHeight();
 	}
 
-	private void saveCurrentTouchState()
+	private void touchEventDataChanged()
 	{
-		Settings s = new Settings(this.getContext());
-		s.setCurrentTouchedPoint(mCurrentTouchedPointNormalized.x, mCurrentTouchedPointNormalized.y);	
-		s.setCurrentDownPoint(mDownPointNormalized.x, mDownPointNormalized.y);
-		s.setOnLongPress(mOnLongPress);
-		Log.e("MapWith...", "saving long press " + mOnLongPress + " x " + mCurrentTouchedPointNormalized.x + 
-				"y: " + mCurrentTouchedPointNormalized.y);
-	}
-
-	private void loadTouchState()
-	{
-		Settings s = new Settings(this.getContext());
-		mCurrentTouchedPointNormalized.x = s.getCurrentXTouchedPointNormalized();
-		mCurrentTouchedPointNormalized.y = s.getCurrentYTouchedPointNormalized();
-		mDownPointNormalized.x = s.getCurrentXDownPointNormalized();
-		mDownPointNormalized.y = s.getCurrentYDownPointNormalized();
-		mOnLongPress = s.getOnLongPressed(); 
-
-		if(mDownPointNormalized.x >= 0.0f && mDownPointNormalized.y >= 0.0f && mOnLongPress)
+		touchEventAction(getTouchedPointX(), getTouchedPointY());
+		if(mTouchEventData.longPressed)
 			longClickAction();
-		Log.e("MapWith...", "restoring long press " + mOnLongPress + ", x " + mCurrentTouchedPointNormalized.x + ", y " + mCurrentTouchedPointNormalized.y
-				+ " W " + getWidth() + " h " + getHeight());
+		if(mAreaTouchListener != null)
+			mAreaTouchListener.onAreaTouched(mTouchEventData.zoneId);
+	}
+
+	public boolean touchEventAction(float x, float y)
+	{
+		double dist = 0.0;
+
+		if(mTouchEventData.downPointValid())
+			dist = Math.sqrt(Math.pow(x - getDownPointX(), 2) + Math.pow(y - getDownPointY(), 2));
+		if(dist <= Math.min(getWidth(), getHeight()) / 10 && !mTouchEventData.longPressed)
+		{
+
+			for(ForecastDataInterface fdi : mForecastData.keySet())
+			{
+				if(fdi.getType() == ForecastDataType.AREA)
+				{
+					RectF rect = mForecastData.get(fdi);
+					if(rect != null && rect.contains(x, y))
+					{
+						ForecastDataIdMapper forecastDataIdMapper = new ForecastDataIdMapper();
+						mTouchEventData.zoneId = forecastDataIdMapper.get(fdi);
+						break;
+					}
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 
 	public boolean onTouchEvent (MotionEvent event)
 	{
+		mTouchEventData.zoneId = 0; /* here! not in touchEventAction */
 		/* save the touched point */
 		if(event.getAction() == MotionEvent.ACTION_DOWN)
 		{
-			mDownPointNormalized = new PointF(event.getX()/getWidth(), event.getY()/getHeight());
-			mOnLongPress = false;
+			mTouchEventData.downPointNormalizedX = event.getX()/getWidth();
+			mTouchEventData.downPointNormalizedY = event.getY()/getHeight();
+			mTouchEventData.longPressed = false;
 		}
 		else if(event.getAction() == MotionEvent.ACTION_UP)
 		{
-			double dist = 0.0;
-			mCurrentTouchedPointNormalized.x = event.getX() / getWidth(); 
-			mCurrentTouchedPointNormalized.y = event.getY() / getHeight();
-			if(mDownPointNormalized != null)
-				dist = Math.sqrt(Math.pow(event.getX() - getDownPointX(), 2) + Math.pow(event.getY() - getDownPointY(), 2));
-			if(dist < Math.min(getWidth(), getHeight()) / 10 && !mOnLongPress)
+			mTouchEventData.touchPointNormalizedX = event.getX()/getWidth();
+			mTouchEventData.touchPointNormalizedY = event.getY()/getHeight();
+			if(touchEventAction(event.getX(), event.getY()))
 			{
 				if(mAreaTouchListener != null)
-				{
-					int id = 0;
-					for(ForecastDataInterface fdi : mForecastData.keySet())
-					{
-						if(fdi.getType() == ForecastDataType.AREA)
-						{
-							RectF rect = mForecastData.get(fdi);
-							if(rect != null && rect.contains(event.getX(), event.getY()))
-							{
-								ForecastDataIdMapper forecastDataIdMapper = new ForecastDataIdMapper();
-								id = forecastDataIdMapper.get(fdi);
-								break;
-							}
-						}
-					}
-					mAreaTouchListener.onAreaTouched(id);
-				}
-				/* save down point and current touched point variables */
-				saveCurrentTouchState();
+					mAreaTouchListener.onAreaTouched(mTouchEventData.zoneId);
 				this.invalidate();
 			}
 		}
 
+		mForecastImgTouchEventListener.onImgTouched(mTouchEventData);
 		return super.onTouchEvent(event);
 	}
 
 	private void longClickAction()
 	{
-		mOnLongPress = true;
 		PointF touchedPoint = new PointF(getDownPointX(), getDownPointY());
 		Zone selectedZone = selectZone(touchedPoint);
-
-		if(mAreaTouchListener != null)
+		if(selectedZone != null)
 		{
-			int id = 0;
-			if(selectedZone != null)
-			{
-				ForecastDataIdMapper forecastDataIdMapper = new ForecastDataIdMapper();
-				id = forecastDataIdMapper.get(selectedZone);
-			}
-			mAreaTouchListener.onAreaTouched(id);
+			ForecastDataIdMapper forecastDataIdMapper = new ForecastDataIdMapper();
+			mTouchEventData.zoneId = forecastDataIdMapper.get(selectedZone);
 		}
-
+		else
+			mTouchEventData.zoneId = 0;
 		/* reset current touched point in order not to draw the selection on the icons,
 		 * in case the used long clicked on an icon.
 		 */
-		mCurrentTouchedPointNormalized.x = mCurrentTouchedPointNormalized.y = -1;
+		mTouchEventData.invalidateTouchedPoint();
 	}
 
 	@Override
 	public boolean onLongClick(View view) 
 	{
+		mTouchEventData.longPressed = true;
+
 		longClickAction();
 
-		/* save down point and current touched point variables */
-		saveCurrentTouchState();
+		mForecastImgTouchEventListener.onImgTouched(mTouchEventData);
+		mAreaTouchListener.onAreaTouched(mTouchEventData.zoneId);
 
 		this.invalidate();
 		return true;
@@ -692,6 +696,7 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 					z.setSelected(false);
 			}
 		}
+//		Log.e("MapWith", "selectedZone " + selectedZone + " forecast data size " + mForecastData.size());
 		return selectedZone;
 	}
 
@@ -707,10 +712,9 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 	private ViewType mViewType;
 	private HashMap<ForecastDataInterface, RectF> mForecastData;
 	private float mCachedTextFontSize;
-	private PointF mCurrentTouchedPointNormalized;
 	private int mFontSize;
 	private ForecastDataStringMap mForecastDataStringMap;
-	private boolean mOnLongPress;
 	private AreaTouchListener mAreaTouchListener;
-	private PointF mDownPointNormalized;
+	private ForecastImgTouchEventListener mForecastImgTouchEventListener;
+	private ImgTouchEventData mTouchEventData;
 }

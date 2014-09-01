@@ -33,6 +33,14 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 	}
 
 	@Override
+    public void onSaveInstanceState(Bundle outState) 
+	{
+        super.onSaveInstanceState(outState);
+        if(mImageView != null)
+        	mImageView.saveTouchEventData(outState);
+    }
+	
+	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
@@ -96,6 +104,8 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 		locationService.registerLocationServiceAddressUpdateListener(mImageView);
 		locationService.registerLocationServiceUpdateListener(mImageView);
 
+		mImageView.restoreTouchEventState(savedInstanceState);        
+		
 		mHandler = new Handler();
 		mHandler.postDelayed(this, 200);
 	}
@@ -163,6 +173,8 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			}
 		}
 		dataCacheUtils = null;
+		
+		mImageView.setForecastImgTouchEventListener(activity);
 	}
 
 	@Override

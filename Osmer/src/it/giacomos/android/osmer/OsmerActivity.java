@@ -42,6 +42,8 @@ import it.giacomos.android.osmer.service.sharedData.ReportNotification;
 import it.giacomos.android.osmer.service.sharedData.ReportRequestNotification;
 import it.giacomos.android.osmer.webcams.WebcamDataHelper;
 import it.giacomos.android.osmer.widgets.AnimatedImageView;
+import it.giacomos.android.osmer.widgets.ForecastImgTouchEventListener;
+import it.giacomos.android.osmer.widgets.ImgTouchEventData;
 import it.giacomos.android.osmer.widgets.MapWithForecastImage;
 import it.giacomos.android.osmer.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.widgets.map.MapViewMode;
@@ -120,7 +122,8 @@ DataPoolErrorListener,
 RadarAnimationListener,
 PostActionResultListener,
 ReportRequestListener, 
-NewsUpdateListener
+NewsUpdateListener,
+ForecastImgTouchEventListener
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
@@ -410,6 +413,8 @@ NewsUpdateListener
 		String registrationId = gcmRM.getRegistrationId(getApplicationContext());
 		if(registrationId.isEmpty())
 			gcmRM.registerInBackground(this);
+		
+		mForecastImgTouchEventData = new ImgTouchEventData();
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -555,11 +560,13 @@ NewsUpdateListener
 		super.onSaveInstanceState(outState);
 		if(getActionBar().getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST)
 			outState.putInt("spinnerPosition", getActionBar().getSelectedNavigationIndex());
+		this.mForecastImgTouchEventData.saveState(outState);
 	}
 
 	protected void onRestoreInstanceState(Bundle inState)
 	{
 		super.onRestoreInstanceState(inState);
+		mForecastImgTouchEventData.restoreState(inState);
 	}
 
 	public void getSituation()
@@ -1117,7 +1124,7 @@ NewsUpdateListener
 		mInitButtonMapsOverflowMenu();
 		
 		if(mapWithForecastImage != null)
-			mapWithForecastImage.restoreTouchState();
+			mapWithForecastImage.setTouchEventData(mForecastImgTouchEventData);
 	}
 
 	public DownloadManager stateMachine() { return m_downloadManager; }
@@ -1347,6 +1354,13 @@ NewsUpdateListener
 	}
 
 	@Override
+	public void onImgTouched(ImgTouchEventData e) 
+	{
+		Log.e("OsmerActivity", "onImgTouched");
+		mForecastImgTouchEventData = e;
+	}
+	
+	@Override
 	public void onRadarAnimationStart() 
 	{
 
@@ -1420,8 +1434,9 @@ NewsUpdateListener
 	public static final int SETTINGS_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 102;
 
 	private MyPendingAlertDialog mMyPendingAlertDialog;
-
+	private ImgTouchEventData mForecastImgTouchEventData;
 
 	int availCnt = 0;
+
 
 }
