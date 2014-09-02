@@ -151,17 +151,6 @@ RadarAnimationListener
 
 	public void onDestroy ()
 	{
-		/* mMapReady is true if onCameraChanged has been called at least one time.
-		 * This ensures that the map camera has been initialized and is not centered
-		 * in lat/lang (0.0, 0.0). If mMapReady is true we correctly save an initialized
-		 * camera position.
-		 */
-		if(mMapReady)
-		{
-			mSettings.saveMapCameraPosition(mMap.getCameraPosition());
-			/* save the map type */
-			mSettings.setMapType(mMap.getMapType());
-		}
 		mRemoveOverlays();
 		mRadarOverlay.finalize(); /* recycles bitmap for GC */
 		/* clear webcam data, cancel current task, finalize info window adapter */
@@ -203,6 +192,19 @@ RadarAnimationListener
 	public void onPause()
 	{
 		super.onPause();
+		
+		/* mMapReady is true if onCameraChanged has been called at least one time.
+		 * This ensures that the map camera has been initialized and is not centered
+		 * in lat/lang (0.0, 0.0). If mMapReady is true we correctly save an initialized
+		 * camera position.
+		 */
+		if(mMapReady)
+		{
+			mSettings.saveMapCameraPosition(mMap.getCameraPosition());
+			/* save the map type */
+			mSettings.setMapType(mMap.getMapType());
+		}
+		
 		mMap.setMyLocationEnabled(false);
 		mRadarAnimation.onPause();
 		/* call onPause only if current mode is REPORT. Otherwise, the mode switch
