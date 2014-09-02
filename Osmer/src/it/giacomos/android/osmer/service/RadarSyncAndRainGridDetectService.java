@@ -18,17 +18,13 @@ import it.giacomos.android.osmer.service.sharedData.RainNotification;
 import it.giacomos.android.osmer.service.sharedData.ServiceSharedData;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 public class RadarSyncAndRainGridDetectService extends Service 
@@ -54,7 +50,10 @@ RadarImageSyncAndCalculationTaskListener
 	{
 		if(!mIsStarted)
 		{
-			mTimestampSecs = intent.getLongExtra("timestamp", 0L);
+			if(intent != null)
+				mTimestampSecs = intent.getLongExtra("timestamp", 0L);
+			else
+				mTimestampSecs = 0L;
 			if(mLocationClient == null)
 				mLocationClient = new LocationClient(this, this, this);
 			/* wait for location client to be connected before syncing images and 
@@ -134,10 +133,10 @@ RadarImageSyncAndCalculationTaskListener
 	@Override
 	public void onRainDetectionDone(RainDetectResult result) 
 	{
-		boolean willRain = result.willRain;
-		float dbZ = result.dbz;
-		if(new Settings(this).useInternalRainDetection())
+		if(result != null && new Settings(this).useInternalRainDetection())
 		{
+			boolean willRain = result.willRain;
+			float dbZ = result.dbz;
 			RainNotification rainNotif = new RainNotification(result.willRain, mTimestampSecs, dbZ, 
 					mLocation.getLatitude(), 
 					mLocation.getLongitude());

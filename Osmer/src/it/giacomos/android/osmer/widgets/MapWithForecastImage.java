@@ -34,6 +34,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
+import android.widget.Toast;
 
 public class MapWithForecastImage extends MapWithLocationImage implements OnLongClickListener
 {
@@ -585,6 +586,7 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 		touchEventAction(getTouchedPointX(), getTouchedPointY());
 		if(mTouchEventData.longPressed)
 			longClickAction();
+		/* check if null: long touch listener on 3 days and 4 days images not installed */
 		if(mAreaTouchListener != null)
 			mAreaTouchListener.onAreaTouched(mTouchEventData.zoneId);
 	}
@@ -632,6 +634,7 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 			mTouchEventData.touchPointNormalizedY = event.getY()/getHeight();
 			if(touchEventAction(event.getX(), event.getY()))
 			{
+				/* check if null: long touch listener on 3 days and 4 days images not installed */
 				if(mAreaTouchListener != null)
 					mAreaTouchListener.onAreaTouched(mTouchEventData.zoneId);
 				this.invalidate();
@@ -667,7 +670,11 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 		longClickAction();
 
 		mForecastImgTouchEventListener.onImgTouched(mTouchEventData);
-		mAreaTouchListener.onAreaTouched(mTouchEventData.zoneId);
+		/* check if null: long touch listener on 3 days and 4 days images not installed */
+		if(mAreaTouchListener != null)
+			mAreaTouchListener.onAreaTouched(mTouchEventData.zoneId);
+		else
+			Toast.makeText(this.getContext(), R.string.strip_detail_forecast_unavailable, Toast.LENGTH_SHORT).show();
 
 		this.invalidate();
 		return true;

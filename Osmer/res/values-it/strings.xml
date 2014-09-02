@@ -94,6 +94,7 @@
         Rilascia per completare la misura.</string>
     <string name="hint_click_on_map_baloon_webcam_image">Tocca la foto per vederla nel visualizzatore di immagini</string>
     <string name="hint_zone_longpress">Premi a lungo su un punto della mappa per vedere l\'evoluzione del tempo</string>
+    <string name="strip_detail_forecast_unavailable">Previsioni per area non disponibili in questa pagina</string>
 
     <string-array name="observation_types">
         <item>Temperatura Minima</item>

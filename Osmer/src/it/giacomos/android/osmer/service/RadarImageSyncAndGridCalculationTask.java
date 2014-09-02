@@ -105,8 +105,8 @@ public class RadarImageSyncAndGridCalculationTask extends
 	@Override
 	public void onCancelled(RainDetectResult result)
 	{
+		/* no need to call  onRainDetectionDone on mRadarImageSyncTaskListener */
 		Log.e("RadarImageSyncAndGridCalculationTask.onCancelled", "task cancelled");
-		mRadarImageSyncTaskListener.onRainDetectionDone(result);
 	}
 
 }
