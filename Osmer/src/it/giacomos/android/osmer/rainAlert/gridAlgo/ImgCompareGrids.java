@@ -14,6 +14,8 @@ public class ImgCompareGrids implements ImgCompareI {
 			ImgOverlayInterface prevGridI, 
 			ImgParamsInterface img_params_i) 
 	{
+		RainDetectResult res = new RainDetectResult();
+		
 		ImgOverlayGrid glast = (ImgOverlayGrid) lastGridI;
 		ImgOverlayGrid gprev = (ImgOverlayGrid) prevGridI;
 		
@@ -29,9 +31,9 @@ public class ImgCompareGrids implements ImgCompareI {
 		int ret = 0;
 		
 		float last_dbz = 0.0f;
-				
+		
 		if(lr == pr && lc == pc) /* grids must be same size */
-		{
+		{	
 			double lastDbzInCenter = lastGrid.get((int)Math.floor(lr/2), (int)Math.floor(lc/2)).dbz;
 			boolean rainAlready = (lastDbzInCenter > img_params_i.getThreshold());
 			/* start from the border squares of the last grid: row 0, col 0, rowN, colN */
@@ -46,6 +48,10 @@ public class ImgCompareGrids implements ImgCompareI {
 			double requiredDbz; /* the value of dbz above which we can consider the rain is approaching */
 			boolean bigIncrease; /* if true, a big increase of the dbz towards the center has been detected */
 			boolean increase; /* if true, an increase of the dbz value has been detected while moving towards the center */
+		
+			/* initialize matrix result */
+			// res.deltas_matrix = new float[pr][pc];
+			// res.last_dbz_matrix = new float[pr][pc];
 			
 			for(c = 0; c < lc; c++)
 			{
@@ -197,8 +203,10 @@ public class ImgCompareGrids implements ImgCompareI {
 		else
 			Log.e("ImgCompareGrids", "grid dimensions differ");
 			
+		res.willRain = (ret > 0);
+		res.dbz = last_dbz;
 		/* detected an increase towards the center (and not already raining)? */
-		return new RainDetectResult( (ret > 0), last_dbz);
+		return res;
 	
 	}
 
