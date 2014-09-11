@@ -528,5 +528,16 @@ public class Settings
 	public float getCurrentYDownPointNormalized() {
 		return mSharedPreferences.getFloat("FORECAST_MAP_DOWN_Y", -1.0f);
 	}
+	
+	public void setLastDbz(float ldbz)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putFloat("RAIN_DETECT_LAST_DBZ", ldbz);
+		e.commit();	
+	}
+
+	public float getLastDbz() {
+		return mSharedPreferences.getFloat("RAIN_DETECT_LAST_DBZ", 0.0f);
+	}
 
 }

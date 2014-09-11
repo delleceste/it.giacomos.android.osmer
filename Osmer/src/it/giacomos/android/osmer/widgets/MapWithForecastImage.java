@@ -641,7 +641,8 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 			}
 		}
 
-		mForecastImgTouchEventListener.onImgTouched(mTouchEventData);
+		if(mForecastImgTouchEventListener != null)
+			mForecastImgTouchEventListener.onImgTouched(mTouchEventData);
 		return super.onTouchEvent(event);
 	}
 
@@ -669,7 +670,9 @@ public class MapWithForecastImage extends MapWithLocationImage implements OnLong
 
 		longClickAction();
 
-		mForecastImgTouchEventListener.onImgTouched(mTouchEventData);
+		if(mForecastImgTouchEventListener != null)
+			mForecastImgTouchEventListener.onImgTouched(mTouchEventData);
+		
 		/* check if null: long touch listener on 3 days and 4 days images not installed */
 		if(mAreaTouchListener != null)
 			mAreaTouchListener.onAreaTouched(mTouchEventData.zoneId);

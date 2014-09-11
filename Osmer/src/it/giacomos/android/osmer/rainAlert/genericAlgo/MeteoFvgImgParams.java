@@ -1,11 +1,11 @@
 package it.giacomos.android.osmer.rainAlert.genericAlgo;
 
-import android.util.Log;
 import it.giacomos.android.osmer.rainAlert.interfaces.ImgParamsInterface;
 
 public class MeteoFvgImgParams implements ImgParamsInterface {
 
-
+	public static double RAIN_THRESHOLD = 20.0;
+	
 	@Override
 	public String getUnit() {
 		return "dBZ";
@@ -13,7 +13,7 @@ public class MeteoFvgImgParams implements ImgParamsInterface {
 
 	@Override
 	public double getThreshold() {
-		return 20.0;
+		return RAIN_THRESHOLD;
 	}
 
 	@Override
