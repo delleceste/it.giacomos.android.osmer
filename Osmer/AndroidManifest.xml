@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="840"
-    android:versionName="2.10.0" >
+    android:versionCode="842"
+    android:versionName="2.10.1" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -27,7 +27,6 @@
         android:name="android.permission.GET_ACCOUNTS"
         android:maxSdkVersion="15" />
 
-    <!-- uses-permission android:name="android.permission.WAKE_LOCK"  TRY WITHOUT -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <!--
@@ -73,7 +72,7 @@
         android:label="Meteo.FVG"
         android:theme="@android:style/Theme.Holo.Light" >
         <activity
-            android:name=".OsmerActivity"
+            android:name="it.giacomos.android.osmer.OsmerActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop" >
             <intent-filter>
@@ -83,7 +82,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".widgets.map.report.ReportActivity"
+            android:name="it.giacomos.android.osmer.widgets.map.report.ReportActivity"
             android:label="@string/report_activity_name"
             android:launchMode="singleTop"
             android:windowSoftInputMode="stateHidden" >
@@ -110,12 +109,11 @@
 
         <!-- ++++++++++++++++++++++++++++++++++++++++++ Meteo.FVG PRO +++++++++++++++++++++++++++++++++++++++++ -->
 
-
-        <!--
+ <!--
      <meta-data android:name="com.google.android.maps.v2.API_KEY" 
   			android:value="AIzaSyCO_r5ZYrWaqA5ExtIxAVHwRn6KiGAJ_Ps"/>
-        -->
-
+     
+-->
 
         <!-- ++++++++++++++++++++++++++++++++++++++++++ end Meteo.FVG PRO API KEY ++++++++++++++++++++++++++++ -->
 
@@ -128,6 +126,8 @@
 
         <!-- ============================================= Meteo.FVG ========================================= -->
 
+
+
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBhRcwqzgppnwzQApAHcV7-Rer1JhXiDQs" />
@@ -135,7 +135,7 @@
         <!-- ========================================== end Meteo.FVG API KEY ============================== -->
 
         <receiver
-            android:name=".service.ConnectivityChangedReceiver"
+            android:name="it.giacomos.android.osmer.service.ConnectivityChangedReceiver"
             android:enabled="true"
             android:exported="true"
             android:icon="@drawable/ic_launcher"
@@ -153,7 +153,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.ReportDataService" >
+        <service android:name="it.giacomos.android.osmer.service.ReportDataService" >
         </service>
 
         <meta-data
@@ -161,7 +161,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".widgets.map.report.tutorialActivity.ScenarioListActivity"
+            android:name="it.giacomos.android.osmer.widgets.map.report.tutorialActivity.ScenarioListActivity"
             android:label="@string/title_scenario_list"
             android:launchMode="singleTop"
             android:parentActivityName=".OsmerActivity" >
@@ -170,7 +170,7 @@
                 android:value="it.giacomos.android.osmer.OsmerActivity" />
         </activity>
         <activity
-            android:name=".trial.BuyProActivity"
+            android:name="it.giacomos.android.osmer.trial.BuyProActivity"
             android:label="@string/title_activity_buy_pro"
             android:parentActivityName=".OsmerActivity" >
             <meta-data
@@ -178,7 +178,7 @@
                 android:value="it.giacomos.android.osmer.OsmerActivity" />
         </activity>
         <activity
-            android:name=".widgets.map.report.tutorialActivity.ScenarioDetailActivity"
+            android:name="it.giacomos.android.osmer.widgets.map.report.tutorialActivity.ScenarioDetailActivity"
             android:label="@string/title_scenario_detail"
             android:parentActivityName=".widgets.map.report.tutorialActivity.ScenarioListActivity" >
             <meta-data
@@ -187,7 +187,7 @@
                 android:value=".ScenarioListActivity" />
         </activity>
         <activity
-            android:name=".widgets.map.report.tutorialActivity.TutorialPresentationActivity"
+            android:name="it.giacomos.android.osmer.widgets.map.report.tutorialActivity.TutorialPresentationActivity"
             android:label="@string/title_activity_tutorial_presentation"
             android:parentActivityName=".OsmerActivity"
             android:theme="@android:style/Theme.Holo.Light" >
@@ -196,7 +196,7 @@
                 android:value="it.giacomos.android.osmer.OsmerActivity" />
         </activity>
         <activity
-            android:name=".preferences.SettingsActivity"
+            android:name="it.giacomos.android.osmer.preferences.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".OsmerActivity" >
             <meta-data
@@ -205,7 +205,7 @@
         </activity>
 
         <receiver
-            android:name=".gcm.GcmBroadcastReceiver"
+            android:name="it.giacomos.android.osmer.gcm.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -214,11 +214,11 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".GcmIntentService" />
-        <service android:name=".service.RadarSyncAndRainGridDetectService" />
+        <service android:name="it.giacomos.android.osmer.GcmIntentService" />
+        <service android:name="it.giacomos.android.osmer.service.RadarSyncAndRainGridDetectService" />
 
         <activity
-            android:name=".RainDetectActivity"
+            android:name="it.giacomos.android.osmer.RainDetectActivity"
             android:label="@string/title_activity_rain_detect"
             android:parentActivityName=".OsmerActivity" >
             <meta-data

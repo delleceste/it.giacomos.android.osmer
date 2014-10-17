@@ -162,7 +162,10 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 
 		/* remove image */
 		if(mGroundOverlay != null)
+		{
 			mGroundOverlay.remove();
+			mGroundOverlay = null;
+		}
 
 		for(RadarAnimationListener ral : mAnimationListeners)
 			ral.onRadarAnimationStop();
