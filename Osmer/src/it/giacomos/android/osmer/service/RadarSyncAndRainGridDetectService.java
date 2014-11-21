@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.DeadObjectException;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -110,7 +111,13 @@ RadarImageSyncAndCalculationTaskListener
 	public void onConnected(Bundle arg0) 
 	{
 		Log.e("RadarSyncAndRainGridDetectService.onConnected", "getting last location");
-		mLocation = mLocationClient.getLastLocation();
+		try{
+			mLocation = mLocationClient.getLastLocation();
+		}
+		catch(IllegalStateException e)
+		{
+			mLocation = null;
+		}
 		mLocationClient.disconnect(); /* immediately */
 		if(mLocation != null)
 		{

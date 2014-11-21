@@ -513,7 +513,7 @@ ForecastImgTouchEventListener
 		if(i != null)
 		{
 			Bundle extras = i.getExtras();
-			if(extras != null && extras.containsKey("ptLatitude") && extras.containsKey("ptLongitude"))
+			if(extras != null && extras.containsKey("ptLatitude") && extras.containsKey("ptLongitude") && getMapFragment() != null)
 			{
 				getMapFragment().moveTo(extras.getDouble("ptLatitude"), extras.getDouble("ptLongitude"));
 				i.removeExtra("ptLatitude");
@@ -558,9 +558,12 @@ ForecastImgTouchEventListener
 	protected void onSaveInstanceState(Bundle outState)
 	{
 		super.onSaveInstanceState(outState);
-		if(getActionBar().getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST)
-			outState.putInt("spinnerPosition", getActionBar().getSelectedNavigationIndex());
-		this.mForecastImgTouchEventData.saveState(outState);
+		if(outState != null && mForecastImgTouchEventData != null) /* fix ANR: null pointer */
+		{
+			if(getActionBar().getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST)
+				outState.putInt("spinnerPosition", getActionBar().getSelectedNavigationIndex());
+			this.mForecastImgTouchEventData.saveState(outState); 
+		}
 	}
 
 	protected void onRestoreInstanceState(Bundle inState)

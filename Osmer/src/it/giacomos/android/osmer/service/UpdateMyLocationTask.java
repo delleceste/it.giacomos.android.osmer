@@ -35,6 +35,7 @@ public class UpdateMyLocationTask extends AsyncTask<String, Integer, String> {
 			boolean rainNotificationEnabled,
 			boolean pushRainNotificationEnabled)
 	{
+		mErrorMsg = "";
 		mServiceDataTaskListener = sdtl;
 		mDeviceId = deviceId;
 		mRegistrationId = registrationId;

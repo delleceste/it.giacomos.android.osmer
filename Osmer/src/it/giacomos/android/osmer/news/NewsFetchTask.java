@@ -134,7 +134,12 @@ public class NewsFetchTask extends AsyncTask<String, Integer, String>
 	    			Log.e("NewsFetchTask: doInBackground()", e1.getLocalizedMessage());
 	    		}		
 	        }
-		} 
+		}
+		catch(IllegalArgumentException e) /* ANR fix: hostname may not be null */
+		{
+			mErrorMsg = e.getLocalizedMessage();
+			e.printStackTrace();
+		}
 		catch (UnsupportedEncodingException e) 
 		{
 			mErrorMsg = e.getLocalizedMessage();
