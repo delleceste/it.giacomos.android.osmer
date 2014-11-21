@@ -110,11 +110,11 @@
 
         <!-- ++++++++++++++++++++++++++++++++++++++++++ Meteo.FVG PRO +++++++++++++++++++++++++++++++++++++++++ -->
 
- <!--
+<!-- 
      <meta-data android:name="com.google.android.maps.v2.API_KEY" 
   			android:value="AIzaSyCO_r5ZYrWaqA5ExtIxAVHwRn6KiGAJ_Ps"/>
-     
--->
+   -->  
+
 
         <!-- ++++++++++++++++++++++++++++++++++++++++++ end Meteo.FVG PRO API KEY ++++++++++++++++++++++++++++ -->
 
@@ -165,7 +165,7 @@
             android:name="it.giacomos.android.osmer.widgets.map.report.tutorialActivity.ScenarioListActivity"
             android:label="@string/title_scenario_list"
             android:launchMode="singleTop"
-            android:parentActivityName=".OsmerActivity" >
+            android:parentActivityName="it.giacomos.android.osmer.OsmerActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="it.giacomos.android.osmer.OsmerActivity" />
@@ -173,7 +173,7 @@
         <activity
             android:name="it.giacomos.android.osmer.trial.BuyProActivity"
             android:label="@string/title_activity_buy_pro"
-            android:parentActivityName=".OsmerActivity" >
+            android:parentActivityName="it.giacomos.android.osmer.OsmerActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="it.giacomos.android.osmer.OsmerActivity" />
@@ -190,7 +190,7 @@
         <activity
             android:name="it.giacomos.android.osmer.widgets.map.report.tutorialActivity.TutorialPresentationActivity"
             android:label="@string/title_activity_tutorial_presentation"
-            android:parentActivityName=".OsmerActivity"
+            android:parentActivityName="it.giacomos.android.osmer.OsmerActivity"
             android:theme="@android:style/Theme.Holo.Light" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -199,7 +199,7 @@
         <activity
             android:name="it.giacomos.android.osmer.preferences.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".OsmerActivity" >
+            android:parentActivityName="it.giacomos.android.osmer.OsmerActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="it.giacomos.android.osmer.OsmerActivity" />
