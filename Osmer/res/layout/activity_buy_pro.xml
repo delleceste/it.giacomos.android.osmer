@@ -123,7 +123,7 @@
             android:textStyle="italic" />
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/tvPersonalMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

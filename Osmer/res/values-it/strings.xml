@@ -919,4 +919,8 @@ mio android id è il seguente:\n\n
 	
 		<string name="gcm_registered_ok">Registrazione Google Cloud Messaging per il servizio notifiche correttamente effettuata.</string>
 	
+	<string name="personal_message_title">Titolo</string>
+    <string name="personal_message_date">Data</string>
+    <string name="title_activity_personal_message">Messaggio personale</string>
+    <string name="service_stopped_app_blocked">Applicazione bloccata: fermo il servizio di notifiche</string>
 </resources>

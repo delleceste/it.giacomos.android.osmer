@@ -36,6 +36,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImage
 	@Override
 	public void onReceive(Context ctx, Intent intent) 
 	{
+		Log.e("GcmBroadcastReceiver.onReceive", "RECEIVED GCM BROADCAST");
 		Bundle extras = intent.getExtras();
 		GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(ctx);
 		// The getMessageType() intent parameter must be the intent you received

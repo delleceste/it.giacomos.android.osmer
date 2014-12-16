@@ -2,10 +2,14 @@ package it.giacomos.android.osmer.widgets.map.report.network;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.*;
 
 import android.content.Context;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,15 +25,13 @@ import it.giacomos.android.osmer.network.state.ViewType;
 
 public class ReportUpdater   
 implements NetworkStatusMonitorListener,
-GooglePlayServicesClient.ConnectionCallbacks,
-GooglePlayServicesClient.OnConnectionFailedListener,
-ReportUpdateTaskListener
+ReportUpdateTaskListener, ConnectionCallbacks, OnConnectionFailedListener
 {
 	private static final long DOWNLOAD_REPORT_OLD_TIMEOUT = 10000;
 
 	private Context mContext;
 	private ReportUpdaterListener mReportUpdaterListener;
-	private LocationClient mLocationClient;
+	private GoogleApiClient mGoogleApiClient;
 	private NetworkStatusMonitor mNetworkStatusMonitor;
 	private long mLastReportUpdatedAt;
 	private ReportUpdateTask mReportUpdateTask;
@@ -37,7 +39,7 @@ ReportUpdateTaskListener
 	public ReportUpdater(Context ctx, ReportUpdaterListener rul)
 	{
 		mContext = ctx;
-		mLocationClient = new LocationClient(ctx, this, this);
+		mGoogleApiClient = new GoogleApiClient.Builder(ctx).addApi(LocationServices.API).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build();
 		mNetworkStatusMonitor = new NetworkStatusMonitor(this);
 		/* when the map switches mode, a new ReportUpdater is created, and it must be registered.
 		 * onResume is not called when map switches mode. Instead, when the activity is paused, 
@@ -85,7 +87,7 @@ ReportUpdateTaskListener
 			 * not destroyed.
 			 */
 		}
-		mLocationClient.disconnect();
+		mGoogleApiClient.disconnect();
 		/* cancel thread if running */
 		if(mReportUpdateTask != null)
 			mReportUpdateTask.cancel(false);
@@ -107,8 +109,8 @@ ReportUpdateTaskListener
 
 			if(mNetworkStatusMonitor.isConnected())
 			{
-				mLocationClient.disconnect();
-				mLocationClient.connect();
+				mGoogleApiClient.disconnect();
+				mGoogleApiClient.connect();
 			}
 			else /* offline */
 				Toast.makeText(mContext, R.string.reportNeedToBeOnline, Toast.LENGTH_SHORT).show();
@@ -118,18 +120,18 @@ ReportUpdateTaskListener
 	@Override
 	public void onNetworkBecomesAvailable() 
 	{
-		if(mLocationClient.isConnected())
+		if(mGoogleApiClient.isConnected())
 			onConnected(null);
-		else if(mLocationClient.isConnecting())
+		else if(mGoogleApiClient.isConnecting())
 			return; /* wait for onConnected() */
 		else
-			mLocationClient.connect();
+			mGoogleApiClient.connect();
 	}
 
 	@Override
 	public void onNetworkBecomesUnavailable() 
 	{
-		mLocationClient.disconnect();
+		mGoogleApiClient.disconnect();
 	}
 
 	@Override
@@ -145,7 +147,8 @@ ReportUpdateTaskListener
 	 */
 	public void onConnected(Bundle arg0) 
 	{
-		if(mLocationClient.getLastLocation() != null)
+		Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient) ;
+		if(location != null)
 		{
 			/* if a task is already running or about to run, do not do anything, because an update is on
 			 * the way.
@@ -159,7 +162,7 @@ ReportUpdateTaskListener
 			if(mReportUpdateTask != null && mReportUpdateTask.getStatus() != AsyncTask.Status.FINISHED)
 				mReportUpdateTask.cancel(false);
 
-			mReportUpdateTask = new ReportUpdateTask(this, mLocationClient.getLastLocation(), deviceId);
+			mReportUpdateTask = new ReportUpdateTask(this, location, deviceId);
 			/* "http://www.giacomos.it/meteo.fvg/get_report_2_6_1.php" */
 			mReportUpdateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().getReportUrl());
 		}
@@ -169,16 +172,7 @@ ReportUpdateTaskListener
 		/* no more interested in location updates, the task has been starting with the last known
 		 * location.
 		 */
-		mLocationClient.disconnect();
-	}
-
-	@Override
-	/** Called when ReportUpdater is disconnected from the location client
-	 * Nothing to do.
-	 */
-	public void onDisconnected() 
-	{
-		Toast.makeText(mContext, "ReportUpdater.onDisconnected", Toast.LENGTH_SHORT).show();
+		mGoogleApiClient.disconnect();
 	}
 
 	/** Evaluate if the report is old 
@@ -205,6 +199,13 @@ ReportUpdateTaskListener
 		}
 		else
 			mReportUpdaterListener.onReportUpdateError(mReportUpdateTask.getError());
+	}
+
+
+	@Override
+	public void onConnectionSuspended(int cause) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

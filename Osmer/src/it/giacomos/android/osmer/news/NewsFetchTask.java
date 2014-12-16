@@ -56,7 +56,7 @@ public class NewsFetchTask extends AsyncTask<String, Integer, String>
         List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
         postParameters.add(new BasicNameValuePair("cli", CLI));
         postParameters.add(new BasicNameValuePair("last_read_on", String.valueOf(mLastNewsReadTimestamp)));
-        Log.e("NewsFetchTask", "timestamp last was " + mLastNewsReadTimestamp);
+        Log.e("PersonalMessageDataFetchTask", "timestamp last was " + mLastNewsReadTimestamp);
         UrlEncodedFormEntity form;
 		try {
 			form = new UrlEncodedFormEntity(postParameters);
@@ -107,7 +107,7 @@ public class NewsFetchTask extends AsyncTask<String, Integer, String>
 	    							String text = "";
 	    							if(aNode instanceof CharacterData)
 	    								text = ((CharacterData) aNode).getData();
-	    							Log.e("NewsFetchTask", "date " + date + ", url " + url + ", text " + text);
+	    							Log.e("PersonalMessageDataFetchTask", "date " + date + ", url " + url + ", text " + text);
 	    							if(date != null && url != null && !date.isEmpty() && !url.isEmpty() && !text.isEmpty())
 	    							{
 	    								mNewsData = new NewsData(date, time, text, url);
@@ -117,21 +117,21 @@ public class NewsFetchTask extends AsyncTask<String, Integer, String>
 	    				} 
 	    				catch (SAXException e) 
 	    				{
-	    					Log.e("NewsFetchTask SAXException: doInBackground()", e.getLocalizedMessage());
+	    					Log.e("PersonalMessageDataFetchTask SAXException: doInBackground()", e.getLocalizedMessage());
 	    				} 
 	    				catch (IOException e) 
 	    				{	
-	    					Log.e("NewsFetchTask: doInBackground()", e.getLocalizedMessage());
+	    					Log.e("PersonalMessageDataFetchTask: doInBackground()", e.getLocalizedMessage());
 	    				}
 	    			} 
 	    			catch (UnsupportedEncodingException e) 
 	    			{
-	    				Log.e("NewsFetchTask: doInBackground()", e.getLocalizedMessage());
+	    				Log.e("PersonalMessageDataFetchTask: doInBackground()", e.getLocalizedMessage());
 	    			}
 	    		} 
 	    		catch (ParserConfigurationException e1) 
 	    		{
-	    			Log.e("NewsFetchTask: doInBackground()", e1.getLocalizedMessage());
+	    			Log.e("PersonalMessageDataFetchTask: doInBackground()", e1.getLocalizedMessage());
 	    		}		
 	        }
 		}
@@ -162,7 +162,7 @@ public class NewsFetchTask extends AsyncTask<String, Integer, String>
 
 	public void onCancelled(String doc)
 	{
-		Log.e("NewsFetchTask", "task cancelled");
+		Log.e("PersonalMessageDataFetchTask", "task cancelled");
 		if(doc != null)
 			doc = null;
 	}

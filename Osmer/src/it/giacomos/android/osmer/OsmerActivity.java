@@ -36,6 +36,11 @@ import it.giacomos.android.osmer.pager.ActionBarManager;
 import it.giacomos.android.osmer.pager.DrawerItemClickListener;
 import it.giacomos.android.osmer.pager.MyActionBarDrawerToggle;
 import it.giacomos.android.osmer.pager.ViewPagerPages;
+import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageActivity;
+import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageData;
+import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageDataDecoder;
+import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageDataFetchTask;
+import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageUpdateListener;
 import it.giacomos.android.osmer.preferences.*;
 import it.giacomos.android.osmer.service.ServiceManager;
 import it.giacomos.android.osmer.service.sharedData.ReportNotification;
@@ -123,7 +128,8 @@ RadarAnimationListener,
 PostActionResultListener,
 ReportRequestListener, 
 NewsUpdateListener,
-ForecastImgTouchEventListener
+ForecastImgTouchEventListener, 
+PersonalMessageUpdateListener
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
@@ -197,6 +203,9 @@ ForecastImgTouchEventListener
 
 		if(mNewsFetchTask != null && mNewsFetchTask.getStatus() != AsyncTask.Status.FINISHED)
 			mNewsFetchTask.cancel(false);
+		
+		if(mPersonalMessageDataFetchTask != null && mPersonalMessageDataFetchTask.getStatus() != AsyncTask.Status.FINISHED)
+			mPersonalMessageDataFetchTask.cancel(false);
 	}
 
 	/**
@@ -316,6 +325,12 @@ ForecastImgTouchEventListener
 
 	public void init()
 	{
+		mSettings = new Settings(this);
+		
+		/* if it's time to get personal message, wait for network and download it */
+		if(!mSettings.timeToGetPersonalMessage() && !mSettings.getPersonalMessageData().isEmpty())
+			this.onPersonalMessageUpdate(mSettings.getPersonalMessageData());
+		
 		mProgressBarStep = mProgressBarTotSteps = 0;
 		mAdditionalProgressBarStep = mProgressBarAdditionalSteps = 0;
 		mCurrentViewType = ViewType.HOME;
@@ -330,7 +345,6 @@ ForecastImgTouchEventListener
 		mMainLayout = (LinearLayout) findViewById(R.id.mainLayout);
 		mMainLayout.addView(mViewPager);
 
-		mSettings = new Settings(this);
 		mTapOnMarkerHintCount = 0;
 		mRefreshAnimatedImageView = null;
 
@@ -551,6 +565,14 @@ ForecastImgTouchEventListener
 			{
 				mNewsFetchTask = new NewsFetchTask(mSettings.lastNewsReadTimestamp(), this);
 				mNewsFetchTask.execute(new Urls().newsUrl());
+			}
+			
+			if(mSettings.timeToGetPersonalMessage())
+			{
+				mPersonalMessageDataFetchTask = new PersonalMessageDataFetchTask(Secure.getString(getContentResolver(), Secure.ANDROID_ID),
+						this);
+				/* "http://www.giacomos.it/meteo.fvg/get_configuration.php" */
+				mPersonalMessageDataFetchTask.execute(new Urls().personalMessageFetchUrl());
 			}
 		}
 	}
@@ -1364,6 +1386,20 @@ ForecastImgTouchEventListener
 	}
 	
 	@Override
+	public void onPersonalMessageUpdate(String d) 
+	{
+		if(!d.isEmpty())
+			mSettings.setPersonalMessageData(d);
+		PersonalMessageData data = new PersonalMessageDataDecoder(d).getData();
+		Log.e("OsmerActivity.onPersonalMessageUpdate", "date " + data.date + " title " + data.title + " msg " + data.message);
+		Log.e("OsmerActivity.onPersonalMessageUpdate", "raw data " + d);
+		if(data.blocking)
+		{
+			new ApplicationBlocker(this, data);
+		}
+	}
+	
+	@Override
 	public void onRadarAnimationStart() 
 	{
 
@@ -1423,6 +1459,7 @@ ForecastImgTouchEventListener
 	private PopupMenu mMapOptionsMenu;
 
 	private NewsFetchTask mNewsFetchTask;
+	private PersonalMessageDataFetchTask mPersonalMessageDataFetchTask;
 
 	private int mProgressBarStep, mProgressBarTotSteps;
 	private int mAdditionalProgressBarStep, mProgressBarAdditionalSteps;

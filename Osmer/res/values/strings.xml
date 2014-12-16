@@ -746,6 +746,9 @@ Please note: requests devoid of the full name and date will be ignored.\n\n</str
 	    by the application author. Data is not taken from Osmer/Meteo.FVG</string>
     <string name="pref_use_internal_rain_detection_summary">It is recommended that the rain possibility detection is calculated by the device. This guarantees the most fast and up to date notifications</string>
     <string name="title_activity_rain_detect">RainDetectActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="personal_message_title">Title</string>
+    <string name="personal_message_date">Date</string>
+    <string name="title_activity_personal_message">Personal message</string>
+    <string name="service_stopped_app_blocked">Application blocked: stopping service</string>
 
 </resources>

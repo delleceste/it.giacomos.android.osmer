@@ -5,7 +5,10 @@ import java.io.InputStream;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationServices;
 
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
@@ -29,12 +32,10 @@ import android.os.IBinder;
 import android.util.Log;
 
 public class RadarSyncAndRainGridDetectService extends Service 
-implements GooglePlayServicesClient.ConnectionCallbacks,
-GooglePlayServicesClient.OnConnectionFailedListener, 
-RadarImageSyncAndCalculationTaskListener
+implements RadarImageSyncAndCalculationTaskListener, ConnectionCallbacks, OnConnectionFailedListener
 {
 	private boolean mIsStarted;
-	private LocationClient mLocationClient;
+	private GoogleApiClient mLocationClient;
 	private Location mLocation;
 	private long mTimestampSecs;
 
@@ -51,12 +52,13 @@ RadarImageSyncAndCalculationTaskListener
 	{
 		if(!mIsStarted)
 		{
+			Log.e("RadarSyncAndRainGridDetectService.onStartCommand", "starting service");
 			if(intent != null)
 				mTimestampSecs = intent.getLongExtra("timestamp", 0L);
 			else
 				mTimestampSecs = 0L;
 			if(mLocationClient == null)
-				mLocationClient = new LocationClient(this, this, this);
+				mLocationClient = new GoogleApiClient.Builder(this).addApi(LocationServices.API).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build();
 			/* wait for location client to be connected before syncing images and 
 			 * perform calculations on the images received.
 			 */
@@ -72,6 +74,7 @@ RadarImageSyncAndCalculationTaskListener
 
 	protected void startSyncImagesAndRainDetect(double mylatitude, double mylongitude) 
 	{
+		Log.e("RadarSyncAndRainGridDetectService.startSyncImagesAndRainDetect", "getting image and calculating");
 		AssetManager assetManager = getApplicationContext().getAssets();
 		InputStream input;
 		String gridConf = "";
@@ -112,7 +115,7 @@ RadarImageSyncAndCalculationTaskListener
 	{
 		Log.e("RadarSyncAndRainGridDetectService.onConnected", "getting last location");
 		try{
-			mLocation = mLocationClient.getLastLocation();
+			mLocation = LocationServices.FusedLocationApi.getLastLocation(mLocationClient);
 		}
 		catch(IllegalStateException e)
 		{
@@ -132,16 +135,11 @@ RadarImageSyncAndCalculationTaskListener
 	}
 
 	@Override
-	public void onDisconnected() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void onRainDetectionDone(RainDetectResult result) 
 	{
 		if(result != null && new Settings(this).useInternalRainDetection())
 		{
+			Log.e("RadarSyncAndRainGridDetectService.onRainDetectionDone", "will rain " + result.willRain + " dbz " + result.dbz);
 			boolean willRain = result.willRain;
 			float dbZ = result.dbz;
 			RainNotification rainNotif = new RainNotification(result.willRain, mTimestampSecs, dbZ, 
@@ -182,6 +180,12 @@ RadarImageSyncAndCalculationTaskListener
 				}
 			}
 		}
+	}
+
+	@Override
+	public void onConnectionSuspended(int cause) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

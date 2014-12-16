@@ -6,12 +6,9 @@ import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
 import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.rainAlert.RainNotificationBuilder;
-import it.giacomos.android.osmer.rainAlert.SyncImages;
-import it.giacomos.android.osmer.rainAlert.SyncImagesListener;
 import it.giacomos.android.osmer.service.sharedData.NotificationData;
 import it.giacomos.android.osmer.service.sharedData.NotificationDataFactory;
 import it.giacomos.android.osmer.service.sharedData.RainNotification;
-import it.giacomos.android.osmer.service.sharedData.ReportRequestNotification;
 import it.giacomos.android.osmer.service.sharedData.ServiceSharedData;
 
 import java.io.BufferedWriter;
@@ -24,16 +21,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationServices;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -43,19 +40,15 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings.Secure;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.Toast;
 
 public class ReportDataService extends Service 
-implements GooglePlayServicesClient.ConnectionCallbacks,
-GooglePlayServicesClient.OnConnectionFailedListener, 
-FetchRequestsTaskListener, Runnable
+implements  FetchRequestsTaskListener, Runnable, ConnectionCallbacks, OnConnectionFailedListener
 {
 	private Location mLocation;
 	private Handler mHandler;
-	private LocationClient mLocationClient;
+	private GoogleApiClient mLocationClient;
 	private UpdateMyLocationTask mUpdateMyLocationTask;
 	private long mSleepInterval;
 	private boolean mIsStarted;
@@ -102,7 +95,7 @@ FetchRequestsTaskListener, Runnable
 			mCheckIfNeedRunIntervalMillis = mSleepInterval / 6;
 
 			if(mLocationClient == null)
-				mLocationClient = new LocationClient(this, this, this);
+				mLocationClient = new GoogleApiClient.Builder(this).addApi(LocationServices.API).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build();
 
 			/* if onStartCommand is called multiple times,we must stop previously
 			 * scheduled runs.
@@ -164,7 +157,7 @@ FetchRequestsTaskListener, Runnable
 	public void onConnected(Bundle arg0) 
 	{
 		// Log.e("ReportDataService.onConnected", "getting last location");
-		mLocation = mLocationClient.getLastLocation();
+		mLocation = LocationServices.FusedLocationApi.getLastLocation(mLocationClient);
 		mLocationClient.disconnect(); /* immediately */
 		if(mLocation != null)
 		{
@@ -195,6 +188,7 @@ FetchRequestsTaskListener, Runnable
 			/* get the registration id (for new versions, to work with google cloud messaging */
 			GcmRegistrationManager gcmRm = new GcmRegistrationManager();
 			String registrationId = gcmRm.getRegistrationId(this);
+			Log.e("ReportDataService.startTask", "reg id " + registrationId);
 
 			if(!registrationId.isEmpty())
 			{
@@ -206,8 +200,8 @@ FetchRequestsTaskListener, Runnable
 						mLocation.getLatitude(), mLocation.getLongitude(),
 						mSettings.rainNotificationEnabled(),
 						mSettings.useInternalRainDetection());
-				/* old: "http://www.giacomos.it/meteo.fvg/get_reports_and_requests_for_my_location.php" 
-				 * new: "http://www.giacomos.it/meteo.fvg/update_my_location.php"
+				/* 
+				 * "http://www.giacomos.it/meteo.fvg/update_my_location.php";
 				 */
 				mUpdateMyLocationTask.execute(new Urls().getUpdateMyLocationUrl());
 			}
@@ -353,12 +347,6 @@ FetchRequestsTaskListener, Runnable
 		mHandler.postDelayed(this, mSleepInterval);
 	}
 
-	@Override
-	public void onDisconnected() 
-	{
-
-	}
-
 	private void log(String message)
 	{
 		File f = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
@@ -375,6 +363,12 @@ FetchRequestsTaskListener, Runnable
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onConnectionSuspended(int cause) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

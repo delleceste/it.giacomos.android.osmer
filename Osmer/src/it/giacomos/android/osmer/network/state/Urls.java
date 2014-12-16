@@ -145,5 +145,10 @@ public class Urls {
 	{
 		return "http://www.giacomos.it/meteo.fvg/data/piu_4.html";
 	}
+
+	public String personalMessageFetchUrl() 
+	{
+		return "http://www.giacomos.it/meteo.fvg/get_configuration.php";
+	}
 	
 }

@@ -8,20 +8,19 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
-import it.giacomos.android.osmer.Logger;
-import it.giacomos.android.osmer.network.DownloadStatus;
 
-public class LocationService implements   GooglePlayServicesClient.ConnectionCallbacks,
-GooglePlayServicesClient.OnConnectionFailedListener, LocationListener,
-GeocodeAddressUpdateListener
+public class LocationService implements LocationListener,
+GeocodeAddressUpdateListener, ConnectionCallbacks, OnConnectionFailedListener
 {
 	private final Context mContext;
-	private LocationClient mLocationClient;
+	private GoogleApiClient mGoogleApiClient;
 	private ArrayList<LocationServiceUpdateListener> mLocationServiceUpdateListeners;
 	private ArrayList<LocationServiceAddressUpdateListener> mLocationServiceAddressUpdateListeners;
 	private LocationRequest mLocationRequest;
@@ -39,7 +38,7 @@ GeocodeAddressUpdateListener
 	public LocationService(Context ctx)
 	{
 		mContext = ctx;
-		mLocationClient = null;
+		mGoogleApiClient = null;
 		mCurrentLocation = null;
 		mCurrentLocationInfo = null;
 		mLocationServiceUpdateListeners = new ArrayList<LocationServiceUpdateListener>();
@@ -58,7 +57,7 @@ GeocodeAddressUpdateListener
 	
 	public boolean isConnected()
 	{
-		return mLocationClient != null && mLocationClient.isConnected();
+		return mGoogleApiClient != null && mGoogleApiClient.isConnected();
 	}
 	
 	/* to be called onStart()
@@ -87,8 +86,9 @@ GeocodeAddressUpdateListener
 			 */
 			mLocationRequest.setSmallestDisplacement(100.0f);
 			mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-			mLocationClient = new LocationClient(mContext, this,  this);
-			mLocationClient.connect();
+			mGoogleApiClient = new GoogleApiClient.Builder(mContext).addApi(LocationServices.API).
+					addConnectionCallbacks(this).addOnConnectionFailedListener(this).build();
+			mGoogleApiClient.connect();
 		}
 		return result;
 	}
@@ -98,15 +98,16 @@ GeocodeAddressUpdateListener
 	 */
 	public void disconnect()
 	{
-		if(mLocationClient != null)
+		if(mGoogleApiClient != null)
 		{
-			if(mLocationClient.isConnected())
+			if(mGoogleApiClient.isConnected())
 			{
 				Log.e("LocationService.disconnect()", "removing location updates");
-				mLocationClient.removeLocationUpdates(this);
+				mGoogleApiClient.unregisterConnectionCallbacks(this);
+				mGoogleApiClient.unregisterConnectionFailedListener(this);
 			}
 			Log.e("LocationService.disconnect()", "disconnecting location client");
-			mLocationClient.disconnect();
+			mGoogleApiClient.disconnect();
 		}
 	}
 
@@ -172,25 +173,17 @@ GeocodeAddressUpdateListener
 	@Override
 	public void onConnected(Bundle bundle) 
 	{
-		if(mLocationClient != null)
+		if(mGoogleApiClient != null)
 		{
 			Log.e("onConnected", "connected to loc cli");
 			
-			Location lastKnownLocation = mLocationClient.getLastLocation();
-			mLocationClient.requestLocationUpdates(mLocationRequest, this);
+			Location lastKnownLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 			if(lastKnownLocation != null)
 			{
 				mCurrentLocation = lastKnownLocation;
 				onLocationChanged(lastKnownLocation);
 			}
 		}
-	}
-
-	@Override
-	public void onDisconnected() 
-	{
-		for(LocationServiceUpdateListener l : mLocationServiceUpdateListeners)
-			l.onLocationServiceError("Error: disconnected from location updates");
 	}
 
 	public void updateGeocodeAddress()
@@ -243,6 +236,12 @@ GeocodeAddressUpdateListener
 			}
 			mCurrentLocationInfo = locInfo;
 		}
+		
+	}
+
+	@Override
+	public void onConnectionSuspended(int cause) {
+		// TODO Auto-generated method stub
 		
 	}
 }

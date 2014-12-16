@@ -539,5 +539,24 @@ public class Settings
 	public float getLastDbz() {
 		return mSharedPreferences.getFloat("RAIN_DETECT_LAST_DBZ", 0.0f);
 	}
-
+	
+	public boolean timeToGetPersonalMessage()
+	{
+		long lastRead = mSharedPreferences.getLong("PERSONAL_MSG_CONF_READ_ON", 0L);
+		long now = System.currentTimeMillis();
+		return (now - lastRead) >  2000;
+	}
+	
+	public void setPersonalMessageData(String conf)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putString("PERSONAL_MSG_CONF", conf);
+		e.putLong("PERSONAL_MSG_CONF_READ_ON", System.currentTimeMillis());
+		e.commit();
+	}
+	
+	public String getPersonalMessageData()
+	{
+		return mSharedPreferences.getString("PERSONAL_MSG_CONF", "");
+	}
 }
