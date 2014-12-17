@@ -36,10 +36,10 @@ import it.giacomos.android.osmer.pager.ActionBarManager;
 import it.giacomos.android.osmer.pager.DrawerItemClickListener;
 import it.giacomos.android.osmer.pager.MyActionBarDrawerToggle;
 import it.giacomos.android.osmer.pager.ViewPagerPages;
-import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageActivity;
 import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageData;
 import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageDataDecoder;
 import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageDataFetchTask;
+import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageManager;
 import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageUpdateListener;
 import it.giacomos.android.osmer.preferences.*;
 import it.giacomos.android.osmer.service.ServiceManager;
@@ -329,7 +329,7 @@ PersonalMessageUpdateListener
 		
 		/* if it's time to get personal message, wait for network and download it */
 		if(!mSettings.timeToGetPersonalMessage() && !mSettings.getPersonalMessageData().isEmpty())
-			this.onPersonalMessageUpdate(mSettings.getPersonalMessageData());
+			this.onPersonalMessageUpdate(mSettings.getPersonalMessageData(), true); /* true: fromCache */
 		
 		mProgressBarStep = mProgressBarTotSteps = 0;
 		mAdditionalProgressBarStep = mProgressBarAdditionalSteps = 0;
@@ -1386,17 +1386,16 @@ PersonalMessageUpdateListener
 	}
 	
 	@Override
-	public void onPersonalMessageUpdate(String d) 
+	public void onPersonalMessageUpdate(String d, boolean fromCache) 
 	{
-		if(!d.isEmpty())
+		if(!d.isEmpty() && d.compareTo(mSettings.getPersonalMessageData()) != 0)
 			mSettings.setPersonalMessageData(d);
+		if(!fromCache)
+			mSettings.setPersonalMessageDownloadedNow();
 		PersonalMessageData data = new PersonalMessageDataDecoder(d).getData();
-		Log.e("OsmerActivity.onPersonalMessageUpdate", "date " + data.date + " title " + data.title + " msg " + data.message);
-		Log.e("OsmerActivity.onPersonalMessageUpdate", "raw data " + d);
-		if(data.blocking)
-		{
-			new ApplicationBlocker(this, data);
-		}
+//		Log.e("OsmerActivity.onPersonalMessageUpdate", "raw data \"" + d + "\"");
+		if(data.isValid()) /* title, message, date must be not empty */
+			new PersonalMessageManager(this, data);
 	}
 	
 	@Override

@@ -56,6 +56,7 @@ public class PersonalMessageDataFetchTask extends AsyncTask<String, Integer, Str
         List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
         postParameters.add(new BasicNameValuePair("d", mDeviceId));
         UrlEncodedFormEntity form;
+        Log.e("PersonalMessageDataTask.doInBackground", " fetching data from " + urls[0]);
 		try {
 			form = new UrlEncodedFormEntity(postParameters);
 	        request.setEntity(form);
@@ -70,14 +71,8 @@ public class PersonalMessageDataFetchTask extends AsyncTask<String, Integer, Str
 	        String document = EntityUtils.toString(entity);
 	        if(document.compareTo("-1") == 0)
 	        	mErrorMsg = "Server error: the server returned " + document;
-	        else if(document.compareTo("0") == 0)
-	        {
-	        	/* nothing to do */
-	        }
 	        else
-	        {
-	        	mDataAsText = document;
-	        }
+	        	mDataAsText = document; /* either 0 or the xml document */
 		}
 		catch(IllegalArgumentException e) /* ANR fix: hostname may not be null */
 		{
@@ -100,7 +95,8 @@ public class PersonalMessageDataFetchTask extends AsyncTask<String, Integer, Str
 	
 	public void onPostExecute(String doc)
 	{
-		mPersonalMessageUpdateListener.onPersonalMessageUpdate(mDataAsText);
+		boolean fromCache = false;
+		mPersonalMessageUpdateListener.onPersonalMessageUpdate(mDataAsText, fromCache);
 	}
 
 	public void onCancelled(String doc)

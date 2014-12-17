@@ -544,14 +544,20 @@ public class Settings
 	{
 		long lastRead = mSharedPreferences.getLong("PERSONAL_MSG_CONF_READ_ON", 0L);
 		long now = System.currentTimeMillis();
-		return (now - lastRead) >  2000;
+		return (now - lastRead) >  24 * 60 *  60 * 1000;
+	}
+	
+	public void setPersonalMessageDownloadedNow()
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putLong("PERSONAL_MSG_CONF_READ_ON", System.currentTimeMillis());
+		e.commit();
 	}
 	
 	public void setPersonalMessageData(String conf)
 	{
 		SharedPreferences.Editor e = mSharedPreferences.edit();
 		e.putString("PERSONAL_MSG_CONF", conf);
-		e.putLong("PERSONAL_MSG_CONF_READ_ON", System.currentTimeMillis());
 		e.commit();
 	}
 	

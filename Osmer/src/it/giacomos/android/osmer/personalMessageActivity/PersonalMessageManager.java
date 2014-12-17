@@ -1,20 +1,21 @@
-package it.giacomos.android.osmer;
+package it.giacomos.android.osmer.personalMessageActivity;
 
-import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageActivity;
-import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageData;
+import it.giacomos.android.osmer.OsmerActivity;
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.R.string;
 import it.giacomos.android.osmer.service.ServiceManager;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-public class ApplicationBlocker 
+public class PersonalMessageManager 
 {
-	public ApplicationBlocker(OsmerActivity osmerActivity, PersonalMessageData data) 
+	public PersonalMessageManager(OsmerActivity osmerActivity, PersonalMessageData data) 
 	{
 		/* stop service */
 		ServiceManager serviceManager = new ServiceManager();
-		Log.e("OsmerActivity.onPersonalMessageUpdate", "app blocked: disabling service: " +
-				" was running "+ serviceManager.isServiceRunning(osmerActivity));
+//		Log.e("PersonalMessageManager", "created: is service running: " 
+//				+ serviceManager.isServiceRunning(osmerActivity));
 		boolean ret = serviceManager.setEnabled(osmerActivity, false);
 		if(ret)
 			Toast.makeText(osmerActivity, R.string.service_stopped_app_blocked, Toast.LENGTH_LONG).show();
@@ -25,6 +26,7 @@ public class ApplicationBlocker
 		i.putExtra("date", data.date);
 		osmerActivity.startActivity(i);
 		
-		osmerActivity.finish();
+		if(data.blocking)
+			osmerActivity.finish();
 	}
 }

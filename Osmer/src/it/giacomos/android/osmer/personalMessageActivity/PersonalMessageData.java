@@ -21,5 +21,10 @@ public class PersonalMessageData
 		message = "";
 		title = "";
 	}
+	
+	public boolean isValid()
+	{
+		return !date.isEmpty() && !message.isEmpty() && !title.isEmpty();
+	}
 
 }
