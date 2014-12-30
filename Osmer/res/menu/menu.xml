@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" 
-    xmlns:custom="http://schemas.android.com/apk/res/it.giacomos.android"
+    xmlns:it.giacomos.android.osmer="http://schemas.android.com/apk/res-auto"
     >
     
    <!-- item android:id="@+id/icon_refresh"
@@ -9,10 +9,16 @@
        android:actionLayout="@layout/animated_image_view"
        / -->
    
+   <!--  NOTE: actionbar compat requires  
+   it.giacomos.android.osmer:showAsAction
+   it.giacomos.android.osmer:actionLayout,
+   android:showAsAction not valid
+   -->
+   
       <item android:id="@+id/actionbarmenu"
-       android:showAsAction="ifRoom"
+       it.giacomos.android.osmer:showAsAction="ifRoom"
        android:title=""
-       android:actionLayout="@layout/actionmenu"
+       it.giacomos.android.osmer:actionLayout="@layout/actionmenu"
        />
             
     <item android:id="@+id/menu_data_update_info"

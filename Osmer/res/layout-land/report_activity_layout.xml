@@ -44,37 +44,39 @@
             android:baselineAligned="false"
             android:orientation="horizontal"
             android:padding="3dp" >
-            
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="3dp" >
-
+     
             <TextView
                 android:id="@+id/tvSky"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:gravity="right"
                 android:text="@string/reportSky"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <Spinner
                 android:id="@+id/spinSky"
-                android:layout_width="fill_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center">
+                android:layout_weight="4"
+                android:gravity="center" >
+
                 <requestFocus />
-            </Spinner> 
-                
-            
+            </Spinner>
+
+            <CheckBox
+                android:id="@+id/cbSkyRight"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="@string/cb_sky_right" />
+        
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="0dp"
+         <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:padding="3dp" >
 
             <TextView
@@ -84,7 +86,6 @@
                 android:layout_gravity="center"
                 android:gravity="right"
                 android:text="@string/reportWind"
-                android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <Spinner
@@ -94,8 +95,7 @@
                 android:gravity="center" />
         </LinearLayout>
         
-        </LinearLayout>
-
+        
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

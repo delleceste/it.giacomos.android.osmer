@@ -1,9 +1,8 @@
 package it.giacomos.android.osmer.pager;
 
-import android.app.ActionBar;
+import android.support.v7.app.ActionBar;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SpinnerAdapter;
@@ -39,7 +38,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	
 	public void setNavigationItem(int index)
 	{
-		ActionBar actionBar = mActivity.getActionBar();
+		ActionBar actionBar = mActivity.getSupportActionBar();
 		actionBar.setSelectedNavigationItem(index);
 	}
 	
@@ -48,7 +47,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	 */
 	public void setTabSelected(int index)
 	{
-		ActionBar actionBar = mActivity.getActionBar();
+		ActionBar actionBar = mActivity.getSupportActionBar();
 		if(index < actionBar.getTabCount())
 			actionBar.setSelectedNavigationItem(index);
 	}
@@ -59,7 +58,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	public void init(Bundle savedInstanceState, int forceDrawerItem) 
 	{
 		boolean actionBarTabs = false;
-		ActionBar actionBar = mActivity.getActionBar();
+		ActionBar actionBar = mActivity.getSupportActionBar();
 		ListView drawer = mActivity.getDrawerListView();
 		int selectedDrawerItem = drawer.getCheckedItemPosition();
 		if(selectedDrawerItem < 0)
@@ -110,7 +109,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	public void drawerItemChanged(int id)
 	{
 		mSpinnerAdapter = null;
-		ActionBar actionBar = mActivity.getActionBar();
+		ActionBar actionBar = mActivity.getSupportActionBar();
 		switch(id)
 		{
 		case 0:
@@ -197,7 +196,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	private void mInitActionBarTabs()
 	{
 		Resources res = mActivity.getResources();
-		ActionBar actionBar = mActivity.getActionBar();
+		ActionBar actionBar = mActivity.getSupportActionBar();
 		Bundle bToday = new Bundle();
 		Bundle bTomorrow = new Bundle();
 		Bundle bTwodays = new Bundle();

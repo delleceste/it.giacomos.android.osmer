@@ -35,6 +35,8 @@ import it.giacomos.android.osmer.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressUpdateListener;
 import it.giacomos.android.osmer.locationUtils.LocationInfo;
 import it.giacomos.android.osmer.locationUtils.NearLocationFinder;
+import it.giacomos.android.osmer.network.DownloadStateListener;
+import it.giacomos.android.osmer.network.Data.DownloadListener;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.service.sharedData.ReportRequestNotification;
 import it.giacomos.android.osmer.service.sharedData.ServiceSharedData;
@@ -136,6 +138,7 @@ OnClickListener
 
 	private void mCancelTasks()
 	{
+		mMapFrag.getActivity().findViewById(R.id.mapProgressBar).setVisibility(View.GONE);
 		if(mReportOverlayTask != null)
 			mReportOverlayTask.cancel(false);
 		if(mGeocodeAddressTask != null)
@@ -195,10 +198,11 @@ OnClickListener
 			/* restore yet unpublished markers that the user was just placing into the map */
 			mRestoreYetUnpublishedMyRequestData(myRequestsYetUnpublishedBackup);
 		}
-		
-		
 
 		mCheckForFreshNotifications();
+		
+		mMapFrag.getActivity().findViewById(R.id.mapProgressBar).setVisibility(View.GONE);
+		
 	}
 
 	private void mUpdateMarkers() 
@@ -334,6 +338,7 @@ OnClickListener
 
 	public void update(Context ctx, boolean force) 
 	{
+		mMapFrag.getActivity().findViewById(R.id.mapProgressBar).setVisibility(View.VISIBLE);
 		mReportUpdater.update(force);
 	}
 

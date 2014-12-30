@@ -2,6 +2,10 @@ package it.giacomos.android.osmer.widgets;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.ViewFlipper;
 
 /** Class that reimplements onDetachedFromWindow in order to fix the 
@@ -10,8 +14,12 @@ import android.widget.ViewFlipper;
  *  @author giacomo
  *
  */
-public class MyViewFlipper extends ViewFlipper 
+public class MyViewFlipper extends ViewFlipper
 {
+	private float mLastY = -1;
+	
+	private MyViewFlipperMovedListener mMyViewFlipperMovedListener;
+	
 	public MyViewFlipper(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
@@ -19,6 +27,11 @@ public class MyViewFlipper extends ViewFlipper
 	public MyViewFlipper(Context context) {
         super(context);
     }
+	
+	public void setMyViewFlipperMovedListener(MyViewFlipperMovedListener l)
+	{
+		mMyViewFlipperMovedListener = l;
+	}
 	
 	@Override
 	/** bug ??
@@ -32,4 +45,16 @@ public class MyViewFlipper extends ViewFlipper
 			stopFlipping();
 		}
 	}
+//
+//	@Override
+//    public boolean onInterceptTouchEvent(MotionEvent ev) 
+//	{
+//		float y = ev.getY();
+//		if(mLastY >= 0)
+//		{
+//			this.mMyViewFlipperMovedListener.onFlipperMovedUp(mLastY > y);
+//		}
+//		mLastY = y;
+//		return super.onInterceptTouchEvent(ev);
+//	}
 }

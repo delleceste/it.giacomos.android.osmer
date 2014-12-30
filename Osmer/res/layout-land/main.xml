@@ -16,24 +16,36 @@
     android:layout_width="400px" android:layout_height="800px"
     -->
   
-  <ViewFlipper
+  <it.giacomos.android.osmer.widgets.MyViewFlipper
         android:id="@+id/viewFlipper"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
   
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/shape_background_landscape"
         android:orientation="horizontal" >
+       
+        <com.faizmalkani.floatingactionbutton.FloatingActionButton
+              android:id="@+id/actionNewReportFromForecast"
+              android:layout_width="72dp"
+              android:layout_height="72dp"
+              android:layout_alignParentBottom="true"
+              android:layout_alignParentEnd="false"
+              android:layout_alignParentRight="true"
+              android:layout_alignParentStart="false"
+              android:layout_margin="16dp"
+              android:drawable="@drawable/ic_menu_edit"
+              android:color="#e0e0e0" />
         
-    </LinearLayout>
+    </RelativeLayout>
     
-    <include  layout="@layout/map"></include>
+    <include  layout="@layout/map_fragment"></include>
  
         
-    </ViewFlipper>
+    </it.giacomos.android.osmer.widgets.MyViewFlipper>
     
     <!-- The navigation drawer -->
 

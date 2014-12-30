@@ -5,7 +5,7 @@
     android:layout_gravity="center_horizontal|center_vertical"
     android:orientation="horizontal" >
     
-     <Button 
+     <!--   Button 
          	    android:layout_width="32dp"
         		android:layout_height="32dp"       		
 				android:layout_marginLeft="2dp"
@@ -14,7 +14,8 @@
         		android:background="@drawable/ic_menu_edit" 
         		android:layout_marginRight="2dp"
 	    		android:layout_gravity="center_horizontal|center_vertical"
-        		android:id="@+id/actionNewReport" />
+        		android:id="@+id/actionNewReport" /> 
+    -->
     
     <ToggleButton 
          	    android:layout_width="32dp"

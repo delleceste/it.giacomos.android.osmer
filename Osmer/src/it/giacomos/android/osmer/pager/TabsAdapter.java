@@ -5,17 +5,18 @@ import it.giacomos.android.osmer.OsmerActivity;
 import java.util.ArrayList;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.app.ActionBar;
-import android.app.ActionBar.Tab;
-import android.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBar.Tab;
+import android.support.v7.app.ActionBar.TabListener;
+import android.support.v4.app.FragmentTransaction;
 
 public class TabsAdapter  extends FragmentPagerAdapter
-implements ActionBar.TabListener, ViewPager.OnPageChangeListener
+implements TabListener, ViewPager.OnPageChangeListener
 {
 
 	private final ActionBar mActionBar;
@@ -50,17 +51,17 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 		notifyDataSetChanged();
 	}
 	
-	public TabsAdapter(FragmentActivity activity, ViewPager pager) {
+	public TabsAdapter(ActionBarActivity activity, ViewPager pager) {
 		super(activity.getSupportFragmentManager());
 		mActivity = (OsmerActivity) activity;
-		mActionBar = activity.getActionBar();
+		mActionBar = activity.getSupportActionBar();
 		mViewPager = pager;
 		mViewPager.setAdapter(this);
 		mViewPager.setOnPageChangeListener(this);
 		mEnabled = false;
 	}
 
-	public void addTab(ActionBar.Tab tab, Class<?> clss, Bundle args) {
+	public void addTab(android.support.v7.app.ActionBar.Tab tab, Class<?> clss, Bundle args) {
 		TabInfo info = new TabInfo(clss, args);
 		tab.setTag(info);
 		tab.setTabListener(this);
@@ -69,13 +70,6 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 		notifyDataSetChanged();
 	}
 
-	@Override
-	public Fragment getItem(int position) 
-	{    
-        TabInfo info = mTabs.get(position);
-//		Log.e("getItem", "position is " + position);
-        return Fragment.instantiate(mActivity.getApplicationContext(), info.clss.getName(), info.args);     
-	}
 
 	@Override
 	public int getCount() 
@@ -123,8 +117,10 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
 	}
 
 	@Override
-	public void onTabReselected(Tab arg0, FragmentTransaction arg1) {
-
+	public void onTabReselected(Tab arg0,
+			android.support.v4.app.FragmentTransaction arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -137,11 +133,20 @@ implements ActionBar.TabListener, ViewPager.OnPageChangeListener
             {
                 mActionBarTabChangeListener.onActionBarTabChanged(i);
             }
-        }
+        }		
 	}
 
 	@Override
-	public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {
+	public void onTabUnselected(Tab tab,
+			android.support.v4.app.FragmentTransaction ft) {
+		
+	}
 
+	@Override
+		public Fragment getItem(int position) 
+		{    
+	        TabInfo info = mTabs.get(position);
+//			Log.e("getItem", "position is " + position);
+	        return Fragment.instantiate(mActivity.getApplicationContext(), info.clss.getName(), info.args);
 	}
 }

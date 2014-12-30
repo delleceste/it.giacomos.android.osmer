@@ -2,7 +2,6 @@ package it.giacomos.android.osmer.personalMessageActivity;
 
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.R.string;
 import it.giacomos.android.osmer.service.ServiceManager;
 import android.content.Intent;
 import android.util.Log;

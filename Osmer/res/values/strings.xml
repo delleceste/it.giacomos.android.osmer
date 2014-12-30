@@ -257,7 +257,12 @@
     <string name="reportAtMost1FieldFilled">Impossible to publish an empty report</string>
     <string name="reportNeedToBeOnline">Internet connection unavailable</string>
     <string name="reportMovedTooFar">You moved too far from the point where you started the report procedure</string>
-
+    <string name="reportSkyMustBeValid">It\'s compulsory to indicate the sky conditions!</string>
+    <string name="reportSkyMustBeValidTitle">Missing sky conditions</string>
+    <string name="cb_sky_right">Sky conditions are correct</string>
+    <string name="reportSkyCorrectMustBeChecked">You must confirm that the preset sky conditions are correct!</string>
+    <string name="reportSkyCorrectMustBeCheckedTitle">Confirm sky conditions</string>
+    
     <!-- report request -->
     <string name="reportRequestIncludeLocationName">Include location name</string>
     <string name="reportDialogRequestSendButton">Send request</string>

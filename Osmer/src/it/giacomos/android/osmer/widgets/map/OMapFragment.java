@@ -3,6 +3,7 @@ package it.giacomos.android.osmer.widgets.map;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.faizmalkani.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -10,6 +11,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.maps.MapView.LayoutParams;
 
 import it.giacomos.android.osmer.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
@@ -42,6 +44,7 @@ import it.giacomos.android.osmer.widgets.map.report.network.PostType;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,9 +117,9 @@ RadarAnimationListener
 			mMap.animateCamera(cu);
 		}
 
-		if(getActivity() != null && getActivity().findViewById(R.id.radarTimestampTextView) != null)
+		if(getActivity() != null && getActivity().findViewById(R.id.mapMessageTextView) != null)
 		{
-			OAnimatedTextView radarUpdateTimestampText = (OAnimatedTextView) getActivity().findViewById(R.id.radarTimestampTextView);
+			OAnimatedTextView radarUpdateTimestampText = (OAnimatedTextView) getActivity().findViewById(R.id.mapMessageTextView);
 			if(mMapReady && radarUpdateTimestampText.getVisibility() == View.VISIBLE && !radarUpdateTimestampText.animationHasStarted())
 				radarUpdateTimestampText.animateHide();	
 		}
@@ -146,7 +149,7 @@ RadarAnimationListener
 	public void onStart()
 	{
 		super.onStart();
-		getActivity().findViewById(R.id.radarTimestampTextView).setVisibility(View.GONE);
+		getActivity().findViewById(R.id.mapMessageTextView).setVisibility(View.GONE);
 	}
 
 	public void onDestroy ()
@@ -276,6 +279,11 @@ RadarAnimationListener
 			mRadarAnimation.restoreState(savedInstanceState);
 		
 		mMapFragmentListener.onGoogleMapReady();
+
+		FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.actionNewReport);
+		fab.setOnClickListener((OsmerActivity) this.getActivity());
+		fab.setColor(getResources().getColor(R.color.accent));
+		fab.setDrawable(getResources().getDrawable(R.drawable.ic_menu_edit_fab));
 	}
 
 	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -388,7 +396,8 @@ RadarAnimationListener
 
 	public void setMode(MapViewMode m)
 	{
-		OAnimatedTextView radarTimestampText = (OAnimatedTextView) getActivity().findViewById(R.id.radarTimestampTextView);		
+		OAnimatedTextView radarTimestampText = (OAnimatedTextView) getActivity().findViewById(R.id.mapMessageTextView);	
+		FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.actionNewReport);
 		//		Log.e("--->OMapFragment: setMode invoked", "setMode invoked with mode: " + m.currentMode + ", time (type): " + m.currentType);
 
 		/* show the radar timestamp text anytime the mode is set to RADAR
@@ -417,6 +426,14 @@ RadarAnimationListener
 			mWebcamOverlay.disconnectFromDataPool((OsmerActivity) getActivity());
 
 		mMode = m;
+		
+		/* hide map progress bar */
+		getActivity().findViewById(R.id.mapProgressBar).setVisibility(View.GONE);
+		
+		if(mMode.currentMode != MapMode.REPORT)
+			fab.setVisibility(View.GONE);
+		else
+			fab.setVisibility(View.VISIBLE);
 
 		mUninstallAdaptersAndListeners();
 
@@ -465,6 +482,7 @@ RadarAnimationListener
 			mMap.setOnMarkerDragListener(mReportOverlay);
 			mMap.setOnMapClickListener(mReportOverlay);
 			mMap.setOnMarkerClickListener(mReportOverlay);
+			
 			// mMap.setOnCameraChangeListener(mReportOverlay);
 			mOverlays.add(mReportOverlay);
 		}
@@ -691,7 +709,7 @@ RadarAnimationListener
 	public void onRadarAnimationStart() 
 	{
 		mRadarOverlay.clear();
-		OAnimatedTextView radarTimestampTV = (OAnimatedTextView) getActivity().findViewById(R.id.radarTimestampTextView);
+		OAnimatedTextView radarTimestampTV = (OAnimatedTextView) getActivity().findViewById(R.id.mapMessageTextView);
 		radarTimestampTV.hide();
 	}
 
@@ -711,7 +729,7 @@ RadarAnimationListener
 	public void onRadarAnimationRestored() 
 	{
 		mRadarOverlay.clear();
-		OAnimatedTextView radarTimestampTV = (OAnimatedTextView) getActivity().findViewById(R.id.radarTimestampTextView);
+		OAnimatedTextView radarTimestampTV = (OAnimatedTextView) getActivity().findViewById(R.id.mapMessageTextView);
 		radarTimestampTV.hide();
 	}
 

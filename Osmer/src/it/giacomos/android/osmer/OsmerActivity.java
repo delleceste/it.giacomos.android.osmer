@@ -1,5 +1,6 @@
 package it.giacomos.android.osmer;
 
+// import com.faizmalkani.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
@@ -50,6 +51,8 @@ import it.giacomos.android.osmer.widgets.AnimatedImageView;
 import it.giacomos.android.osmer.widgets.ForecastImgTouchEventListener;
 import it.giacomos.android.osmer.widgets.ImgTouchEventData;
 import it.giacomos.android.osmer.widgets.MapWithForecastImage;
+import it.giacomos.android.osmer.widgets.MyViewFlipper;
+import it.giacomos.android.osmer.widgets.MyViewFlipperMovedListener;
 import it.giacomos.android.osmer.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
@@ -64,7 +67,8 @@ import it.giacomos.android.osmer.widgets.map.report.network.PostActionResultList
 import it.giacomos.android.osmer.widgets.map.report.network.PostReport;
 import it.giacomos.android.osmer.widgets.map.report.network.PostType;
 import it.giacomos.android.osmer.widgets.map.report.tutorialActivity.TutorialPresentationActivity;
-import android.app.ActionBar;
+import android.support.v7.app.ActionBar;
+import android.support.v4.view.MenuItemCompat;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -82,11 +86,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -95,14 +99,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.view.Window;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -116,7 +123,7 @@ import android.widget.ViewFlipper;
  * - in the background, continue downloading all other relevant information (tomorrow, two days image and
  *   forecast), so that it is ready when the user flips.
  */
-public class OsmerActivity extends FragmentActivity 
+public class OsmerActivity extends ActionBarActivity 
 implements OnClickListener, 
 DownloadStateListener,
 OnMenuItemClickListener, 
@@ -129,7 +136,8 @@ PostActionResultListener,
 ReportRequestListener, 
 NewsUpdateListener,
 ForecastImgTouchEventListener, 
-PersonalMessageUpdateListener
+PersonalMessageUpdateListener,
+MyViewFlipperMovedListener
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
@@ -325,6 +333,9 @@ PersonalMessageUpdateListener
 
 	public void init()
 	{
+		MyViewFlipper viewFlipper = (MyViewFlipper) findViewById(R.id.viewFlipper);
+		viewFlipper.setMyViewFlipperMovedListener(this);
+		
 		mSettings = new Settings(this);
 		
 		/* if it's time to get personal message, wait for network and download it */
@@ -342,7 +353,7 @@ PersonalMessageUpdateListener
 		 * the current page in the view hierarchy in an idle state
 		 */
 		mViewPager.setOffscreenPageLimit(3);
-		mMainLayout = (LinearLayout) findViewById(R.id.mainLayout);
+		mMainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
 		mMainLayout.addView(mViewPager);
 
 		mTapOnMarkerHintCount = 0;
@@ -429,6 +440,11 @@ PersonalMessageUpdateListener
 			gcmRM.registerInBackground(this);
 		
 		mForecastImgTouchEventData = new ImgTouchEventData();
+		
+//		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.actionNewReportFromForecast);
+//		fab.setOnClickListener(this);
+//		fab.setColor(getResources().getColor(R.color.accent));
+//		fab.setDrawable(getResources().getDrawable(R.drawable.ic_menu_edit_fab));
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -441,7 +457,8 @@ PersonalMessageUpdateListener
 		boolean refreshWasVisible = (mRefreshAnimatedImageView != null && 
 				mRefreshAnimatedImageView.getVisibility() == View.VISIBLE);
 		mRefreshAnimatedImageView = null;
-		mButtonsActionView = menu.findItem(R.id.actionbarmenu).getActionView();
+		
+		mButtonsActionView = MenuItemCompat.getActionView(menu.findItem(R.id.actionbarmenu));
 		mRefreshAnimatedImageView = (AnimatedImageView) mButtonsActionView.findViewById(R.id.refresh_animation);
 		if(refreshWasVisible)
 			mRefreshAnimatedImageView.start();
@@ -877,7 +894,7 @@ PersonalMessageUpdateListener
 			omv.setMeasureEnabled(menuItem.isChecked());
 			break;
 		case R.id.radarAnimationAction:
-			findViewById(R.id.radarTimestampTextView).setVisibility(View.GONE);
+			findViewById(R.id.mapMessageTextView).setVisibility(View.GONE);
 			startRadarAnimation();
 			break;
 		case R.id.reportUpdateAction:
@@ -912,14 +929,19 @@ PersonalMessageUpdateListener
 	@Override
 	public void onClick(View v)
 	{
+		Log.e("OsmerActivity.onCL", " id " + v.getId());
 		if (v.getId() == R.id.actionOverflow) 
 		{
 			stopRadarAnimation();
 			mCreateMapOptionsPopupMenu(true);
 		} 
-		else if(v.getId() == R.id.actionNewReport)
+		else if(v.getId() == R.id.actionNewReport || v.getId() == R.id.actionNewReportFromForecast)
 		{
-			startReportActivity();	
+			if(mCurrentViewType != ViewType.REPORT)
+				this.mActionBarManager.drawerItemChanged(5);
+			mReportConditionsAccepted = mSettings.reportConditionsAccepted();
+			if(mReportConditionsAccepted)
+				startReportActivity();	
 		}
 	}
 
@@ -942,10 +964,6 @@ PersonalMessageUpdateListener
 
 		/* button for maps menu */
 		ToggleButton buttonMapsOveflowMenu = (ToggleButton) mButtonsActionView.findViewById(R.id.actionOverflow);
-		Button newReportButton = (Button) mButtonsActionView.findViewById(R.id.actionNewReport);
-
-		if(newReportButton != null)
-			newReportButton.setVisibility(View.GONE);
 		switch(mCurrentViewType)
 		{
 		case HOME:
@@ -957,9 +975,6 @@ PersonalMessageUpdateListener
 			if(buttonMapsOveflowMenu != null)
 				buttonMapsOveflowMenu.setVisibility(View.GONE);
 			break;
-		case REPORT:
-			newReportButton.setVisibility(View.VISIBLE);
-			newReportButton.setOnClickListener(this);
 		default:
 			buttonMapsOveflowMenu.setOnClickListener(this);
 			buttonMapsOveflowMenu.setVisibility(View.VISIBLE);
@@ -1150,9 +1165,12 @@ PersonalMessageUpdateListener
 		
 		if(mapWithForecastImage != null)
 			mapWithForecastImage.setTouchEventData(mForecastImgTouchEventData);
+		
+		if(viewFlipper.getDisplayedChild() == 0)
+			findViewById(R.id.actionNewReportFromForecast).setVisibility(View.VISIBLE);
 	}
 
-	public DownloadManager stateMachine() { return m_downloadManager; }
+	public DownloadManager getDownloadManager() { return m_downloadManager; }
 
 	public void startRadarAnimation()
 	{
@@ -1327,7 +1345,7 @@ PersonalMessageUpdateListener
 		long currentTimestampMillis = System.currentTimeMillis();
 		CharSequence text = new RadarImageTimestampTextBuilder().buildText(currentTimestampMillis, 
 				radarTimestampMillis, getResources(), mSettings.isFirstExecution());
-		OAnimatedTextView radarTimestampText = (OAnimatedTextView) findViewById(R.id.radarTimestampTextView);
+		OAnimatedTextView radarTimestampText = (OAnimatedTextView) findViewById(R.id.mapMessageTextView);
 		if(radarTimestampText != null)
 			radarTimestampText.setText(text);
 	}
@@ -1434,6 +1452,17 @@ PersonalMessageUpdateListener
 
 	}
 
+
+	@Override
+	public void onFlipperMovedUp(boolean up) 
+	{
+//		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.actionNewReportFromForecast);
+//		if(up)
+//			fab.hide(true);
+//		else
+//			fab.hide(false);
+	}
+	
 	/* private members */
 	int mTapOnMarkerHintCount;
 	private Location mCurrentLocation;
@@ -1466,7 +1495,7 @@ PersonalMessageUpdateListener
 	private boolean mReportConditionsAccepted;
 
 	ViewPager mViewPager;
-	LinearLayout mMainLayout;
+	RelativeLayout mMainLayout;
 
 	public static final int REPORT_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 100;
 	public static final int TUTORIAL_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 101;
@@ -1476,6 +1505,7 @@ PersonalMessageUpdateListener
 	private ImgTouchEventData mForecastImgTouchEventData;
 
 	int availCnt = 0;
+
 
 
 }

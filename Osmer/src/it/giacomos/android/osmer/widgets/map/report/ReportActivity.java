@@ -6,6 +6,8 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.observations.ObservationData;
 import it.giacomos.android.osmer.preferences.Settings;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.content.Intent;
@@ -15,6 +17,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -22,7 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 
-public class ReportActivity extends Activity implements OnClickListener
+public class ReportActivity extends Activity implements OnClickListener, OnItemSelectedListener
 {
 	private double mLatitude, mLongitude;
 	private String mLocality;
@@ -54,8 +58,11 @@ public class ReportActivity extends Activity implements OnClickListener
 		skySpinnerAdapter.setType(IconTextSpinnerAdapter.SPINNER_SKY);
 		Spinner spinner = (Spinner) findViewById(R.id.spinSky);
 		spinner.setAdapter(skySpinnerAdapter);
+		/* spinner.setOnItemSelectedListener(this) is called after initialization
+		 * from observations.
+		 */
 		spinner.setSelection(1);
-
+		
 		textItems = getResources().getStringArray(R.array.report_wind_textitems);
 		IconTextSpinnerAdapter windSpinnerAdapter = 
 				new IconTextSpinnerAdapter(this, 
@@ -153,6 +160,7 @@ public class ReportActivity extends Activity implements OnClickListener
 			else
 				temp = "";
 
+			
 
 			user = teUserName.getText().toString();
 			etComment = (EditText) findViewById(R.id.etComment);
@@ -161,30 +169,45 @@ public class ReportActivity extends Activity implements OnClickListener
 			sky = sp.getSelectedItemPosition();
 			sp = (Spinner) findViewById(R.id.spinWind);
 			wind = sp.getSelectedItemPosition();
-			if(comment.isEmpty() && wind == 0 && sky == 0 && !cb.isChecked())
-				Toast.makeText(this, R.string.reportAtMost1FieldFilled, Toast.LENGTH_LONG).show();
+			
+			CheckBox cbSkyIsRight = (CheckBox) findViewById(R.id.cbSkyRight);
+			if(cbSkyIsRight.getVisibility() == View.VISIBLE && !cbSkyIsRight.isChecked())
+			{
+				AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this).
+						setMessage(R.string.reportSkyCorrectMustBeChecked)
+						.setPositiveButton(R.string.ok_button, null)
+						.setTitle(R.string.reportSkyCorrectMustBeCheckedTitle);
+				AlertDialog alertDialog = dialogBuilder.create();
+				alertDialog.show();
+			}
+			else if(sky == 0)
+			{
+				AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this).setMessage(R.string.reportSkyMustBeValid)
+						.setPositiveButton(R.string.ok_button, null).setTitle(R.string.reportSkyMustBeValidTitle);
+				AlertDialog alertDialog = dialogBuilder.create();
+				alertDialog.show();
+			}
 			else
 			{
+				Intent intent = new Intent();
+				intent.putExtra("comment", comment);
+				intent.putExtra("user", user);
+				intent.putExtra("sky", sky);
+				intent.putExtra("wind", wind);
+				intent.putExtra("temperature", temp);
+				intent.putExtra("latitude", mLatitude);
+				intent.putExtra("longitude", mLongitude);
 				
+				CheckBox cbIncludeLocationName = (CheckBox) findViewById(R.id.cbReportIncludeLocality);
+				if(cbIncludeLocationName.isChecked() && mLocality != null)
+					intent.putExtra("locality", mLocality);
+				else
+					intent.putExtra("locality", "-");
+				
+				setResult(Activity.RESULT_OK, intent);
+				finish();
 			}
 
-			Intent intent = new Intent();
-			intent.putExtra("comment", comment);
-			intent.putExtra("user", user);
-			intent.putExtra("sky", sky);
-			intent.putExtra("wind", wind);
-			intent.putExtra("temperature", temp);
-			intent.putExtra("latitude", mLatitude);
-			intent.putExtra("longitude", mLongitude);
-			
-			CheckBox cbIncludeLocationName = (CheckBox) findViewById(R.id.cbReportIncludeLocality);
-			if(cbIncludeLocationName.isChecked() && mLocality != null)
-				intent.putExtra("locality", mLocality);
-			else
-				intent.putExtra("locality", "-");
-			
-			setResult(Activity.RESULT_OK, intent);
-			finish();
 		}
 		else if(view.getId() == R.id.bCancel)
 		{
@@ -211,8 +234,35 @@ public class ReportActivity extends Activity implements OnClickListener
 
 	private void initByLocation(String temp, int sky, int wind) 
 	{
-		((Spinner)findViewById(R.id.spinSky)).setSelection(sky, true);
+		CheckBox cbSkyIsRight = (CheckBox) findViewById(R.id.cbSkyRight);
+		Spinner spinSky = ((Spinner)findViewById(R.id.spinSky));
+		spinSky.setSelection(sky, true);
 		((Spinner)findViewById(R.id.spinWind)).setSelection(wind, true);
 		((EditText)findViewById(R.id.ettemp)).setText(temp);
+		/* no sky preset from observations: no need for the sky conditions correct check box */
+		if(sky == 0)
+			cbSkyIsRight.setVisibility(View.GONE);
+		else /* sky conditions preset from observations: the user must confirm their correctness */
+			cbSkyIsRight.setVisibility(View.VISIBLE);
+
+		/* after the initByLocation initializes the spinner */
+		spinSky.setOnItemSelectedListener(this);
+	}
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position,
+			long id) 
+	{
+		if(parent.getId() == R.id.spinSky)
+		{
+			CheckBox cbSkyIsRight = (CheckBox) findViewById(R.id.cbSkyRight);
+			cbSkyIsRight.setChecked(true);
+			cbSkyIsRight.setVisibility(View.INVISIBLE);
+		}
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+		
 	}
 }

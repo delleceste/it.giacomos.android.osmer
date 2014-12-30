@@ -255,7 +255,11 @@
 	<string name="reportAtMost1FieldFilled">Impossibile pubblicare una segnalazione se tutti i campi sono vuoti</string>
   	<string name="reportNeedToBeOnline">E\' necessario essere connessi alla rete</string>
   	<string name="reportMovedTooFar">Ti sei spostato troppo da quando hai iniziato la procedura di segnalazione</string>
-  	
+    <string name="cb_sky_right">La situazione del cielo è corretta</string>
+    <string name="reportSkyMustBeValid">È necessario indicare la situazione del cielo!</string>
+    <string name="reportSkyMustBeValidTitle">Indicare le condizioni del cielo</string>
+    <string name="reportSkyCorrectMustBeChecked">Devi confermare che le condizioni del cielo preimpostate sono corrette!</string>
+    <string name="reportSkyCorrectMustBeCheckedTitle">Conferma condizioni cielo</string>
   	
   	    <!-- report tutorial activity and terms and conditions -->
     <string name="tutorial_publish_report">Pubblicare segnalazioni</string>

@@ -50,7 +50,7 @@ public class TitleBuilder
 				t += res.getString(R.string.reportDialogTitle);
 		}
 		
-		t += " - " + res.getString(R.string.app_name);
+	//	t += " - " + res.getString(R.string.app_name);
 		
 		/* network status */
 		if(!networkAvailable)
