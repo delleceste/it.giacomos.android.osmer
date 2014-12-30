@@ -1166,8 +1166,8 @@ MyViewFlipperMovedListener
 		if(mapWithForecastImage != null)
 			mapWithForecastImage.setTouchEventData(mForecastImgTouchEventData);
 		
-		if(viewFlipper.getDisplayedChild() == 0)
-			findViewById(R.id.actionNewReportFromForecast).setVisibility(View.VISIBLE);
+//		if(viewFlipper.getDisplayedChild() == 0)
+//			findViewById(R.id.actionNewReportFromForecast).setVisibility(View.VISIBLE);
 	}
 
 	public DownloadManager getDownloadManager() { return m_downloadManager; }
