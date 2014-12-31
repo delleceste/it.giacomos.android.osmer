@@ -16,10 +16,10 @@ public class MapViewMode
 				other.currentType == this.currentType && this.isExplicit == other.isExplicit;
 	}
 	
-	public MapViewMode(ObservationType type, MapMode oTime)
+	public MapViewMode(ObservationType type, MapMode oMode)
 	{
 		currentType = type;
-		currentMode = oTime;
+		currentMode = oMode;
 		isExplicit = true;
 	}
 	

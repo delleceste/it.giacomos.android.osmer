@@ -64,10 +64,8 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		/* stores the number of frame that was set on the map in onSaveInstanceState */
 		mResetProgressVariables();
 		/* button listeners */
-		((ToggleButton) (mMapFrag.getActivity().findViewById(R.id.playPauseButton))).setOnClickListener(this);
-		((ToggleButton) (mMapFrag.getActivity().findViewById(R.id.stopButton))).setOnClickListener(this);
-		((Button)(mMapFrag.getActivity().findViewById(R.id.previousButton))).setOnClickListener(this);
-		((Button)(mMapFrag.getActivity().findViewById(R.id.nextButton))).setOnClickListener(this);
+		Log.e("RadarAnimation.RadarAnimation", " activity " + mMapFrag.getActivity());
+		
 		mAnimationListeners = new ArrayList<RadarAnimationListener>();
 		mAnimationData = new SparseArray<AnimationData>();
 		mAnimationTask = null;

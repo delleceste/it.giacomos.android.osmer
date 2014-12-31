@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.interfaceHelpers;
 import android.content.res.Resources;
 import it.giacomos.android.osmer.network.DownloadStatus;
+import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.OsmerActivity;
@@ -19,21 +20,16 @@ public class TitleBuilder
 		MapViewMode mapMode = null;
 		DownloadStatus ds = a.getDownloadStatus();
 		boolean networkAvailable = ds.isOnline;
-		int scr = a.getViewPager().getCurrentItem();
+		ViewType vt = a.getCurrentViewType();
 		Resources res = a.getResources();
 		String t = "";
-		
+
 		if (a.getDrawerListView().getCheckedItemPosition() == 0
-				&& (scr == ForecastTabs.HOME_TAB || 
-				scr == ForecastTabs.TODAY_TAB|| 
-				scr == ForecastTabs.TOMORROW_TAB || 
-				scr == ForecastTabs.TWODAYS_TAB || 
-				scr == ForecastTabs.THREEDAYS_TAB || 
-				scr == ForecastTabs.FOURDAYS_TAB)
-				) 
+				&& (vt == ViewType.HOME ||  vt == ViewType.TODAY||  vt == ViewType.TOMORROW || 
+				vt == ViewType.TWODAYS ||  vt == ViewType.THREEDAYS ||  vt == ViewType.FOURDAYS))
 		{
 			t += res.getString(R.string.forecast_title);
-			
+
 		} 
 		else if(map != null)
 		{
@@ -49,13 +45,13 @@ public class TitleBuilder
 			else if(mapMode.currentMode == MapMode.REPORT)
 				t += res.getString(R.string.reportDialogTitle);
 		}
-		
-	//	t += " - " + res.getString(R.string.app_name);
-		
+
+		//	t += " - " + res.getString(R.string.app_name);
+
 		/* network status */
 		if(!networkAvailable)
 			t += " - " + res.getString(R.string.offline);
-		
+
 		return t;
 	}
 }

@@ -8,26 +8,13 @@
 
     <!-- The main content view -->
 
-    <it.giacomos.android.osmer.widgets.MyViewFlipper
-        android:id="@+id/viewFlipper"
+ <!-- The main content view -->
+   <FrameLayout
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent" />
 
-        <RelativeLayout
-            android:id="@+id/mainLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/shape_background"
-            android:orientation="vertical"
-            tools:ignore="UnusedNamespace" >
-            
-            
-        </RelativeLayout>
 
-        <include layout="@layout/map_fragment" >
-        </include>
-
-    </it.giacomos.android.osmer.widgets.MyViewFlipper>
     
               <!--  com.faizmalkani.floatingactionbutton.FloatingActionButton
               android:id="@+id/actionNewReportFromForecast"

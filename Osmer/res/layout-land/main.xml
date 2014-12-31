@@ -7,45 +7,10 @@
     android:layout_height="match_parent" >
 
     <!-- The main content view -->
-    <!--
-   outside eclipse
-   android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    
-    In Eclipse
-    android:layout_width="400px" android:layout_height="800px"
-    -->
-  
-  <it.giacomos.android.osmer.widgets.MyViewFlipper
-        android:id="@+id/viewFlipper"
+  <FrameLayout
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-  
-    <RelativeLayout
-        android:id="@+id/mainLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/shape_background_landscape"
-        android:orientation="horizontal" >
-       
-        <com.faizmalkani.floatingactionbutton.FloatingActionButton
-              android:id="@+id/actionNewReportFromForecast"
-              android:layout_width="72dp"
-              android:layout_height="72dp"
-              android:layout_alignParentBottom="true"
-              android:layout_alignParentEnd="false"
-              android:layout_alignParentRight="true"
-              android:layout_alignParentStart="false"
-              android:layout_margin="16dp"
-              android:drawable="@drawable/ic_menu_edit"
-              android:color="#e0e0e0" />
-        
-    </RelativeLayout>
-    
-    <include  layout="@layout/map_fragment"></include>
- 
-        
-    </it.giacomos.android.osmer.widgets.MyViewFlipper>
+        android:layout_height="match_parent" />
     
     <!-- The navigation drawer -->
 

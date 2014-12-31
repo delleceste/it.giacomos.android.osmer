@@ -5,6 +5,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
+import it.giacomos.android.osmer.slidingtablayout.SlidingTabsColorsFragment;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
@@ -71,6 +72,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.view.MenuItemCompat;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.support.v4.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -86,6 +88,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -329,8 +332,8 @@ MyViewFlipperMovedListener
 
 	public void init()
 	{
-		MyViewFlipper viewFlipper = (MyViewFlipper) findViewById(R.id.viewFlipper);
-		viewFlipper.setMyViewFlipperMovedListener(this);
+		mDisplayedFragment = -1;
+		this.switchFragment(0, null);
 		
 		mSettings = new Settings(this);
 		
@@ -341,17 +344,12 @@ MyViewFlipperMovedListener
 		mProgressBarStep = mProgressBarTotSteps = 0;
 		mAdditionalProgressBarStep = mProgressBarAdditionalSteps = 0;
 		mCurrentViewType = ViewType.HOME;
-		mViewPager = new ViewPager(this);
-		mViewPager.setId(R.id.pager);
+		
 
 		mLocationService = new LocationService(getApplicationContext());
-		/* Set the number of pages that should be retained to either side of 
-		 * the current page in the view hierarchy in an idle state
-		 */
-		mViewPager.setOffscreenPageLimit(3);
-		mMainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
-		mMainLayout.addView(mViewPager);
 
+		
+		
 		mTapOnMarkerHintCount = 0;
 		mRefreshAnimatedImageView = null;
 
@@ -385,17 +383,7 @@ MyViewFlipperMovedListener
 		mMenuActionsManager = null;
 		mCurrentLocation = null;
 
-		/* set html text on Radar info text view */
-		TextView radarInfoTextView = (TextView)findViewById(R.id.radarInfoTextView);
-		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
-		radarInfoTextView.setVisibility(View.GONE);
-
 		m_observationsCache = new ObservationsCache();
-		/* map updates the observation data in ItemizedOverlay when new observations are available
-		 *
-		 */
-		OMapFragment map = getMapFragment();
-		m_observationsCache.installObservationsCacheUpdateListener(map);
 
 		/* Create DataPool.  */
 		mDataPool = new DataPool(this);
@@ -464,6 +452,43 @@ MyViewFlipperMovedListener
 		return super.onPrepareOptionsMenu(menu);
 	}
 
+	public Fragment switchFragment(int id, Bundle args)
+	{
+		Log.e("OsmerActivity.switchFragment", "switching from " + mDisplayedFragment + " to " + id);
+		Fragment fragment;
+		if(id == mDisplayedFragment)
+		{
+			if(id == 1)
+				fragment = getMapFragment();
+			else
+				fragment = getSupportFragmentManager().findFragmentByTag("forecastFragment");
+			Log.e("OsmerActivity.switchFragment", "returning frag " + fragment);
+		}
+		else
+		{
+			mDisplayedFragment = id;
+			FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+	
+			Log.e("OsmerActivity.switchFragment", " Allocatin fragments");
+			
+			if(id == 0)
+			{
+	          fragment = new SlidingTabsColorsFragment();
+	          fragment.setArguments(args);
+	  		  transaction.replace(R.id.content_frame, fragment, "forecastFragment");
+			}
+			else
+			{
+				fragment = new OMapFragment();
+		        fragment.setArguments(args);
+		  		transaction.replace(R.id.content_frame, fragment, "MapFragment");
+			}
+			Log.e("OsmerActivity.switchFragment", " replacing content_frame");
+	        transaction.commit();
+		}
+        return fragment;
+	}
+	
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		MenuInflater inflater = getMenuInflater();
@@ -494,13 +519,12 @@ MyViewFlipperMovedListener
 		else
 		{
 			/* first of all, if there's a info window on the map, close it */
-			int displayedChild = ((ViewFlipper) findViewById(R.id.viewFlipper)).getDisplayedChild();
 			OMapFragment map = getMapFragment();
-			if(displayedChild == 1  &&  map.isInfoWindowVisible()) /* map view visible */
+			if(mDisplayedFragment == 1  &&  map != null && map.isInfoWindowVisible()) /* map view visible */
 			{
 				map.hideInfoWindow();
 			}
-			else if(displayedChild == 1)
+			else if(mDisplayedFragment == 1)
 			{
 				mDrawerList.setItemChecked(0, true);
 				mActionBarManager.drawerItemChanged(0);
@@ -645,7 +669,9 @@ MyViewFlipperMovedListener
 
 	void updateReport(boolean force)
 	{
-		getMapFragment().updateReport(force);
+		OMapFragment mapF = getMapFragment();
+		if(mapF != null)
+			mapF.updateReport(force);
 	}
 
 	void satellite()
@@ -831,19 +857,21 @@ MyViewFlipperMovedListener
 
 	public void onSelectionDone(ObservationType observationType, MapMode mapMode) 
 	{
-		/* switch the working mode of the map view. Already in PAGE_MAP view flipper page */
-		OMapFragment map = getMapFragment();
 		if((mapMode != MapMode.REPORT) || (mapMode == MapMode.REPORT && mReportConditionsAccepted))
-			map.setMode(new MapViewMode(observationType, mapMode));
+		{
+			OMapFragment map = (OMapFragment) getMapFragment();
+			if(map == null)
+			{
+				Bundle args = this.mCodeMapMode(new MapViewMode(observationType, mapMode));
+				this.switchFragment(1, args);
+			}
+		}
 		else if(mapMode == MapMode.REPORT)
 		{
 			mDrawerList.setItemChecked(0, true);
 			mActionBarManager.drawerItemChanged(0);
 			mStartTutorialActivity();
 		}
-		if(mapMode == MapMode.DAILY_OBSERVATIONS || mapMode == MapMode.LATEST_OBSERVATIONS)
-			map.updateObservations(m_observationsCache.getObservationData(mapMode));
-
 	}
 
 	private void mStartTutorialActivity()
@@ -863,6 +891,10 @@ MyViewFlipperMovedListener
 		if(menuItem.isCheckable())
 			menuItem.setChecked(!menuItem.isChecked());
 		OMapFragment omv = getMapFragment();
+		
+		if(omv == null)
+			return false;
+		
 		switch(menuItem.getItemId())
 		{
 		case R.id.centerMapButton:
@@ -931,7 +963,7 @@ MyViewFlipperMovedListener
 			stopRadarAnimation();
 			mCreateMapOptionsPopupMenu(true);
 		} 
-		else if(v.getId() == R.id.actionNewReport || v.getId() == R.id.actionNewReportFromForecast)
+		else if(v.getId() == R.id.actionNewReport)
 		{
 			if(mCurrentViewType != ViewType.REPORT)
 				this.mActionBarManager.drawerItemChanged(5);
@@ -1023,66 +1055,61 @@ MyViewFlipperMovedListener
 		}
 	}
 
+	public ViewType getCurrentViewType()
+	{
+		return mCurrentViewType;
+	}
+	
+	
+	
 	public void switchView(ViewType id) 
 	{
+		Bundle args = new Bundle();
 		mCurrentViewType = id;
-		ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
-		OMapFragment mapFragment = getMapFragment();
 		MapWithForecastImage mapWithForecastImage = null;
+		SlidingTabsColorsFragment ft = null;
+		
+		args.putInt("viewType", id.ordinal());
+		
 		if (id == ViewType.HOME) 
 		{
-			viewFlipper.setDisplayedChild(0);
-			mViewPager.setCurrentItem(ViewPagerPages.HOME);
-			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
+			ft = (SlidingTabsColorsFragment) switchFragment(0, args);
+			ft.setSelectedPage(ViewPagerPages.HOME);
 		} 
 		else if (id == ViewType.TODAY) 
 		{
-			viewFlipper.setDisplayedChild(0);
-			mViewPager.setCurrentItem(ViewPagerPages.TODAY);
-			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
+			ft = (SlidingTabsColorsFragment) switchFragment(0, args);
+			ft.setSelectedPage(ViewPagerPages.HOME);
 			mapWithForecastImage  = (MapWithForecastImage) findViewById(R.id.todayImageView);
 		} 
 		else if (id == ViewType.TOMORROW) 
 		{
-			viewFlipper.setDisplayedChild(0);
-			mViewPager.setCurrentItem(ViewPagerPages.TOMORROW);
-			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
+			ft = (SlidingTabsColorsFragment) switchFragment(0, args);
+			ft.setSelectedPage(ViewPagerPages.HOME);
 			mapWithForecastImage  = (MapWithForecastImage)findViewById(R.id.tomorrowImageView);
 		} 
 		else if (id == ViewType.TWODAYS) 
 		{
-			viewFlipper.setDisplayedChild(0);
-			mViewPager.setCurrentItem(ViewPagerPages.TWODAYS);
-			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
+			ft = (SlidingTabsColorsFragment) switchFragment(0, args);
+			ft.setSelectedPage(ViewPagerPages.HOME);
 			mapWithForecastImage  = (MapWithForecastImage)findViewById(R.id.twoDaysImageView);
 		} 
 		else if (id == ViewType.THREEDAYS) 
 		{
-			viewFlipper.setDisplayedChild(0);
-			mViewPager.setCurrentItem(ViewPagerPages.THREEDAYS);
-			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
+			ft = (SlidingTabsColorsFragment) switchFragment(0, args);
+			ft.setSelectedPage(ViewPagerPages.HOME);
 			mapWithForecastImage  = (MapWithForecastImage)findViewById(R.id.threeDaysImageView);
 		} 
 		else if (id == ViewType.FOURDAYS) 
 		{
-			viewFlipper.setDisplayedChild(0);
-			mViewPager.setCurrentItem(ViewPagerPages.FOURDAYS);
-			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.HIDDEN));
+			ft = (SlidingTabsColorsFragment) switchFragment(0, args);
+			ft.setSelectedPage(ViewPagerPages.HOME);
 			mapWithForecastImage  = (MapWithForecastImage)findViewById(R.id.fourDaysImageView);
-		} 
-		else if (id == ViewType.RADAR) 
-		{
-			viewFlipper.setDisplayedChild(1);
-			/* remove itemized overlays (observations), if present, and restore radar view */
-			mapFragment.setMode(new MapViewMode(ObservationType.NONE, MapMode.RADAR));
 		} 
 		else if (id == ViewType.ACTION_CENTER_MAP) 
 		{
+			OMapFragment mapFragment = getMapFragment();
 			mapFragment.centerMap();
-		}
-		else 
-		{
-			viewFlipper.setDisplayedChild(1);
 		}
 
 		if (id == ViewType.DAILY_SKY) {
@@ -1127,6 +1154,8 @@ MyViewFlipperMovedListener
 			onSelectionDone(ObservationType.NONE, MapMode.WEBCAM);
 		else if (id == ViewType.REPORT) 
 			onSelectionDone(ObservationType.REPORT, MapMode.REPORT);
+		else if (id == ViewType.RADAR) 
+			onSelectionDone(ObservationType.NONE, MapMode.RADAR);
 		/* try to download only if online */
 		if(m_downloadManager.state().name() == StateName.Online)
 		{
@@ -1264,6 +1293,14 @@ MyViewFlipperMovedListener
 		}
 	}
 
+	private Bundle mCodeMapMode(MapViewMode mvm)
+	{
+		Bundle args = new Bundle();
+		args.putString("observationType", mvm.currentType.name());
+		args.putString("mapMode", mvm.currentMode.name());
+		return args;
+	}
+	
 	public void makePendingAlertErrorDialog(String error)
 	{
 		mMyPendingAlertDialog = new MyPendingAlertDialog(MyAlertDialogType.ERROR,  error);
@@ -1277,14 +1314,14 @@ MyViewFlipperMovedListener
 			mMyPendingAlertDialog.showPending(this);
 	}
 
+	public int getDisplayedFragment()
+	{
+		return this.mDisplayedFragment;
+	}
+	
 	public ObservationsCache getObservationsCache()
 	{
 		return m_observationsCache;
-	}
-
-	public ViewPager getViewPager()
-	{
-		return mViewPager;
 	}
 
 	public Location getCurrentLocation()
@@ -1327,9 +1364,15 @@ MyViewFlipperMovedListener
 		return mLocationService;
 	}
 
+	public SlidingTabsColorsFragment getForecastFragment()
+	{
+		return (SlidingTabsColorsFragment) this.getSupportFragmentManager().findFragmentByTag("forecastFragment");
+	}
+	
 	public OMapFragment getMapFragment()
 	{
-		OMapFragment mapFrag = (OMapFragment)getSupportFragmentManager().findFragmentById(R.id.mapview);
+		OMapFragment mapFrag = (OMapFragment)getSupportFragmentManager().findFragmentByTag("MapFragment");
+		Log.e("OsmerActivity.getMapFragment", " fragment is " + mapFrag);
 		return mapFrag;
 	}
 
@@ -1490,8 +1533,8 @@ MyViewFlipperMovedListener
 
 	private boolean mReportConditionsAccepted;
 
-	ViewPager mViewPager;
 	RelativeLayout mMainLayout;
+	private int mDisplayedFragment;
 
 	public static final int REPORT_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 100;
 	public static final int TUTORIAL_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 101;

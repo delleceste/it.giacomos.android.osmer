@@ -22,7 +22,6 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	public  static final int WEBCAM = 4;
 	public static final int REPORT = 5;
 	
-	private TabsAdapter mTabsAdapter;
 	private ActionBarListItemNavigationListener mActionBarListItemNavigationListener;
 	
 	public int getType() 
@@ -122,22 +121,17 @@ public class ActionBarManager implements ActionBarTabChangeListener
 			{
 				actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 				/* enable the adapter. This reestablishes the tab count on the adapter */
-				mTabsAdapter.enable();
 			}
 			break;
 
 		case 1:
 			mType = RADAR;
-			if(mTabsAdapter != null)
-				mTabsAdapter.disable();
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			mActivity.switchView(ViewType.RADAR);
 			break;
 			
 		case 2:
 			mType = DAILY_OBS;
-			if(mTabsAdapter != null)
-				mTabsAdapter.disable();
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 			mSpinnerAdapter = ArrayAdapter.createFromResource(mActivity, R.array.dailyobs_text_items,
 					android.R.layout.simple_spinner_dropdown_item);
@@ -147,8 +141,6 @@ public class ActionBarManager implements ActionBarTabChangeListener
 
 		case 3:
 			mType = LATEST_OBS;
-			if(mTabsAdapter != null)
-				mTabsAdapter.disable();
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 			mSpinnerAdapter = ArrayAdapter.createFromResource(mActivity, R.array.latestobs_text_items,
 					android.R.layout.simple_spinner_dropdown_item);
@@ -158,15 +150,12 @@ public class ActionBarManager implements ActionBarTabChangeListener
 			
 		case 4:
 			mType = WEBCAM;
-			if(mTabsAdapter != null)
-				mTabsAdapter.disable();
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			mActivity.switchView(ViewType.WEBCAM);
 			break;
 		case 5:
 			mType = REPORT;
-			if(mTabsAdapter != null)
-				mTabsAdapter.disable();
+			
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			mActivity.switchView(ViewType.REPORT);
 			break;
@@ -209,20 +198,6 @@ public class ActionBarManager implements ActionBarTabChangeListener
 		bThreedays.putInt("type", R.string.three_days_title);
 		bFourdays.putInt("type", R.string.four_days_title);
 		
-		mTabsAdapter = new TabsAdapter(mActivity, mActivity.getViewPager());	
-		mTabsAdapter.setActionBarTabChangeListener(this);
-		mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.situation)),
-                SituationFragment.class, null);
-        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.today_title)),
-                ForecastFragment.class, bToday);
-        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.tomorrow_title)),
-        		ForecastFragment.class, bTomorrow);
-        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.two_days_title)),
-        		ForecastFragment.class, bTwodays);
-        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.three_days_title)),
-        		ForecastFragment.class, bThreedays);
-        mTabsAdapter.addTab(actionBar.newTab().setText(res.getString(R.string.four_days_title)),
-        		ForecastFragment.class, bFourdays);
 	}
 	
 	private OsmerActivity mActivity;
