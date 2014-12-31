@@ -174,7 +174,7 @@ MyViewFlipperMovedListener
 			mGoogleServicesAvailable = false;
 			GooglePlayServicesUtil.getErrorDialog(resultCode, this, 0).show();
 		}
-
+		
 	}
 
 	public void onResume()

@@ -15,12 +15,23 @@
    android:showAsAction not valid
    -->
    
+   
       <item android:id="@+id/actionbarmenu"
        it.giacomos.android.osmer:showAsAction="ifRoom"
        android:title=""
        it.giacomos.android.osmer:actionLayout="@layout/actionmenu"
        />
-            
+       
+        
+        <!--  when not using AppCompat -->
+      <!--   <item android:id="@+id/actionbarmenu"
+       android:showAsAction="ifRoom"
+       android:title=""
+       android:actionLayout="@layout/actionmenu"
+       />   
+       
+       -->
+             
     <item android:id="@+id/menu_data_update_info"
           android:icon="@drawable/refresh"
           android:title="@string/menu_refresh" />
