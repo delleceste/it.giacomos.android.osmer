@@ -2,7 +2,7 @@ package it.giacomos.android.osmer.pager;
 
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.network.state.ViewType;
-import android.support.v7.app.ActionBar.OnNavigationListener;
+import android.app.ActionBar.OnNavigationListener;
 
 public class ActionBarListItemNavigationListener implements OnNavigationListener 
 {

@@ -86,11 +86,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -99,12 +99,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.view.Window;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
@@ -123,7 +119,7 @@ import android.widget.ViewFlipper;
  * - in the background, continue downloading all other relevant information (tomorrow, two days image and
  *   forecast), so that it is ready when the user flips.
  */
-public class OsmerActivity extends ActionBarActivity 
+public class OsmerActivity extends FragmentActivity 
 implements OnClickListener, 
 DownloadStateListener,
 OnMenuItemClickListener, 

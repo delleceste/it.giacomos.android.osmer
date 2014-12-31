@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.pager;
 
-import android.support.v7.app.ActionBar;
+import android.app.ActionBar;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -38,7 +38,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	
 	public void setNavigationItem(int index)
 	{
-		ActionBar actionBar = mActivity.getSupportActionBar();
+		ActionBar actionBar = mActivity.getActionBar();
 		actionBar.setSelectedNavigationItem(index);
 	}
 	
@@ -47,7 +47,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	 */
 	public void setTabSelected(int index)
 	{
-		ActionBar actionBar = mActivity.getSupportActionBar();
+		ActionBar actionBar = mActivity.getActionBar();
 		if(index < actionBar.getTabCount())
 			actionBar.setSelectedNavigationItem(index);
 	}
@@ -58,7 +58,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	public void init(Bundle savedInstanceState, int forceDrawerItem) 
 	{
 		boolean actionBarTabs = false;
-		ActionBar actionBar = mActivity.getSupportActionBar();
+		ActionBar actionBar = mActivity.getActionBar();
 		ListView drawer = mActivity.getDrawerListView();
 		int selectedDrawerItem = drawer.getCheckedItemPosition();
 		if(selectedDrawerItem < 0)
@@ -109,7 +109,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	public void drawerItemChanged(int id)
 	{
 		mSpinnerAdapter = null;
-		ActionBar actionBar = mActivity.getSupportActionBar();
+		ActionBar actionBar = mActivity.getActionBar();
 		switch(id)
 		{
 		case 0:
@@ -196,7 +196,7 @@ public class ActionBarManager implements ActionBarTabChangeListener
 	private void mInitActionBarTabs()
 	{
 		Resources res = mActivity.getResources();
-		ActionBar actionBar = mActivity.getSupportActionBar();
+		ActionBar actionBar = mActivity.getActionBar();
 		Bundle bToday = new Bundle();
 		Bundle bTomorrow = new Bundle();
 		Bundle bTwodays = new Bundle();

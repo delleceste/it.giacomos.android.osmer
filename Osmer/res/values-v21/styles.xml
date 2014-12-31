@@ -3,7 +3,7 @@
     <!--  values/colors.xml defines the colours used here -->
     
     <!-- your theme inherits from the material theme -->
-  <style name="MeteoFVGTheme" parent="@style/Theme.AppCompat.Light">
+  <style name="MeteoFVGTheme" parent="android:Theme.Material.Light">
     
     <!--   your app branding color for the app bar -->
     <item name="android:colorPrimary">@color/primary</item>
