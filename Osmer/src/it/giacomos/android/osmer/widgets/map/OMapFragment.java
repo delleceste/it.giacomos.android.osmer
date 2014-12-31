@@ -47,6 +47,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.v4.app.FragmentManager;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -188,11 +189,6 @@ RadarAnimationListener, OnMapReadyCallback
 		getMapAsync(this);
 	}
 
-	public void onResume()
-	{
-		super.onResume();
-	}
-
 	public void onPause()
 	{
 		super.onPause();
@@ -249,22 +245,22 @@ RadarAnimationListener, OnMapReadyCallback
 
 	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		View view = inflater.inflate(R.layout.map, container, false);
-	//	View view = super.onCreateView(inflater, container, savedInstanceState);
-		
+		RelativeLayout myview = (RelativeLayout) inflater.inflate(R.layout.map, container, false);
+		View view = super.onCreateView(inflater, myview, savedInstanceState);
+		myview.addView(view);
 		mRadarAnimation = new RadarAnimation(this);
 		mRadarAnimation.registerRadarAnimationListener(this);
-		((ToggleButton) (view.findViewById(R.id.playPauseButton))).setOnClickListener(mRadarAnimation);
-		((ToggleButton) (view.findViewById(R.id.stopButton))).setOnClickListener(mRadarAnimation);
-		((Button)(view.findViewById(R.id.previousButton))).setOnClickListener(mRadarAnimation);
-		((Button)(view.findViewById(R.id.nextButton))).setOnClickListener(mRadarAnimation);
+		((ToggleButton) (myview.findViewById(R.id.playPauseButton))).setOnClickListener(mRadarAnimation);
+		((ToggleButton) (myview.findViewById(R.id.stopButton))).setOnClickListener(mRadarAnimation);
+		((Button)(myview.findViewById(R.id.previousButton))).setOnClickListener(mRadarAnimation);
+		((Button)(myview.findViewById(R.id.nextButton))).setOnClickListener(mRadarAnimation);
 		
 		/* hide all animation controls */
-		view.findViewById(R.id.animationButtonsLinearLayout).setVisibility(View.GONE);
-		view.findViewById(R.id.radarAnimTime).setVisibility(View.GONE);
-		view.findViewById(R.id.stopButton).setVisibility(View.GONE);
-		view.findViewById(R.id.playPauseButton).setVisibility(View.GONE);
-		view.findViewById(R.id.radarAnimProgressBar).setVisibility(View.GONE);
+		myview.findViewById(R.id.animationButtonsLinearLayout).setVisibility(View.GONE);
+		myview.findViewById(R.id.radarAnimTime).setVisibility(View.GONE);
+		myview.findViewById(R.id.stopButton).setVisibility(View.GONE);
+		myview.findViewById(R.id.playPauseButton).setVisibility(View.GONE);
+		myview.findViewById(R.id.radarAnimProgressBar).setVisibility(View.GONE);
 		return view;
 	}
 
