@@ -49,7 +49,7 @@
 //
 //        if (savedInstanceState == null) {
 //            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//            SlidingTabsColorsFragment fragment = new SlidingTabsColorsFragment();
+//            ForecastTabbedFragment fragment = new ForecastTabbedFragment();
 //            transaction.replace(R.id.sample_content_fragment, fragment);
 //            transaction.commit();
 //        }

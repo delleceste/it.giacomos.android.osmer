@@ -1,11 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mapview"
-    android:name="it.giacomos.android.osmer.widgets.map.OMapFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+
     
-     <include layout="@layout/map" >
-        </include>
+    <RelativeLayout    xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mapRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/radarInfoTextView"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/rounded_text_box"
+            android:linksClickable="true"
+            android:padding="5dp"
+            android:scrollbars="vertical"
+            android:textColor="@android:color/black"
+            android:textSize="12sp"
+            android:visibility="visible" />
+
+        <it.giacomos.android.osmer.widgets.OAnimatedTextView
+            android:id="@+id/mapMessageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/rounded_text_box"
+            android:padding="5dp"
+            android:text="@string/radarUpdatedOn"
+            android:textColor="@android:color/black"
+            android:textSize="12sp"
+            android:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/radarAnimProgressBar"
+            style="@android:style/Widget.ProgressBar.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+	    	android:layout_centerHorizontal="true"
+	    	android:layout_centerVertical="true"
+            android:visibility="gone" />
+
+              <!--  LinearLayout
+        android:id="@+id/animationTimestampLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginLeft="6dp"
+        android:orientation="horizontal" -->
+        
+            <!-- ImageView
+            android:id="@+id/radarAnimTimestampImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"    
+        	android:gravity="center_horizontal"
+            android:padding="5dp"
+            style="@style/ImageView" /  -->        
+                  
+             <TextView
+            android:id="@+id/radarAnimTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"    
+        	android:gravity="center_horizontal"
+        	android:layout_alignParentTop="true"
+        	android:layout_centerHorizontal="true"
+        	android:layout_marginTop="12dp"
+        	android:layout_marginRight="6dp"
+        	android:layout_marginLeft="6dp"
+            android:padding="2dp"
+            android:textColor="@android:color/black"
+        	android:background="@drawable/rounded_text_box"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone" />    
+                  
+      
+        
+        
+        
+        <!-- /LinearLayout-->
     
-</fragment>
+         <LinearLayout
+        android:id="@+id/animationButtonsLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:layout_alignParentRight="true"
+	    android:layout_marginBottom="10dp"
+	    android:layout_marginRight="20dp"
+	    android:background="@drawable/rounded_box_dark"
+        android:orientation="horizontal" >
+        
+          <Button
+            android:id="@+id/previousButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:background="@drawable/ic_media_previous"
+            android:textOff=""
+            android:textOn=""
+            android:visibility="gone" />    
+             
+        <ToggleButton
+            android:id="@+id/stopButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:background="@drawable/ic_menu_close_clear_cancel"
+            android:textOff=""
+            android:textOn=""
+            android:visibility="gone" />
+             
+        <ToggleButton
+            android:id="@+id/playPauseButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:background="@drawable/ic_play_pause_button"
+            android:textOff=""
+            android:textOn=""
+            android:visibility="gone" />
+        
+        <Button
+            android:id="@+id/nextButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:background="@drawable/ic_media_next"
+            android:textOff=""
+            android:textOn=""
+            android:visibility="gone" />    
+             
+        
+        </LinearLayout>
+         
+          <ProgressBar
+              android:id="@+id/mapProgressBar"
+              style="?android:attr/progressBarStyleLarge"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentBottom="false"
+              android:layout_alignParentLeft="false"
+              android:layout_alignParentRight="false"
+              android:layout_alignParentTop="false"
+              android:layout_centerHorizontal="true"
+              android:layout_centerInParent="false"
+              android:layout_centerVertical="true"
+              android:layout_marginBottom="43dp" />
+
+          <it.giacomos.android.osmer.floatingactionbutton.FloatingActionButton
+              android:id="@+id/actionNewReport"
+              android:layout_width="72dp"
+              android:layout_height="72dp"
+              android:layout_alignParentBottom="true"
+              android:layout_alignParentEnd="false"
+              android:layout_alignParentRight="true"
+              android:layout_alignParentStart="false"
+              android:layout_margin="16dp"
+              android:drawable="@drawable/ic_menu_edit"
+              android:color="#e0e0e0" />
+        
+    </RelativeLayout>
+
+    

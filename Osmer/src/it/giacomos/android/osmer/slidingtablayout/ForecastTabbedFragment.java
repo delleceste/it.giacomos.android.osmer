@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.fragments.SituationFragment;
 import it.giacomos.android.osmer.network.state.ViewType;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ import java.util.List;
  * to display a custom {@link ViewPager} title strip which gives continuous feedback to the user
  * when scrolling.
  */
-public class SlidingTabsColorsFragment extends Fragment {
+public class ForecastTabbedFragment extends Fragment {
 
 	/**
 	 * This class represents a tab to be displayed by {@link ViewPager} and it's associated
@@ -64,7 +65,26 @@ public class SlidingTabsColorsFragment extends Fragment {
 		 * @return A new {@link Fragment} to be displayed by a {@link ViewPager}
 		 */
 		Fragment createFragment() {
-			Log.e("SamplepagerItem.createFragment", " creating " + mTitle);
+			Log.e("SamplepagerItem.createFragment", " creating " + mTitle);	    	
+
+	    	
+	    	if(mViewType == ViewType.HOME)
+	    		return new SituationFragment();
+	    	else if(mViewType == ViewType.TODAY)
+	    		view =  inflater.inflate(R.layout.today, container, false);
+	    	else if(mViewType == ViewType.TOMORROW)
+	    		view =  inflater.inflate(R.layout.tomorrow, container, false);
+	    	else if(mViewType == ViewType.TWODAYS)
+	    		view =  inflater.inflate(R.layout.twodays, container, false);
+	    	else if(mViewType == ViewType.THREEDAYS)
+	    		view =  inflater.inflate(R.layout.threedays, container, false);
+	    	else
+	    		view =  inflater.inflate(R.layout.fourdays, container, false);
+	    	
+	    	Log.e("ContentFragment.onCreateView", " created " + view + " type " + type);
+	    	
+	    	return view;
+			
 			return ContentFragment.newInstance(mTitle,  mViewType, mIndicatorColor, mDividerColor);
 		}
 
@@ -96,7 +116,7 @@ public class SlidingTabsColorsFragment extends Fragment {
 		}
 	}
 
-	static final String LOG_TAG = "SlidingTabsColorsFragment";
+	static final String LOG_TAG = "ForecastTabbedFragment";
 
 	/**
 	 * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -172,7 +192,8 @@ public class SlidingTabsColorsFragment extends Fragment {
 			Bundle savedInstanceState) 
 	{
 		Log.e("SlidingTabsColorsFratment.onCreateVieww", " inflating main_fragment");
-		View view = inflater.inflate(R.layout.main_fragment, container, false);
+		View view = inflater.inflate(R.layout.main_fragment, container);
+	//	View view = super.onCreateView(inflater, container, savedInstanceState);
 		Log.e("SlidngTabsColorsFratment.onCreateVieww", " inflateth main_fragment");
 		return view;
 	}
@@ -243,6 +264,11 @@ public class SlidingTabsColorsFragment extends Fragment {
 		mSelectedPage = page;
 	}
 	
+	public int getSelectedPage()
+	{
+		return mSelectedPage;
+	}
+	
 	/**
 	 * The {@link FragmentPagerAdapter} used to display pages in this sample. The individual pages
 	 * are instances of {@link ContentFragment} which just display three lines of text. Each page is
@@ -265,13 +291,11 @@ public class SlidingTabsColorsFragment extends Fragment {
 		 */
 		@Override
 		public Fragment getItem(int i) {
-			Log.e(LOG_TAG, "createFragment on tab " + i);
 			return mTabs.get(i).createFragment();
 		}
 
 		@Override
 		public int getCount() {
-			Log.e(LOG_TAG, "getCount " + mTabs.size());
 			return mTabs.size();
 		}
 
@@ -285,7 +309,6 @@ public class SlidingTabsColorsFragment extends Fragment {
 		@Override
 		public CharSequence getPageTitle(int position) 
 		{
-			Log.e(LOG_TAG, "getPageTitle" + mTabs.get(position).getTitle());
 			return mTabs.get(position).getTitle();
 		}
 		// END_INCLUDE (pageradapter_getpagetitle)

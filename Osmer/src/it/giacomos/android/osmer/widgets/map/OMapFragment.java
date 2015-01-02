@@ -3,7 +3,7 @@ package it.giacomos.android.osmer.widgets.map;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.faizmalkani.floatingactionbutton.FloatingActionButton;
+import it.giacomos.android.osmer.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -55,6 +55,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -107,8 +108,86 @@ RadarAnimationListener, OnMapReadyCallback
 		mMode.isExplicit = false; /* setMode is not called */
 		mRadarAnimation = null;
 		mReportOverlay = null;
+		
 	}
 
+
+	@Override
+	public void onMapReady(GoogleMap googleMap) 
+	{
+		mMap = googleMap;
+		UiSettings uiS = mMap.getUiSettings();
+		//	uiS.setRotateGesturesEnabled(false);
+		uiS.setZoomControlsEnabled(false);
+		OsmerActivity oActivity = (OsmerActivity) getActivity();
+		/* restore last used map type */
+		mMap.setMapType(mSettings.getMapType());
+		/* restore last camera position */
+		mSavedCameraPosition = mSettings.getCameraPosition();
+		if(mSavedCameraPosition == null) /* never saved */
+			mCenterOnUpdate = true;
+		mMap.setOnCameraChangeListener(this);
+
+		/* create a radar overlay */
+		mRadarOverlay = new RadarOverlay(mMap);
+		/* add to overlays because when refreshed by mRefreshRadarImage 
+		 * a GroundOverlay is attached to the map and when switching the mode
+		 * it must be in the list of overlays in order to be cleared.
+		 */
+		mOverlays.add(mRadarOverlay);
+
+		mMapClickOnBaloonImageHintEnabled = mSettings.isMapClickOnBaloonImageHintEnabled();
+
+		/* register for radar image bitmap updates, and get updates even if the
+		 * bitmap hasn't changed between subsequent updates. We want to receive
+		 * all updates in order to save the time when the image was last 
+		 * downloaded.
+		 */
+		oActivity.getDataPool().setForceUpdateEvenOnSameBitmap(BitmapType.RADAR, true);
+		oActivity.getDataPool().registerBitmapListener(BitmapType.RADAR, this);
+		DataPoolCacheUtils dpcu = new DataPoolCacheUtils();
+		/* initialize radar bitmap */
+		onBitmapChanged(dpcu.loadFromStorage(BitmapType.RADAR, 
+				oActivity.getApplicationContext()), BitmapType.RADAR, true);
+
+		mMapFragmentListener.onGoogleMapReady();
+
+		/* map updates the observation data in ItemizedOverlay when new observations are available
+		 *
+		 */
+		ObservationsCache observationsCache = new ObservationsCache();
+		observationsCache.installObservationsCacheUpdateListener(this);
+		
+		FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.actionNewReport);
+		fab.setOnClickListener((OsmerActivity) this.getActivity());
+		fab.setColor(getResources().getColor(R.color.accent));
+		fab.setDrawable(getResources().getDrawable(R.drawable.ic_menu_edit_fab));
+		
+		/* set html text on Radar info text view */
+		TextView radarInfoTextView = (TextView) getActivity().findViewById(R.id.radarInfoTextView);
+		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
+		radarInfoTextView.setVisibility(View.GONE);
+		
+		/* when the activity creates us, it passes the initialization stuff through arguments */
+		Bundle args = getArguments();
+		mMode = mArgumentsToMode(args);
+		mSetMode(mMode);
+		
+		if(mMode.currentMode == MapMode.DAILY_OBSERVATIONS || mMode.currentMode == MapMode.LATEST_OBSERVATIONS)
+			updateObservations(observationsCache.getObservationData(mMode.currentMode));
+		
+		mMap.setMyLocationEnabled(true);
+
+		if(mRadarAnimation.getState().animationInProgress())
+			mRadarAnimation.restore();
+		if(mMode.currentMode == MapMode.REPORT && mReportOverlay != null)
+		{
+			mReportOverlay.onResume();
+			mReportOverlay.update(getActivity().getApplicationContext(), false);
+		}
+		
+	}
+	
 	@Override
 	public void onCameraChange(CameraPosition cameraPosition) 
 	{
@@ -161,7 +240,8 @@ RadarAnimationListener, OnMapReadyCallback
 	public void onDestroy ()
 	{
 		mRemoveOverlays();
-		mRadarOverlay.finalize(); /* recycles bitmap for GC */
+		if(mRadarOverlay != null)
+			mRadarOverlay.finalize(); /* recycles bitmap for GC */
 		/* clear webcam data, cancel current task, finalize info window adapter */
 		if(mWebcamOverlay != null)
 			mWebcamOverlay.clear();
@@ -227,6 +307,8 @@ RadarAnimationListener, OnMapReadyCallback
 	{
 		super.onActivityCreated(savedInstanceState);
 
+
+		mSettings = new Settings(getActivity().getApplicationContext());
 		/* restoreState just initializes internal variables. We do not restore animation
 		 * here. Animation is restored inside setMode, when the mode is MapMode.RADAR.
 		 */
@@ -236,6 +318,8 @@ RadarAnimationListener, OnMapReadyCallback
 
 	private MapViewMode mArgumentsToMode(Bundle args) 
 	{
+		if(args == null)
+			return new MapViewMode(ObservationType.NONE, MapMode.RADAR);
 		String mode = args.getString("mapMode", "RADAR");
 		String obsType = args.getString("observationType", "NONE");
 		MapMode mm = MapMode.valueOf(mode);
@@ -245,9 +329,18 @@ RadarAnimationListener, OnMapReadyCallback
 
 	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		RelativeLayout myview = (RelativeLayout) inflater.inflate(R.layout.map, container, false);
-		View view = super.onCreateView(inflater, myview, savedInstanceState);
-		myview.addView(view);
+		//RelativeLayout myview = new RelativeLayout(getActivity());
+		/* pass false boolean attachToRoot:
+		 * Whether the inflated hierarchy should be attached to the root parameter.
+		 * If false, root is only used to create the correct subclass of LayoutParams for the root view in the XML.
+		 */
+		Log.e("onCreateView" , " container " + container);
+		RelativeLayout myview = (RelativeLayout) inflater.inflate(R.layout.map_fragment, container, false);
+		Log.e("onCreateView" , " myview " + myview);
+		View mapView = super.onCreateView(inflater, container, savedInstanceState);
+		Log.e("onCreateView" , " mapView " + mapView);
+		myview.addView(mapView);
+		
 		mRadarAnimation = new RadarAnimation(this);
 		mRadarAnimation.registerRadarAnimationListener(this);
 		((ToggleButton) (myview.findViewById(R.id.playPauseButton))).setOnClickListener(mRadarAnimation);
@@ -261,7 +354,7 @@ RadarAnimationListener, OnMapReadyCallback
 		myview.findViewById(R.id.stopButton).setVisibility(View.GONE);
 		myview.findViewById(R.id.playPauseButton).setVisibility(View.GONE);
 		myview.findViewById(R.id.radarAnimProgressBar).setVisibility(View.GONE);
-		return view;
+		return myview;
 	}
 
 	@Override
@@ -368,7 +461,7 @@ RadarAnimationListener, OnMapReadyCallback
 
 	public void setMode(MapViewMode m)
 	{
-		if(getActivity() != null)
+		if(mMap != null)
 			mSetMode(m);
 		else
 			mMode = m;
@@ -755,82 +848,4 @@ RadarAnimationListener, OnMapReadyCallback
 		return myLocation.distanceTo(pt) < 500;
 	}
 
-	@Override
-	public void onMapReady(GoogleMap googleMap) {
-		mMap = googleMap;
-		UiSettings uiS = mMap.getUiSettings();
-		//	uiS.setRotateGesturesEnabled(false);
-		uiS.setZoomControlsEnabled(false);
-		OsmerActivity oActivity = (OsmerActivity) getActivity();
-
-		mSettings = new Settings(oActivity.getApplicationContext());
-		/* restore last used map type */
-		mMap.setMapType(mSettings.getMapType());
-		/* restore last camera position */
-		mSavedCameraPosition = mSettings.getCameraPosition();
-		if(mSavedCameraPosition == null) /* never saved */
-			mCenterOnUpdate = true;
-		mMap.setOnCameraChangeListener(this);
-
-		/* create a radar overlay */
-		mRadarOverlay = new RadarOverlay(mMap);
-		/* add to overlays because when refreshed by mRefreshRadarImage 
-		 * a GroundOverlay is attached to the map and when switching the mode
-		 * it must be in the list of overlays in order to be cleared.
-		 */
-		mOverlays.add(mRadarOverlay);
-
-		mMapClickOnBaloonImageHintEnabled = mSettings.isMapClickOnBaloonImageHintEnabled();
-
-		/* register for radar image bitmap updates, and get updates even if the
-		 * bitmap hasn't changed between subsequent updates. We want to receive
-		 * all updates in order to save the time when the image was last 
-		 * downloaded.
-		 */
-		oActivity.getDataPool().setForceUpdateEvenOnSameBitmap(BitmapType.RADAR, true);
-		oActivity.getDataPool().registerBitmapListener(BitmapType.RADAR, this);
-		DataPoolCacheUtils dpcu = new DataPoolCacheUtils();
-		/* initialize radar bitmap */
-		onBitmapChanged(dpcu.loadFromStorage(BitmapType.RADAR, 
-				oActivity.getApplicationContext()), BitmapType.RADAR, true);
-
-		
-		
-		mMapFragmentListener.onGoogleMapReady();
-
-		/* map updates the observation data in ItemizedOverlay when new observations are available
-		 *
-		 */
-		ObservationsCache observationsCache = new ObservationsCache();
-		observationsCache.installObservationsCacheUpdateListener(this);
-		
-		FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.actionNewReport);
-		fab.setOnClickListener((OsmerActivity) this.getActivity());
-		fab.setColor(getResources().getColor(R.color.accent));
-		fab.setDrawable(getResources().getDrawable(R.drawable.ic_menu_edit_fab));
-		
-		/* set html text on Radar info text view */
-		TextView radarInfoTextView = (TextView) getActivity().findViewById(R.id.radarInfoTextView);
-		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
-		radarInfoTextView.setVisibility(View.GONE);
-		
-		/* when the activity creates us, it passes the initialization stuff through arguments */
-		Bundle args = getArguments();
-		mMode = mArgumentsToMode(args);
-		mSetMode(mMode);
-		
-		if(mMode.currentMode == MapMode.DAILY_OBSERVATIONS || mMode.currentMode == MapMode.LATEST_OBSERVATIONS)
-			updateObservations(observationsCache.getObservationData(mMode.currentMode));
-		
-		mMap.setMyLocationEnabled(true);
-
-		if(mRadarAnimation.getState().animationInProgress())
-			mRadarAnimation.restore();
-		if(mMode.currentMode == MapMode.REPORT && mReportOverlay != null)
-		{
-			mReportOverlay.onResume();
-			mReportOverlay.update(getActivity().getApplicationContext(), false);
-		}
-		
-	}
 }

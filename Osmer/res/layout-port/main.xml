@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-    
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
@@ -8,15 +7,48 @@
 
     <!-- The main content view -->
 
- <!-- The main content view -->
-   <FrameLayout
+
+    <!-- The main content view -->
+
+    <LinearLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar" >
 
-    
-              <!--  com.faizmalkani.floatingactionbutton.FloatingActionButton
+            <Spinner
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/toolbar_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            
+        </android.support.v7.widget.Toolbar>
+
+        <fragment
+            android:id="@+id/forecastTabbedFragment"
+            android:name="it.giacomos.android.osmer.slidingtablayout.ForecastTabbedFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <fragment
+            android:id="@+id/mapview"
+            android:name="it.giacomos.android.osmer.widgets.map.OMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:layout="@layout/map_fragment" >
+        </fragment>
+    </LinearLayout>
+
+    <!--
+              com.faizmalkani.floatingactionbutton.FloatingActionButton
               android:id="@+id/actionNewReportFromForecast"
               android:layout_width="72dp"
               android:layout_height="72dp"
@@ -26,7 +58,8 @@
               android:layout_alignParentStart="false"
               android:layout_margin="16dp"
               android:drawable="@drawable/ic_menu_edit"
-              android:color="#e0e0e0" />  -->
+              android:color="#e0e0e0" />
+    -->
     <!-- The navigation drawer -->
 
     <ListView

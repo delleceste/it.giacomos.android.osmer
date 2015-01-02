@@ -102,6 +102,10 @@ public class SlidingTabLayout extends HorizontalScrollView {
         addView(mTabStrip, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
     }
 
+    public void setCurrentTab(int index)
+    {
+    	
+    }
   
     /**
      * Set the custom {@link TabColorizer} to be used.

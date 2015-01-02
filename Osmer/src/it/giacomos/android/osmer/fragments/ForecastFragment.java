@@ -106,12 +106,15 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 
 		mImageView.restoreTouchEventState(savedInstanceState);        
 		
-		mHandler = new Handler();
-		mHandler.postDelayed(this, 200);
+		//mHandler = new Handler();
+	//	mHandler.postDelayed(this, 200);
+		Log.e("ForecastFragmneett!!!!!!!!!!!!", "BUILTTT");
+		run();
 	}
 
 	public void run()
 	{
+		Log.e("FOrecastFragment.run", "entering");
 		String symtab = "";
 		OsmerActivity activity = (OsmerActivity) getActivity();
 		/* register as a listener of DataPool */
@@ -119,6 +122,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 		DataPoolCacheUtils dataCacheUtils = new DataPoolCacheUtils();
 		if(mType == R.string.today_title)
 		{
+			Log.e("FOrecastFragment.run", "mType == R.string.today_title");
 			if(!dataPool.isTextValid(ViewType.TODAY_SYMTABLE))
 			{
 				symtab = dataCacheUtils.loadFromStorage(ViewType.TODAY_SYMTABLE, getActivity().getApplicationContext());
@@ -260,7 +264,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 	@Override
 	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
 	{
-		//		Log.e("ForecastFragment.onTextChanged", "viewType " + t + " fromCache " + fromCache);
+		Log.e("ForecastFragment.onTextChanged", "viewType " + t + " fromCache " + fromCache);
 		if(t == ViewType.TODAY || t == ViewType.TOMORROW || t == ViewType.TWODAYS
 				|| t == ViewType.THREEDAYS || t == ViewType.FOURDAYS)
 			mTextView.setData(txt);
