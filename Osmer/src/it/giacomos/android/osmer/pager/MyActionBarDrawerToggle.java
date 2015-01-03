@@ -20,12 +20,12 @@ public class MyActionBarDrawerToggle extends ActionBarDrawerToggle
 	/** Called when a drawer has settled in a completely closed state. */
 	public void onDrawerClosed(View view) 
 	{
-		mActivity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+		mActivity.supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 	}
 
 	/** Called when a drawer has settled in a completely open state. */
 	public void onDrawerOpened(View drawerView) 
 	{
-		mActivity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+		mActivity.supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 	}
 }

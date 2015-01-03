@@ -3,7 +3,6 @@ package it.giacomos.android.osmer.network;
 import java.util.Calendar;
 import java.util.Date;
 
-import android.util.Log;
 import it.giacomos.android.osmer.network.state.BitmapType;
 import it.giacomos.android.osmer.network.state.ViewType;
 

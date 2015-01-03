@@ -23,7 +23,6 @@ import android.os.Build;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -101,12 +100,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
         mTabStrip = new SlidingTabStrip(context);
         addView(mTabStrip, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
     }
-
-    public void setCurrentTab(int index)
-    {
-    	
-    }
-  
+    
     /**
      * Set the custom {@link TabColorizer} to be used.
      *
@@ -207,7 +201,6 @@ public class SlidingTabLayout extends HorizontalScrollView {
         for (int i = 0; i < adapter.getCount(); i++) {
             View tabView = null;
             TextView tabTitleView = null;
-            Log.e("SlidingTabLayout.populateTabString", " trying to inflate " + mTabViewLayoutId + " strip " + mTabStrip);
             
             if (mTabViewLayoutId != 0) 
             {
@@ -217,7 +210,6 @@ public class SlidingTabLayout extends HorizontalScrollView {
                         false);
                 tabTitleView = (TextView) tabView.findViewById(mTabViewTextViewId);
             }
-            Log.e("SlidingTabLayout.populateTabString", "inflateth");
 
             if (tabView == null) {
                 tabView = createDefaultTabView(getContext());

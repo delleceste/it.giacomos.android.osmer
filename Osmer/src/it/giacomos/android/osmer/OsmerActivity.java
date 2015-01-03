@@ -473,7 +473,7 @@ MyViewFlipperMovedListener
 	{
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.menu, menu);
-		return true;
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) 
@@ -557,7 +557,7 @@ MyViewFlipperMovedListener
 	@Override
 	public void setTitle(CharSequence title) {
 		mTitle = title;
-		getSupportActionBar().setTitle(mTitle);
+		//getSupportActionBar().setTitle(mTitle);
 	}
 
 	@Override
@@ -600,7 +600,7 @@ MyViewFlipperMovedListener
 		super.onSaveInstanceState(outState);
 		if(outState != null && mForecastImgTouchEventData != null) /* fix ANR: null pointer */
 		{
-			if(getSupportActionBar().getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST)
+			if(getSupportActionBar() != null && getSupportActionBar().getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST)
 				outState.putInt("spinnerPosition", getSupportActionBar().getSelectedNavigationIndex());
 			this.mForecastImgTouchEventData.saveState(outState); 
 		}

@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="860"
-    android:versionName="2.20-alpha2" >
+    android:versionCode="862"
+    android:versionName="2.20-alpha3" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -36,11 +36,11 @@
                            
                           ========================================
     -->
-
+<!--
     <permission
         android:name="it.giacomos.android.osmer.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-
+-->
     <!--
           ==================================       ========================================
     
@@ -50,9 +50,12 @@
     -->
     <uses-permission android:name="it.giacomos.android.osmer.permission.C2D_MESSAGE" />
     
+    <!--  
     <permission
         android:name="it.giacomos.android.osmer.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
+-->
+
 
     <!-- in app billing. Removed since 2.8.0... -->
     <!-- <uses-permission android:name="com.android.vending.BILLING" /> -->

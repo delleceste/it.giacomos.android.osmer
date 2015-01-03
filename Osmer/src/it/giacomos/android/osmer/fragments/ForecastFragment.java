@@ -12,14 +12,13 @@ import it.giacomos.android.osmer.widgets.MapWithForecastImage;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 public class ForecastFragment extends Fragment implements DataPoolTextListener, Runnable
 {
-	private int mType;
+	private ViewType mType;
 	private MapWithForecastImage mImageView;
 	private ForecastTextView mTextView;
 	private Handler mHandler;
@@ -49,53 +48,15 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 		/* register as a listener of DataPool */
 		DataPool dataPool = activity.getDataPool();
 		DataPoolCacheUtils dataCacheUtils = new DataPoolCacheUtils();
-		if(mType == R.string.today_title)
-		{
-			if(!dataPool.isTextValid(ViewType.TODAY))
+		
+			if(!dataPool.isTextValid(mType))
 			{
-				text = dataCacheUtils.loadFromStorage(ViewType.TODAY, getActivity().getApplicationContext());
+				text = dataCacheUtils.loadFromStorage(mType, getActivity().getApplicationContext());
 				mTextView.setData(text);
 			}
 			/* if there already is data for the given ViewType, the listener is immediately called */
-			dataPool.registerTextListener(ViewType.TODAY, this);
-		}
-		else if(mType == R.string.tomorrow_title)
-		{
-			dataPool.registerTextListener(ViewType.TOMORROW, this);
-
-			if(!dataPool.isTextValid(ViewType.TOMORROW))
-			{
-				text = dataCacheUtils.loadFromStorage(ViewType.TOMORROW, getActivity().getApplicationContext());
-				mTextView.setData(text);
-			}
-		}
-		else if(mType == R.string.two_days_title)
-		{
-			dataPool.registerTextListener(ViewType.TWODAYS, this);
-			if(!dataPool.isTextValid(ViewType.TWODAYS))
-			{
-				text = dataCacheUtils.loadFromStorage(ViewType.TWODAYS, getActivity().getApplicationContext());
-				mTextView.setData(text);
-			}
-		}
-		else if(mType == R.string.three_days_title)
-		{
-			dataPool.registerTextListener(ViewType.THREEDAYS, this);
-			if(!dataPool.isTextValid(ViewType.THREEDAYS))
-			{
-				text = dataCacheUtils.loadFromStorage(ViewType.THREEDAYS, getActivity().getApplicationContext());
-				mTextView.setData(text);
-			}
-		}
-		else if(mType == R.string.four_days_title)
-		{
-			dataPool.registerTextListener(ViewType.FOURDAYS, this);
-			if(!dataPool.isTextValid(ViewType.FOURDAYS))
-			{
-				text = dataCacheUtils.loadFromStorage(ViewType.FOURDAYS, getActivity().getApplicationContext());
-				mTextView.setData(text);
-			}
-		}
+			dataPool.registerTextListener(mType, this);
+		
 
 		dataCacheUtils = null;
 
@@ -106,23 +67,19 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 
 		mImageView.restoreTouchEventState(savedInstanceState);        
 		
-		//mHandler = new Handler();
-	//	mHandler.postDelayed(this, 200);
-		Log.e("ForecastFragmneett!!!!!!!!!!!!", "BUILTTT");
-		run();
+		mHandler = new Handler();
+		mHandler.postDelayed(this, 200);
 	}
 
 	public void run()
 	{
-		Log.e("FOrecastFragment.run", "entering");
 		String symtab = "";
 		OsmerActivity activity = (OsmerActivity) getActivity();
 		/* register as a listener of DataPool */
 		DataPool dataPool = activity.getDataPool();
 		DataPoolCacheUtils dataCacheUtils = new DataPoolCacheUtils();
-		if(mType == R.string.today_title)
+		if(mType == ViewType.TODAY)
 		{
-			Log.e("FOrecastFragment.run", "mType == R.string.today_title");
 			if(!dataPool.isTextValid(ViewType.TODAY_SYMTABLE))
 			{
 				symtab = dataCacheUtils.loadFromStorage(ViewType.TODAY_SYMTABLE, getActivity().getApplicationContext());
@@ -131,7 +88,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			/* if there already is data for the given ViewType, the listener is immediately called */
 			dataPool.registerTextListener(ViewType.TODAY_SYMTABLE, this);
 		}
-		else if(mType == R.string.tomorrow_title)
+		else if(mType == ViewType.TOMORROW)
 		{
 			dataPool.registerTextListener(ViewType.TOMORROW_SYMTABLE, this);
 			if(!dataPool.isTextValid(ViewType.TOMORROW_SYMTABLE))	
@@ -140,7 +97,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 				mImageView.setSymTable(symtab);
 			}
 		}
-		else if(mType == R.string.two_days_title)
+		else if(mType == ViewType.TWODAYS)
 		{
 			dataPool.registerTextListener(ViewType.TWODAYS_SYMTABLE, this);
 			if(!dataPool.isTextValid(ViewType.TWODAYS_SYMTABLE))		
@@ -152,7 +109,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 				mImageView.setSymTable(symtab);
 			}
 		}
-		else if(mType == R.string.three_days_title)
+		else if(mType == ViewType.THREEDAYS)
 		{
 			dataPool.registerTextListener(ViewType.THREEDAYS_SYMTABLE, this);
 			if(!dataPool.isTextValid(ViewType.THREEDAYS_SYMTABLE))		
@@ -164,7 +121,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 				mImageView.setSymTable(symtab);
 			}
 		}
-		else if(mType == R.string.four_days_title)
+		else if(mType == ViewType.FOURDAYS)
 		{
 			dataPool.registerTextListener(ViewType.FOURDAYS_SYMTABLE, this);
 			if(!dataPool.isTextValid(ViewType.FOURDAYS_SYMTABLE))		
@@ -188,9 +145,9 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 		View view = null;
 
 		Bundle args = getArguments();
-		mType = args.getInt("type");
+		mType = ViewType.valueOf(args.getString("ViewType"));
 
-		if(mType == R.string.today_title)
+		if(mType == ViewType.TODAY)
 		{
 			view = inflater.inflate(R.layout.today, null);
 			mTextView = (ForecastTextView)view.findViewById(R.id.todayTextView);
@@ -200,7 +157,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			/* area touch listener only for today, tomorrow, two days */
 			mImageView.setAreaTouchListener(mTextView);
 		}
-		else if(mType == R.string.tomorrow_title)
+		else if(mType == ViewType.TOMORROW)
 		{
 			view = inflater.inflate(R.layout.tomorrow, null);
 			mTextView = (ForecastTextView)view.findViewById(R.id.tomorrowTextView);
@@ -210,7 +167,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			/* area touch listener only for today, tomorrow, two days */
 			mImageView.setAreaTouchListener(mTextView);
 		}
-		else if(mType == R.string.two_days_title)
+		else if(mType == ViewType.TWODAYS)
 		{
 			view = inflater.inflate(R.layout.twodays, null);
 			mTextView = (ForecastTextView)view.findViewById(R.id.twoDaysTextView);
@@ -220,7 +177,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			/* area touch listener only for today, tomorrow, two days */
 			mImageView.setAreaTouchListener(mTextView);
 		}
-		else if(mType == R.string.three_days_title)
+		else if(mType == ViewType.THREEDAYS)
 		{
 			view = inflater.inflate(R.layout.threedays, null);
 			mTextView = (ForecastTextView)view.findViewById(R.id.threeDaysTextView);
@@ -228,7 +185,7 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 			mImageView = (MapWithForecastImage) view.findViewById(R.id.threeDaysImageView);
 			mImageView.setViewType(ViewType.THREEDAYS_SYMTABLE);
 		}
-		else if(mType == R.string.four_days_title)
+		else if(mType == ViewType.FOURDAYS)
 		{
 			view = inflater.inflate(R.layout.fourdays, null);
 			mTextView = (ForecastTextView)view.findViewById(R.id.fourDaysTextView);
@@ -264,7 +221,6 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 	@Override
 	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
 	{
-		Log.e("ForecastFragment.onTextChanged", "viewType " + t + " fromCache " + fromCache);
 		if(t == ViewType.TODAY || t == ViewType.TOMORROW || t == ViewType.TWODAYS
 				|| t == ViewType.THREEDAYS || t == ViewType.FOURDAYS)
 			mTextView.setData(txt);

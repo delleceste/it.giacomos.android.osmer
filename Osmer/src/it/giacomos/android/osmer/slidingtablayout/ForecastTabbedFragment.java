@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.fragments.ForecastFragment;
 import it.giacomos.android.osmer.fragments.SituationFragment;
 import it.giacomos.android.osmer.network.state.ViewType;
 
@@ -70,22 +71,14 @@ public class ForecastTabbedFragment extends Fragment {
 	    	
 	    	if(mViewType == ViewType.HOME)
 	    		return new SituationFragment();
-	    	else if(mViewType == ViewType.TODAY)
-	    		view =  inflater.inflate(R.layout.today, container, false);
-	    	else if(mViewType == ViewType.TOMORROW)
-	    		view =  inflater.inflate(R.layout.tomorrow, container, false);
-	    	else if(mViewType == ViewType.TWODAYS)
-	    		view =  inflater.inflate(R.layout.twodays, container, false);
-	    	else if(mViewType == ViewType.THREEDAYS)
-	    		view =  inflater.inflate(R.layout.threedays, container, false);
 	    	else
-	    		view =  inflater.inflate(R.layout.fourdays, container, false);
-	    	
-	    	Log.e("ContentFragment.onCreateView", " created " + view + " type " + type);
-	    	
-	    	return view;
-			
-			return ContentFragment.newInstance(mTitle,  mViewType, mIndicatorColor, mDividerColor);
+	    	{
+	    		Bundle args = new Bundle();
+	    		args.putString("ViewType", mViewType.name());
+	    		ForecastFragment ff = new ForecastFragment();
+	    		ff.setArguments(args);
+	    		return ff;
+	    	}
 		}
 
 		ViewType getViewType()
@@ -191,10 +184,7 @@ public class ForecastTabbedFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) 
 	{
-		Log.e("SlidingTabsColorsFratment.onCreateVieww", " inflating main_fragment");
 		View view = inflater.inflate(R.layout.main_fragment, container);
-	//	View view = super.onCreateView(inflater, container, savedInstanceState);
-		Log.e("SlidngTabsColorsFratment.onCreateVieww", " inflateth main_fragment");
 		return view;
 	}
 
@@ -253,7 +243,7 @@ public class ForecastTabbedFragment extends Fragment {
 		/* switch to correct page index */
 		
 			
-		mViewPager.setCurrentItem(mSelectedPage);
+		// mViewPager.setCurrentItem(mSelectedPage);
 	}
 	// END_INCLUDE (fragment_onviewcreated)
 
@@ -281,7 +271,6 @@ public class ForecastTabbedFragment extends Fragment {
 
 		SampleFragmentPagerAdapter(FragmentManager fm) {
 			super(fm);
-			Log.e(LOG_TAG, "CONSTRUCTOR");
 		}
 
 		/**

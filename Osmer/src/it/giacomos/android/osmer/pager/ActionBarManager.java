@@ -1,19 +1,14 @@
 package it.giacomos.android.osmer.pager;
 
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
-import it.giacomos.android.osmer.fragments.ForecastFragment;
-import it.giacomos.android.osmer.fragments.SituationFragment;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.slidingtablayout.ForecastTabbedFragment;
-import it.giacomos.android.osmer.slidingtablayout.SlidingTabLayout;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 
@@ -39,22 +34,7 @@ public class ActionBarManager
 		mActivity = a;
 		mActionBarListItemNavigationListener = new ActionBarListItemNavigationListener(mActivity);
 	}
-	
-	public void setNavigationItem(int index)
-	{
-		ActionBar actionBar = mActivity.getSupportActionBar();
-		actionBar.setSelectedNavigationItem(index);
-	}
-	
-	/* switches to tab view and selects the given tab
-	 *
-	 */
-	public void setTabSelected(int index)
-	{
-		ActionBar actionBar = mActivity.getSupportActionBar();
-		if(index < actionBar.getTabCount())
-			actionBar.setSelectedNavigationItem(index);
-	}
+
 
 	/* called after restore instance state, initializes the application according
 	 * to the saved state of the action bar in the previous execution.

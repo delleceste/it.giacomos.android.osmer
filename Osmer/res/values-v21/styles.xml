@@ -3,7 +3,7 @@
     <!--  values/colors.xml defines the colours used here -->
     
     <!-- your theme inherits from the material theme -->
-  <style name="MeteoFVGTheme" parent="android:Theme.Material.Light">
+  <style name="MeteoFVGTheme" parent="style/Theme.AppCompat.Light">
     
     <!--   your app branding color for the app bar -->
     <item name="android:colorPrimary">@color/primary</item>
@@ -11,11 +11,8 @@
     <item name="android:colorPrimaryDark">@color/primary_dark</item>
     <!--   theme UI controls like checkboxes and text fields -->
     <item name="android:colorAccent">@color/accent</item>
-    <!--   theme UI controls like checkboxes and text fields -->
-    <item name="android:statusBarColor">@color/primary_light</item>
-      
-	<!--  using toolbar, so no action bar  -->
 	<item name="windowActionBar">false</item>
+
   </style>
     
 </resources>
