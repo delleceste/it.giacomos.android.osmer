@@ -60,12 +60,12 @@ public class ActionBarManager
 			actionBarTabs = true;
 		if(actionBarTabs)
 		{
-			ForecastTabbedFragment stl = (ForecastTabbedFragment) mActivity.getForecastFragment();
-			int selectedTabIndex = stl.getSelectedPage();
-		    /* switch to correct tab */
-			stl.setSelectedPage(selectedTabIndex);
+		//	ForecastTabbedFragment stl = (ForecastTabbedFragment) mActivity.getForecastFragment();
+		//	int selectedTabIndex = stl.getSelectedPage();
+		//    /* switch to correct tab */
+		//	stl.setSelectedPage(selectedTabIndex);
 			/* check the first item of the drawer */
-			drawer.setItemChecked(0, true);
+		//	drawer.setItemChecked(0, true);
 		}
 		else
 		{

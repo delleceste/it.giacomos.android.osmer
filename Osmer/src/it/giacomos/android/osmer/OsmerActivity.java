@@ -255,7 +255,7 @@ MyViewFlipperMovedListener
 				getIntent().removeExtra("NotificationRainAlert");
 			}
 		}
-		//		Log.e("onPostCreate", "force drawer item " + forceDrawerItem);
+		Log.e("onPostCreate", "force drawer item " + forceDrawerItem);
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
 	}
 
