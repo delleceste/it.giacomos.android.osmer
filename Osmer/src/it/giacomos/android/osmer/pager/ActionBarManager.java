@@ -54,7 +54,7 @@ public class ActionBarManager
 		 */
 		if(forceDrawerItem < 0 && selectedDrawerItem != 0) /* otherwise call drawerItemChange afterwards */
 			drawerItemChanged(selectedDrawerItem);
-		if(savedInstanceState != null && mActivity.getDisplayedFragment() == 0)
+		if(selectedDrawerItem == 0)
 			actionBarTabs = true;
 		else if(savedInstanceState == null)
 			actionBarTabs = true;
@@ -70,11 +70,12 @@ public class ActionBarManager
 		else
 		{
 			Spinner spinner = (Spinner) mActivity.findViewById(R.id.toolbar_spinner);
-			boolean spinnerVisible = spinner.getVisibility() == View.VISIBLE;
-			if(spinnerVisible)
+			boolean observations = (selectedDrawerItem == 2 || selectedDrawerItem == 3);
+			if(observations)
 			{
 				int selected = savedInstanceState.getInt("spinnerPosition");
-				mActionBarListItemNavigationListener.onNavigationItemSelected(selected, -1);
+				Log.e("ActionBarManager.init fiogerhituh 9593", "saved spinner pos " + selected);
+				mActionBarListItemNavigationListener.onItemSelected(null, null, selected, -1);
 				spinner.setSelection(selected);
 			} 
 		}
@@ -137,6 +138,7 @@ public class ActionBarManager
 		if(mSpinnerAdapter != null)
 		{
 			spinner.setAdapter(mSpinnerAdapter);
+			spinner.setOnItemSelectedListener(mActionBarListItemNavigationListener);
 		}
 	}
 	

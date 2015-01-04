@@ -3,8 +3,11 @@ package it.giacomos.android.osmer.pager;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.network.state.ViewType;
 import android.app.ActionBar.OnNavigationListener;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 
-public class ActionBarListItemNavigationListener implements OnNavigationListener 
+public class ActionBarListItemNavigationListener implements OnItemSelectedListener
 {
 	final OsmerActivity mActivity;
 	ViewType mMode;
@@ -21,8 +24,9 @@ public class ActionBarListItemNavigationListener implements OnNavigationListener
 	}
 
 	@Override
-	public boolean onNavigationItemSelected(int position, long itemId) 
-	{
+	public void onItemSelected(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO Auto-generated method stub
 		if(mMode == ViewType.DAILY_TABLE)
 		{
 			if (position == 0) {
@@ -64,7 +68,12 @@ public class ActionBarListItemNavigationListener implements OnNavigationListener
 			}
 		}
 
-		return false;
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

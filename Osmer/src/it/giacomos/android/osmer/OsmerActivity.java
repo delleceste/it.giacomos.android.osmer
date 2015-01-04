@@ -113,6 +113,7 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -600,8 +601,8 @@ MyViewFlipperMovedListener
 		super.onSaveInstanceState(outState);
 		if(outState != null && mForecastImgTouchEventData != null) /* fix ANR: null pointer */
 		{
-			if(getSupportActionBar() != null && getSupportActionBar().getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST)
-				outState.putInt("spinnerPosition", getSupportActionBar().getSelectedNavigationIndex());
+			Spinner spinner = (Spinner) findViewById(R.id.toolbar_spinner);
+			outState.putInt("spinnerPosition", spinner.getSelectedItemPosition());
 			this.mForecastImgTouchEventData.saveState(outState); 
 		}
 	}
