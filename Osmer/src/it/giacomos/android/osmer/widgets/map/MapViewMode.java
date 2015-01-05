@@ -7,28 +7,26 @@ public class MapViewMode
 {
 	public MapViewMode()
 	{
-		isExplicit = true;
+		isInit = true;
 	}
 	
 	public boolean equals(MapViewMode other)
 	{
 		return other != null && other.currentMode == this.currentMode &&
-				other.currentType == this.currentType && this.isExplicit == other.isExplicit;
+				other.currentType == this.currentType && this.isInit == other.isInit;
 	}
 	
 	public MapViewMode(ObservationType type, MapMode oMode)
 	{
 		currentType = type;
 		currentMode = oMode;
-		isExplicit = true;
+		isInit = false;
 	}
 	
 	public ObservationType currentType = ObservationType.NONE;
 	public MapMode currentMode = MapMode.RADAR;
 	
-	/* is explicit means that the map mode has been explicitly set. 
-	 * In the map fragment constructor a MapViewMode is initialized in order not 
-	 * to be null but in this case it is not explicit.
+	/* isInit if true means that the map mode has been set while the google map was not ready yet.
 	 */
-	public boolean isExplicit;
+	public boolean isInit;
 }

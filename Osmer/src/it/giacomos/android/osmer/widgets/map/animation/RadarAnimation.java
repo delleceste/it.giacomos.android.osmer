@@ -65,7 +65,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		mResetProgressVariables();
 		/* button listeners */
 		Log.e("RadarAnimation.RadarAnimation", " activity " + mMapFrag.getActivity());
-		
+	
 		mAnimationListeners = new ArrayList<RadarAnimationListener>();
 		mAnimationData = new SparseArray<AnimationData>();
 		mAnimationTask = null;

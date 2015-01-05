@@ -52,7 +52,11 @@ public class FloatingActionButton extends View {
         this(context, attributeSet, 0);
     }
 
-
+    public boolean isVisible()
+    {
+    	return !mHidden;
+    }
+    
     public FloatingActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
@@ -83,6 +87,7 @@ public class FloatingActionButton extends View {
             display.getSize(size);
             mYHidden = size.y;
         } else mYHidden = display.getHeight();
+        
     }
 
     public static int darkenColor(int color) {
@@ -157,7 +162,7 @@ public class FloatingActionButton extends View {
             mHidden = hide;
 
             // Animate the FAB to it's new Y position
-            ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? mYHidden : mYDisplayed).setDuration(500);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? mYHidden : mYDisplayed).setDuration(300);
             animator.setInterpolator(mInterpolator);
             animator.start();
         }

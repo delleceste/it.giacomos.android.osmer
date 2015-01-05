@@ -30,6 +30,14 @@ public class NotRunning extends State
 		}
 		else if(dAnimationTask != null)
 			Log.e("NotRunning.enter", "not cancelling task: its state is " + dAnimationTask.getStatus());
+		
+		/* hide all animation controls */
+		OMapFragment mapFrag = dRadarAnimation.getMapFragment();
+		mapFrag.getActivity().findViewById(R.id.animationButtonsLinearLayout).setVisibility(View.GONE);
+		mapFrag.getActivity().findViewById(R.id.radarAnimTime).setVisibility(View.GONE);
+		mapFrag.getActivity().findViewById(R.id.stopButton).setVisibility(View.GONE);
+		mapFrag.getActivity().findViewById(R.id.playPauseButton).setVisibility(View.GONE);
+		mapFrag.getActivity().findViewById(R.id.mapProgressBar).setVisibility(View.GONE);
 	}
 
 	public void leave()

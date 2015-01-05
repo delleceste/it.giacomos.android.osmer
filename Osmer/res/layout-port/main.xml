@@ -10,56 +10,69 @@
 
     <!-- The main content view -->
 
+<RelativeLayout 
+        android:id="@+id/content_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <!-- 
     <LinearLayout
-        android:id="@+id/content_frame"
+        android:id="@+id/linear_layout_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" >
-
+ -->
+ 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar" >
+            android:layout_height="wrap_content" >
+
+            <it.giacomos.android.osmer.slidingtablayout.SlidingTabLayout
+                android:id="@+id/sliding_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <Spinner
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/toolbar_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-            
         </android.support.v7.widget.Toolbar>
 
         <fragment
             android:id="@+id/forecastTabbedFragment"
             android:name="it.giacomos.android.osmer.slidingtablayout.ForecastTabbedFragment"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_below="@id/toolbar"
+            android:layout_height="wrap_content"
+             />
 
-        <fragment
-            android:id="@+id/mapview"
-            android:name="it.giacomos.android.osmer.widgets.map.OMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            tools:layout="@layout/map_fragment" >
-        </fragment>
+         
+        
+        <include layout="@layout/map_fragment" >
+        </include>
+      
+        <!--  
     </LinearLayout>
-
-    <!--
-              com.faizmalkani.floatingactionbutton.FloatingActionButton
-              android:id="@+id/actionNewReportFromForecast"
-              android:layout_width="72dp"
-              android:layout_height="72dp"
-              android:layout_alignParentBottom="true"
-              android:layout_alignParentEnd="false"
-              android:layout_alignParentRight="true"
-              android:layout_alignParentStart="false"
-              android:layout_margin="16dp"
-              android:drawable="@drawable/ic_menu_edit"
-              android:color="#e0e0e0" />
-    -->
+     -->
+     
+    
+        <it.giacomos.android.osmer.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabNewReport"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:drawable="@drawable/ic_menu_edit"
+        android:color="#e0e0e0" />
+    </RelativeLayout>
+    
+    
+    
     <!-- The navigation drawer -->
 
     <ListView
@@ -70,5 +83,7 @@
         android:background="#eeffffff"
         android:choiceMode="singleChoice"
         android:dividerHeight="0dp" />
+
+
 
 </android.support.v4.widget.DrawerLayout>

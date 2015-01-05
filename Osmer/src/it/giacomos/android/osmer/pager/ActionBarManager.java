@@ -74,7 +74,6 @@ public class ActionBarManager
 			if(observations)
 			{
 				int selected = savedInstanceState.getInt("spinnerPosition");
-				Log.e("ActionBarManager.init fiogerhituh 9593", "saved spinner pos " + selected);
 				mActionBarListItemNavigationListener.onItemSelected(null, null, selected, -1);
 				spinner.setSelection(selected);
 			} 
@@ -88,6 +87,7 @@ public class ActionBarManager
 	
 	public void drawerItemChanged(int id)
 	{
+		Log.e("ActionBarManager.drawerItemChanged", " id " + id);
 		mSpinnerAdapter = null;
 		Spinner spinner = (Spinner) mActivity.findViewById(R.id.toolbar_spinner);
 		switch(id)
@@ -125,7 +125,7 @@ public class ActionBarManager
 			break;
 		case 5:
 			mType = REPORT;
-						mActivity.switchView(ViewType.REPORT);
+			mActivity.switchView(ViewType.REPORT);
 			break;
 		}
 		

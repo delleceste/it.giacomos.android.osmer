@@ -7,18 +7,22 @@
 
     <!-- The main content view -->
 
-    <LinearLayout
-        android:id="@+id/horizontal_lo_frame"
+<RelativeLayout 
+        android:id="@+id/content_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:layout_height="match_parent">
+
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar" >
+            android:layout_height="wrap_content" >
 
+            <it.giacomos.android.osmer.slidingtablayout.SlidingTabLayout
+        android:id="@+id/sliding_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+            
             <Spinner
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/toolbar_spinner"
@@ -27,6 +31,7 @@
         </android.support.v7.widget.Toolbar>
 
         <LinearLayout
+            android:layout_below="@id/toolbar"
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -40,15 +45,36 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
-            <fragment
-                android:id="@+id/mapview"
-                android:name="it.giacomos.android.osmer.widgets.map.OMapFragment"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" >
-            </fragment>
+         <include  layout="@layout/map_fragment"></include>
+        
+        <!--
+        
+        <fragment
+            android:id="@+id/mapview"
+            android:name="it.giacomos.android.osmer.widgets.map.OMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:layout="@layout/map_fragment" >
+        </fragment>
+        
+         -->
         </LinearLayout>
-    </LinearLayout>
+        
+            <it.giacomos.android.osmer.floatingactionbutton.FloatingActionButton
+              android:id="@+id/fabNewReport"
+              android:layout_width="72dp"
+              android:layout_height="72dp"
+              android:layout_alignParentBottom="true"
+              android:layout_alignParentEnd="false"
+              android:layout_alignParentRight="true"
+              android:layout_alignParentStart="false"
+              android:layout_margin="16dp"
+              android:drawable="@drawable/ic_menu_edit"
+              android:color="#e0e0e0" />
+        
+    
+</RelativeLayout>
 
     <!-- The navigation drawer -->
 

@@ -131,6 +131,7 @@ public class ForecastTabbedFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		int indicatorColor = getResources().getColor(R.color.accent);
 		mSelectedPage = 0;
 		// BEGIN_INCLUDE (populate_tabs)
 		/**
@@ -139,37 +140,37 @@ public class ForecastTabbedFragment extends Fragment {
 		 */
 		mTabs.add(new SamplePagerItem(getResources().getString(R.string.situation), // Title
 				ViewType.HOME,
-				Color.BLUE, // Indicator color
+				indicatorColor, // Indicator color
 				Color.GRAY // Divider color
 				));
 
 		mTabs.add(new SamplePagerItem(getResources().getString(R.string.today_title), // Title
 				ViewType.TODAY,
-				Color.RED, // Indicator color
+				indicatorColor, // Indicator color
 				Color.GRAY // Divider color
 				));
 
 		mTabs.add(new SamplePagerItem(getResources().getString(R.string.tomorrow_title), // Title
 				ViewType.TOMORROW,
-				Color.YELLOW, // Indicator color
+				indicatorColor, // Indicator color
 				Color.GRAY // Divider color
 				));
 
 		mTabs.add(new SamplePagerItem(getResources().getString(R.string.two_days_title), // Title
 				ViewType.TWODAYS,
-				Color.GREEN, // Indicator color
+				indicatorColor, // Indicator color
 				Color.GRAY // Divider color
 				));
 
 		mTabs.add(new SamplePagerItem(getResources().getString(R.string.three_days_title), // Title
 				ViewType.THREEDAYS,
-				Color.GREEN, // Indicator color
+				indicatorColor, // Indicator color
 				Color.GRAY // Divider color
 				));
 
 		mTabs.add(new SamplePagerItem(getResources().getString(R.string.four_days_title), // Title
 				ViewType.FOURDAYS,
-				Color.GREEN, // Indicator color
+				indicatorColor, // Indicator color
 				Color.GRAY // Divider color
 				));
 
@@ -188,6 +189,37 @@ public class ForecastTabbedFragment extends Fragment {
 		return view;
 	}
 
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
+		
+		// BEGIN_INCLUDE (setup_slidingtablayout)
+		// Give the SlidingTabLayout the ViewPager, this must be done AFTER the ViewPager has had
+		// it's PagerAdapter set.
+		mSlidingTabLayout = (SlidingTabLayout) getActivity().findViewById(R.id.sliding_tabs);
+		mSlidingTabLayout.setViewPager(mViewPager);
+
+		// BEGIN_INCLUDE (tab_colorizer)
+		// Set a TabColorizer to customize the indicator and divider colors. Here we just retrieve
+		// the tab at the position, and return it's set color
+		mSlidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+
+			@Override
+			public int getIndicatorColor(int position) {
+				return mTabs.get(position).getIndicatorColor();
+			}
+
+			@Override
+			public int getDividerColor(int position) {
+				return mTabs.get(position).getDividerColor();
+			}
+
+		});
+		// END_INCLUDE (tab_colorizer)
+		// END_INCLUDE (setup_slidingtablayout)
+	}
+	
 	// BEGIN_INCLUDE (fragment_onviewcreated)
 	/**
 	 * This is called after the {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} has finished.
@@ -215,35 +247,10 @@ public class ForecastTabbedFragment extends Fragment {
 
 		// END_INCLUDE (setup_viewpager)
 
-		// BEGIN_INCLUDE (setup_slidingtablayout)
-		// Give the SlidingTabLayout the ViewPager, this must be done AFTER the ViewPager has had
-		// it's PagerAdapter set.
-		mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
-		mSlidingTabLayout.setViewPager(mViewPager);
-
-		// BEGIN_INCLUDE (tab_colorizer)
-		// Set a TabColorizer to customize the indicator and divider colors. Here we just retrieve
-		// the tab at the position, and return it's set color
-		mSlidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-
-			@Override
-			public int getIndicatorColor(int position) {
-				return mTabs.get(position).getIndicatorColor();
-			}
-
-			@Override
-			public int getDividerColor(int position) {
-				return mTabs.get(position).getDividerColor();
-			}
-
-		});
-		// END_INCLUDE (tab_colorizer)
-		// END_INCLUDE (setup_slidingtablayout)
+		/* sliding tab layout setViewPager is called inside onActivityCreated because the SlidingTabs
+		 * widget may reside outside main_fragment (i.e. moved inside the toolbar in the action bar)
+		 */
 		
-		/* switch to correct page index */
-		
-			
-		// mViewPager.setCurrentItem(mSelectedPage);
 	}
 	// END_INCLUDE (fragment_onviewcreated)
 

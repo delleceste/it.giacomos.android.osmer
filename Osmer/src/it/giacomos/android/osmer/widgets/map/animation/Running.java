@@ -126,7 +126,7 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 //		mapFrag.getActivity().findViewById(R.id.radarAnimTimestampImageView).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.stopButton).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.playPauseButton).setVisibility(View.VISIBLE);
-		mapFrag.getActivity().findViewById(R.id.radarAnimProgressBar).setVisibility(View.GONE);
+		mapFrag.getActivity().findViewById(R.id.mapProgressBar).setVisibility(View.GONE);
 		mapFrag.getActivity().findViewById(R.id.nextButton).setVisibility(View.GONE);
 		mapFrag.getActivity().findViewById(R.id.previousButton).setVisibility(View.GONE);
 		dAnimationTask.setAnimationTaskListener(this);
@@ -281,7 +281,7 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 	public void hideProgressBar()
 	{
 		OMapFragment mapFrag = dRadarAnimation.getMapFragment();
-		ProgressBar pb = (ProgressBar) mapFrag.getActivity().findViewById(R.id.radarAnimProgressBar);
+		ProgressBar pb = (ProgressBar) mapFrag.getActivity().findViewById(R.id.mapProgressBar);
 		pb.setVisibility(View.GONE);
 	}
 
@@ -289,7 +289,7 @@ public class Running extends ProgressState implements AnimationTaskListener, Run
 	public void showProgressBar()
 	{
 		OMapFragment mapFrag = dRadarAnimation.getMapFragment();
-		ProgressBar pb = (ProgressBar) mapFrag.getActivity().findViewById(R.id.radarAnimProgressBar);
+		ProgressBar pb = (ProgressBar) mapFrag.getActivity().findViewById(R.id.mapProgressBar);
 		pb.setVisibility(View.VISIBLE);
 	}
 	

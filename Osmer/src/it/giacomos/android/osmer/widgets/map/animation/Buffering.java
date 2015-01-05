@@ -102,7 +102,7 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		/* stop (cancel) visible */
 		mapFrag.getActivity().findViewById(R.id.stopButton).setVisibility(View.VISIBLE);
 		/* progress bar visible */
-		mapFrag.getActivity().findViewById(R.id.radarAnimProgressBar).setVisibility(View.VISIBLE);
+		mapFrag.getActivity().findViewById(R.id.mapProgressBar).setVisibility(View.VISIBLE);
 		mapFrag.getActivity().findViewById(R.id.nextButton).setVisibility(View.GONE);
 		mapFrag.getActivity().findViewById(R.id.previousButton).setVisibility(View.GONE);
 		

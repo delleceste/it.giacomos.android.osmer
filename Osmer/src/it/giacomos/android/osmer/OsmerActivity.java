@@ -6,6 +6,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.floatingactionbutton.FloatingActionButton;
 import it.giacomos.android.osmer.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
 import it.giacomos.android.osmer.interfaceHelpers.MenuActionsManager;
@@ -47,19 +48,17 @@ import it.giacomos.android.osmer.service.ServiceManager;
 import it.giacomos.android.osmer.service.sharedData.ReportNotification;
 import it.giacomos.android.osmer.service.sharedData.ReportRequestNotification;
 import it.giacomos.android.osmer.slidingtablayout.ForecastTabbedFragment;
+import it.giacomos.android.osmer.slidingtablayout.SlidingTabLayout;
 import it.giacomos.android.osmer.webcams.WebcamDataHelper;
 import it.giacomos.android.osmer.widgets.AnimatedImageView;
 import it.giacomos.android.osmer.widgets.ForecastImgTouchEventListener;
 import it.giacomos.android.osmer.widgets.ImgTouchEventData;
 import it.giacomos.android.osmer.widgets.MapWithForecastImage;
-import it.giacomos.android.osmer.widgets.MyViewFlipper;
-import it.giacomos.android.osmer.widgets.MyViewFlipperMovedListener;
 import it.giacomos.android.osmer.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
 import it.giacomos.android.osmer.widgets.map.RadarOverlayUpdateListener;
 import it.giacomos.android.osmer.widgets.map.ReportRequestListener;
-import it.giacomos.android.osmer.widgets.map.animation.RadarAnimationListener;
 import it.giacomos.android.osmer.widgets.map.report.ObservationDataExtractor;
 import it.giacomos.android.osmer.widgets.map.report.RemovePostConfirmDialog;
 import it.giacomos.android.osmer.widgets.map.report.ReportActivity;
@@ -68,15 +67,12 @@ import it.giacomos.android.osmer.widgets.map.report.network.PostActionResultList
 import it.giacomos.android.osmer.widgets.map.report.network.PostReport;
 import it.giacomos.android.osmer.widgets.map.report.network.PostType;
 import it.giacomos.android.osmer.widgets.map.report.tutorialActivity.TutorialPresentationActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.AlertDialog.Builder;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -86,7 +82,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -94,30 +89,23 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.view.Window;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import android.widget.ViewFlipper;
 
 /** 
  * 
@@ -133,16 +121,15 @@ implements OnClickListener,
 DownloadStateListener,
 OnMenuItemClickListener, 
 OnDismissListener,
-MapFragmentListener,
 RadarOverlayUpdateListener,
+MapFragmentListener,
 DataPoolErrorListener,
-RadarAnimationListener,
 PostActionResultListener,
 ReportRequestListener, 
 NewsUpdateListener,
 ForecastImgTouchEventListener, 
 PersonalMessageUpdateListener,
-MyViewFlipperMovedListener
+OnPageChangeListener
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
@@ -217,7 +204,7 @@ MyViewFlipperMovedListener
 
 		if(mNewsFetchTask != null && mNewsFetchTask.getStatus() != AsyncTask.Status.FINISHED)
 			mNewsFetchTask.cancel(false);
-		
+
 		if(mPersonalMessageDataFetchTask != null && mPersonalMessageDataFetchTask.getStatus() != AsyncTask.Status.FINISHED)
 			mPersonalMessageDataFetchTask.cancel(false);
 	}
@@ -340,27 +327,26 @@ MyViewFlipperMovedListener
 	public void init()
 	{
 		mCurrentFragmentId = -1;
+		mLastTouchedY = -1;
 		mSettings = new Settings(this);
-		
+
 		/* if it's time to get personal message, wait for network and download it */
 		if(!mSettings.timeToGetPersonalMessage() && !mSettings.getPersonalMessageData().isEmpty())
 			this.onPersonalMessageUpdate(mSettings.getPersonalMessageData(), true); /* true: fromCache */
-		
-		mProgressBarStep = mProgressBarTotSteps = 0;
-		mAdditionalProgressBarStep = mProgressBarAdditionalSteps = 0;
+
 		mCurrentViewType = ViewType.HOME;
 
 		mLocationService = new LocationService(getApplicationContext());
 		/* Set the number of pages that should be retained to either side of 
 		 * the current page in the view hierarchy in an idle state
 		 */
-		
+
 		mTapOnMarkerHintCount = 0;
 		mRefreshAnimatedImageView = null;
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		this.setSupportActionBar(toolbar);
-		
+
 		mDrawerItems = getResources().getStringArray(R.array.drawer_text_items);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -372,7 +358,6 @@ MyViewFlipperMovedListener
 
 		/* Set the list's click listener */
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener(this));
-		mTitle = getTitle();
 
 		DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -391,17 +376,10 @@ MyViewFlipperMovedListener
 		mMenuActionsManager = null;
 		mCurrentLocation = null;
 
-		/* set html text on Radar info text view */
-		TextView radarInfoTextView = (TextView)findViewById(R.id.radarInfoTextView);
-		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
-		radarInfoTextView.setVisibility(View.GONE);
-
-		m_observationsCache = new ObservationsCache();
-		/* map updates the observation data in ItemizedOverlay when new observations are available
-		 *
+		/* Map has its own observations cache and registers as a listener in
+		 * OMapFragment.onMapReady
 		 */
-		OMapFragment map = getMapFragment();
-		m_observationsCache.installObservationsCacheUpdateListener(map);
+		m_observationsCache = new ObservationsCache();
 
 		/* Create DataPool.  */
 		mDataPool = new DataPool(this);
@@ -440,13 +418,23 @@ MyViewFlipperMovedListener
 		String registrationId = gcmRM.getRegistrationId(getApplicationContext());
 		if(registrationId.isEmpty())
 			gcmRM.registerInBackground(this);
-		
+
 		mForecastImgTouchEventData = new ImgTouchEventData();
+
+		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabNewReport);
+		fab.setOnClickListener(this);
+		fab.setColor(getResources().getColor(R.color.accent));
+		fab.setDrawable(getResources().getDrawable(R.drawable.ic_menu_edit_fab));
+		/* hide fab if the user scrolls with his finger down, setting a minimum scroll y length */
+		final float floatingActionButtonHideYThresholdDPI = 12.0f;
+		final float density = getResources().getDisplayMetrics().density;
 		
-//		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.actionNewReportFromForecast);
-//		fab.setOnClickListener(this);
-//		fab.setColor(getResources().getColor(R.color.accent));
-//		fab.setDrawable(getResources().getDrawable(R.drawable.ic_menu_edit_fab));
+		mFloatingActionButtonHideYThreshold = density * floatingActionButtonHideYThresholdDPI;
+		SlidingTabLayout stl = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+		stl.setOnPageChangeListener(this);
+		
+		getMapFragment().setRadarOverlayUpdateListener(this);
+		getMapFragment().setMapFragmentListener(this);
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -459,7 +447,7 @@ MyViewFlipperMovedListener
 		boolean refreshWasVisible = (mRefreshAnimatedImageView != null && 
 				mRefreshAnimatedImageView.getVisibility() == View.VISIBLE);
 		mRefreshAnimatedImageView = null;
-		
+
 		mButtonsActionView = MenuItemCompat.getActionView(menu.findItem(R.id.actionbarmenu));
 		mRefreshAnimatedImageView = (AnimatedImageView) mButtonsActionView.findViewById(R.id.refresh_animation);
 		if(refreshWasVisible)
@@ -500,46 +488,22 @@ MyViewFlipperMovedListener
 		else
 		{
 			/* first of all, if there's a info window on the map, close it */
-//			int displayedChild = ((ViewFlipper) findViewById(R.id.viewFlipper)).getDisplayedChild();
-//			OMapFragment map = getMapFragment();
-//			if(displayedChild == 1  &&  map.isInfoWindowVisible()) /* map view visible */
-//			{
-//				map.hideInfoWindow();
-//			}
-//			else if(displayedChild == 1)
-//			{
-//				mDrawerList.setItemChecked(0, true);
-//				mActionBarManager.drawerItemChanged(0);
-//			}
-//			else
+			OMapFragment map = getMapFragment();
+			if(mCurrentFragmentId == 1  &&  map.isInfoWindowVisible()) /* map view visible */
+			{
+				map.hideInfoWindow();
+			}
+			else if(mCurrentFragmentId == 1)
+			{
+				mDrawerList.setItemChecked(0, true);
+				mActionBarManager.drawerItemChanged(0);
+			}
+			else
 				super.onBackPressed();
 		}
 	}
 
 	@Override
-	public Dialog onCreateDialog(int id, Bundle args)
-	{
-		if(id == MenuActionsManager.TEXT_DIALOG)
-		{
-			// Use the Builder class for convenient dialog construction
-			Builder builder = new AlertDialog.Builder(this);
-			builder.setPositiveButton(getResources().getString(R.string.ok_button), null);
-			AlertDialog dialog = builder.create();
-			dialog.setTitle(args.getString("title"));
-			dialog.setCancelable(true);
-			dialog.setMessage(Html.fromHtml(args.getString("text")));
-			dialog.show();
-			((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
-
-		}
-		return super.onCreateDialog(id, args);
-	}
-
-	public void onGoogleMapReady()
-	{
-
-	}
-
 	public void onCameraReady()
 	{
 		Intent i = getIntent();
@@ -556,9 +520,8 @@ MyViewFlipperMovedListener
 	}
 
 	@Override
-	public void setTitle(CharSequence title) {
-		mTitle = title;
-		//getSupportActionBar().setTitle(mTitle);
+	public void onGoogleMapReady() {
+
 	}
 
 	@Override
@@ -585,7 +548,7 @@ MyViewFlipperMovedListener
 				mNewsFetchTask = new NewsFetchTask(mSettings.lastNewsReadTimestamp(), this);
 				mNewsFetchTask.execute(new Urls().newsUrl());
 			}
-			
+
 			if(mSettings.timeToGetPersonalMessage())
 			{
 				mPersonalMessageDataFetchTask = new PersonalMessageDataFetchTask(Secure.getString(getContentResolver(), Secure.ANDROID_ID),
@@ -645,7 +608,7 @@ MyViewFlipperMovedListener
 
 	void radar()
 	{
-		new ToastMessageManager().onShortMessage(getApplicationContext(), R.string.radarUpdateToast);
+		findViewById(R.id.mapProgressBar).setVisibility(View.VISIBLE);
 		m_downloadManager.getRadarImage();
 	}
 
@@ -837,6 +800,7 @@ MyViewFlipperMovedListener
 
 	public void onSelectionDone(ObservationType observationType, MapMode mapMode) 
 	{
+		Log.e("OsmerActivity.onSelectionDone", " type " + observationType + " mode " + mapMode);
 		/* switch the working mode of the map view. Already in PAGE_MAP view flipper page */
 		OMapFragment map = getMapFragment();
 		if((mapMode != MapMode.REPORT) || (mapMode == MapMode.REPORT && mReportConditionsAccepted))
@@ -937,7 +901,7 @@ MyViewFlipperMovedListener
 			stopRadarAnimation();
 			mCreateMapOptionsPopupMenu(true);
 		} 
-		else if(v.getId() == R.id.actionNewReport)
+		else if(v.getId() == R.id.actionNewReport || v.getId() == R.id.fabNewReport)
 		{
 			if(mCurrentViewType != ViewType.REPORT)
 				this.mActionBarManager.drawerItemChanged(5);
@@ -1033,16 +997,17 @@ MyViewFlipperMovedListener
 	{
 		return mCurrentViewType;
 	}
-	
+
 	public int getDisplayedFragment() {
 		return mCurrentFragmentId;
 	}
-	
+
 	public void showFragment(int id)
 	{
 		OMapFragment mapF = this.getMapFragment();
-		ForecastTabbedFragment forecastFrag = this.getForecastFragment();
+		ForecastTabbedFragment forecastFrag = getForecastFragment();
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		SlidingTabLayout stl = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
 		if(id == 0)
 		{
 			ft.hide(mapF);
@@ -1056,7 +1021,7 @@ MyViewFlipperMovedListener
 		ft.commit();
 		mCurrentFragmentId = id;
 	}
-	
+
 	public void switchView(ViewType id) 
 	{
 		mCurrentViewType = id;
@@ -1114,7 +1079,7 @@ MyViewFlipperMovedListener
 		{
 			mapFragment.centerMap();
 		}
-		else 
+		else
 		{
 			showFragment(1);
 		}
@@ -1192,12 +1157,22 @@ MyViewFlipperMovedListener
 
 		/* show or hide maps menu button according to the current view type */
 		mInitButtonMapsOverflowMenu();
-		
+
 		if(mapWithForecastImage != null)
 			mapWithForecastImage.setTouchEventData(mForecastImgTouchEventData);
+
+		SlidingTabLayout stl = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+		if(this.mCurrentFragmentId == 0)
+			stl.setVisibility(View.VISIBLE);
+		else
+			stl.setVisibility(View.GONE);
 		
-//		if(viewFlipper.getDisplayedChild() == 0)
-//			findViewById(R.id.actionNewReportFromForecast).setVisibility(View.VISIBLE);
+		/* hide fab if in observations, radar or webcam mode */
+		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabNewReport);
+		if(fab.isVisible() && (this.mCurrentFragmentId == 1 && id != ViewType.REPORT))
+			fab.hide(true);
+		else if(!fab.isVisible())
+			fab.hide(false);
 	}
 
 	public DownloadManager getDownloadManager() { return m_downloadManager; }
@@ -1245,6 +1220,7 @@ MyViewFlipperMovedListener
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{
+		super.onActivityResult(requestCode, resultCode, data);
 		//		Log.e("onActivityResult", "result " + resultCode);
 		if(requestCode == REPORT_ACTIVITY_FOR_RESULT_ID)
 		{
@@ -1365,7 +1341,7 @@ MyViewFlipperMovedListener
 	{
 		return ( ForecastTabbedFragment) getSupportFragmentManager().findFragmentById(R.id.forecastTabbedFragment);
 	}
-	
+
 	public OMapFragment getMapFragment()
 	{
 		OMapFragment mapFrag = (OMapFragment)getSupportFragmentManager().findFragmentById(R.id.mapview);
@@ -1434,10 +1410,52 @@ MyViewFlipperMovedListener
 	@Override
 	public void onImgTouched(ImgTouchEventData e) 
 	{
-		Log.e("OsmerActivity", "onImgTouched");
 		mForecastImgTouchEventData = e;
 	}
-	
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent event) 
+	{
+		if(mCurrentFragmentId == 0)
+		{
+			FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabNewReport);
+			float y = event.getY();
+			//Log.e("OsmerActivity.dispatchTouchEvent", " lat tou" + mLastTouchedY + " y " + y);
+			/* hide if the user scrolls down along y for at least mFloatingActionButtonHideYThreshold pixels */
+			if(mLastTouchedY >= 0 && y < mLastTouchedY - mFloatingActionButtonHideYThreshold)
+				fab.hide(true);
+			else if(y > mLastTouchedY + mFloatingActionButtonHideYThreshold)
+				fab.hide(false);
+			if(event.getAction() == MotionEvent.ACTION_DOWN)
+				mLastTouchedY = y;
+			else if(event.getAction() == MotionEvent.ACTION_UP)
+				mLastTouchedY = -1f;
+		}
+		return super.dispatchTouchEvent(event);
+	}
+
+
+	@Override
+	public void onPageScrollStateChanged(int arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+	}
+
+	@Override
+	public void onPageSelected(int position) 
+	{
+		if(mCurrentFragmentId != 0)
+			return;
+		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabNewReport);
+		if(!fab.isVisible())
+			fab.hide(false);
+	}
+
 	@Override
 	public void onPersonalMessageUpdate(String d, boolean fromCache) 
 	{
@@ -1446,58 +1464,12 @@ MyViewFlipperMovedListener
 		if(!fromCache)
 			mSettings.setPersonalMessageDownloadedNow();
 		PersonalMessageData data = new PersonalMessageDataDecoder(d).getData();
-//		Log.e("OsmerActivity.onPersonalMessageUpdate", "raw data \"" + d + "\"");
+		//		Log.e("OsmerActivity.onPersonalMessageUpdate", "raw data \"" + d + "\"");
 		if(data.isValid()) /* title, message, date must be not empty */
 			new PersonalMessageManager(this, data);
 	}
-	
-	@Override
-	public void onRadarAnimationStart() 
-	{
-
-	}
-
-	@Override
-	public void onRadarAnimationPause() 
-	{
-
-	}
-
-	@Override
-	public void onRadarAnimationStop() 
-	{
-
-	}
-
-	@Override
-	public void onRadarAnimationRestored() 
-	{
-
-	}
-
-	@Override
-	public void onRadarAnimationResumed() 
-	{
-
-	}
-
-	@Override
-	public void onRadarAnimationProgress(int step, int total) 
-	{
-
-	}
 
 
-	@Override
-	public void onFlipperMovedUp(boolean up) 
-	{
-//		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.actionNewReportFromForecast);
-//		if(up)
-//			fab.hide(true);
-//		else
-//			fab.hide(false);
-	}
-	
 	/* private members */
 	int mTapOnMarkerHintCount;
 	private Location mCurrentLocation;
@@ -1508,7 +1480,6 @@ MyViewFlipperMovedListener
 	private ListView mDrawerList;
 	private String[] mDrawerItems;
 	private MyActionBarDrawerToggle mDrawerToggle;
-	private CharSequence mTitle;
 	private ActionBarManager mActionBarManager;
 	private AnimatedImageView mRefreshAnimatedImageView;
 	private ViewType mCurrentViewType;
@@ -1523,9 +1494,6 @@ MyViewFlipperMovedListener
 
 	private NewsFetchTask mNewsFetchTask;
 	private PersonalMessageDataFetchTask mPersonalMessageDataFetchTask;
-
-	private int mProgressBarStep, mProgressBarTotSteps;
-	private int mAdditionalProgressBarStep, mProgressBarAdditionalSteps;
 
 	private boolean mReportConditionsAccepted;
 
@@ -1542,6 +1510,7 @@ MyViewFlipperMovedListener
 
 	int mCurrentFragmentId;
 
-
+	private float mLastTouchedY;
+	private float mFloatingActionButtonHideYThreshold;
 
 }
