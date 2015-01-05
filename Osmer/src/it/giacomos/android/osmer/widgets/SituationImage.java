@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.location.Location;
 
@@ -41,6 +42,7 @@ implements LatestObservationCacheChangeListener
 		mObsRects = new HashMap<RectF, SituationImageObservationData>(); 
 		mCurrentTouchedPoint = new PointF(-1.0f, -1.0f);
 		mTxtRect = new Rect(); /* used in draw */
+		mBgRect = new RectF();
 		mSensibleArea = new RectF(); /* used in draw */
 		mLocationToImgPixelMapper = new LocationToImgPixelMapper(); /* used in draw */
 
@@ -198,7 +200,7 @@ implements LatestObservationCacheChangeListener
 			}
 			else /* just draw a circle around the location */
 			{
-				mPaint.setARGB(255, 20, 30, 250);
+				mPaint.setARGB(255, 255, 152, 0);
 				canvas.drawCircle(p.x, p.y, 3, mPaint);
 				yMin = p.y - 3;
 				yMax = p.y + 3;
@@ -209,10 +211,16 @@ implements LatestObservationCacheChangeListener
 			}
 			if(d.hasTemp())
 			{
-				mPaint.setARGB(255, 0, 0, 0);
 				temp = d.getTemp();
 				mPaint.getTextBounds(temp, 0, temp.length(), mTxtRect);
+				mPaint.setARGB(220, 255, 255, 255);
+				mPaint.setStyle(Paint.Style.FILL );
+				mBgRect.set(nextX -2, nextY - mTxtRect.height() -2, nextX + mTxtRect.width() + 4, nextY + mTxtRect.height() +2);
+				canvas.drawRoundRect(mBgRect, 4, 4, mPaint);
+				
+				mPaint.setARGB(255, 0, 0, 0);
 				canvas.drawText(temp, nextX, nextY, mPaint);
+				
 				if(nextX + mTxtRect.width() > xMax)
 					xMax = nextX + mTxtRect.width();
 				if(yMin > nextY - mTxtRect.height())
@@ -225,9 +233,12 @@ implements LatestObservationCacheChangeListener
 			}
 			if(d.hasWaterTemp())
 			{
-				mPaint.setARGB(255, 0, 0, 255);
 				temp = d.getWaterTemp();
 				mPaint.getTextBounds(temp, 0, temp.length(), mTxtRect);
+				mPaint.setARGB(220, 255, 255, 255);
+				mBgRect.set(nextX -2 , nextY - mTxtRect.height() -2 , nextX + mTxtRect.width() + 2, nextY + mTxtRect.height() + 2);
+				canvas.drawRoundRect(mBgRect, 4, 4, mPaint);
+				mPaint.setARGB(255, 0, 0, 255);
 				canvas.drawText(temp, nextX, nextY, mPaint);
 				yMax = nextY;
 				nextY += mTxtRect.height() + 4;
@@ -240,12 +251,17 @@ implements LatestObservationCacheChangeListener
 			if(d.hasSnow())
 			{
 				/* paint above icon */
-				mPaint.setARGB(255, 255, 255, 255);
 				temp = "*" + d.getSnow();
 				if(icon != null) /* 4 pixels above the icon */
 					y -= icon.getHeight() / 2 - 4;
 				else
 					y -= mTxtRect.height() + 2;
+
+				mPaint.setARGB(220, 255, 255, 255);
+				mBgRect.set(nextX, nextY - mTxtRect.height() - 2, nextX + mTxtRect.width(), nextY + mTxtRect.height());
+				canvas.drawRoundRect(mBgRect, 4, 4, mPaint);
+
+				mPaint.setARGB(255, 0, 255, 255);
 				canvas.drawText(temp, p.x, y, mPaint);
 				mPaint.getTextBounds(temp, 0, temp.length(), mTxtRect);
 				if(p.x + mTxtRect.width() > xMax)
@@ -355,6 +371,7 @@ implements LatestObservationCacheChangeListener
 	}
 
 	private Rect mTxtRect;
+	private RectF mBgRect;
 	private RectF mSensibleArea;
 	private ViewType mViewType;
 	LocationToImgPixelMapper mLocationToImgPixelMapper;
