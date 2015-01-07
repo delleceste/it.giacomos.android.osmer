@@ -42,7 +42,7 @@ implements LatestObservationCacheChangeListener
 		mObsRects = new HashMap<RectF, SituationImageObservationData>(); 
 		mCurrentTouchedPoint = new PointF(-1.0f, -1.0f);
 		mTxtRect = new Rect(); /* used in draw */
-		mBgRect = new RectF();
+//		mBgRect = new RectF();
 		mSensibleArea = new RectF(); /* used in draw */
 		mLocationToImgPixelMapper = new LocationToImgPixelMapper(); /* used in draw */
 
@@ -213,10 +213,10 @@ implements LatestObservationCacheChangeListener
 			{
 				temp = d.getTemp();
 				mPaint.getTextBounds(temp, 0, temp.length(), mTxtRect);
-				mPaint.setARGB(220, 255, 255, 255);
-				mPaint.setStyle(Paint.Style.FILL );
-				mBgRect.set(nextX -2, nextY - mTxtRect.height() -2, nextX + mTxtRect.width() + 4, nextY + mTxtRect.height() +2);
-				canvas.drawRoundRect(mBgRect, 4, 4, mPaint);
+//				mPaint.setARGB(220, 255, 255, 255);
+//				mPaint.setStyle(Paint.Style.FILL );
+//				mBgRect.set(nextX -2, nextY - mTxtRect.height() -2, nextX + mTxtRect.width() + 4, nextY + mTxtRect.height() +2);
+//				canvas.drawRoundRect(mBgRect, 4, 4, mPaint);
 				
 				mPaint.setARGB(255, 0, 0, 0);
 				canvas.drawText(temp, nextX, nextY, mPaint);
@@ -235,9 +235,9 @@ implements LatestObservationCacheChangeListener
 			{
 				temp = d.getWaterTemp();
 				mPaint.getTextBounds(temp, 0, temp.length(), mTxtRect);
-				mPaint.setARGB(220, 255, 255, 255);
-				mBgRect.set(nextX -2 , nextY - mTxtRect.height() -2 , nextX + mTxtRect.width() + 2, nextY + mTxtRect.height() + 2);
-				canvas.drawRoundRect(mBgRect, 4, 4, mPaint);
+//				mPaint.setARGB(220, 255, 255, 255);
+//				mBgRect.set(nextX -2 , nextY - mTxtRect.height() -2 , nextX + mTxtRect.width() + 2, nextY + mTxtRect.height() + 2);
+//				canvas.drawRoundRect(mBgRect, 4, 4, mPaint);
 				mPaint.setARGB(255, 0, 0, 255);
 				canvas.drawText(temp, nextX, nextY, mPaint);
 				yMax = nextY;
@@ -257,11 +257,11 @@ implements LatestObservationCacheChangeListener
 				else
 					y -= mTxtRect.height() + 2;
 
-				mPaint.setARGB(220, 255, 255, 255);
-				mBgRect.set(nextX, nextY - mTxtRect.height() - 2, nextX + mTxtRect.width(), nextY + mTxtRect.height());
-				canvas.drawRoundRect(mBgRect, 4, 4, mPaint);
+//				mPaint.setARGB(220, 255, 255, 255);
+//				mBgRect.set(nextX, nextY - mTxtRect.height() - 2, nextX + mTxtRect.width(), nextY + mTxtRect.height());
+//				canvas.drawRoundRect(mBgRect, 4, 4, mPaint);
 
-				mPaint.setARGB(255, 0, 255, 255);
+				mPaint.setARGB(255, 0, 30, 255);
 				canvas.drawText(temp, p.x, y, mPaint);
 				mPaint.getTextBounds(temp, 0, temp.length(), mTxtRect);
 				if(p.x + mTxtRect.width() > xMax)
@@ -371,7 +371,7 @@ implements LatestObservationCacheChangeListener
 	}
 
 	private Rect mTxtRect;
-	private RectF mBgRect;
+//	private RectF mBgRect;
 	private RectF mSensibleArea;
 	private ViewType mViewType;
 	LocationToImgPixelMapper mLocationToImgPixelMapper;

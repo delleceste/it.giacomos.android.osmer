@@ -15,18 +15,24 @@ import it.giacomos.android.osmer.widgets.HomeTextView;
 import it.giacomos.android.osmer.widgets.OTextView;
 import it.giacomos.android.osmer.widgets.SituationImage;
 import android.support.v4.app.Fragment;
+import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 public class SituationFragment extends Fragment implements DataPoolTextListener, InAppUpgradeManagerListener
 {
 	private SituationImage mSituationImage;
 	private OTextView mHomeTextView;
-	private InAppUpgradeManager mInAppUpgradeManager;
 
 	public SituationFragment() 
 	{
@@ -150,4 +156,5 @@ public class SituationFragment extends Fragment implements DataPoolTextListener,
 		// TODO Auto-generated method stub
 
 	}
+
 }

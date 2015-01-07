@@ -59,7 +59,7 @@ public class SkyDrawableIdPicker {
 			if(night)
 				id = (R.drawable.weather_clear_night);
 			else
-				id = (R.drawable.weather_clear);
+				id = (R.drawable.weather_sky_0);
 		}
 		else if(sky.contains("poco") && sky.contains("nuv"))
 		{
@@ -80,7 +80,7 @@ public class SkyDrawableIdPicker {
 		else if(sky.contains("coperto"))
 		{
 			/* the same for day and night */
-			id = (R.drawable.weather_many_clouds);
+			id = (R.drawable.weather_sky_4);
 		}
 		else if(sky.contains("variabil"))
 		{

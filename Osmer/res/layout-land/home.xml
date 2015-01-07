@@ -10,10 +10,11 @@
         android:layout_width="0dip"
         android:layout_height="fill_parent"
         android:layout_weight="1.0"
+        android:background="@drawable/shape_background_landscape"
         android:src="@drawable/fvg_background2" />
 
     <ScrollView
-        android:id="@+id/scrollView"
+        android:id="@+id/textViewScroll"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1.0" >

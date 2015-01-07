@@ -4,5 +4,6 @@
     <color name="primary_dark">#757575</color>
     <color name="primary_light">#bdbdbd</color>
     <color name="accent">#ff9800</color> 
+    <color name="accent_semitransparent">#ccff9800</color> 
     <!-- #ff9800 is orange http://www.google.com/design/spec/style/color.html#color-color-palette  -->
 </resources>

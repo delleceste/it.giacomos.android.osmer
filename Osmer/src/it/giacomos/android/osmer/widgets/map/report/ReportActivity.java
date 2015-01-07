@@ -1,13 +1,10 @@
 package it.giacomos.android.osmer.widgets.map.report;
 
-import it.giacomos.android.osmer.Logger;
-import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.observations.ObservationData;
 import it.giacomos.android.osmer.preferences.Settings;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.content.Intent;
@@ -16,7 +13,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CheckBox;
@@ -26,7 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 
-public class ReportActivity extends Activity implements OnClickListener, OnItemSelectedListener
+public class ReportActivity extends ActionBarActivity implements OnClickListener, OnItemSelectedListener
 {
 	private double mLatitude, mLongitude;
 	private String mLocality;
@@ -41,10 +37,9 @@ public class ReportActivity extends Activity implements OnClickListener, OnItemS
 	{
 		super.onCreate(savedInstanceState);
 
-		requestWindowFeature(Window.FEATURE_PROGRESS);
-		this.setProgressBarVisibility(true);
-
 		setContentView(R.layout.report_activity_layout);
+		
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		((Button)findViewById(R.id.bSend)).setOnClickListener(this);
 

@@ -28,7 +28,7 @@ public class DrawerItemClickListener implements ListView.OnItemClickListener
 		DrawerLayout drawerLayout = (DrawerLayout) mOsmerActivity.findViewById(R.id.drawer_layout);
 		drawerLayout.closeDrawer(drawerListView);
 		/* calls switchView on OsmerActivity with the position passed */
-		mOsmerActivity.getActionBarPersonalizer().drawerItemChanged(position);
+		mOsmerActivity.getActionBarManager().drawerItemChanged(position);
 	}
 
 	private OsmerActivity mOsmerActivity;

@@ -1,6 +1,5 @@
 package it.giacomos.android.osmer;
 
-// import com.faizmalkani.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
@@ -77,6 +76,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -90,19 +90,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -423,7 +427,7 @@ OnPageChangeListener
 
 		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabNewReport);
 		fab.setOnClickListener(this);
-		fab.setColor(getResources().getColor(R.color.accent));
+		fab.setColor(getResources().getColor(R.color.accent_semitransparent));
 		fab.setDrawable(getResources().getDrawable(R.drawable.ic_menu_edit_fab));
 		/* hide fab if the user scrolls with his finger down, setting a minimum scroll y length */
 		final float floatingActionButtonHideYThresholdDPI = 12.0f;
@@ -895,7 +899,6 @@ OnPageChangeListener
 	@Override
 	public void onClick(View v)
 	{
-		Log.e("OsmerActivity.onCL", " id " + v.getId());
 		if (v.getId() == R.id.actionOverflow) 
 		{
 			stopRadarAnimation();
@@ -904,7 +907,11 @@ OnPageChangeListener
 		else if(v.getId() == R.id.actionNewReport || v.getId() == R.id.fabNewReport)
 		{
 			if(mCurrentViewType != ViewType.REPORT)
-				this.mActionBarManager.drawerItemChanged(5);
+			{
+				//mDrawerList.setItemChecked(5, true);
+				//this.mActionBarManager.drawerItemChanged(5);
+				mDrawerList.performItemClick(mDrawerList, 5, -1); /* seems to be enough */
+			}
 			mReportConditionsAccepted = mSettings.reportConditionsAccepted();
 			if(mReportConditionsAccepted)
 				startReportActivity();	
@@ -1007,7 +1014,6 @@ OnPageChangeListener
 		OMapFragment mapF = this.getMapFragment();
 		ForecastTabbedFragment forecastFrag = getForecastFragment();
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		SlidingTabLayout stl = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
 		if(id == 0)
 		{
 			ft.hide(mapF);
@@ -1173,6 +1179,10 @@ OnPageChangeListener
 			fab.hide(true);
 		else if(!fab.isVisible())
 			fab.hide(false);
+		else if(mCurrentFragmentId == 1)
+			fab.setColor(this.getResources().getColor(R.color.accent));
+		else
+			fab.setColor(getResources().getColor(R.color.accent_semitransparent));
 	}
 
 	public DownloadManager getDownloadManager() { return m_downloadManager; }
@@ -1312,7 +1322,7 @@ OnPageChangeListener
 		return mDrawerList;
 	}
 
-	public ActionBarManager getActionBarPersonalizer()
+	public ActionBarManager getActionBarManager()
 	{
 		return mActionBarManager;
 	}
@@ -1512,5 +1522,4 @@ OnPageChangeListener
 
 	private float mLastTouchedY;
 	private float mFloatingActionButtonHideYThreshold;
-
 }
