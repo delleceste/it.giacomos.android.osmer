@@ -16,20 +16,16 @@ public class NetworkStatusMonitor extends BroadcastReceiver
 	
 	public  void onReceive(Context context, Intent intent)
 	{
-		boolean noConnectivity = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-		String reason = intent.getStringExtra(ConnectivityManager.EXTRA_REASON);
-		boolean isFailover = intent.getBooleanExtra(ConnectivityManager.EXTRA_IS_FAILOVER, false);
-
-		NetworkInfo currentNetworkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-
-		m_isConnected = currentNetworkInfo.isConnected();
+		ConnectivityManager cm =
+		        (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo currentNetworkInfo = cm.getActiveNetworkInfo();
+		
+		m_isConnected = currentNetworkInfo != null && currentNetworkInfo.isConnectedOrConnecting();
+		
 		if(m_isConnected)
 			m_networkStatusMonitorListener.onNetworkBecomesAvailable();
 		else 
 			m_networkStatusMonitorListener.onNetworkBecomesUnavailable();
-		
-		// do application-specific task(s) based on the current network state, such
-		// as enabling queuing of HTTP requests when currentNetworkInfo is connected etc.
 	}
 
 	public boolean isConnected() { return m_isConnected; }

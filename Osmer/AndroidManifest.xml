@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="872"
-    android:versionName="2.20-alpha7" >
+    android:versionCode="874"
+    android:versionName="2.20-alpha8" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -154,7 +154,6 @@
 
             <intent-filter android:priority="500" >
 
-                <!-- action android:name="android.intent.action.BOOT_COMPLETED" / -->
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
@@ -165,33 +164,16 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
-
-        <activity
-            android:name="it.giacomos.android.osmer.widgets.map.report.tutorialActivity.ScenarioListActivity"
-            android:label="@string/title_scenario_list"
-            android:launchMode="singleTop"
-            android:parentActivityName="it.giacomos.android.osmer.OsmerActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="it.giacomos.android.osmer.OsmerActivity" />
-        </activity>
-        <activity
+        
+        <!--   activity
             android:name="it.giacomos.android.osmer.trial.BuyProActivity"
             android:label="@string/title_activity_buy_pro"
             android:parentActivityName="it.giacomos.android.osmer.OsmerActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="it.giacomos.android.osmer.OsmerActivity" />
-        </activity>
-        <activity
-            android:name="it.giacomos.android.osmer.widgets.map.report.tutorialActivity.ScenarioDetailActivity"
-            android:label="@string/title_scenario_detail"
-            android:parentActivityName=".widgets.map.report.tutorialActivity.ScenarioListActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:launchMode="singleTop"
-                android:value=".ScenarioListActivity" />
-        </activity>
+        </activity -->
+      
         <activity
             android:name="it.giacomos.android.osmer.widgets.map.report.tutorialActivity.TutorialPresentationActivity"
             android:label="@string/title_activity_tutorial_presentation"
@@ -220,6 +202,7 @@
         </receiver>
 
         <service android:name="it.giacomos.android.osmer.GcmIntentService" />
+        
         <service android:name="it.giacomos.android.osmer.service.RadarSyncAndRainGridDetectService" />
 
         <activity
