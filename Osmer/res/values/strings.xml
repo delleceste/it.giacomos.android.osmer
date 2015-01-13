@@ -492,6 +492,13 @@
 	      			
 	    </p>
 	    
+	    <strong>Important</strong>
+	    <p>
+	    Meteo.FVG does not provide textual information for three and four days forecast map.
+	    Part of the information is thus missing from the 3 and 4 days forecast map.
+	    In particular <strong>snow indication may be incomplete or missing, mist and wind symbols are missing</strong>.
+	    </p>
+	    
 	    <p>
 	    
 	    The correct parsing of the text files obtained from <a href="http://www.meteo.fvg.it"> http://www.meteo.fvg.it</a> is not

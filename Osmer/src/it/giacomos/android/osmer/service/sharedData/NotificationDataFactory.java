@@ -6,7 +6,7 @@ public class NotificationDataFactory
 {
 	public boolean isNewRadarImageNotification(String input)
 	{
-		return input.startsWith("I:");
+		return (input != null && input.startsWith("I:"));
 	}
 	
 	public ArrayList<NotificationData> parse(String input)

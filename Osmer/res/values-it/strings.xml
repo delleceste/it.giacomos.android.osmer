@@ -497,6 +497,16 @@
 	      			
 	    </p>
 	    
+	    <strong>Importante!</strong>
+	    <p>
+	    Meteo.FVG non fornisce le informazioni sulle previsioni a tre e quattro giorni sottoforma di testo.
+	    L\'autore della applicazione non è pertanto in grado di garantire l\'esattezza della mappatura dei simboli
+	    sulla cartina meteorologica. In particolare, la rappresentazione grafica della <strong>neve</strong> 
+	    può essere <strong>inesatta</strong>, quella della <strong> foschia o nebbia è del tutto assente</strong>,
+	    come pure le <strong>informazioni sul vento sono mancanti</strong>.
+	    <br/>Il problema riguarda le previsioni a 3 e 4 giorni.
+	    </p>
+	    
 	    <p>
 	    Non è altresì garantita la correttezza dell\'<cite>estrazione</cite> dei dati dai file di testo informativi scaricati da 
 	    <a href="http://www.meteo.fvg.it"> http://www.meteo.fvg.it</a>. <br/>
