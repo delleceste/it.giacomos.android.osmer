@@ -148,27 +148,33 @@ ReportUpdateTaskListener, ConnectionCallbacks, OnConnectionFailedListener
 	public void onConnected(Bundle arg0) 
 	{
 		Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient) ;
-		if(location != null)
+		/* since 2.20, allow fetching the reports even with geolocation disabled. Put latitude and
+		 * longitude to 0.0
+		 */
+		if(location == null)
 		{
-			/* if a task is already running or about to run, do not do anything, because an update is on
-			 * the way.
-			 */
-			if(mReportUpdateTask != null && (mReportUpdateTask.getStatus() == AsyncTask.Status.PENDING 
-					|| mReportUpdateTask.getStatus() == AsyncTask.Status.RUNNING))
-				return;
-
-			String deviceId = Secure.getString(mContext.getContentResolver(), Secure.ANDROID_ID);
-
-			if(mReportUpdateTask != null && mReportUpdateTask.getStatus() != AsyncTask.Status.FINISHED)
-				mReportUpdateTask.cancel(false);
-
-			mReportUpdateTask = new ReportUpdateTask(this, location, deviceId);
-			/* "http://www.giacomos.it/meteo.fvg/get_report_2_6_1.php" */
-			mReportUpdateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().getReportUrl());
+			location = new Location("DummyLocation");
+			location.setLatitude(0.0);
+			location.setLongitude(0.0);
+			mReportUpdaterListener.onReportUpdateMessage(mContext.getString(R.string.enable_location_for_full_functionality));
 		}
-		else /* popup an error message */
-			mReportUpdaterListener.onReportUpdateError(mContext.getString(R.string.location_disabled));
-		
+		/* if a task is already running or about to run, do not do anything, because an update is on
+		 * the way.
+		 */
+		if(mReportUpdateTask != null && (mReportUpdateTask.getStatus() == AsyncTask.Status.PENDING 
+				|| mReportUpdateTask.getStatus() == AsyncTask.Status.RUNNING))
+			return;
+
+		String deviceId = Secure.getString(mContext.getContentResolver(), Secure.ANDROID_ID);
+
+		if(mReportUpdateTask != null && mReportUpdateTask.getStatus() != AsyncTask.Status.FINISHED)
+			mReportUpdateTask.cancel(false);
+
+		mReportUpdateTask = new ReportUpdateTask(this, location, deviceId);
+		/* "http://www.giacomos.it/meteo.fvg/get_report_2_6_1.php" */
+		mReportUpdateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().getReportUrl());
+
+
 		/* no more interested in location updates, the task has been starting with the last known
 		 * location.
 		 */
@@ -191,7 +197,7 @@ ReportUpdateTaskListener, ConnectionCallbacks, OnConnectionFailedListener
 		{
 			/* call onReportUpdateDone on ReportOverlay */
 			mReportUpdaterListener.onReportUpdateDone(data);
-//			Log.e("ReportUpdater.onPostExecute", "saving to cache: " + data);
+			//			Log.e("ReportUpdater.onPostExecute", "saving to cache: " + data);
 			/* save data into cache */
 			DataPoolCacheUtils dataPoolCUtils = new DataPoolCacheUtils();
 			dataPoolCUtils.saveToStorage(data.getBytes(), ViewType.REPORT, mContext);
@@ -205,7 +211,7 @@ ReportUpdateTaskListener, ConnectionCallbacks, OnConnectionFailedListener
 	@Override
 	public void onConnectionSuspended(int cause) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 

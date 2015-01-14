@@ -343,6 +343,12 @@ OnClickListener
 	}
 
 	@Override
+	public void onReportUpdateMessage(String message)
+	{
+		Toast.makeText(mMapFrag.getActivity().getApplicationContext(), message, Toast.LENGTH_LONG).show();
+	}
+	
+	@Override
 	public void onReportUpdateError(String error)
 	{
 		MyAlertDialogFragment.MakeGenericError(error, mMapFrag.getActivity());

@@ -1204,9 +1204,11 @@ OnPageChangeListener
 		Location loc = this.mLocationService.getCurrentLocation();
 		LocationInfo loci = mLocationService.getCurrentLocationInfo();
 		if(loc == null)
-			MyAlertDialogFragment.MakeGenericError(R.string.location_not_available, this);
+			MyAlertDialogFragment.MakeGenericError(R.string.location_not_available, this, 
+					MyAlertDialogFragment.OPTION_OPEN_GEOLOCALIZATION_SETTINGS);
 		else if(!mDownloadStatus.isOnline)
-			MyAlertDialogFragment.MakeGenericInfo(R.string.reportNeedToBeOnline, this);
+			MyAlertDialogFragment.MakeGenericError(R.string.reportNeedToBeOnline, this, 
+					MyAlertDialogFragment.OPTION_OPEN_NETWORK_SETTINGS);
 		else
 		{
 			ObservationData obsData = new NearestObservationData().get(loc, m_observationsCache);

@@ -48,9 +48,10 @@
     <string name="server_error">Server error</string>
     <string name="xml_error">XML error</string>
     <string name="lcation_service_error">There was an error obtaining the location service</string>
-    <string name="location_not_available">The current location is not available</string>
+    <string name="location_not_available">The current location is not available. Enable geolocalization</string>
     <string name="location_disabled">The location service is disabled. Enable it through the system settings.
         The displayed information will not be updated.</string>
+    <string name="enable_location_for_full_functionality">Enable location services for full functionality.</string>    
     <string name="data_missing">Data missing</string>
     <string name="min_temp">Minimum Temperature</string>
     <string name="max_temp">Maximum Temperature</string>
@@ -764,5 +765,9 @@ Please note: requests devoid of the full name and date will be ignored.\n\n</str
     <string name="personal_message_date">Date</string>
     <string name="title_activity_personal_message">Personal message</string>
     <string name="service_stopped_app_blocked">Application blocked: stopping service</string>
+    
+    <string name="open_geoloc_settings">Enable</string>
+    <string name="open_network_settings">Activate</string>
+    <string name="wait_for_location">Wait for location</string>
 
 </resources>

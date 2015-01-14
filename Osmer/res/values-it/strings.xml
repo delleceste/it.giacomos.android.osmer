@@ -51,6 +51,7 @@
     <string name="xml_error">Errore nel documento XML</string>
     <string name="location_disabled">Il servizio di geolocalizzazione non è attivo. L\'aggiornamento
         delle segnalazioni non è possibile. Abilita la geolocalizzazione nelle impostazioni di sistema.</string>
+    <string name="enable_location_for_full_functionality">Abilita la geolocalizzazione per sfruttare tutte le funzionalità</string>   
     <string name="data_missing">Dati mancanti</string>
     <string name="min_temp">Temperatura Minima</string>
     <string name="max_temp">Temperatura Massima</string>
@@ -160,7 +161,7 @@
     <string name="meters">m</string>
     <string name="km">km</string>
     <string name="my_location_layer_not_enabled">my-location non abilitato</string>
-    <string name="location_not_available">La posizione corrente non è disponibile</string>
+    <string name="location_not_available">La posizione corrente non è disponibile. Abilita la geolocalizzazione.</string>
     <!-- xml symbol map -->
     <string name="sky">cielo</string>
     <string name="sky0">sereno</string>
@@ -940,4 +941,9 @@ mio android id è il seguente:\n\n
     <string name="personal_message_date">Data</string>
     <string name="title_activity_personal_message">Messaggio personale</string>
     <string name="service_stopped_app_blocked">Applicazione bloccata: fermo il servizio di notifiche</string>
+    
+     <string name="open_geoloc_settings">Abilita</string>
+    <string name="open_network_settings">Abilita</string>
+    <string name="wait_for_location">Recupero della posizione in corso#8230;</string>
+    
 </resources>
