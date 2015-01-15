@@ -57,24 +57,24 @@ public class SkyDrawableIdPicker {
 		if(sky.contains("sereno"))
 		{
 			if(night)
-				id = (R.drawable.weather_clear_night);
+				id = (R.drawable.weather_sky_0_nite);
 			else
 				id = (R.drawable.weather_sky_0);
 		}
 		else if(sky.contains("poco") && sky.contains("nuv"))
 		{
 			if(night)
-				id = (R.drawable.weather_few_clouds_night);
+				id = (R.drawable.weather_few_clouds_nite);
 			else
 				id = (R.drawable.weather_few_clouds);
 		}
 		else if(sky.contains("nuvoloso"))
 		{
 			if(night)
-				id = (R.drawable.weather_clouds_night);
+				id = (R.drawable.weather_sky_3_nite);
 			else
 			{
-				id = (R.drawable.weather_clouds);
+				id = (R.drawable.weather_sky_3);
 			}
 		}
 		else if(sky.contains("coperto"))
@@ -85,9 +85,9 @@ public class SkyDrawableIdPicker {
 		else if(sky.contains("variabil"))
 		{
 			if(night)
-				id = (R.drawable.weather_variable_showers_night);
+				id = (R.drawable.weather_clouds_nite);
 			else
-				id = (R.drawable.weather_variable_showers);
+				id = (R.drawable.weather_clouds);
 		}
 		else if(sky.contains("neve") && sky.contains("piogg")) /* pioggia e neve */
 		{
@@ -106,7 +106,7 @@ public class SkyDrawableIdPicker {
 			if(night)
 				id = (R.drawable.weather_storm_night);
 			else
-				id = (R.drawable.weather_storm);
+				id = (R.drawable.weather_storm_13);
 		}
 		else if(sky.contains("grandin"))
 		{
