@@ -37,7 +37,7 @@ public class LocationNamesMap {
 		mMap.put("Paluzza", new LatLng(46.534680, 13.020762));
 		mMap.put("Pontebba", new LatLng(46.504354, 13.305738));
 		mMap.put("Zoncolan (1750 m)", new LatLng(46.500000, 12.916670));
-		mMap.put("M.Zoncolan", new LatLng(46.500000	,12.916670));
+		mMap.put("M.te Zoncolan", new LatLng(46.500000	,12.916670));
 		mMap.put("Zoncolan", new LatLng(46.500000	,12.916670));
 		mMap.put("Forni di Sopra", new LatLng(46.423140, 12.583460));
 		mMap.put("Barcis", new LatLng(46.190718,12.559284));
@@ -60,6 +60,8 @@ public class LocationNamesMap {
 		mMap.put("Borgo Grotta Gigante", new LatLng(45.705993, 13.763003));
 		mMap.put("Gradisca d'Is.", new LatLng(45.892425, 13.500194));
 		mMap.put("Sappada", new LatLng(46.568321,12.685434));
+		mMap.put("Musi", new LatLng(46.313148,13.271718));
+		mMap.put("Codroipo", new LatLng(45.961394,12.976781));
 		
 		mMap.put("Prealpi Giulie", new LatLng(46.294972,13.334999));
 		mMap.put("Monti", new LatLng(46.59621,12.873917));

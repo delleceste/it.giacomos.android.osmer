@@ -5,7 +5,7 @@
     <string name="app_broadcast_receiver">Meteo.FVG.BootReceiver</string>
     <string name="version">versione</string>
     <string name="data_source">Fonte dati: http://www.meteo.fvg.it</string>
-    <string name="author">&#169; 2013</string>
+    <string name="author">&#169; 2015</string>
     <string name="author_web">http://www.giacomos.it</string>
     <string name="yes">sì</string>
     <string name="no">no</string>
@@ -405,7 +405,7 @@
 	    
 	    <h6>Autore</h6>
 	    
-	    <p>Copyright &#169; 2013 Giacomo Strangolino</p>
+	    <p>Copyright &#169; 2015 Giacomo Strangolino</p>
 	    
 	    <p>
 

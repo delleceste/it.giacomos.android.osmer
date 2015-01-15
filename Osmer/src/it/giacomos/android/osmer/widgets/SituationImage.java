@@ -82,7 +82,7 @@ implements LatestObservationCacheChangeListener
 		Resources res = this.getResources();
 		final String[] locations = { "Trieste", "Udine", "Gradisca d'Is.", "Pordenone",
 				"Tolmezzo", "Tarvisio", "Grado",
-				"Lignano", "Chievolis"
+				"Lignano", "Barcis", "Forni di Sopra", "M.te Zoncolan", "M.Matajur", "Codroipo"
 		};
 
 		LocationNamesMap locMap = new LocationNamesMap();
@@ -188,7 +188,7 @@ implements LatestObservationCacheChangeListener
 			if(d.hasIcon())
 			{	
 				icon = d.getIcon();
-				iconPt.x -= icon.getWidth() / 2;
+				iconPt.x -= icon.getWidth() / 3;
 				iconPt.y -= icon.getHeight();
 				yMin = iconPt.y;
 				xMax = iconPt.x + icon.getWidth();
@@ -229,7 +229,7 @@ implements LatestObservationCacheChangeListener
 				/* - xMin is not changed
 				 */
 				nextY += mTxtRect.height() + 4;
-				nextX += mTxtRect.width() / 5;
+		//		nextX += mTxtRect.width() / 5;
 			}
 			if(d.hasWaterTemp())
 			{
