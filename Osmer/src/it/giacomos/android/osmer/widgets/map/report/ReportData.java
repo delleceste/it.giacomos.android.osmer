@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.widgets.map.report;
 
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.observations.SunsetCalculator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
@@ -56,28 +57,46 @@ public class ReportData extends DataInterface
 		String title = "";
 		String skystr = "";
 		int windIdx, iconId  = -1;
+		boolean night = new SunsetCalculator().isDark();
+		
 		String windtxtItems[] = ctx.getResources().getStringArray(R.array.report_wind_textitems);
 		mMarkerOptions = null;
 		Resources res = ctx.getResources();
 
 		if(sky == 1)
 		{
-			iconId = R.drawable.weather_sky_0;
+			if(night)
+				iconId = R.drawable.weather_sky_0_nite;
+			else
+				iconId = R.drawable.weather_sky_0;
+			
 			skystr += res.getString(R.string.sky0);
 		}
 		else if(sky == 2)
 		{
-			iconId = R.drawable.weather_few_clouds;
+			if(night)
+				iconId = R.drawable.weather_few_clouds_nite;
+			else
+				iconId = R.drawable.weather_few_clouds;
+			
 			skystr += res.getString(R.string.sky1);
 		}
 		else if(sky == 3)
 		{
-			iconId = R.drawable.weather_clouds;
+			if(night)
+				iconId = R.drawable.weather_clouds_nite;
+			else
+				iconId = R.drawable.weather_clouds;
+			
 			skystr += res.getString(R.string.sky2);
 		}
 		else if(sky == 4)
 		{
-			iconId = R.drawable.weather_sky_3;
+			if(night)
+				iconId = R.drawable.weather_sky_3_nite;
+			else
+				iconId = R.drawable.weather_sky_3;
+			
 			skystr += res.getString(R.string.sky3);
 		}
 		else if(sky == 5)

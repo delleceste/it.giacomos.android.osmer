@@ -23,35 +23,8 @@ public class SkyDrawableIdPicker {
 	{
 		int id = -1;
 		/* what time is it? decide icons */
-		Date d = Calendar.getInstance().getTime();
-		int sunset, dawn;
-		int month = d.getMonth();
-		if((month > 2 && month < 5) || month > 8 && month < 11)
-		{
-			dawn = 6;
-			sunset = 19;
-		}
-		else if(month > 4 && month < 9)
-		{
-			dawn = 5;
-			sunset = 21;
-		}
-		else if(month == 12)
-		{
-			dawn = 7;
-			sunset = 17;
-		}
-		else
-		{
-			dawn = 7;
-			sunset = 18;
-		}
-		int hours = d.getHours();
-		boolean night;
-		if(hours >= dawn && hours <= sunset)
-			night = false;
-		else
-			night = true;
+		
+		boolean night = new SunsetCalculator().isDark();
 		
 		/* choose the right icon now! */
 		if(sky.contains("sereno"))
