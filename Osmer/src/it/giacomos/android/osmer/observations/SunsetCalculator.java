@@ -15,13 +15,16 @@ public class SunsetCalculator {
 		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 
 		Calendar sunset = Calendar.getInstance(TimeZone.getDefault());
+		sunset.set(Calendar.AM_PM, Calendar.PM);
 		sunset.set(Calendar.HOUR, 0);
 		sunset.set(Calendar.MINUTE, 0);
 		sunset.set(Calendar.SECOND, 0);
 		Calendar dawn = Calendar.getInstance(TimeZone.getDefault());
+		dawn.set(Calendar.AM_PM, Calendar.AM);
 		dawn.set(Calendar.HOUR, 0);
 		dawn.set(Calendar.MINUTE, 0);
 		dawn.set(Calendar.SECOND, 0);
+		dawn.set(Calendar.AM_PM, Calendar.AM);
 		
 		Date now = cal.getTime();
 		
@@ -29,30 +32,30 @@ public class SunsetCalculator {
 		if((month > 2 && month < 5) || month > 8 && month < 11)
 		{
 			dawn.set(Calendar.HOUR, 6);
-			sunset.set(Calendar.HOUR, 19);
+			sunset.set(Calendar.HOUR, 7);
 		}
 		else if(month > 4 && month < 9)
 		{
 			dawn.set(Calendar.HOUR, 5);
-			sunset.set(Calendar.HOUR, 21);
+			sunset.set(Calendar.HOUR, 9);
 		}
 		else if(month == 12)
 		{
 			dawn.set(Calendar.HOUR, 7);
 			dawn.set(Calendar.MINUTE, 30);
-			sunset.set(Calendar.HOUR, 16);
+			sunset.set(Calendar.HOUR, 4);
 			sunset.set(Calendar.MINUTE, 30);
 		}
 		else if(month == 1)
 		{
 			dawn.set(Calendar.HOUR, 7);
 			dawn.set(Calendar.MINUTE, 15);
-			sunset.set(Calendar.HOUR, 17);
+			sunset.set(Calendar.HOUR, 5);
 		}
 		else
 		{
 			dawn.set(Calendar.HOUR, 7);
-			sunset.set(Calendar.HOUR, 18);
+			sunset.set(Calendar.HOUR, 6);
 		}
 		
 		/* compareTo returns the value 0 if the argument Date is equal to this Date; a value less than 0 if this Date 
