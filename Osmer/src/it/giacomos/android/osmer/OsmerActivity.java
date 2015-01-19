@@ -105,6 +105,7 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -151,12 +152,9 @@ OnPageChangeListener
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{
-		/* since ActionBarActivity, this must be called before super.onCreate */
-		requestWindowFeature(Window.FEATURE_PROGRESS);
 		super.onCreate(savedInstanceState);
 
 		//		Log.e("OsmerActivity.onCreate", "onCreate called");
-		this.setProgressBarVisibility(true);
 
 		/* create the location update client and connect it to the location service */
 		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
@@ -350,7 +348,9 @@ OnPageChangeListener
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		this.setSupportActionBar(toolbar);
-
+		
+		mProgressBar = (ProgressBar) findViewById (R.id.mainProgressBar);
+ 
 		mDrawerItems = getResources().getStringArray(R.array.drawer_text_items);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -643,13 +643,17 @@ OnPageChangeListener
 		tbu.update(this);
 		tbu = null;
 		double progressValue = ProgressBarParams.MAX_PB_VALUE * step /  total;
-		setProgress((int) progressValue);
+		mProgressBar.setMax((int)ProgressBarParams.MAX_PB_VALUE);
+		mProgressBar.setProgress((int) progressValue);
 		ProgressBarParams.currentValue = progressValue;
 		//		Log.e("onDownloadProgressUpdate", "step " + step + "/" + total);
 		if(mRefreshAnimatedImageView != null && ProgressBarParams.currentValue == ProgressBarParams.MAX_PB_VALUE)
 			mRefreshAnimatedImageView.hide(); /* stops and hides */
 		else if(mRefreshAnimatedImageView != null)
 			mRefreshAnimatedImageView.start();
+		/* hide progress bar when download is complete */
+		if(ProgressBarParams.currentValue == ProgressBarParams.MAX_PB_VALUE)
+			mProgressBar.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -679,9 +683,9 @@ OnPageChangeListener
 		else if(reason == DownloadReason.DataExpired)
 			tmm.onShortMessage(getApplicationContext(),  R.string.dataExpiredToast);
 
-		setProgressBarVisibility(true);
+		mProgressBar.setVisibility(View.VISIBLE);
 		ProgressBarParams.currentValue = 0;
-		setProgress(0);
+		mProgressBar.setProgress(0);
 		if(mRefreshAnimatedImageView != null)
 			mRefreshAnimatedImageView.resetErrorFlag();
 	}
@@ -1175,7 +1179,7 @@ OnPageChangeListener
 		
 		/* hide fab if in observations, radar or webcam mode */
 		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabNewReport);
-		if(fab.isVisible() && (this.mCurrentFragmentId == 1 && id != ViewType.REPORT))
+		if( /* fab.isVisible() && */ (this.mCurrentFragmentId == 1 && id != ViewType.REPORT))
 			fab.hide(true);
 		else if(!fab.isVisible())
 			fab.hide(false);
@@ -1524,4 +1528,6 @@ OnPageChangeListener
 
 	private float mLastTouchedY;
 	private float mFloatingActionButtonHideYThreshold;
+	
+	private ProgressBar mProgressBar;
 }

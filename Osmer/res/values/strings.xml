@@ -755,6 +755,8 @@ Please note: requests devoid of the full name and date will be ignored.\n\n</str
     <string name="news_alert_title">News</string>
     <string name="news_alert_text">There are news about Meteo.FVG. Touch to read</string>
     <string name="gcm_registered_ok">Correctly registered with Google Cloud Messaging for notification service</string>
+    <string name="gcm_registered_failed">Failed to register with Google Cloud Messaging for notification service.\n
+        Will try next time you start the application</string>
     <string name="pref_internal_rain_calc_checkbox">The phone calculates probability for rain alerts. This choice is faster, calculations are performed as soon as a new radar image is available. Recommended</string>
     <string name="pref_internal_rain_calc_checkbox_off">The rain possibility is calculated by the remote Meteo.FVG server. Notifications may arrive late, depending on the time interval set for the service. For slow devices.</string>
     <string name="pref_use_internal_rain_detection">Use the device to calculate the rain probability. Note: this service is implemented

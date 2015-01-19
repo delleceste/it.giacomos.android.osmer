@@ -521,7 +521,7 @@ RadarAnimationListener, OnMapReadyCallback
 		}
 		else if(m.currentMode != MapMode.HIDDEN)
 		{
-			
+			Log.e("mSetMode", " map mode is " + m.currentMode);
 			ObservationDrawableIdPicker observationDrawableIdPicker = new ObservationDrawableIdPicker();
 			int resId = observationDrawableIdPicker.pick(m.currentType);
 			observationDrawableIdPicker = null;
@@ -532,6 +532,7 @@ RadarAnimationListener, OnMapReadyCallback
 						m.currentMode, this);
 				setOnZoomChangeListener(mObservationsOverlay);
 				mOverlays.add(mObservationsOverlay);
+				Log.e("mSetMode", " calling  mObservationsOverlay" + m.currentMode);
 				mObservationsOverlay.update(Math.round(mMap.getCameraPosition().zoom));
 			}
 			radarTimestampText.hide();

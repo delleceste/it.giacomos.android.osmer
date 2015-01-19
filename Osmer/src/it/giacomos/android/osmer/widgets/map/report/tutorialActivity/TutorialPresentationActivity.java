@@ -15,11 +15,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class TutorialPresentationActivity extends FragmentActivity 
+public class TutorialPresentationActivity extends ActionBarActivity 
 implements ReportConditionsAcceptedListener
 {
 	/**
@@ -45,7 +46,7 @@ implements ReportConditionsAcceptedListener
 		setContentView(R.layout.activity_tutorial_presentation);
 
 		// Show the Up button in the action bar.
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.

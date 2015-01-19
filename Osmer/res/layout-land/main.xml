@@ -7,36 +7,64 @@
 
     <!-- The main content view -->
 
-<RelativeLayout 
+    <RelativeLayout
         android:id="@+id/content_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent" >
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-            <it.giacomos.android.osmer.slidingtablayout.SlidingTabLayout
-        android:id="@+id/sliding_tabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <!--  NOTE: important wrap_content in width below so that the title is shown
+            when there is space -->
+            <LinearLayout
+                android:id="@+id/toolbar_vertical_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="vertical" >
+
+                <ProgressBar
+                    android:id="@+id/mainProgressBar"
+            		android:layout_gravity="top"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/accent"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/toolbar_horizontal_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal" >
+
+                    <it.giacomos.android.osmer.slidingtablayout.SlidingTabLayout
+                        android:id="@+id/sliding_tabs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <Spinner
+                        android:id="@+id/toolbar_spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    
+                </LinearLayout>
+                
+            </LinearLayout>
             
-            <Spinner
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/toolbar_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
         </android.support.v7.widget.Toolbar>
 
         <LinearLayout
-            android:layout_below="@id/toolbar"
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal" 
-            android:baselineAligned="false">
+            android:layout_below="@id/toolbar"
+            android:baselineAligned="false"
+            android:orientation="horizontal" >
 
             <fragment
                 android:id="@+id/forecastTabbedFragment"
@@ -45,10 +73,10 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
-         <include  layout="@layout/map_fragment"></include>
-        
-        <!--
-        
+            <include layout="@layout/map_fragment" >
+            </include>
+
+            <!--
         <fragment
             android:id="@+id/mapview"
             android:name="it.giacomos.android.osmer.widgets.map.OMapFragment"
@@ -57,24 +85,21 @@
             android:layout_weight="1"
             tools:layout="@layout/map_fragment" >
         </fragment>
-        
-         -->
+            -->
         </LinearLayout>
-        
-            <it.giacomos.android.osmer.floatingactionbutton.FloatingActionButton
-              android:id="@+id/fabNewReport"
-              android:layout_width="72dp"
-              android:layout_height="72dp"
-              android:layout_alignParentBottom="true"
-              android:layout_alignParentEnd="false"
-              android:layout_alignParentRight="true"
-              android:layout_alignParentStart="false"
-              android:layout_margin="16dp"
-              android:drawable="@drawable/ic_menu_edit"
-              android:color="#e0e0e0" />
-        
-    
-</RelativeLayout>
+
+        <it.giacomos.android.osmer.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabNewReport"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="false"
+            android:layout_margin="16dp"
+            android:drawable="@drawable/ic_menu_edit"
+            android:color="#e0e0e0" />
+    </RelativeLayout>
 
     <!-- The navigation drawer -->
 

@@ -4,6 +4,7 @@ import it.giacomos.android.osmer.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressUpdateListener;
 import it.giacomos.android.osmer.locationUtils.LocationInfo;
 import it.giacomos.android.osmer.preferences.SettingsActivity;
+import it.giacomos.android.osmer.MyAlertDialogFragment;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.widgets.SituationImage;
@@ -35,11 +36,11 @@ public class MenuActionsManager implements GeocodeAddressUpdateListener
 	public  boolean itemSelected(MenuItem item)
 	{
 		Resources res = mActivity.getApplicationContext().getResources();
-		Bundle data = null;
+//		Bundle data = null;
 		switch(item.getItemId())
 		{
 		case R.id.menu_info:
-			data = new Bundle();
+	//		data = new Bundle();
 			String text = "<h6>" + res.getString(R.string.app_name);
 			try {
 				PackageInfo info = mActivity.getPackageManager().getPackageInfo(mActivity.getPackageName(), 0);
@@ -52,16 +53,14 @@ public class MenuActionsManager implements GeocodeAddressUpdateListener
 			
 			text += "</h6>\n" + res.getString(R.string.popup_app_info);
 			
-			data.putString("text", text);
-			data.putString("title", res.getString(R.string.popup_info_title));
-			mActivity.showDialog(TEXT_DIALOG, data);
+	//		data.putString("text", text);
+	//		data.putString("title", res.getString(R.string.popup_info_title));
+			MyAlertDialogFragment.MakeGenericInfo(Html.fromHtml(text).toString(), mActivity);
 			break;
 			
 		case R.id.menu_data_update_info:
-			data = new Bundle();
-			data.putString("text", res.getString(R.string.popup_data_update_info));
-			data.putString("title", res.getString(R.string.popup_data_update_title));
-			mActivity.showDialog(TEXT_DIALOG, data);
+		//	data.putString("title", res.getString(R.string.popup_data_update_title));
+			MyAlertDialogFragment.MakeGenericInfo(Html.fromHtml(mActivity.getString(R.string.popup_data_update_info)).toString(), mActivity);
 			break;
 		case R.id.menu_online_guide:
 			Intent idoc = new Intent(Intent.ACTION_VIEW);
@@ -75,11 +74,8 @@ public class MenuActionsManager implements GeocodeAddressUpdateListener
 			break;
 			
 		case R.id.menu_config_info:
-			data = new Bundle();
-			data.putString("title", res.getString(R.string.menu_config_info));
 			ConfigInfo configInfo = new ConfigInfo();
-			data.putString("text", configInfo.gatherInfo(mActivity));
-			mActivity.showDialog(TEXT_DIALOG, data);
+			MyAlertDialogFragment.MakeGenericInfo(Html.fromHtml(configInfo.gatherInfo(mActivity)).toString(), mActivity);
 			configInfo = null;
 			break;
 

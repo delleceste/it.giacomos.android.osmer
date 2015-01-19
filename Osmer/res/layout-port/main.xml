@@ -28,16 +28,46 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
+            <!--  NOTE: important wrap_content in width below so that the title is shown
+            when there is space. Excluded progress bar -->
+            <LinearLayout
+            android:id="@+id/toolbar_vertical_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" 
+            android:baselineAligned="false">
+           
+                 <ProgressBar
+            android:id="@+id/mainProgressBar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_gravity="top"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/accent"
+            android:visibility="gone" />
+                
+        <LinearLayout
+            android:id="@+id/toolbar_horizontal_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" 
+            android:baselineAligned="false">
+        
             <it.giacomos.android.osmer.slidingtablayout.SlidingTabLayout
-                android:id="@+id/sliding_tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+        android:id="@+id/sliding_tabs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+            
             <Spinner
-                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/toolbar_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            
+            </LinearLayout>
+             
+           
+             
+        </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
         <fragment

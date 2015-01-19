@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="888"
-    android:versionName="2.20-beta5" >
+    android:versionCode="890"
+    android:versionName="2.20-beta6" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -29,6 +29,8 @@
 
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
+    
+    
     <!--
           ==================================     ========================================
     
@@ -36,11 +38,11 @@
                            
                           ========================================
     -->
-<!--
-    <permission
+    
+	    <permission
         android:name="it.giacomos.android.osmer.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
--->
+    
     <!--
           ==================================       ========================================
     
@@ -178,7 +180,7 @@
             android:name="it.giacomos.android.osmer.widgets.map.report.tutorialActivity.TutorialPresentationActivity"
             android:label="@string/title_activity_tutorial_presentation"
             android:parentActivityName="it.giacomos.android.osmer.OsmerActivity"
-            android:theme="@android:style/Theme.Holo.Light" >
+            android:theme="@style/OtherActivitiesTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="it.giacomos.android.osmer.OsmerActivity" />
@@ -186,7 +188,8 @@
         <activity
             android:name="it.giacomos.android.osmer.preferences.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="it.giacomos.android.osmer.OsmerActivity" >
+            android:parentActivityName="it.giacomos.android.osmer.OsmerActivity" 
+            android:theme="@android:style/Theme.Holo.Light" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="it.giacomos.android.osmer.OsmerActivity" />

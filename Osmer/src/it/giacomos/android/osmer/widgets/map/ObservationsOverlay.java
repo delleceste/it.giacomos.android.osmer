@@ -103,6 +103,7 @@ OnMarkerClickListener
 	 */
 	public void update(int level)
 	{
+		Log.e("ObservationsOverlay.update", " update map size " + mDataMap.size());
 		if(mDataMap.size() == 0)
 			return;
 

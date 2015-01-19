@@ -936,7 +936,8 @@ mio android id è il seguente:\n\n
 	<string name="news_alert_text">Ci sono comunicazioni da Meteo.FVG. Tocca per leggere.</string>
 	
 		<string name="gcm_registered_ok">Registrazione Google Cloud Messaging per il servizio notifiche correttamente effettuata.</string>
-	
+	<string name="gcm_registered_failed">Errore di registrazione Google Cloud Messaging per il servizio notifiche.
+	    La registrazione sarà effettuata di nuovo al prossimo avvio dell\'applicazione</string>
 	<string name="personal_message_title">Titolo</string>
     <string name="personal_message_date">Data</string>
     <string name="title_activity_personal_message">Messaggio personale</string>
