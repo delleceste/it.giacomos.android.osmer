@@ -3,7 +3,6 @@ package it.giacomos.android.osmer.widgets.map;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import it.giacomos.android.osmer.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,7 +23,6 @@ import it.giacomos.android.osmer.observations.MapMode;
 import it.giacomos.android.osmer.observations.ObservationData;
 import it.giacomos.android.osmer.observations.ObservationDrawableIdPicker;
 import it.giacomos.android.osmer.observations.ObservationType;
-import it.giacomos.android.osmer.observations.ObservationsCache;
 import it.giacomos.android.osmer.observations.ObservationsCacheUpdateListener;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.OsmerActivity;
@@ -41,7 +39,6 @@ import it.giacomos.android.osmer.widgets.map.report.OnTiltChangeListener;
 import it.giacomos.android.osmer.widgets.map.report.ReportOverlay;
 import it.giacomos.android.osmer.widgets.map.report.network.PostReportAsyncTaskPool;
 import it.giacomos.android.osmer.widgets.map.report.network.PostType;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.Html;
@@ -285,8 +282,7 @@ RadarAnimationListener, OnMapReadyCallback
 		/* map updates the observation data in ItemizedOverlay when new observations are available
 		 *
 		 */
-		ObservationsCache observationsCache = new ObservationsCache();
-		observationsCache.installObservationsCacheUpdateListener(this);
+		
 		
 //		FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.actionNewReport);
 //		fab.setOnClickListener((OsmerActivity) this.getActivity());
@@ -302,8 +298,8 @@ RadarAnimationListener, OnMapReadyCallback
 		/* when the activity creates us, it passes the initialization stuff through arguments */
 		mSetMode(mMode);
 		
-		if(mMode.currentMode == MapMode.DAILY_OBSERVATIONS || mMode.currentMode == MapMode.LATEST_OBSERVATIONS)
-			updateObservations(observationsCache.getObservationData(mMode.currentMode));
+//		if(mMode.currentMode == MapMode.DAILY_OBSERVATIONS || mMode.currentMode == MapMode.LATEST_OBSERVATIONS)
+//			updateObservations(mObservationsCache.getObservationData(mMode.currentMode));
 		
 		/* radar animation setup */
 		mRadarAnimation = new RadarAnimation(this);
@@ -439,7 +435,8 @@ RadarAnimationListener, OnMapReadyCallback
 	private void mSetMode(MapViewMode m)
 	{
 		OAnimatedTextView radarTimestampText = (OAnimatedTextView) getActivity().findViewById(R.id.mapMessageTextView);	
-		 //Log.e("--->OMapFragment: setMode invoked", "setMode invoked with mode: " + m.currentMode + ", time (type): " + m.currentType);
+		Log.e("--->OMapFragment: setMode invoked", "setMode invoked with mode: " + 
+				m.currentMode + ", time (type): " + m.currentType + " mMap " + mMap);
 
 		/* show the radar timestamp text anytime the mode is set to RADAR
 		 * if (!m.equals(mMode)) then the radar timestamp text is scheduled to be shown

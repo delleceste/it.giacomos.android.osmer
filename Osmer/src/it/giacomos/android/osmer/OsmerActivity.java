@@ -384,6 +384,9 @@ OnPageChangeListener
 		 * OMapFragment.onMapReady
 		 */
 		m_observationsCache = new ObservationsCache();
+		
+		OMapFragment map = getMapFragment();
+		m_observationsCache.installObservationsCacheUpdateListener(map);
 
 		/* Create DataPool.  */
 		mDataPool = new DataPool(this);
