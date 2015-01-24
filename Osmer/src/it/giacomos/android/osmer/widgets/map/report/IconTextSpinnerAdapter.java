@@ -106,8 +106,8 @@ public class IconTextSpinnerAdapter extends ArrayAdapter<String> {
 			else
 			{
 				arr_images =  new int[] { -1, /* index 0 */
-						R.drawable.weather_sky_0_nite_map, /* 1 */
-						R.drawable.weather_few_clouds_nite_map, /* 2 */
+						R.drawable.weather_sky_0_nite, /* 1 */
+						R.drawable.weather_few_clouds_nite, /* 2 */
 						R.drawable.weather_clouds_nite,  /* 3 */
 						R.drawable.weather_sky_3_nite,  /* 4 */
 						R.drawable.weather_sky_4, /* 5 */
