@@ -68,7 +68,6 @@ public class SunsetCalculator {
 			night = true;
 	//	Log.e("SunsetCalculator isDark", " now " + now + ", dawn " + dawn.getTime() + " sunset " + sunset.getTime() 
 	//			+ ", nite " + night +  " month " + month);
-		
-		night = true; return night;
+		return night;
 	}
 }
