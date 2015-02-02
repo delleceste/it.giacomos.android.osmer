@@ -189,12 +189,12 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 
 		Log.e("Online.onTextUpdate", "updated view type " + vt);
 		/* in version < 2.3, we used to complete download in onBitmapUpdate after BitmapType.TODAY was
-		 * downloaded. Following the same logic, after TODAY_SYMTABLE has been downloaded we complete
+		 * downloaded. Following the same logic, after HOME has been downloaded we complete
 		 * the data download.
 		 */
-		if(vt == ViewType.TODAY_SYMTABLE && !dDownloadStatus.fullForecastDownloadRequested())
+		if(vt == ViewType.HOME /* && !dDownloadStatus.fullForecastDownloadRequested() */)
 		{
-			dDownloadStatus.setFullForecastDownloadRequested(true);
+//			dDownloadStatus.setFullForecastDownloadRequested(true);
 			
 			if(!mIsTextTaskExecuting(ViewType.TODAY))
 				startTextTask(m_urls.todayUrl(), ViewType.TODAY);
