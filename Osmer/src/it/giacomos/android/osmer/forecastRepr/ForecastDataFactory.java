@@ -227,11 +227,11 @@ public class ForecastDataFactory
 				{
 					Locality l = (Locality) fdi;
 					if(l.particularSnow == 10)
-						l.setSnowBitmap(BitmapFactory.decodeResource(mResources, R.drawable.weather_particular_snow_smaller_10));
+						l.setSnowBitmap(BitmapFactory.decodeResource(mResources, R.drawable.weather_particular_snow_10));
 					else if(l.particularSnow == 11)
-						l.setSnowBitmap(BitmapFactory.decodeResource(mResources, R.drawable.weather_particular_snow_smaller_11));
+						l.setSnowBitmap(BitmapFactory.decodeResource(mResources, R.drawable.weather_particular_snow_11));
 					else if(l.particularSnow == 12)
-						l.setSnowBitmap(BitmapFactory.decodeResource(mResources, R.drawable.weather_particular_snow_smaller_12));
+						l.setSnowBitmap(BitmapFactory.decodeResource(mResources, R.drawable.weather_particular_snow_12));
 					if(l.particularStorm == 13)
 						l.setLightningBitmap(BitmapFactory.decodeResource(mResources, R.drawable.weather_particular_storm_50x50_13));
 
