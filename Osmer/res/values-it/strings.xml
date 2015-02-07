@@ -128,7 +128,7 @@
         <item>Osservazioni ultim\'ora</item>
         <item>Webcam</item>
         <item>Segnalazioni</item>
-        <item>Consiglia a un\'amico</item>
+        <item>Consiglia a un amico</item>
         <item>Sito Meteo.FVG</item>
         
     </string-array>
@@ -949,5 +949,15 @@ mio android id è il seguente:\n\n
      <string name="open_geoloc_settings">Abilita</string>
     <string name="open_network_settings">Abilita</string>
     <string name="wait_for_location">Recupero della posizione in corso#8230;</string>
+    
+    
+    <string name="send_meteofvgapp_to">Suggerisci Meteo.FVG tramite: </string>
+    <string name="send_meteofvgapp_subject">Ti suggerisco di provare la app Meteo.FVG per Android</string>
+    <string name="send_meteofvgapp_text">
+        Scarica gratuitamente la app Meteo.FVG per Android dal Google Play Store.\nSe
+        ti piace, puoi anche supportare il progetto acquistando la versione PRO!\n\nLink 
+        alla versione gratuita:\nhttps://play.google.com/store/apps/details?id=it.giacomos.android.osmer\n\nLink
+        alla versione di Meteo.FVG pro:\nhttps://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro"\n\n
+        </string>
     
 </resources>

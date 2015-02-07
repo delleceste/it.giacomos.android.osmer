@@ -1548,4 +1548,27 @@ OnPageChangeListener
 	private float mFloatingActionButtonHideYThreshold;
 	
 	private ProgressBar mProgressBar;
+
+	public void openMeteoFVGUrl() 
+	{
+		Intent i = new Intent(Intent.ACTION_VIEW);
+		i.setData(Uri.parse(new Urls().getMeteoFVGUrl()));
+		startActivity(i);
+	}
+
+	public void shareMeteoFVGApp() 
+	{
+		String appUrl; /* free or pro */
+		if(getApplicationContext().getPackageName().endsWith("pro"))
+			appUrl = new Urls().getMeteoFVGProAppStoreUrl();
+		else
+			appUrl = new Urls().getMeteoFVGAppStoreUrl();
+		
+		Intent sendIntent = new Intent();
+		sendIntent.setAction(Intent.ACTION_SEND);
+		sendIntent.putExtra(Intent.EXTRA_TEXT, appUrl);
+		sendIntent.setType("text/plain");
+		sendIntent.putExtra(Intent.EXTRA_SUBJECT, this.getString(R.string.send_meteofvgapp_subject));
+		startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.send_meteofvgapp_to)));
+	}
 }

@@ -773,5 +773,13 @@ Please note: requests devoid of the full name and date will be ignored.\n\n</str
     <string name="open_geoloc_settings">Enable</string>
     <string name="open_network_settings">Activate</string>
     <string name="wait_for_location">Wait for location</string>
+    
+    <string name="send_meteofvgapp_to">Share Meteo.FVG with</string>
+    <string name="send_meteofvgapp_subject">Try Meteo.FVG for Android</string>
+    <string name="send_meteofvgapp_text">Download the free app Meteo.FVG for Android from the Google Play Store.\n
+        If you like it, you can support the project purchasing the PRO version!\n\n
+        Download free app:\nhttps://play.google.com/store/apps/details?id=it.giacomos.android.osmer\n\n
+        Download Meteo.FVG pro:\nhttps://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro\n\n
+        </string>
 
 </resources>

@@ -150,5 +150,18 @@ public class Urls {
 	{
 		return "http://www.giacomos.it/meteo.fvg/get_configuration.php";
 	}
+
+	public String getMeteoFVGUrl() {
+		return "http://m.meteo.fvg.it/home.php";
+	}
+	
+	public String getMeteoFVGAppStoreUrl()
+	{
+		return "https://play.google.com/store/apps/details?id=it.giacomos.android.osmer";
+	}
+
+	public String getMeteoFVGProAppStoreUrl() {
+		return "https://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro";
+	}
 	
 }

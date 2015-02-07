@@ -35,7 +35,6 @@ public class ActionBarManager
 		mActionBarListItemNavigationListener = new ActionBarListItemNavigationListener(mActivity);
 	}
 
-
 	/* called after restore instance state, initializes the application according
 	 * to the saved state of the action bar in the previous execution.
 	 */
@@ -126,6 +125,13 @@ public class ActionBarManager
 		case 5:
 			mType = REPORT;
 			mActivity.switchView(ViewType.REPORT);
+			break;
+		case 6:
+			mActivity.shareMeteoFVGApp();
+			break;
+		case 7:
+			mActivity.openMeteoFVGUrl();
+
 			break;
 		}
 		
