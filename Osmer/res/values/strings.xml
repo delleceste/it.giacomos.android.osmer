@@ -127,6 +127,8 @@
         <item>Latest observations</item>
         <item>Webcam</item>
         <item>Reports</item>
+        <item>Suggest Meteo.FVG</item>
+        <item>Meteo.FVG web</item>
     </string-array>
     <string-array name="dailyobs_text_items">
         <item>Sky</item>

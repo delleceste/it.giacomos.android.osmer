@@ -38,12 +38,6 @@ public class ForecastTextView extends OTextView implements AreaTouchListener
 	}
 	
 	@Override
-	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
-	{
-		setData(txt);
-	}
-	
-	@Override
 	public void onAreaTouched(int id) 
 	{
 		mCurrentIndex = id;

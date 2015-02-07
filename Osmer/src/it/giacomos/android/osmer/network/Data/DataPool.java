@@ -128,6 +128,7 @@ public class DataPool implements DownloadListener
 	@Override
 	public void onTextBytesUpdate(byte[] bytes, ViewType vt) 
 	{
+		Log.e("DataPool.onTextBytesUpdate", "view type " + vt);
 		DataPoolCacheUtils dataPoolCUtils = new DataPoolCacheUtils();
 		dataPoolCUtils.saveToStorage(bytes, vt, mContext);
 	}
@@ -228,6 +229,7 @@ public class DataPool implements DownloadListener
 	 */
 	public void onTextUpdate(String text, ViewType t) 
 	{
+		Log.e("DataPool.onTextUpdate", "view type " + t);
 		StringData sd = mStringData.get(t);
 		StringData newSd = new StringData(text);
 		boolean textChanged = !newSd.equals(sd);
@@ -235,12 +237,15 @@ public class DataPool implements DownloadListener
 			mStringData.put(t, newSd); /* put in hash */
 		if(mTextListeners.containsKey(t))
 			mTextListeners.get(t).onTextChanged(text, t, false);
-		
+		Log.e("DataPool.onTextUpdate", "textChanged " + textChanged + ", " +
+				"mTextListeners.contains(" + t + "): " + mTextListeners.containsKey(t));
+		 
 	}
 
 	@Override
 	public void onTextUpdateError(ViewType t, String error) 
 	{
+		Log.e("DataPool.onTextUpdateError", "view type " + t + " error " + error);
 		/* do not put null text in mStringData map */
 		if(mTextListeners.containsKey(t))
 			mTextListeners.get(t).onTextError(error, t);

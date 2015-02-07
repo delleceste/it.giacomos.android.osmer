@@ -68,7 +68,7 @@ public class SkyDrawableIdPicker {
 		}	
 		else if(sky.contains("piogg"))
 		{
-			id = (R.drawable.weather_showers);
+			id = (R.drawable.weather_rain_cloud_6);
 		}
 		else if(sky.contains("neve"))
 		{

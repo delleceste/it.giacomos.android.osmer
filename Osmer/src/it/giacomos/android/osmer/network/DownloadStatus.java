@@ -116,18 +116,18 @@ public class DownloadStatus {
 	public boolean downloadComplete() { return !downloadIncomplete(); }
 
 
-	public boolean fullForecastDownloadRequested()
-	{
-		return (state &  FORECAST_DOWNLOAD_REQUESTED) != 0;
-	}
-
-	public void setFullForecastDownloadRequested(boolean requested)
-	{
-		if(requested)
-			state = (state | FORECAST_DOWNLOAD_REQUESTED);
-		else
-			state = (state & ~FORECAST_DOWNLOAD_REQUESTED);
-	}
+//	public boolean fullForecastDownloadRequested()
+//	{
+//		return (state &  FORECAST_DOWNLOAD_REQUESTED) != 0;
+//	}
+//
+//	public void setFullForecastDownloadRequested(boolean requested)
+//	{
+//		if(requested)
+//			state = (state | FORECAST_DOWNLOAD_REQUESTED);
+//		else
+//			state = (state & ~FORECAST_DOWNLOAD_REQUESTED);
+//	}
 
 	public void setWebcamListsDownloadRequested(boolean requested)
 	{

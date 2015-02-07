@@ -1,5 +1,8 @@
 package it.giacomos.android.osmer;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
@@ -108,6 +111,7 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -354,11 +358,22 @@ OnPageChangeListener
 		mDrawerItems = getResources().getStringArray(R.array.drawer_text_items);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
+		int[] drawerListIcons = new int[]{ -1, -1,  -1, -1, -1, -1, R.drawable.ic_menu_shared, R.drawable.logo_arpa };
+		ArrayList <HashMap <String, String> > alist = new ArrayList <HashMap <String, String> >();
+		for(int i = 0; i < drawerListIcons.length; i++)
+		{
+			 HashMap<String, String> hm = new HashMap<String,String>();
+			 hm.put("ITEM", mDrawerItems[i]);
+			 hm.put("ICON", Integer.toString(drawerListIcons[i]));
+			 alist.add(hm);
+		}
+		 String[] from = { "ITEM", "ICON" };
+		 int[] to   = { R.id.drawerItemText, R.id.drawerItemIcon };
+		 
 		/* Action bar stuff.  */
 		mActionBarManager = new ActionBarManager(this);
 		/* Set the adapter for the list view */
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, mDrawerItems));
+		mDrawerList.setAdapter(new SimpleAdapter(this, alist, R.layout.drawer_list_item, from, to));
 
 		/* Set the list's click listener */
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener(this));
