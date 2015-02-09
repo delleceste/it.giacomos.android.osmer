@@ -186,8 +186,6 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 	public void onTextUpdate(String s, ViewType vt, String errorMessage, AsyncTask<URL, Integer, String> task) 
 	{
 		long oldState = dDownloadStatus.state;
-
-		Log.e("Online.onTextUpdate", "updated view type " + vt);
 		/* in version < 2.3, we used to complete download in onBitmapUpdate after BitmapType.TODAY was
 		 * downloaded. Following the same logic, after HOME has been downloaded we complete
 		 * the data download.
@@ -294,7 +292,6 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 
 	private void startTextTask(String urlStr, ViewType t)
 	{
-		Log.e("Online.startTextTask", "view type " + t);
 		TextTask textTask = new TextTask(this, t);
 		try{
 			URL url = new URL(urlStr);

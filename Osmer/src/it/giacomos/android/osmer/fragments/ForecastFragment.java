@@ -225,7 +225,6 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 	@Override
 	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
 	{
-		Log.e("ForecastFragment.onTextChanged", " view type " + t + " FromCache " + fromCache);
 		if(t == ViewType.TODAY || t == ViewType.TOMORROW || t == ViewType.TWODAYS
 				|| t == ViewType.THREEDAYS || t == ViewType.FOURDAYS)
 			mTextView.setData(txt);
@@ -238,7 +237,6 @@ public class ForecastFragment extends Fragment implements DataPoolTextListener, 
 	@Override
 	public void onTextError(String error, ViewType t) 
 	{
-		Log.e("ForecastFragment.onTextError", " view type " + t );
 		mTextView.setHtml(error);
 	}
 }
