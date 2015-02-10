@@ -1,17 +1,12 @@
 package it.giacomos.android.osmer.widgets.map;
-
-import it.giacomos.android.osmer.network.Data.DataPool;
-import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
-import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.network.state.WebcamBitmapTask;
 import it.giacomos.android.osmer.network.state.WebcamBitmapTaskListener;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.webcams.OsmerWebcamListDecoder;
-import it.giacomos.android.osmer.webcams.OtherWebcamListDecoder;
+import it.giacomos.android.osmer.webcams.WebcamXMLAssetLoader;
+import it.giacomos.android.osmer.webcams.WebcamXMLDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;
-import it.giacomos.android.osmer.webcams.WebcamDataHelper;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -44,11 +39,13 @@ OOverlayInterface,
 OnMarkerClickListener,
 OnInfoWindowClickListener,
 OnMapClickListener,
-DataPoolTextListener
+Runnable
 {	
+	/* timeout before initialization is performed */
+	private final int LOAD_XML_DELAY = 150;
+
 	public WebcamOverlay(int markerResId, 
-			OMapFragment mapFrag, 
-			ArrayList<WebcamData> additionalWebcamData) 
+			OMapFragment mapFrag) 
 	{
 		mMarkerResId = markerResId;
 		mMap = mapFrag.getMap();
@@ -72,21 +69,12 @@ DataPoolTextListener
 		mCurrentlySelectedMarker = null;
 		mWaitString = mapFrag.getResources().getString(R.string.webcam_downloading);
 		mWebcamIcon = BitmapFactory.decodeResource(mapFrag.getResources(), mMarkerResId);
-		mAdditionalWebcamData = additionalWebcamData;
 		mIsActive = true;
 		/* get screen width for baloon size optimization */
 		Display display = mapFrag.getActivity().getWindowManager().getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
 		mWebcamImageSize = Math.min(size.x, size.y) / 2;
-	}
-
-	public void disconnectFromDataPool(OsmerActivity oa)
-	{
-		DataPool dataPool = oa.getDataPool();
-		/* unregister from data pool updates */
-		dataPool.unregisterTextListener(ViewType.WEBCAMLIST_OSMER);
-		dataPool.unregisterTextListener(ViewType.WEBCAMLIST_OTHER);
 	}
 
 	/** Registers the webcam overlay as a text listener of DataPool.
@@ -97,54 +85,23 @@ DataPoolTextListener
 	 * 
 	 * @param oa reference to the OsmerActivity
 	 */
-	public void connectToDataPool(OsmerActivity oa)
+	public void initialize(OsmerActivity oa)
 	{
-		DataPool dataPool = oa.getDataPool();
 		/* initialization */
-		DelayedWebcamOverlayInitializer wodpi = 
-				new DelayedWebcamOverlayInitializer(this, dataPool, mContext);
-		wodpi.start();
+		new Handler().postDelayed(this, LOAD_XML_DELAY);
 	}
 
-	/** Implements DataPoolTextListener onTextChanged  (for webcam list) */
 	@Override
-	public void onTextChanged(String txt, ViewType t, boolean fromCache) 
-	{		
+	public void run() 
+	{
+		Log.e("WebcamOverlay.run", " mIsActive " + mIsActive);
 		if(mIsActive)
 		{
-			if(!fromCache)
-			{
-				WebcamDataHelper helper = new WebcamDataHelper();
-				helper.setDataUpdatedNow(mContext);
-				helper = null;
-			}
-
-			ArrayList<WebcamData> wcData = null;
-			if (t == ViewType.WEBCAMLIST_OSMER) 
-			{
-				OsmerWebcamListDecoder osmerDec = new OsmerWebcamListDecoder();
-				wcData = osmerDec.decode(txt);
-			} 
-			else if (t == ViewType.WEBCAMLIST_OTHER) 
-			{
-				OtherWebcamListDecoder otherDec = new OtherWebcamListDecoder();
-				wcData = otherDec.decode(txt);
-			}
-
-			/* add to the list the fixed additional webcam data initialized in the 
-			 * class constructor and passed by OMapFragment.
-			 */
-			wcData.addAll(mAdditionalWebcamData);
-
-			scheduleUpdate(wcData); /* place markers on map */
+			WebcamXMLDecoder otherDec = new WebcamXMLDecoder();
+			ArrayList<WebcamData> wcData = otherDec.decode(new WebcamXMLAssetLoader(mContext).getText());
+			scheduleUpdate(wcData);
 		}
 	}
-
-	@Override
-	public void onTextError(String error, ViewType t) 
-	{
-
-	}	
 
 	/** executes update after a bunch of milliseconds not to block the 
 	 * user interface while parsing xml file and generating all the markers.
@@ -244,7 +201,7 @@ DataPoolTextListener
 				else
 				{
 					mInfoWindowAdapter.setData(mMarkerWebcamHash.get(mCurrentlySelectedMarker).text, bmp, true);
-										
+
 				}
 				mMap.moveCamera(CameraUpdateFactory.scrollBy(0, -bmp.getHeight() / 2));
 				mCurrentlySelectedMarker.showInfoWindow();
@@ -359,7 +316,6 @@ DataPoolTextListener
 	private Marker mCurrentlySelectedMarker;
 	private String mWaitString;
 	private Settings mSettings;
-	private ArrayList<WebcamData> mAdditionalWebcamData;
 	private Context mContext;
 	private Bitmap mWebcamIcon;
 	private boolean mIsActive;

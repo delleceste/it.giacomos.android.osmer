@@ -157,23 +157,6 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 			startTextTask(url, ViewType.REPORT);
 	}
 
-	/* for now, webcam list is obtained by a couple of files
-	 * http://www.osmer.fvg.it/GOOGLE/DatiWebcams1.php
-	 * and WebcamsList.xml
-	 */
-	public void getWebcamList()
-	{
-		if(!dDownloadStatus.webcamListDownloaded())
-		{
-			//			Log.e("Online", "getWebcamList: downloading webcam update now");
-			dDownloadStatus.setWebcamListsDownloadRequested(true);
-			startTextTask(m_urls.webcamMapData(), ViewType.WEBCAMLIST_OSMER);
-			startTextTask(m_urls.webcamsListXML(), ViewType.WEBCAMLIST_OTHER);
-		}
-		//		else
-		//			Log.e("Online", "getWebcamList: data not too old, not starting download");
-	}
-
 	public void getObservationsTable(MapMode mapMode) 
 	{
 		mTotSteps++;

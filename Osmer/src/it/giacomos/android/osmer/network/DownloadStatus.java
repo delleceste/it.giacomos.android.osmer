@@ -79,17 +79,6 @@ public class DownloadStatus {
 	 */
 	public boolean radarImageDownloaded() { return false;	}
 	
-	/* webcam lists age is externally check in order not to download the 
-	 * webcam lists too frequently.
-	 * As far as DownloadStatus is concerned, we consider webcam list downloaded
-	 * just like any other downloadable items above.
-	 */
-	public boolean webcamListDownloaded() 
-	{ 
-		return ((state & WEBCAM_OSMER_DOWNLOADED) != 0) &&
-				((state & WEBCAM_OTHER_DOWNLOADED) != 0);
-	}
-
 	public boolean lastCompleteDownloadIsOld()
 	{
 		return System.currentTimeMillis() - m_lastUpdateCompletedAt > DOWNLOAD_OLD_TIMEOUT;
@@ -129,22 +118,6 @@ public class DownloadStatus {
 //			state = (state & ~FORECAST_DOWNLOAD_REQUESTED);
 //	}
 
-	public void setWebcamListsDownloadRequested(boolean requested)
-	{
-		if(requested)
-		{
-			state = (state | WEBCAM_OSMER_DOWNLOAD_REQUESTED);
-			state = (state | WEBCAM_OTHER_DOWNLOAD_REQUESTED);
-			state = (state & ~WEBCAM_OSMER_DOWNLOADED);
-			state = (state & ~WEBCAM_OTHER_DOWNLOADED);
-		}
-		else
-		{
-			state = (state & ~WEBCAM_OSMER_DOWNLOAD_REQUESTED);
-			state = (state & ~WEBCAM_OTHER_DOWNLOAD_REQUESTED);
-		}
-	}
-
 	public void setDownloadErrorCondition(boolean err)
 	{
 		if(err)
@@ -169,10 +142,6 @@ public class DownloadStatus {
 				state = (state | THREEDAYS_DOWNLOADED);
 			else if(st == ViewType.FOURDAYS)
 				state = (state | FOURDAYS_DOWNLOADED);
-			else if(st == ViewType.WEBCAMLIST_OSMER)
-				state = (state | WEBCAM_OSMER_DOWNLOADED);
-			else if(st == ViewType.WEBCAMLIST_OTHER)
-				state = (state | WEBCAM_OTHER_DOWNLOADED);	
 			else if(st == ViewType.TODAY_SYMTABLE)
 				state = (state | TODAY_SYMTABLE_DOWNLOADED);
 			else if(st == ViewType.TOMORROW_SYMTABLE)
@@ -200,10 +169,6 @@ public class DownloadStatus {
 				state = (state & ~THREEDAYS_DOWNLOADED);
 			else if(st == ViewType.FOURDAYS)
 				state = (state & ~FOURDAYS_DOWNLOADED);
-			else if(st == ViewType.WEBCAMLIST_OSMER)
-				state = (state & ~WEBCAM_OSMER_DOWNLOADED);
-			else if(st == ViewType.WEBCAMLIST_OTHER)
-				state = (state & ~WEBCAM_OTHER_DOWNLOADED);
 			else if(st == ViewType.TODAY_SYMTABLE)
 				state = (state & ~TODAY_SYMTABLE_DOWNLOADED);
 			else if(st == ViewType.TOMORROW_SYMTABLE)
@@ -268,12 +233,6 @@ public class DownloadStatus {
 
 	public static final long FORECAST_DOWNLOAD_REQUESTED = 0x100;
 	public static final long LATEST_TABLE_DOWNLOADED = 0x101;
-
-	/* webcam related */
-	public static final long WEBCAM_OSMER_DOWNLOAD_REQUESTED = 0x200;
-	public static final long WEBCAM_OTHER_DOWNLOAD_REQUESTED = 0x400;
-	public static final long WEBCAM_OSMER_DOWNLOADED = 0x800;
-	public static final long WEBCAM_OTHER_DOWNLOADED = 0x1000;
 	public static final long THREEDAYS_DOWNLOADED = 0x2000;
 	public static final long FOURDAYS_DOWNLOADED = 0x4000;
 	public static final long FOURDAYS_SYMTABLE_DOWNLOADED = 0x8000;

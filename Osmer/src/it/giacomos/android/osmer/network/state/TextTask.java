@@ -72,10 +72,7 @@ public class TextTask extends AsyncTask<URL, Integer, String> {
 		int nRead;
 		InputStream inputStream;
 		String charset;
-		if(m_type == ViewType.WEBCAMLIST_OTHER)
-			charset = "UTF-8";
-		else
-			charset = "ISO-8859-1";
+		charset = "ISO-8859-1";
 		if(urls.length == 1)
 		{
 			URLConnection urlConnection = null;

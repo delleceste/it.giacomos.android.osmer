@@ -236,9 +236,8 @@ public class DataPool implements DownloadListener
 			mStringData.put(t, newSd); /* put in hash */
 		if(mTextListeners.containsKey(t))
 			mTextListeners.get(t).onTextChanged(text, t, false);
-		Log.e("DataPool.onTextUpdate", "textChanged " + textChanged + ", " +
-				"mTextListeners.contains(" + t + "): " + mTextListeners.containsKey(t));
-		 
+//		Log.e("DataPool.onTextUpdate", "textChanged " + textChanged + ", " +
+//				"mTextListeners.contains(" + t + "): " + mTextListeners.containsKey(t));
 	}
 
 	@Override

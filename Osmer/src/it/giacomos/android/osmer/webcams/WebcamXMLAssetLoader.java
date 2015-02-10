@@ -6,15 +6,15 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-public class AdditionalWebcams 
+public class WebcamXMLAssetLoader 
 {
-	public AdditionalWebcams(Context ctx)
+	public WebcamXMLAssetLoader(Context ctx)
 	{
 		mText = "";
 		AssetManager assetManager = ctx.getAssets();
         InputStream input;
         try {
-            input = assetManager.open("additionalWebcams.xml");
+            input = assetManager.open("webcams.xml");
              
              int size = input.available();
              byte[] buffer = new byte[size];

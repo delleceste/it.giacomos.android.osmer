@@ -25,10 +25,6 @@ public class MapViewUpdater
 			{
 				a.radar();
 			}
-			else if(mapMode.currentMode == MapMode.WEBCAM)
-			{
-				a.updateWbcamList();
-			}
 			else if(mapMode.currentMode == MapMode.REPORT)
 			{
 				a.updateReport(true);

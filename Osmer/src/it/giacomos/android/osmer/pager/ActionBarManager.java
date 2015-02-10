@@ -86,7 +86,7 @@ public class ActionBarManager
 	
 	public void drawerItemChanged(int id)
 	{
-		Log.e("ActionBarManager.drawerItemChanged", " id " + id);
+//		Log.e("ActionBarManager.drawerItemChanged", " id " + id);
 		mSpinnerAdapter = null;
 		Spinner spinner = (Spinner) mActivity.findViewById(R.id.toolbar_spinner);
 		switch(id)

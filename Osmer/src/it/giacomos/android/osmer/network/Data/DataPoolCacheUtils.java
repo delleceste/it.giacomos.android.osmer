@@ -54,8 +54,6 @@ public class DataPoolCacheUtils
 		 */
 		textIdMap.put(ViewType.DAILY_TABLE, -1);
 		textIdMap.put(ViewType.LATEST_TABLE, -1);
-		textIdMap.put(ViewType.WEBCAMLIST_OSMER, -1);
-		textIdMap.put(ViewType.WEBCAMLIST_OTHER, -1);
 	}
 
 	/* restore all data from the storage */
@@ -66,10 +64,7 @@ public class DataPoolCacheUtils
 		int nRead;
 		/* text items */
 		String charset;
-		if(viewType == ViewType.WEBCAMLIST_OTHER)
-			charset = "UTF-8";
-		else
-			charset = "ISO-8859-1";
+		charset = "ISO-8859-1";
 		ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
 		try
 		{
@@ -127,10 +122,7 @@ public class DataPoolCacheUtils
 	{
 //		long startT = System.currentTimeMillis();
 		String charset;
-		if(viewType == ViewType.WEBCAMLIST_OTHER)
-			charset = "UTF-8";
-		else
-			charset = "ISO-8859-1";
+		charset = "ISO-8859-1";
 		if(bytes != null)
 		{
 			try
@@ -161,10 +153,6 @@ public class DataPoolCacheUtils
 			return "latest_observations.txt";
 		else if(vt == ViewType.DAILY_TABLE)
 			return  "daily_observations.txt";
-		else if(vt == ViewType.WEBCAMLIST_OSMER)
-			return "webcams_osmer.txt";
-		else if(vt == ViewType.WEBCAMLIST_OTHER)
-			return "webcams_other.txt";
 		else
 			return "textViewHtml_" + textIdMap.get(vt) + ".txt";
 	}

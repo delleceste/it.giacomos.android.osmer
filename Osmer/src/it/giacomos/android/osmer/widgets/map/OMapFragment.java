@@ -16,7 +16,6 @@ import it.giacomos.android.osmer.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.network.Data.DataPoolBitmapListener;
 import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
-import it.giacomos.android.osmer.network.Data.DataPoolErrorListener;
 import it.giacomos.android.osmer.network.state.BitmapType;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.observations.MapMode;
@@ -27,10 +26,10 @@ import it.giacomos.android.osmer.observations.ObservationsCacheUpdateListener;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.webcams.AdditionalWebcams;
+import it.giacomos.android.osmer.webcams.WebcamXMLAssetLoader;
 import it.giacomos.android.osmer.webcams.ExternalImageViewerLauncher;
 import it.giacomos.android.osmer.webcams.LastImageCache;
-import it.giacomos.android.osmer.webcams.OtherWebcamListDecoder;
+import it.giacomos.android.osmer.webcams.WebcamXMLDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;
 import it.giacomos.android.osmer.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.widgets.map.animation.RadarAnimation;
@@ -59,7 +58,6 @@ GoogleMap.OnCameraChangeListener,
 WebcamOverlayChangeListener,
 MeasureOverlayChangeListener,
 DataPoolBitmapListener,
-DataPoolErrorListener,
 RadarAnimationListener, OnMapReadyCallback
 {
 	private float mOldZoomLevel;
@@ -98,14 +96,11 @@ RadarAnimationListener, OnMapReadyCallback
 		mMode.isInit = true;
 		mRadarAnimation = null;
 		mReportOverlay = null;
-		
 	}
-
 
 	@Override
 	public void onMapReady(GoogleMap googleMap) 
 	{
-		
 		
 	}
 	
@@ -294,7 +289,6 @@ RadarAnimationListener, OnMapReadyCallback
 		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
 		radarInfoTextView.setVisibility(View.GONE);
 		
-		Log.e("OMapFragment.onMapReady", " setting mode " + mMode.currentMode + " type " + mMode.currentType);
 		/* when the activity creates us, it passes the initialization stuff through arguments */
 		mSetMode(mMode);
 		
@@ -435,8 +429,8 @@ RadarAnimationListener, OnMapReadyCallback
 	private void mSetMode(MapViewMode m)
 	{
 		OAnimatedTextView radarTimestampText = (OAnimatedTextView) getActivity().findViewById(R.id.mapMessageTextView);	
-		Log.e("--->OMapFragment: setMode invoked", "setMode invoked with mode: " + 
-				m.currentMode + ", time (type): " + m.currentType + " mMap " + mMap);
+//		Log.e("--->OMapFragment: setMode invoked", "setMode invoked with mode: " + 
+//				m.currentMode + ", time (type): " + m.currentType + " mMap " + mMap);
 
 		/* show the radar timestamp text anytime the mode is set to RADAR
 		 * if (!m.equals(mMode)) then the radar timestamp text is scheduled to be shown
@@ -459,9 +453,6 @@ RadarAnimationListener, OnMapReadyCallback
 		/* mMode is still null the first time this method is invoked */
 		if(mMode != null && mMode.currentMode == MapMode.RADAR)
 			setMeasureEnabled(false);
-
-		if(mMode.currentMode == MapMode.WEBCAM) /* disconnect webcam overlay from data pool */
-			mWebcamOverlay.disconnectFromDataPool((OsmerActivity) getActivity());
 
 		mMode = m;
 
@@ -486,14 +477,12 @@ RadarAnimationListener, OnMapReadyCallback
 		} 
 		else if(m.currentMode == MapMode.WEBCAM) 
 		{
-			ArrayList<WebcamData> webcamData = mGetAdditionalWebcamsData();
 			mRemoveOverlays();
 			/* create the overlay passing the additional (fixed) webcams. 
 			 * The overlay immediately registers for text updates on DataPool.
 			 */
-			mWebcamOverlay = new WebcamOverlay(R.drawable.camera_web_map, 
-					this, webcamData);
-			mWebcamOverlay.connectToDataPool((OsmerActivity) getActivity());
+			mWebcamOverlay = new WebcamOverlay(R.drawable.camera_web_map, this);
+			mWebcamOverlay.initialize((OsmerActivity) getActivity());
 			mOverlays.add(mWebcamOverlay);
 			radarTimestampText.hide();
 			mRadarAnimation.stop();
@@ -683,9 +672,9 @@ RadarAnimationListener, OnMapReadyCallback
 		ArrayList<WebcamData> webcamData = null;
 		String additionalWebcamsTxt = "";
 		/* get fixed additional webcams list from assets */
-		AdditionalWebcams additionalWebcams = new AdditionalWebcams(this.getActivity().getApplicationContext());
-		additionalWebcamsTxt = additionalWebcams.getText();
-		OtherWebcamListDecoder additionalWebcamsDec = new OtherWebcamListDecoder();
+		WebcamXMLAssetLoader webcamXMLAssetLoader = new WebcamXMLAssetLoader(this.getActivity().getApplicationContext());
+		additionalWebcamsTxt = webcamXMLAssetLoader.getText();
+		WebcamXMLDecoder additionalWebcamsDec = new WebcamXMLDecoder();
 		webcamData = additionalWebcamsDec.decode(additionalWebcamsTxt);
 		return webcamData;
 	}
@@ -720,21 +709,6 @@ RadarAnimationListener, OnMapReadyCallback
 	public void onMeasureOverlayErrorMessage(int stringId) 
 	{
 		Toast.makeText(this.getActivity().getApplicationContext(), stringId, Toast.LENGTH_LONG).show();
-	}
-
-	@Override
-	public void onBitmapUpdateError(BitmapType t, String error) 
-	{
-
-	}
-
-	@Override
-	public void onTextUpdateError(ViewType t, String error) 
-	{
-		if(t== ViewType.WEBCAMLIST_OSMER || t == ViewType.WEBCAMLIST_OTHER)
-			Toast.makeText(getActivity().getApplicationContext(),
-					getActivity().getResources().getString(R.string.webcam_list_error) +
-					"\n" + error, Toast.LENGTH_LONG).show();
 	}
 
 	public void startRadarAnimation() 

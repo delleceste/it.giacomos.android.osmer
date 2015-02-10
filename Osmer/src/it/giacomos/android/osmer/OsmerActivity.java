@@ -51,7 +51,6 @@ import it.giacomos.android.osmer.service.sharedData.ReportNotification;
 import it.giacomos.android.osmer.service.sharedData.ReportRequestNotification;
 import it.giacomos.android.osmer.slidingtablayout.ForecastTabbedFragment;
 import it.giacomos.android.osmer.slidingtablayout.SlidingTabLayout;
-import it.giacomos.android.osmer.webcams.WebcamDataHelper;
 import it.giacomos.android.osmer.widgets.AnimatedImageView;
 import it.giacomos.android.osmer.widgets.ForecastImgTouchEventListener;
 import it.giacomos.android.osmer.widgets.ImgTouchEventData;
@@ -79,7 +78,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -93,24 +91,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -644,16 +636,6 @@ OnPageChangeListener
 		//TextView textView = (TextView) findViewById(R.id.mainTextView);
 	}
 
-	void updateWbcamList()
-	{
-		WebcamDataHelper webcamDataHelper = new WebcamDataHelper();
-		if(webcamDataHelper.dataIsOld(getApplicationContext()))
-		{
-			new ToastMessageManager().onShortMessage(getApplicationContext(), R.string.webcam_updating);
-			m_downloadManager.getWebcamList();
-		}
-	}
-
 	@Override
 	public void onDownloadProgressUpdate(int step, int total)
 	{
@@ -711,8 +693,7 @@ OnPageChangeListener
 	@Override
 	public void onStateChanged(long previousState, long state) 
 	{
-		if(((state & DownloadStatus.WEBCAM_OSMER_DOWNLOADED) != 0) &&  ((state & DownloadStatus.WEBCAM_OTHER_DOWNLOADED) != 0 ))
-			Toast.makeText(getApplicationContext(), R.string.webcam_lists_downloaded, Toast.LENGTH_SHORT).show();
+		
 	}
 
 	/** implemented from PostActionResultListener.
@@ -1171,8 +1152,6 @@ OnPageChangeListener
 				getFourDaysForecast();
 			else if(id == ViewType.HOME)
 			{ }
-			else if(id == ViewType.WEBCAM)
-				updateWbcamList();
 			else if(id == ViewType.REPORT)
 			{
 				updateReport(false);

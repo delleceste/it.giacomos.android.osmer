@@ -16,10 +16,8 @@ import com.google.android.gms.maps.model.LatLng;
 import android.text.Html;
 import android.util.Log;
 
-public class OtherWebcamListDecoder implements WebcamListDecoder 
+public class WebcamXMLDecoder 
 {
-
-	@Override
 	public ArrayList<WebcamData> decode(String rawData) 
 	{
 		ArrayList<WebcamData> wcData = new ArrayList<WebcamData>();
@@ -48,7 +46,7 @@ public class OtherWebcamListDecoder implements WebcamListDecoder
 							wd.url = marker.getAttribute("link");
 							wd.isOther = (marker.getAttribute("category") != "osmer");
 							String slat = marker.getAttribute("lat");
-							String slong = marker.getAttribute("lng");
+							String slong = marker.getAttribute("lon");
 							if(!slat.isEmpty() && !slong.isEmpty())
 							{
 								try{
@@ -63,7 +61,7 @@ public class OtherWebcamListDecoder implements WebcamListDecoder
 							}
 							if(!wd.location.isEmpty() && !wd.url.isEmpty() && wd.latLng != null)
 							{
-//								Log.i("OtherWebcamListDecoder: decode()" , "decoded:" + wd.toString());
+//								Log.i("WebcamXMLDecoder: decode()" , "decoded:" + wd.toString());
 								wcData.add(wd);
 							}
 							else
@@ -73,21 +71,21 @@ public class OtherWebcamListDecoder implements WebcamListDecoder
 				} 
 				catch (SAXException e) 
 				{
-					Log.e("OtherWebcamListDecoder SAXException: decode()", e.getLocalizedMessage());
+					Log.e("WebcamXMLDecoder SAXException: decode()", e.getLocalizedMessage());
 				} 
 				catch (IOException e) 
 				{	
-					Log.e("OtherWebcamListDecoder: decode()", e.getLocalizedMessage());
+					Log.e("WebcamXMLDecoder: decode()", e.getLocalizedMessage());
 				}
 			} 
 			catch (UnsupportedEncodingException e) 
 			{
-				Log.e("OtherWebcamListDecoder: decode()", e.getLocalizedMessage());
+				Log.e("WebcamXMLDecoder: decode()", e.getLocalizedMessage());
 			}
 		} 
 		catch (ParserConfigurationException e1) 
 		{
-			Log.e("OtherWebcamListDecoder: decode()", e1.getLocalizedMessage());
+			Log.e("WebcamXMLDecoder: decode()", e1.getLocalizedMessage());
 		}		
 		return wcData;
 	}

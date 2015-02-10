@@ -24,11 +24,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.fragments.ForecastFragment;
@@ -66,8 +64,6 @@ public class ForecastTabbedFragment extends Fragment {
 		 * @return A new {@link Fragment} to be displayed by a {@link ViewPager}
 		 */
 		Fragment createFragment() {
-			Log.e("SamplepagerItem.createFragment", " creating " + mTitle);	    	
-
 	    	
 	    	if(mViewType == ViewType.HOME)
 	    		return new SituationFragment();
@@ -232,10 +228,8 @@ public class ForecastTabbedFragment extends Fragment {
 	 * @param view View created in {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
 	 */
 	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		
-		
-		Log.e("SlidingTabsColorsFratment.onViewCreated", "enter");
+	public void onViewCreated(View view, Bundle savedInstanceState) 
+	{
 		// BEGIN_INCLUDE (setup_viewpager)
 		// Get the ViewPager and set it's PagerAdapter so that it can display items
 		mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
