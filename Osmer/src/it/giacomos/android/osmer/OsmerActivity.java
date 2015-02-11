@@ -807,7 +807,7 @@ OnPageChangeListener
 
 	public void onSelectionDone(ObservationType observationType, MapMode mapMode) 
 	{
-		Log.e("OsmerActivity.onSelectionDone", " type " + observationType + " mode " + mapMode);
+//		Log.e("OsmerActivity.onSelectionDone", " type " + observationType + " mode " + mapMode);
 		/* switch the working mode of the map view. Already in PAGE_MAP view flipper page */
 		OMapFragment map = getMapFragment();
 		if((mapMode != MapMode.REPORT) || (mapMode == MapMode.REPORT && mReportConditionsAccepted))
