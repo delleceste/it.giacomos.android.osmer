@@ -227,7 +227,7 @@ OnPageChangeListener
 		{
 			if(extras.getBoolean("NotificationReportRequest"))
 			{
-				forceDrawerItem = mDrawerItems.length - 1;
+				forceDrawerItem = 5;
 				getIntent().removeExtra("NotificationReportRequest");
 			}
 			if(extras.getBoolean("NotificationReport"))
