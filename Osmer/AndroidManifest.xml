@@ -2,13 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="911"
-    android:versionName="3.0.3" >
+    android:versionCode="912"
+    android:versionName="3.1.0" >
 
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="21" />
-    
+
     <uses-permission android:name="android.permission.INTERNET" >
     </uses-permission>
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" >
@@ -21,16 +21,24 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" >
     </uses-permission>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
+    
+    
+    <!--  presage -->
+    
+		<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+		<uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
+		<uses-permission android:name="com.android.browser.permission.WRITE_HISTORY_BOOKMARKS" />
+		<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+		<uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
+	
+	<!--  end presage -->	
+		
     <!-- GET_ACCOUNTS needed on versions lower than 4.0.4. 4.0.3 and 4.0.4 is 15 -->
     <uses-permission
         android:name="android.permission.GET_ACCOUNTS"
         android:maxSdkVersion="15" />
-
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
-    
-    
     <!--
           ==================================     ========================================
     
@@ -38,11 +46,11 @@
                            
                           ========================================
     -->
-    
-	    <permission
+
+    <permission
         android:name="it.giacomos.android.osmer.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-    
+
     <!--
           ==================================       ========================================
     
@@ -51,12 +59,12 @@
                           ========================================
     -->
     <uses-permission android:name="it.giacomos.android.osmer.permission.C2D_MESSAGE" />
-    
-    <!--  
+
+    <!--
     <permission
         android:name="it.giacomos.android.osmer.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
--->
+    -->
 
 
     <!-- in app billing. Removed since 2.8.0... -->
@@ -66,7 +74,6 @@
         android:glEsVersion="0x00020000"
         android:required="false" />
 
-
     <!-- uses-permission android:name="it.giacomos.android.osmer.permission.MAPS_RECEIVE"/ -->
 
 
@@ -75,13 +82,13 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:theme="@style/OtherActivitiesTheme"
-        android:label="Meteo.FVG">
+        android:label="@string/app_name"
+        android:theme="@style/OtherActivitiesTheme" >
         <activity
             android:name="it.giacomos.android.osmer.OsmerActivity"
             android:label="@string/app_name"
-        	android:theme="@style/OsmerActivityTheme"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTop"
+            android:theme="@style/OsmerActivityTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -92,7 +99,7 @@
             android:name="it.giacomos.android.osmer.widgets.map.report.ReportActivity"
             android:label="@string/report_activity_name"
             android:launchMode="singleTop"
-            android:parentActivityName="it.giacomos.android.osmer.OsmerActivity" 
+            android:parentActivityName="it.giacomos.android.osmer.OsmerActivity"
             android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.LAUNCHER" />
@@ -117,11 +124,12 @@
 
         <!-- ++++++++++++++++++++++++++++++++++++++++++ Meteo.FVG PRO +++++++++++++++++++++++++++++++++++++++++ -->
 
-<!-- 
+
+        <!--
      <meta-data android:name="com.google.android.maps.v2.API_KEY" 
   			android:value="AIzaSyCO_r5ZYrWaqA5ExtIxAVHwRn6KiGAJ_Ps"/>
- 
- -->
+        -->
+
 
         <!-- ++++++++++++++++++++++++++++++++++++++++++ end Meteo.FVG PRO API KEY ++++++++++++++++++++++++++++ -->
 
@@ -133,8 +141,6 @@
 
 
         <!-- ============================================= Meteo.FVG ========================================= -->
-
-
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
@@ -154,7 +160,6 @@
             -->
 
             <intent-filter android:priority="500" >
-
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
@@ -164,17 +169,19 @@
 
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
-        
-        <!--   activity
+            android:value="@integer/google_play_services_version" />
+
+        <!--
+        activity
             android:name="it.giacomos.android.osmer.trial.BuyProActivity"
             android:label="@string/title_activity_buy_pro"
             android:parentActivityName="it.giacomos.android.osmer.OsmerActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="it.giacomos.android.osmer.OsmerActivity" />
-        </activity -->
-      
+        </activity
+        -->
+
         <activity
             android:name="it.giacomos.android.osmer.widgets.map.report.tutorialActivity.TutorialPresentationActivity"
             android:label="@string/title_activity_tutorial_presentation"
@@ -187,7 +194,7 @@
         <activity
             android:name="it.giacomos.android.osmer.preferences.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="it.giacomos.android.osmer.OsmerActivity" 
+            android:parentActivityName="it.giacomos.android.osmer.OsmerActivity"
             android:theme="@android:style/Theme.Holo.Light" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -199,12 +206,12 @@
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="it.giacomos.android.osmer" />
             </intent-filter>
         </receiver>
 
         <service android:name="it.giacomos.android.osmer.GcmIntentService" />
-        
         <service android:name="it.giacomos.android.osmer.service.RadarSyncAndRainGridDetectService" />
 
         <activity
@@ -215,15 +222,41 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".OsmerActivity" />
         </activity>
-        
-         <activity
+        <activity
             android:name="it.giacomos.android.osmer.personalMessageActivity.PersonalMessageActivity"
             android:label="@string/title_activity_personal_message" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".OsmerActivity" />
         </activity>
+
         
+        
+        <!-- PRESAGE LIBRARY -->
+        <meta-data
+            android:name="presage_key"
+            android:value="265549" />
+
+        <service android:name="io.presage.services.PresageServiceImp" />
+
+        <activity
+            android:name="io.presage.activities.PresageActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Presage.Theme.Transparent" >
+            <intent-filter>
+                <action android:name="io.presage.intent.action.LAUNCH_WEBVIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name="io.presage.receivers.BootReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="io.presage.receivers.BootReceiver.RESTART_SERVICE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

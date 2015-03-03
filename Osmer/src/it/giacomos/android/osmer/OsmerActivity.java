@@ -46,6 +46,8 @@ import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageDataFetc
 import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageManager;
 import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageUpdateListener;
 import it.giacomos.android.osmer.preferences.*;
+import it.giacomos.android.osmer.purhcase.InAppUpgradeManager;
+import it.giacomos.android.osmer.purhcase.InAppUpgradeManagerListener;
 import it.giacomos.android.osmer.service.ServiceManager;
 import it.giacomos.android.osmer.service.sharedData.ReportNotification;
 import it.giacomos.android.osmer.service.sharedData.ReportRequestNotification;
@@ -108,6 +110,10 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+
+import io.presage.Presage;
+import io.presage.utils.IADHandler;
+
 /** 
  * 
  * @author giacomo
@@ -130,7 +136,8 @@ ReportRequestListener,
 NewsUpdateListener,
 ForecastImgTouchEventListener, 
 PersonalMessageUpdateListener,
-OnPageChangeListener
+OnPageChangeListener,
+InAppUpgradeManagerListener
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
@@ -152,6 +159,8 @@ OnPageChangeListener
 
 		//		Log.e("OsmerActivity.onCreate", "onCreate called");
 
+		mSettings = new Settings(this);
+		
 		/* create the location update client and connect it to the location service */
 		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 		if(resultCode == ConnectionResult.SUCCESS)
@@ -165,6 +174,28 @@ OnPageChangeListener
 			mGoogleServicesAvailable = false;
 			GooglePlayServicesUtil.getErrorDialog(resultCode, this, 0).show();
 		}
+		
+		/* if a user has purchased the application using the inApp method, do not
+		 * show ads
+		 */
+		int inAppPurchaseStatus = mSettings.getInAppPurchaseStatus();
+		mAdsEnabled = (this.getPackageName().compareTo("it.giacomos.android.osmer") == 0) && (inAppPurchaseStatus == 0);
+		if(mAdsEnabled)
+		{
+			Log.e("OsmerActivity.onCreate", "inAppPurchaseStatus is 0: activating Ads");
+			Presage.getInstance().setContext(this.getBaseContext());
+			Presage.getInstance().start();
+		}
+		else
+		{
+			Log.e("OsmerActivity.onCreate", "inAppPurchaseStatus is " + inAppPurchaseStatus + ": not activating ads");
+		}
+		/* check if purchased. If purchased, inAppPurchaseStatus will be set to 1 in preferences.
+		 * If not purchased, inAppPurchaseStatus will be 0 and on the next onCreate the ad will be initialized.
+		 */
+		InAppUpgradeManager iaum = new InAppUpgradeManager();
+		iaum.addInAppUpgradeManagerListener(this);
+		iaum.checkIfPurchased(this);
 
 	}
 
@@ -184,6 +215,27 @@ OnPageChangeListener
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(ReportRequestNotification.REQUEST_NOTIFICATION_ID);
 		mNotificationManager.cancel(ReportNotification.REPORT_NOTIFICATION_ID);
+		
+		if(mAdsEnabled) /* not purchased, not executed for the first time */
+		{
+			Presage.getInstance().adToServe("interstitial", new IADHandler() {
+
+		    @Override
+		    public void onAdNotFound() {
+		      Log.i("PRESAGE", "ad not found");
+		    }
+
+		    @Override
+		    public void onAdFound() {
+		      Log.i("PRESAGE", "ad found");
+		    }
+
+		    @Override
+		    public void onAdClosed() {
+		      Log.i("PRESAGE", "ad closed");
+		    }
+		  });
+		}
 	}
 
 	public void onPause()
@@ -241,7 +293,7 @@ OnPageChangeListener
 				getIntent().removeExtra("NotificationRainAlert");
 			}
 		}
-		Log.e("onPostCreate", "force drawer item " + forceDrawerItem);
+	//	Log.e("onPostCreate", "force drawer item " + forceDrawerItem);
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
 	}
 
@@ -326,7 +378,6 @@ OnPageChangeListener
 	{
 		mCurrentFragmentId = -1;
 		mLastTouchedY = -1;
-		mSettings = new Settings(this);
 
 		/* if it's time to get personal message, wait for network and download it */
 		if(!mSettings.timeToGetPersonalMessage() && !mSettings.getPersonalMessageData().isEmpty())
@@ -1509,6 +1560,7 @@ OnPageChangeListener
 	private PersonalMessageDataFetchTask mPersonalMessageDataFetchTask;
 
 	private boolean mReportConditionsAccepted;
+	private boolean mAdsEnabled;
 
 	RelativeLayout mMainLayout;
 
@@ -1549,5 +1601,23 @@ OnPageChangeListener
 		sendIntent.setType("text/plain");
 		sendIntent.putExtra(Intent.EXTRA_SUBJECT, this.getString(R.string.send_meteofvgapp_subject));
 		startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.send_meteofvgapp_to)));
+	}
+
+	@Override
+	public void onPurchaseComplete(boolean ok, String error, boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onCheckComplete(boolean ok, String error, boolean purchased) {
+		Log.e("OsmerActivity.onCheckComplete", " ok " + ok + " error: " + error + " purchased " + purchased);
+		mSettings.setInAppPurchased(purchased);
+	}
+
+	@Override
+	public void onInAppSetupComplete(boolean success, String message) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -565,4 +565,18 @@ public class Settings
 	{
 		return mSharedPreferences.getString("PERSONAL_MSG_CONF", "");
 	}
+
+	public int getInAppPurchaseStatus() {
+		return mSharedPreferences.getInt("IN_APP_PURCHASE_STATUS", -1);
+	}
+	
+	public void setInAppPurchased(boolean purchased)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		if(purchased)
+			e.putInt("IN_APP_PURCHASE_STATUS", 1);
+		else
+			e.putInt("IN_APP_PURCHASE_STATUS", 0);
+		e.commit();
+	}
 }
