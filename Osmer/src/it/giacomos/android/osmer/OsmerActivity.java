@@ -157,7 +157,7 @@ InAppUpgradeManagerListener
 	{
 		super.onCreate(savedInstanceState);
 
-		//		Log.e("OsmerActivity.onCreate", "onCreate called");
+//		Log.e("OsmerActivity.onCreate", "onCreate called");
 
 		mSettings = new Settings(this);
 		
@@ -179,7 +179,8 @@ InAppUpgradeManagerListener
 		 * show ads
 		 */
 		int inAppPurchaseStatus = mSettings.getInAppPurchaseStatus();
-		mAdsEnabled = (this.getPackageName().compareTo("it.giacomos.android.osmer") == 0) && (inAppPurchaseStatus == 0);
+		mAdsEnabled = (this.getPackageName().compareTo("it.giacomos.android.osmer") == 0) && (inAppPurchaseStatus == 0)
+			&&	mSettings.timeToShowAds();
 		if(mAdsEnabled)
 		{
 			Log.e("OsmerActivity.onCreate", "inAppPurchaseStatus is 0: activating Ads");
@@ -188,7 +189,8 @@ InAppUpgradeManagerListener
 		}
 		else
 		{
-			Log.e("OsmerActivity.onCreate", "inAppPurchaseStatus is " + inAppPurchaseStatus + ": not activating ads");
+			Log.e("OsmerActivity.onCreate", "inAppPurchaseStatus is " + inAppPurchaseStatus + " or time to show ads " +
+					mSettings.timeToShowAds());
 		}
 		/* check if purchased. If purchased, inAppPurchaseStatus will be set to 1 in preferences.
 		 * If not purchased, inAppPurchaseStatus will be 0 and on the next onCreate the ad will be initialized.
@@ -202,7 +204,7 @@ InAppUpgradeManagerListener
 	public void onResume()
 	{	
 		super.onResume();
-		//		Log.e("OsmerActivity.onResume", "onResume called");
+//		Log.e("OsmerActivity.onResume", "onResume called");
 		if(!mGoogleServicesAvailable)
 			return;
 
@@ -216,23 +218,31 @@ InAppUpgradeManagerListener
 		mNotificationManager.cancel(ReportRequestNotification.REQUEST_NOTIFICATION_ID);
 		mNotificationManager.cancel(ReportNotification.REPORT_NOTIFICATION_ID);
 		
+		/*
+		 * mAdsEnabled is true if
+		 * - not purchased, not first execution of the app
+		 * - not resuming after onPause
+		 * - resuming when savedInstanceState is null (i.e. don't show ads after screen rotation) 
+		 * - not resuming after onNewIntent
+		 */
 		if(mAdsEnabled) /* not purchased, not executed for the first time */
 		{
 			Presage.getInstance().adToServe("interstitial", new IADHandler() {
 
 		    @Override
 		    public void onAdNotFound() {
-		      Log.i("PRESAGE", "ad not found");
+		      Log.e("PRESAGE", "ad not found");
 		    }
 
 		    @Override
 		    public void onAdFound() {
-		      Log.i("PRESAGE", "ad found");
+		      Log.e("PRESAGE", "ad found");
+		      mSettings.setAdsShownNow();
 		    }
 
 		    @Override
 		    public void onAdClosed() {
-		      Log.i("PRESAGE", "ad closed");
+		      Log.e("PRESAGE", "ad closed");
 		    }
 		  });
 		}
@@ -257,6 +267,9 @@ InAppUpgradeManagerListener
 
 		if(mPersonalMessageDataFetchTask != null && mPersonalMessageDataFetchTask.getStatus() != AsyncTask.Status.FINISHED)
 			mPersonalMessageDataFetchTask.cancel(false);
+		
+		/* no ads when resuming after onPause */
+		mAdsEnabled = false;
 	}
 
 	/**
@@ -265,6 +278,8 @@ InAppUpgradeManagerListener
 	 */
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
+		Log.e("OsmerActivity.onPostCreate", " saved InstanceState " + savedInstanceState);
+		
 		super.onPostCreate(savedInstanceState);
 		if(!mGoogleServicesAvailable)
 			return;
@@ -295,6 +310,10 @@ InAppUpgradeManagerListener
 		}
 	//	Log.e("onPostCreate", "force drawer item " + forceDrawerItem);
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
+		
+		/* do not show ads when savedInstanceState is not null (e.g. after screen rotation */
+		if(savedInstanceState != null)
+			mAdsEnabled = false;
 	}
 
 	@Override
@@ -322,6 +341,8 @@ InAppUpgradeManagerListener
 			}
 			//			Log.e("OsmerActivity.onNewIntent", "switching to item " + drawerItem);
 			mActionBarManager.drawerItemChanged(drawerItem);
+			
+			mAdsEnabled = false;
 		}
 	}
 

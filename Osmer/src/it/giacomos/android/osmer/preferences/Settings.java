@@ -579,4 +579,17 @@ public class Settings
 			e.putInt("IN_APP_PURCHASE_STATUS", 0);
 		e.commit();
 	}
+
+	/* after 7 hours */
+	public boolean timeToShowAds() 
+	{
+		return (System.currentTimeMillis() - mSharedPreferences.getLong("ADS_LAST_SHOWN_TIME_MILLIS", 0L) ) > 7 * 60 * 60 * 1000;
+	}
+	
+	public void setAdsShownNow()
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putLong("ADS_LAST_SHOWN_TIME_MILLIS", System.currentTimeMillis());
+		e.commit();
+	}
 }
