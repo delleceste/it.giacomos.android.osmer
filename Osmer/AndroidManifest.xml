@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="914"
+    android:versionCode="918"
     android:versionName="3.1.1" >
 
     <uses-sdk
