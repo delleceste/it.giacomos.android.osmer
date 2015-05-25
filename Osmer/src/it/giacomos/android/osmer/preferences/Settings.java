@@ -583,7 +583,7 @@ public class Settings
 	/* after 7 hours */
 	public boolean timeToShowAds() 
 	{
-		return (System.currentTimeMillis() - mSharedPreferences.getLong("ADS_LAST_SHOWN_TIME_MILLIS", 0L) ) > 7 * 60 * 60 * 1000;
+		return (System.currentTimeMillis() - mSharedPreferences.getLong("ADS_LAST_SHOWN_TIME_MILLIS", 0L) ) > 6 * 60 * 60 * 1000;
 	}
 	
 	public void setAdsShownNow()

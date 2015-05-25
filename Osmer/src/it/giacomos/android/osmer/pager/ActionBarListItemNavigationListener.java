@@ -2,7 +2,6 @@ package it.giacomos.android.osmer.pager;
 
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.network.state.ViewType;
-import android.app.ActionBar.OnNavigationListener;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;

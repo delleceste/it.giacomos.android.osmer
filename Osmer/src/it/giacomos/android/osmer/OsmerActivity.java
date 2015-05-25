@@ -90,7 +90,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -123,7 +123,7 @@ import io.presage.utils.IADHandler;
  * - in the background, continue downloading all other relevant information (tomorrow, two days image and
  *   forecast), so that it is ready when the user flips.
  */
-public class OsmerActivity extends ActionBarActivity 
+public class OsmerActivity extends AppCompatActivity 
 implements OnClickListener, 
 DownloadStateListener,
 OnMenuItemClickListener, 
@@ -141,6 +141,7 @@ InAppUpgradeManagerListener
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
+	private boolean mAdsEnabled;
 
 	public OsmerActivity()
 	{
@@ -179,8 +180,8 @@ InAppUpgradeManagerListener
 		 * show ads
 		 */
 		int inAppPurchaseStatus = mSettings.getInAppPurchaseStatus();
-		mAdsEnabled = (this.getPackageName().compareTo("it.giacomos.android.osmer") == 0) && (inAppPurchaseStatus == 0)
-			&&	mSettings.timeToShowAds();
+		mAdsEnabled = (this.getPackageName().compareTo("it.giacomos.android.osmer") == 0)
+				&& (inAppPurchaseStatus == 0);
 		if(mAdsEnabled)
 		{
 			Log.e("OsmerActivity.onCreate", "inAppPurchaseStatus is 0: activating Ads");
@@ -219,12 +220,17 @@ InAppUpgradeManagerListener
 		mNotificationManager.cancel(ReportNotification.REPORT_NOTIFICATION_ID);
 		
 		/*
-		 * mAdsEnabled is true if
+		 * mAdsEnabled is true if (since version code 920)
 		 * - not purchased, not first execution of the app
-		 * - not resuming after onPause
-		 * - resuming when savedInstanceState is null (i.e. don't show ads after screen rotation) 
-		 * - not resuming after onNewIntent
+		 * - not shown within a certain period of time
 		 */
+		int inAppPurchaseStatus = mSettings.getInAppPurchaseStatus();
+		/* 
+		 * Please NOTE: make an end with the mAdsEnabled value set in onCreate 
+		 * 
+		 */
+		mAdsEnabled = mAdsEnabled && (this.getPackageName().compareTo("it.giacomos.android.osmer") == 0)
+				&& (inAppPurchaseStatus == 0) &&	mSettings.timeToShowAds();
 		if(mAdsEnabled) /* not purchased, not executed for the first time */
 		{
 			Presage.getInstance().adToServe("interstitial", new IADHandler() {
@@ -268,8 +274,11 @@ InAppUpgradeManagerListener
 		if(mPersonalMessageDataFetchTask != null && mPersonalMessageDataFetchTask.getStatus() != AsyncTask.Status.FINISHED)
 			mPersonalMessageDataFetchTask.cancel(false);
 		
-		/* no ads when resuming after onPause */
-		mAdsEnabled = false;
+		/* no ads when resuming after onPause.
+		 * Actually, since version code 920, we rely only on mSettings.timeToShowAds()
+		 * to determine if it's time to show ads or not.
+		 */
+		// mAdsEnabled = false;
 	}
 
 	/**
@@ -311,9 +320,12 @@ InAppUpgradeManagerListener
 	//	Log.e("onPostCreate", "force drawer item " + forceDrawerItem);
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
 		
-		/* do not show ads when savedInstanceState is not null (e.g. after screen rotation */
-		if(savedInstanceState != null)
-			mAdsEnabled = false;
+		/* do not show ads when savedInstanceState is not null (e.g. after screen rotation 
+		 * Actually, since version code 920, we rely only on mSettings.timeToShowAds()
+		 * to determine if it's time to show ads or not.
+		 */
+//		if(savedInstanceState != null)
+//			mAdsEnabled = false;
 	}
 
 	@Override
@@ -342,7 +354,8 @@ InAppUpgradeManagerListener
 			//			Log.e("OsmerActivity.onNewIntent", "switching to item " + drawerItem);
 			mActionBarManager.drawerItemChanged(drawerItem);
 			
-			mAdsEnabled = false;
+			// since version code 920
+			// mAdsEnabled = false;
 		}
 	}
 
@@ -1581,7 +1594,6 @@ InAppUpgradeManagerListener
 	private PersonalMessageDataFetchTask mPersonalMessageDataFetchTask;
 
 	private boolean mReportConditionsAccepted;
-	private boolean mAdsEnabled;
 
 	RelativeLayout mMainLayout;
 

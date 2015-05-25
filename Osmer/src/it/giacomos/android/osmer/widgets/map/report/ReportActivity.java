@@ -4,13 +4,12 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.preferences.Settings;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -22,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 
-public class ReportActivity extends ActionBarActivity implements OnClickListener, OnItemSelectedListener
+public class ReportActivity extends AppCompatActivity implements OnClickListener, OnItemSelectedListener
 {
 	private double mLatitude, mLongitude;
 	private String mLocality;

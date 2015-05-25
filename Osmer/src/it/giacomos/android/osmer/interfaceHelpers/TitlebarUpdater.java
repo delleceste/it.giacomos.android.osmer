@@ -3,7 +3,6 @@ package it.giacomos.android.osmer.interfaceHelpers;
 import android.support.v7.widget.Toolbar;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.network.DownloadStatus;
 
 public class TitlebarUpdater {
 	public void update(OsmerActivity a)

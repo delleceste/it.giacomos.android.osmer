@@ -1,20 +1,20 @@
 package it.giacomos.android.osmer.pager;
 
-import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.OsmerActivity;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 public class MyActionBarDrawerToggle extends ActionBarDrawerToggle
 {
-	private final ActionBarActivity mActivity;
+	private final AppCompatActivity mActivity;
 	
-	public MyActionBarDrawerToggle(ActionBarActivity a, DrawerLayout drawerLayout,
+	public MyActionBarDrawerToggle(OsmerActivity osmerActivity, DrawerLayout drawerLayout,
 			int iconDrawer, int iconDrawerOpen, int iconDrawerClose)
 	{
-		super(a, drawerLayout, iconDrawer, iconDrawerOpen);
-		mActivity = a;
+		super(osmerActivity, drawerLayout, iconDrawer, iconDrawerOpen);
+		mActivity = osmerActivity;
 	}
 	
 	/** Called when a drawer has settled in a completely closed state. */
