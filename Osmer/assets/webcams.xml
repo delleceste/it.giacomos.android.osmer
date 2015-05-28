@@ -220,6 +220,10 @@ id="130" lat="46.374472" lon="13.463889"
 testo="Piani del Montasio - Nicola Blasuttigh" category="additional"
 link="http://promotur.digitalwebland.com/webcam/sellavecchiafunivia.jpg" />
 
+<marker nome="Ursus - Trieste Rive"
+id="130" lat="45.664214" lon="13.761493" 
+testo="Pontone Ursus. Rive di Trieste" category="additional"
+link="http://www.cisar.it/ext_site/trieste/meteoursus/cam1.jpg" />
 
 
 </markers>

@@ -16,6 +16,8 @@ import android.provider.Settings.Secure;
 import android.util.Log;
 import android.widget.Toast;
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.locationUtils.LocationService;
+import it.giacomos.android.osmer.locationUtils.LocationServiceUpdateListener;
 import it.giacomos.android.osmer.network.NetworkStatusMonitor;
 import it.giacomos.android.osmer.network.NetworkStatusMonitorListener;
 import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
@@ -24,21 +26,28 @@ import it.giacomos.android.osmer.network.state.ViewType;
 
 public class ReportUpdater   
 implements NetworkStatusMonitorListener,
-ReportUpdateTaskListener, ConnectionCallbacks, OnConnectionFailedListener
+ReportUpdateTaskListener, LocationServiceUpdateListener
 {
 	private static final long DOWNLOAD_REPORT_OLD_TIMEOUT = 10000;
 
 	private Context mContext;
 	private ReportUpdaterListener mReportUpdaterListener;
-	private GoogleApiClient mGoogleApiClient;
 	private NetworkStatusMonitor mNetworkStatusMonitor;
 	private long mLastReportUpdatedAt;
 	private ReportUpdateTask mReportUpdateTask;
+	private LocationService mLocationService;
 
-	public ReportUpdater(Context ctx, ReportUpdaterListener rul)
+	public ReportUpdater(Context ctx, ReportUpdaterListener rul, LocationService locationService)
 	{
 		mContext = ctx;
-		mGoogleApiClient = new GoogleApiClient.Builder(ctx).addApi(LocationServices.API).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build();
+		/* when network becomes available, we register as a listener to the location service in order
+		 * to get the most up to date current location.
+		 * We can't simply access the current location from the location service to get the last known location
+		 * without first registering because we could get an old location (e.g. in the onResume scenario), if
+		 * the connection to the google services is not established yet.
+		 */
+		mLocationService = locationService;
+		
 		mNetworkStatusMonitor = new NetworkStatusMonitor(this);
 		/* when the map switches mode, a new ReportUpdater is created, and it must be registered.
 		 * onResume is not called when map switches mode. Instead, when the activity is paused, 
@@ -75,6 +84,7 @@ ReportUpdateTaskListener, ConnectionCallbacks, OnConnectionFailedListener
 	public void clear()
 	{
 		Log.e("ReportUpdater.clear()", "unregistering network status monitor receiver and location client");
+		mLocationService.removeLocationServiceUpdateListener(this);
 		try
 		{
 			mContext.unregisterReceiver(mNetworkStatusMonitor);
@@ -86,7 +96,6 @@ ReportUpdateTaskListener, ConnectionCallbacks, OnConnectionFailedListener
 			 * not destroyed.
 			 */
 		}
-		mGoogleApiClient.disconnect();
 		/* cancel thread if running */
 		if(mReportUpdateTask != null)
 			mReportUpdateTask.cancel(false);
@@ -108,8 +117,7 @@ ReportUpdateTaskListener, ConnectionCallbacks, OnConnectionFailedListener
 
 			if(mNetworkStatusMonitor.isConnected())
 			{
-				mGoogleApiClient.disconnect();
-				mGoogleApiClient.connect();
+				
 			}
 			else /* offline */
 				Toast.makeText(mContext, R.string.reportNeedToBeOnline, Toast.LENGTH_SHORT).show();
@@ -119,34 +127,47 @@ ReportUpdateTaskListener, ConnectionCallbacks, OnConnectionFailedListener
 	@Override
 	public void onNetworkBecomesAvailable() 
 	{
-		if(mGoogleApiClient.isConnected())
-			onConnected(null);
-		else if(mGoogleApiClient.isConnecting())
-			return; /* wait for onConnected() */
-		else
-			mGoogleApiClient.connect();
+		Log.e("ReportUpdated.onNetworkBecomesAvailable", " registering for location service update lis");
+		mLocationService.registerLocationServiceUpdateListener(this);
 	}
 
 	@Override
 	public void onNetworkBecomesUnavailable() 
 	{
-		mGoogleApiClient.disconnect();
+		mLocationService.removeLocationServiceUpdateListener(this);
 	}
 
-	@Override
-	public void onConnectionFailed(ConnectionResult arg0) 
-	{
-		Toast.makeText(mContext, "ReportUpdater: failed to connect to "
-				+ "location service: " + arg0.toString(), Toast.LENGTH_SHORT).show();
-	}
-
-	@Override
-	/** Called when the location client is connected. It is possible to obtain the last
-	 * known location. So we start here the report update task to download the reports.
+	/** Evaluate if the report is old 
+	 * 
+	 * @return
 	 */
-	public void onConnected(Bundle arg0) 
+	public boolean reportUpToDate() 
+	{	
+		return (System.currentTimeMillis() - mLastReportUpdatedAt) < DOWNLOAD_REPORT_OLD_TIMEOUT;
+	}
+
+	@Override
+	public void onReportUpdateTaskComplete(boolean error, String data) 
 	{
-		Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient) ;
+		/* task complete: remove location service update listener */
+		mLocationService.removeLocationServiceUpdateListener(this);
+		if(!error)
+		{
+			/* call onReportUpdateDone on ReportOverlay */
+			mReportUpdaterListener.onReportUpdateDone(data);
+			/* save data into cache */
+			DataPoolCacheUtils dataPoolCUtils = new DataPoolCacheUtils();
+			dataPoolCUtils.saveToStorage(data.getBytes(), ViewType.REPORT, mContext);
+			mLastReportUpdatedAt = System.currentTimeMillis();
+		}
+		else
+			mReportUpdaterListener.onReportUpdateError(mReportUpdateTask.getError());
+	}
+
+
+	@Override
+	public void onLocationChanged(Location location) 
+	{
 		/* since 2.20, allow fetching the reports even with geolocation disabled. Put latitude and
 		 * longitude to 0.0
 		 */
@@ -172,48 +193,14 @@ ReportUpdateTaskListener, ConnectionCallbacks, OnConnectionFailedListener
 		mReportUpdateTask = new ReportUpdateTask(this, location, deviceId);
 		/* "http://www.giacomos.it/meteo.fvg/get_report_2_6_1.php" */
 		mReportUpdateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().getReportUrl());
-
-
-		/* no more interested in location updates, the task has been starting with the last known
-		 * location.
-		 */
-		mGoogleApiClient.disconnect();
-	}
-
-	/** Evaluate if the report is old 
-	 * 
-	 * @return
-	 */
-	public boolean reportUpToDate() 
-	{	
-		return (System.currentTimeMillis() - mLastReportUpdatedAt) < DOWNLOAD_REPORT_OLD_TIMEOUT;
-	}
-
-	@Override
-	public void onReportUpdateTaskComplete(boolean error, String data) 
-	{
-		if(!error)
-		{
-			/* call onReportUpdateDone on ReportOverlay */
-			mReportUpdaterListener.onReportUpdateDone(data);
-			//			Log.e("ReportUpdater.onPostExecute", "saving to cache: " + data);
-			/* save data into cache */
-			DataPoolCacheUtils dataPoolCUtils = new DataPoolCacheUtils();
-			dataPoolCUtils.saveToStorage(data.getBytes(), ViewType.REPORT, mContext);
-			mLastReportUpdatedAt = System.currentTimeMillis();
-		}
-		else
-			mReportUpdaterListener.onReportUpdateError(mReportUpdateTask.getError());
+		
+		/* remove location service update listener as soon as we return in the main thread (onReportUpdateTaskComplete) */
 	}
 
 
 	@Override
-	public void onConnectionSuspended(int cause) {
+	public void onLocationServiceError(String message) {
 		// TODO Auto-generated method stub
-
+		
 	}
-
-
-
-
 }

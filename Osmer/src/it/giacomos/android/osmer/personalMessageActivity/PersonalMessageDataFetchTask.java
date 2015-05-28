@@ -56,7 +56,7 @@ public class PersonalMessageDataFetchTask extends AsyncTask<String, Integer, Str
         List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
         postParameters.add(new BasicNameValuePair("d", mDeviceId));
         UrlEncodedFormEntity form;
-        Log.e("PersonalMessageDataTask.doInBackground", " fetching data from " + urls[0]);
+     //   Log.e("PersonalMessageDataTask.doInBackground", " fetching data from " + urls[0]);
 		try {
 			form = new UrlEncodedFormEntity(postParameters);
 	        request.setEntity(form);

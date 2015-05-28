@@ -1,6 +1,6 @@
 package it.giacomos.android.osmer.locationUtils;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import android.content.Context;
 import android.location.Location;
@@ -21,8 +21,8 @@ GeocodeAddressUpdateListener, ConnectionCallbacks, OnConnectionFailedListener
 {
 	private final Context mContext;
 	private GoogleApiClient mGoogleApiClient;
-	private ArrayList<LocationServiceUpdateListener> mLocationServiceUpdateListeners;
-	private ArrayList<LocationServiceAddressUpdateListener> mLocationServiceAddressUpdateListeners;
+	private HashSet<LocationServiceUpdateListener> mLocationServiceUpdateListeners;
+	private HashSet<LocationServiceAddressUpdateListener> mLocationServiceAddressUpdateListeners;
 	private LocationRequest mLocationRequest;
 	private Location mCurrentLocation;
 	private LocationInfo mCurrentLocationInfo;
@@ -41,8 +41,8 @@ GeocodeAddressUpdateListener, ConnectionCallbacks, OnConnectionFailedListener
 		mGoogleApiClient = null;
 		mCurrentLocation = null;
 		mCurrentLocationInfo = null;
-		mLocationServiceUpdateListeners = new ArrayList<LocationServiceUpdateListener>();
-		mLocationServiceAddressUpdateListeners = new ArrayList<LocationServiceAddressUpdateListener>();
+		mLocationServiceUpdateListeners = new HashSet<LocationServiceUpdateListener>();
+		mLocationServiceAddressUpdateListeners = new HashSet<LocationServiceAddressUpdateListener>();
 	}
 	
 	public Location getCurrentLocation()
@@ -140,7 +140,6 @@ GeocodeAddressUpdateListener, ConnectionCallbacks, OnConnectionFailedListener
         }
     }
 
-	
 	public void registerLocationServiceUpdateListener(LocationServiceUpdateListener l)
 	{
 		mLocationServiceUpdateListeners.add(l);
@@ -175,8 +174,7 @@ GeocodeAddressUpdateListener, ConnectionCallbacks, OnConnectionFailedListener
 	{
 		if(mGoogleApiClient != null)
 		{
-			Log.e("onConnected", "connected to loc cli");
-			
+			Log.e("onConnected", "connected to GoogleApiClient");
 			Location lastKnownLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 			if(lastKnownLocation != null)
 			{
@@ -198,29 +196,6 @@ GeocodeAddressUpdateListener, ConnectionCallbacks, OnConnectionFailedListener
 		for(LocationServiceUpdateListener l : mLocationServiceUpdateListeners)
 			l.onLocationChanged(location);
 		mCurrentLocation = location;
-		
-		/* do we still need LocationComparer ? 
-		 * ... hope not
-		 */
-		
-		/* 
-		 * LocationComparer locationComparer = new LocationComparer();
-		 
-		
-		if(locationComparer.isBetterLocation(location, mCurrentLocation))
-		{	
-			mCurrentLocation = location; // save current location
-			if(mDownloadStatus.isOnline)
-			{
-//				Log.e("LocationService.onLocationChanged", "we are online, starting geocode task");
-				updateGeocodeAddress();
-			}
-		}
-//		else
-//			Log.e("LocationService.onLocationChanged", " !!!! new location is not better than old");
-		locationComparer = null;
-		*
-		*/
 	}
 
 	@Override

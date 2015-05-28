@@ -287,7 +287,6 @@ InAppUpgradeManagerListener
 	 */
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
-		Log.e("OsmerActivity.onPostCreate", " saved InstanceState " + savedInstanceState);
 		
 		super.onPostCreate(savedInstanceState);
 		if(!mGoogleServicesAvailable)

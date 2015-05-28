@@ -79,12 +79,13 @@ OnClickListener
 
 	public ReportOverlay(OMapFragment oMapFragment) 
 	{
+		OsmerActivity oactivity = (OsmerActivity) oMapFragment.getActivity();
 		mMapFrag = oMapFragment;
 		mMyReportRequestListener = null; /* OsmerActivity */
 		mReportOverlayTask = null;
 		mMapBaloonInfoWindowAdapter = new MapBaloonInfoWindowAdapter(mMapFrag.getActivity());
 		mGeocodeAddressTask = null;
-		mReportUpdater = new ReportUpdater(oMapFragment.getActivity().getApplicationContext(),  this);
+		mReportUpdater = new ReportUpdater(oMapFragment.getActivity().getApplicationContext(),  this, oactivity.getLocationService());
 		mMapFrag.getMap().setInfoWindowAdapter(mMapBaloonInfoWindowAdapter);
 		mDataInterfaceMarkerIdHash = new HashMap<String, DataInterface>();
 		mDataInterfaceList = new ArrayList<DataInterface>();
