@@ -222,8 +222,12 @@ link="http://promotur.digitalwebland.com/webcam/sellavecchiafunivia.jpg" />
 
 <marker nome="Ursus - Trieste Rive"
 id="140" lat="45.664214" lon="13.761493" 
-testo="Pontone Ursus. Rive di Trieste" category="additional"
-link="http://www.cisar.it/ext_site/trieste/meteoursus/cam1.jpg" />
+testo="Pontone Ursus. Rive di Trieste - Cisar" category="additional"
+link="http://www.cisartrieste.it/meteo/ursus/cam1.jpg" />
 
+<marker nome="Monte Grisa - Prosecco"
+id="140" lat="45.693805" lon="13.750449" 
+testo="Monte Grisa - Prosecco - Cisar Trieste" category="additional"
+link="http://www.cisartrieste.it/meteo/grisa/cam1.jpg" />
 
 </markers>

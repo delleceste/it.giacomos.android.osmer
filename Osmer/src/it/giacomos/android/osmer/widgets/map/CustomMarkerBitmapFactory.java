@@ -81,19 +81,19 @@ public class CustomMarkerBitmapFactory
 		textW = (int) Math.round(iconW * mTextWidthScaleFactor);
 		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		paint.setColor(Color.BLACK);
-		if(mCachedFontSize < 0) /* start from a certain font size and then scale it afterwards */
+	//	if(mCachedFontSize < 0) /* start from a certain font size and then scale it afterwards */
 			paint.setTextSize(mInitialFontSize);
-		else
-			paint.setTextSize(mCachedFontSize);
+	//	else
+		//	paint.setTextSize(mCachedFontSize);
 		
 		Rect bounds = new Rect();
 		paint.getTextBounds(label, 0, label.length(), bounds);
 		/* scale text while its length or height fall outside bounds */
-		while(bounds.width() > textW)
-		{
-			paint.setTextSize(paint.getTextSize() - 1);
-			paint.getTextBounds(label, 0, label.length(), bounds);
-		}
+	//	while(bounds.width() > textW)
+	//	{
+		//	paint.setTextSize(paint.getTextSize() - 1);
+			//paint.getTextBounds(label, 0, label.length(), bounds);
+		//}
 		textH = bounds.height();
 		textW = bounds.width();
 		textContainerW = textW + marginW;
