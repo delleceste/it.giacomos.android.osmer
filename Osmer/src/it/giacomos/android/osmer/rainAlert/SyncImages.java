@@ -1,5 +1,7 @@
 package it.giacomos.android.osmer.rainAlert;
 
+import it.giacomos.android.osmer.network.HttpPostParametrizer;
+import it.giacomos.android.osmer.network.HttpWriteRead;
 import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.widgets.map.animation.FileHelper;
 
@@ -12,18 +14,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 
 import android.util.Log;
 
@@ -49,27 +39,23 @@ public class SyncImages
 		boolean file1Success = true, file0Success = true;
 		String document = "";
 		String[] filepaths = null;
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpPost request = new HttpPost(url);
-		List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-		postParameters.add(new BasicNameValuePair("cli", CLI));
-		postParameters.add(new BasicNameValuePair("nfiles", "2"));
-		/* test! */
+		
+		HttpPostParametrizer parametrizer = new HttpPostParametrizer();
+	    parametrizer.add("cli", CLI);
+		parametrizer.add("nfiles", "2");
+		/*  test */
 		// postParameters.add(new BasicNameValuePair("before_datetime", "2014-08-23 21:11:00"));
-
-		UrlEncodedFormEntity form;
-		try {
-			form = new UrlEncodedFormEntity(postParameters);
-			request.setEntity(form);
-			HttpResponse response = httpClient.execute(request);
-			StatusLine statusLine = response.getStatusLine();
-			if(statusLine.getStatusCode() < 200 || statusLine.getStatusCode() >= 300)
-				mErrorMsg = statusLine.getReasonPhrase();
-			else if(statusLine.getStatusCode() < 0)
-				mErrorMsg = "Server error";
-			/* check the echo result */
-			HttpEntity entity = response.getEntity();
-			document = EntityUtils.toString(entity);
+		String params = parametrizer.toString();
+		HttpWriteRead httpWriteRead = new HttpWriteRead("UpdateMyLocationTask");
+		httpWriteRead.setValidityMode(HttpWriteRead.ValidityMode.MODE_ANY_RESPONSE_VALID);
+		if(!httpWriteRead.read(url, params))
+		{
+			mErrorMsg = httpWriteRead.getError();
+			Log.e("UpdMyLocaTask.doInBg", "Error updating my location: " + httpWriteRead.getError());
+		}
+		else
+		{
+			document = httpWriteRead.getResponse();
 			/* test if the document contains two "->" */
 			if(document.length() - document.replace("->", "").length() == 4)
 			{
@@ -125,19 +111,9 @@ public class SyncImages
 					} /* parts0.length == 2 && parts1.length == 2  */
 				} /* lines.length == 2 */
 			} 
-
-		} 
-		catch (UnsupportedEncodingException e) 
-		{
-			mErrorMsg = e.getLocalizedMessage();
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			mErrorMsg = e.getLocalizedMessage();
-			e.printStackTrace();
-		} catch (IOException e) {
-			mErrorMsg = e.getLocalizedMessage();
-			e.printStackTrace();
+		
 		}
+
 		return filepaths;
 	}
 

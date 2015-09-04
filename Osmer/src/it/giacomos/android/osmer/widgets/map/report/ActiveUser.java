@@ -39,6 +39,7 @@ public class ActiveUser extends DataInterface {
 		otherUsersInAreaCnt = otherUsersNearbyCnt; 
 	}
 	
+	
 	@Override
 	public int getType() {
 		return TYPE_ACTIVE_USER;

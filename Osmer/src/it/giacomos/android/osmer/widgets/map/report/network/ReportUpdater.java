@@ -117,7 +117,8 @@ ReportUpdateTaskListener, LocationServiceUpdateListener
 
 			if(mNetworkStatusMonitor.isConnected())
 			{
-				
+				mGoogleApiClient.disconnect();
+				mGoogleApiClient.connect();
 			}
 			else /* offline */
 				Toast.makeText(mContext, R.string.reportNeedToBeOnline, Toast.LENGTH_SHORT).show();

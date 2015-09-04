@@ -778,7 +778,10 @@ RadarAnimationListener, OnMapReadyCallback
 	public void updateReport(boolean force) 
 	{
 		if(mMode.currentMode == MapMode.REPORT && mReportOverlay != null)
+		{
+			Log.e("OMapFragment.updateReport", "forcing " + force);
 			mReportOverlay.update(this.getActivity().getApplicationContext(), force);
+		}
 		
 	}
 	
