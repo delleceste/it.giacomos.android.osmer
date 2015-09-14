@@ -194,7 +194,8 @@ RadarAnimationListener, OnMapReadyCallback
 		if(mMode.currentMode == MapMode.REPORT && mReportOverlay != null)
 		{
 			mReportOverlay.onResume();
-			mReportOverlay.update(getActivity().getApplicationContext(), false);
+			OsmerActivity a = (OsmerActivity) getActivity();
+			mReportOverlay.update(a.getApplicationContext(), false, a.getLocationService().getCurrentLocation());
 		}
 	}
 	
@@ -780,7 +781,8 @@ RadarAnimationListener, OnMapReadyCallback
 		if(mMode.currentMode == MapMode.REPORT && mReportOverlay != null)
 		{
 			Log.e("OMapFragment.updateReport", "forcing " + force);
-			mReportOverlay.update(this.getActivity().getApplicationContext(), force);
+			OsmerActivity a = (OsmerActivity) getActivity();
+			mReportOverlay.update(a.getApplicationContext(), force, a.getLocationService().getCurrentLocation());
 		}
 		
 	}

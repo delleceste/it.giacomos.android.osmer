@@ -101,7 +101,7 @@ ReportUpdateTaskListener, LocationServiceUpdateListener
 			mReportUpdateTask.cancel(false);
 	}
 
-	public void update(boolean force)
+	public void update(boolean force, Location location)
 	{
 		if((System.currentTimeMillis() - mLastReportUpdatedAt > DOWNLOAD_REPORT_OLD_TIMEOUT) || force)
 		{
@@ -117,8 +117,7 @@ ReportUpdateTaskListener, LocationServiceUpdateListener
 
 			if(mNetworkStatusMonitor.isConnected())
 			{
-				mGoogleApiClient.disconnect();
-				mGoogleApiClient.connect();
+				onLocationChanged(location);
 			}
 			else /* offline */
 				Toast.makeText(mContext, R.string.reportNeedToBeOnline, Toast.LENGTH_SHORT).show();
@@ -177,7 +176,7 @@ ReportUpdateTaskListener, LocationServiceUpdateListener
 			location = new Location("DummyLocation");
 			location.setLatitude(0.0);
 			location.setLongitude(0.0);
-			mReportUpdaterListener.onReportUpdateMessage(mContext.getString(R.string.enable_location_for_full_functionality));
+		//	mReportUpdaterListener.onReportUpdateMessage(mContext.getString(R.string.enable_location_for_full_functionality));
 		}
 		/* if a task is already running or about to run, do not do anything, because an update is on
 		 * the way.

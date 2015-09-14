@@ -78,7 +78,7 @@ public class PostReportTask extends AsyncTask<String, Integer, String>
 			mErrorMsg = httpWriteRead.getError();
 			Log.e("UpdMyLocaTask.doInBg", "Error updating my location: " + httpWriteRead.getError());
 		}
-		returnVal = httpWriteRead.getResponse();
+		returnVal = httpWriteRead.getResponse().trim();
 		if(returnVal.compareTo("0") != 0)
         	mErrorMsg = "PostReport: server error: " + returnVal;
 		return null;
