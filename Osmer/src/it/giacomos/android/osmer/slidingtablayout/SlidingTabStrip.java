@@ -16,7 +16,7 @@ package it.giacomos.android.osmer.slidingtablayout;
  * limitations under the License.
  */
 
-import android.R;
+import it.giacomos.android.osmer.R;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -66,7 +66,7 @@ class SlidingTabStrip extends LinearLayout {
 
         TypedValue outValue = new TypedValue();
         // R.attr.colorForeground = 16842800
-        context.getTheme().resolveAttribute(R.attr.colorForeground, outValue, true);
+        context.getTheme().resolveAttribute(16842800, outValue, true);
         final int themeForegroundColor =  outValue.data;
 
         mDefaultBottomBorderColor = setColorAlpha(themeForegroundColor,
