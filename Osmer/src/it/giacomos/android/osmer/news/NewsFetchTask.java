@@ -25,15 +25,16 @@ import android.util.Log;
 public class NewsFetchTask extends AsyncTask<String, Integer, String> 
 {
 	private static String CLI = "afe0983der38819073rxc1900lksjd";
-	private long mLastNewsReadTimestamp;
+	private long mLastNewsReadTimestamp, mVersionCode;
 	private String mErrorMsg;
 	private NewsData mNewsData;
 	private NewsUpdateListener mNewsUpdateListener;
 
-	public NewsFetchTask(long lastNewsReadTimestamp, NewsUpdateListener nud)
+	public NewsFetchTask(long lastNewsReadTimestamp, int versionCode, NewsUpdateListener nud)
 	{
 		mLastNewsReadTimestamp = lastNewsReadTimestamp;
 		mNewsUpdateListener = nud;
+		mVersionCode = versionCode;
 	}
 
 	@Override
@@ -42,9 +43,11 @@ public class NewsFetchTask extends AsyncTask<String, Integer, String>
 		mNewsData = null; /* to use if nothing to do or on error */
 		mErrorMsg = "";
 
+		
 		HttpPostParametrizer parametrizer = new HttpPostParametrizer();
 		parametrizer.add("cli", CLI);
 		parametrizer.add("last_read_on", String.valueOf(mLastNewsReadTimestamp));
+		parametrizer.add("version_code", mVersionCode);
 		/*  test */
 		// postParameters.add(new BasicNameValuePair("before_datetime", "2014-08-23 21:11:00"));
 		String params = parametrizer.toString();
@@ -88,9 +91,11 @@ public class NewsFetchTask extends AsyncTask<String, Integer, String>
 								Element a = (Element) urlNodes.item(0);
 								if(news != null && a != null)
 								{
+									 
 									String date = news.getAttribute("date");
 									String time = news.getAttribute("time"); /* not compulsory */
 									String url = a.getAttribute("href");
+									boolean persistent = a.hasAttribute("persistent") && a.getAttribute("persistent").compareTo("true") == 0;
 									Node aNode = a.getFirstChild();
 									String text = "";
 									if(aNode instanceof CharacterData)
@@ -98,7 +103,7 @@ public class NewsFetchTask extends AsyncTask<String, Integer, String>
 									Log.e("PersonalMessageDataFetchTask", "date " + date + ", url " + url + ", text " + text);
 									if(date != null && url != null && !date.isEmpty() && !url.isEmpty() && !text.isEmpty())
 									{
-										mNewsData = new NewsData(date, time, text, url);
+										mNewsData = new NewsData(date, time, text, url, persistent);
 									}
 								}
 							}

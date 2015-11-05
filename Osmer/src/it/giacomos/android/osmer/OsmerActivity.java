@@ -78,6 +78,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Location;
@@ -409,6 +410,9 @@ InAppUpgradeManagerListener
 
 	public void init()
 	{
+		
+		Log.e("OsmerActivity", " INIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIITTTTTTTTTTT");
+		
 		mCurrentFragmentId = -1;
 		mLastTouchedY = -1;
 
@@ -444,7 +448,10 @@ InAppUpgradeManagerListener
 			 alist.add(hm);
 		}
 		 String[] from = { "ITEM", "ICON" };
-		 int[] to   = { R.id.drawerItemText, R.id.drawerItemIcon };
+		 
+		 Log.e("OsmerActivity", " -----------------_> " + R.id.drawerItemIcon);
+		 
+		int[] to   = { R.id.drawerItemText, R.id.drawerItemIcon };
 		 
 		/* Action bar stuff.  */
 		mActionBarManager = new ActionBarManager(this);
@@ -625,6 +632,7 @@ InAppUpgradeManagerListener
 	@Override
 	public void networkStatusChanged(boolean online) 
 	{
+		int versionCode = -1;
 		TitlebarUpdater titlebarUpdater = new TitlebarUpdater();
 		titlebarUpdater.update(this);
 		titlebarUpdater = null;
@@ -643,7 +651,13 @@ InAppUpgradeManagerListener
 			/* are there any news? This AsyncTask will call onNewsUpdateAvailable on success */
 			if(mSettings.timeToFetchNews())
 			{
-				mNewsFetchTask = new NewsFetchTask(mSettings.lastNewsReadTimestamp(), this);
+				try {
+					versionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+				} catch (NameNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				mNewsFetchTask = new NewsFetchTask(mSettings.lastNewsReadTimestamp(), versionCode, this);
 				mNewsFetchTask.execute(new Urls().newsUrl());
 			}
 

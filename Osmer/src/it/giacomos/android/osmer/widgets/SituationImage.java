@@ -58,7 +58,7 @@ implements LatestObservationCacheChangeListener
 		else if(densityDpi == DisplayMetrics.DENSITY_XXHIGH)
 			mFontSize = 30;
 		else if(densityDpi == DisplayMetrics.DENSITY_XXXHIGH)
-			mFontSize = 32;
+			mFontSize = 34;
 		else /* shouldn't happen */
 			mFontSize = 36;
 		/* in this class we use mPaint which is allocated in superclass */
