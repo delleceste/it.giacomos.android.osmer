@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="938"
-    android:versionName="3.2.5" >
+    android:versionCode="940"
+    android:versionName="3.2.6" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -42,7 +42,7 @@
     <!--
           ==================================     ========================================
     
-                           CHANGE THIS ONE WHEN SWITCHING TO PRO!! 
+                           CHANGE THIS ONE WHEN SWITCHING TO PRO, otherwise: [INSTALL_FAILED_DUPLICATE_PERMISSION]!! 
                            
                           ========================================
     -->
@@ -54,7 +54,7 @@
     <!--
           ==================================       ========================================
     
-                           CHANGE THIS ONE WHEN SWITCHING TO PRO!! 
+                           CHANGE THIS ONE WHEN SWITCHING TO PRO, otherwise: [INSTALL_FAILED_DUPLICATE_PERMISSION]!! 
                            
                           ========================================
     -->
@@ -125,10 +125,10 @@
         <!-- ++++++++++++++++++++++++++++++++++++++++++ Meteo.FVG PRO +++++++++++++++++++++++++++++++++++++++++ -->
 
 
-        <!--
+       <!--  
      <meta-data android:name="com.google.android.maps.v2.API_KEY" 
   			android:value="AIzaSyCO_r5ZYrWaqA5ExtIxAVHwRn6KiGAJ_Ps"/>
-        -->
+       -->
 
 
         <!-- ++++++++++++++++++++++++++++++++++++++++++ end Meteo.FVG PRO API KEY ++++++++++++++++++++++++++++ -->
@@ -142,9 +142,11 @@
 
         <!-- ============================================= Meteo.FVG ========================================= -->
 
-        <meta-data
+      <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBhRcwqzgppnwzQApAHcV7-Rer1JhXiDQs" />
+            
+            
         <!-- ========================================== end Meteo.FVG API KEY ============================== -->
 
         <receiver

@@ -83,7 +83,7 @@ public class IconTextSpinnerAdapter extends ArrayAdapter<String> {
 		{
 			if(!night)
 			{
-				arr_images =  new int[] { -1, /* index 0 */
+				arr_images =  new int[] { R.drawable.ic_menu_close_clear_cancel, /* index 0 */
 						R.drawable.weather_sky_0, /* 1 */
 						R.drawable.weather_few_clouds, /* 2 */
 						R.drawable.weather_clouds,  /* 3 */
@@ -105,7 +105,7 @@ public class IconTextSpinnerAdapter extends ArrayAdapter<String> {
 			}
 			else
 			{
-				arr_images =  new int[] { -1, /* index 0 */
+				arr_images =  new int[] { R.drawable.ic_menu_close_clear_cancel, /* index 0 */
 						R.drawable.weather_sky_0_nite, /* 1 */
 						R.drawable.weather_few_clouds_nite, /* 2 */
 						R.drawable.weather_clouds_nite,  /* 3 */
@@ -127,7 +127,7 @@ public class IconTextSpinnerAdapter extends ArrayAdapter<String> {
 			}
 		}
 		else
-			arr_images = new int[] {  -1, 
+			arr_images = new int[] {  R.drawable.ic_menu_close_clear_cancel, 
 				R.drawable.weather_wind_calm,
 				R.drawable.weather_wind_35, R.drawable.weather_wind_17,
 				R.drawable.weather_wind_26, R.drawable.weather_wind2_red_34 

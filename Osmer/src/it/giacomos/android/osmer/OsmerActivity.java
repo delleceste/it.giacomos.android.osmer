@@ -436,7 +436,14 @@ InAppUpgradeManagerListener
 		mDrawerItems = getResources().getStringArray(R.array.drawer_text_items);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-		int[] drawerListIcons = new int[]{ -1, -1,  -1, -1, -1, -1, R.drawable.ic_menu_shared, R.drawable.logo_arpa };
+		int[] drawerListIcons = new int[]{ R.drawable.ic_forecast_icon, 
+				R.drawable.ic_radar_icon,  
+				R.drawable.ic_menu_observations, 
+				R.drawable.ic_menu_recent_observations, 
+				R.drawable.ic_menu_webcams, 
+				R.drawable.ic_menu_edit_fab, /* smaller */
+				R.drawable.ic_menu_shared, 
+				R.drawable.logo_arpa };
 		ArrayList <HashMap <String, String> > alist = new ArrayList <HashMap <String, String> >();
 		for(int i = 0; i < drawerListIcons.length; i++)
 		{
@@ -446,10 +453,8 @@ InAppUpgradeManagerListener
 			 alist.add(hm);
 		}
 		 String[] from = { "ITEM", "ICON" };
-		 
-		 Log.e("OsmerActivity", " -----------------_> " + R.id.drawerItemIcon + " R.drawable.logo_arpa: " + R.drawable.logo_arpa);
-		 
-		int[] to   = { R.id.drawerItemText, /* R.id.drawerItemIcon */  -1 };
+		 		 
+		int[] to   = { R.id.drawerItemText,  R.id.drawerItemIcon };
 		 
 		/* Action bar stuff.  */
 		mActionBarManager = new ActionBarManager(this);

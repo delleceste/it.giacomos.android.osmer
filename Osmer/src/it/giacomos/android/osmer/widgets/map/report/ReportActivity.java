@@ -154,8 +154,6 @@ public class ReportActivity extends AppCompatActivity implements OnClickListener
 			else
 				temp = "";
 
-			
-
 			user = teUserName.getText().toString();
 			etComment = (EditText) findViewById(R.id.etComment);
 			comment = etComment.getText().toString();
