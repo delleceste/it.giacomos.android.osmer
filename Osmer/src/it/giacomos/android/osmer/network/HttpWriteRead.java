@@ -83,7 +83,7 @@ public class HttpWriteRead
             if ((mValidityMode == ValidityMode.MODE_RESPONSE_VALID_IF_ZERO)  && (mResponse.trim().compareTo("0") != 0) ) /* trim trailing \n */
                 mError = mResponse;
             in.close();
-            Log.e("HttpWriteRead.read", " response \"" + mResponse + "\"");
+        //    Log.e("HttpWriteRead.read", " response \"" + mResponse + "\"");
 
         }
         catch (MalformedURLException e)

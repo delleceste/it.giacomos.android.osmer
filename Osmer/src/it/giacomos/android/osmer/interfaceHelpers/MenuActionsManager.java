@@ -37,52 +37,58 @@ public class MenuActionsManager implements GeocodeAddressUpdateListener
 	{
 		Resources res = mActivity.getApplicationContext().getResources();
 //		Bundle data = null;
-		switch(item.getItemId())
+		int itemId = item.getItemId();
+
+		if(itemId == R.id.menu_info)
 		{
-		case R.id.menu_info:
-	//		data = new Bundle();
+			//		data = new Bundle();
 			String text = "<h6>" + res.getString(R.string.app_name);
-			try {
+			try
+			{
 				PackageInfo info = mActivity.getPackageManager().getPackageInfo(mActivity.getPackageName(), 0);
-				text +=  ", " + res.getString(R.string.version) + ": " + info.versionName;
-				
-			} catch (NameNotFoundException e) {
+				text += ", " + res.getString(R.string.version) + ": " + info.versionName;
+
+			} catch (NameNotFoundException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			text += "</h6>\n" + res.getString(R.string.popup_app_info);
-			
-	//		data.putString("text", text);
-	//		data.putString("title", res.getString(R.string.popup_info_title));
+
+			//		data.putString("text", text);
+			//		data.putString("title", res.getString(R.string.popup_info_title));
 			MyAlertDialogFragment.MakeGenericInfo(Html.fromHtml(text).toString(), mActivity);
-			break;
+		}
 			
-		case R.id.menu_data_update_info:
-		//	data.putString("title", res.getString(R.string.popup_data_update_title));
+		else if(itemId ==   R.id.menu_data_update_info)
+		{
+			//	data.putString("title", res.getString(R.string.popup_data_update_title));
 			MyAlertDialogFragment.MakeGenericInfo(Html.fromHtml(mActivity.getString(R.string.popup_data_update_info)).toString(), mActivity);
-			break;
-		case R.id.menu_online_guide:
+		}
+		else if(itemId ==    R.id.menu_online_guide)
+		{
 			Intent idoc = new Intent(Intent.ACTION_VIEW);
 			idoc.setData(Uri.parse(DOC_URL));
 			mActivity.startActivity(idoc);
-			break;
-		case R.id.menu_author_info:
+		}
+		else if(itemId ==    R.id.menu_author_info)
+		{
 			Intent iauthor = new Intent(Intent.ACTION_VIEW);
 			iauthor.setData(Uri.parse(AUTHOR_URL));
 			mActivity.startActivity(iauthor);
-			break;
-			
-		case R.id.menu_config_info:
+		}
+		else if(itemId ==    R.id.menu_config_info)
+		{
 			ConfigInfo configInfo = new ConfigInfo();
 			MyAlertDialogFragment.MakeGenericInfo(Html.fromHtml(configInfo.gatherInfo(mActivity)).toString(), mActivity);
 			configInfo = null;
-			break;
+		}
 
-		case R.id.menu_settings:
+		else if(itemId ==    R.id.menu_settings)
+		{
 			Intent prefsActivityIntent = new Intent(mActivity, SettingsActivity.class);
 			mActivity.startActivityForResult(prefsActivityIntent, OsmerActivity.SETTINGS_ACTIVITY_FOR_RESULT_ID);	
-			break;
 		}
 		return true;
 	}

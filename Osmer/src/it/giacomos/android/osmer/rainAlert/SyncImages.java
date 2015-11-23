@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +57,7 @@ public class SyncImages
 		else
 		{
 			document = httpWriteRead.getResponse();
+			Log.e("sync", " response: " + document);
 			/* test if the document contains two "->" */
 			if(document.length() - document.replace("->", "").length() == 4)
 			{
@@ -149,9 +151,9 @@ public class SyncImages
 		{
 			try{
 				int nRead;
-				/* get radar image */
-				URL url = new URL(new Urls().radarHistoricalImagesFolderUrl() + "/" + relativePath);
-				InputStream inputStream = (InputStream) url.getContent();
+				/* get radar image. radarHistoricalImagesFolderUrl() returns the trailing "/" */
+				URL url = new URL(new Urls().radarHistoricalImagesFolderUrl()  + relativePath);
+				InputStream inputStream = (InputStream) url.openStream();
 				/* get bytes from input stream */
 				ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
 				byte [] bytes = new byte[1024];

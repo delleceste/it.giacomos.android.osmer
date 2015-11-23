@@ -410,9 +410,7 @@ InAppUpgradeManagerListener
 
 	public void init()
 	{
-		
-		Log.e("OsmerActivity", " INIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIITTTTTTTTTTT");
-		
+				
 		mCurrentFragmentId = -1;
 		mLastTouchedY = -1;
 
@@ -449,9 +447,9 @@ InAppUpgradeManagerListener
 		}
 		 String[] from = { "ITEM", "ICON" };
 		 
-		 Log.e("OsmerActivity", " -----------------_> " + R.id.drawerItemIcon);
+		 Log.e("OsmerActivity", " -----------------_> " + R.id.drawerItemIcon + " R.drawable.logo_arpa: " + R.drawable.logo_arpa);
 		 
-		int[] to   = { R.id.drawerItemText, R.id.drawerItemIcon };
+		int[] to   = { R.id.drawerItemText, /* R.id.drawerItemIcon */  -1 };
 		 
 		/* Action bar stuff.  */
 		mActionBarManager = new ActionBarManager(this);
@@ -938,47 +936,46 @@ InAppUpgradeManagerListener
 		if(menuItem.isCheckable())
 			menuItem.setChecked(!menuItem.isChecked());
 		OMapFragment omv = getMapFragment();
-		switch(menuItem.getItemId())
-		{
-		case R.id.centerMapButton:
+		int itemId = menuItem.getItemId();
+
+		if(itemId == R.id.centerMapButton)
 			omv.centerMap();
-			break;	
-		case R.id.mapNormalViewButton:
-			omv.setNormalViewEnabled(menuItem.isChecked());
-			break;		
-		case R.id.satelliteViewButton:
+		else if(itemId ==  R.id.mapNormalViewButton)
+				omv.setNormalViewEnabled(menuItem.isChecked());
+
+		else if(itemId == R.id.satelliteViewButton)
 			omv.setSatEnabled(menuItem.isChecked());
-			break;			
-		case R.id.terrainViewButton:
+		else if(itemId ==  R.id.terrainViewButton)
 			omv.setTerrainEnabled(menuItem.isChecked()); 
-			break;
-		case R.id.radarInfoButton:
+		else if(itemId == R.id.radarInfoButton)
+		{
 			View radarInfoTextView = findViewById(R.id.radarInfoTextView);
-			if(menuItem.isChecked())
+			if (menuItem.isChecked())
 				radarInfoTextView.setVisibility(View.VISIBLE);
 			else
 				radarInfoTextView.setVisibility(View.GONE);
-			break;
-		case R.id.measureToggleButton:
-			if(menuItem.isChecked() && mSettings.isMapMoveToMeasureHintEnabled())
+		}
+		else if(itemId == R.id.measureToggleButton)
+		{
+			if (menuItem.isChecked() && mSettings.isMapMoveToMeasureHintEnabled())
 				Toast.makeText(getApplicationContext(), R.string.hint_move_to_measure_on_map, Toast.LENGTH_LONG).show();
 			omv.setMeasureEnabled(menuItem.isChecked());
-			break;
-		case R.id.radarAnimationAction:
+		}
+		else if(itemId ==  R.id.radarAnimationAction)
+		{
 			findViewById(R.id.mapMessageTextView).setVisibility(View.GONE);
 			startRadarAnimation();
-			break;
-		case R.id.reportUpdateAction:
+		}
+		else if(itemId ==  R.id.reportUpdateAction)
+		{
 			/* this forces an update, even if just updated */
 			updateReport(true);
-			break;
-		case R.id.reportHelpAction:
+		}
+		else if(itemId ==  R.id.reportHelpAction)
+		{
 			/* show map tilt transparent overlay next time too */
 			mSettings.setTiltTutorialShown(false);
 			mStartTutorialActivity();
-			break;
-		default:
-			break;
 		}
 		return false;
 	}

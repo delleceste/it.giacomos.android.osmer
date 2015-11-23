@@ -188,7 +188,7 @@ implements  FetchRequestsTaskListener, Runnable, ConnectionCallbacks, OnConnecti
 			/* get the registration id (for new versions, to work with google cloud messaging */
 			GcmRegistrationManager gcmRm = new GcmRegistrationManager();
 			String registrationId = gcmRm.getRegistrationId(this);
-			Log.e("ReportDataService.startTask", "reg id " + registrationId);
+		//	Log.e("ReportDataService.startTask", "reg id " + registrationId);
 
 			if(!registrationId.isEmpty())
 			{
