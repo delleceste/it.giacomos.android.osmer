@@ -187,7 +187,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 					try{
 						/* get radar image */
 						url = new URL(surl);
-						inputStream = (InputStream) url.getContent();
+						inputStream = (InputStream) url.openStream();
 						/* get bytes from input stream */
 						ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
 						bytes = new byte[1024];
