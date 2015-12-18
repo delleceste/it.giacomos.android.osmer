@@ -592,4 +592,18 @@ public class Settings
 		e.putLong("ADS_LAST_SHOWN_TIME_MILLIS", System.currentTimeMillis());
 		e.commit();
 	}
+
+	public void setPermissionRationaleShownNow() {
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putLong("PERMISSION_RATIONALE_SHOWN", System.currentTimeMillis());
+		e.commit();
+		
+	}
+
+	/* show rationale once every 10 days */
+	public boolean timeToShowPermissionRationale() {
+		long lastShown = mSharedPreferences.getLong("PERMISSION_RATIONALE_SHOWN", 0L);
+		long now = System.currentTimeMillis();
+		return (now - lastShown) >  10 * 24 * 60 *  60 * 1000;
+	}
 }

@@ -26,11 +26,13 @@ import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -40,6 +42,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings.Secure;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -130,11 +133,24 @@ implements  FetchRequestsTaskListener, Runnable, ConnectionCallbacks, OnConnecti
 		{
 			/* wait for connection and then get location and update data */
 			//	log("I: run: connectin to loc cli");
-			mLocationClient.connect();
+			if ( (ContextCompat.checkSelfPermission(this,
+	                Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED) 
+	                || (ContextCompat.checkSelfPermission(this,
+	                        Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED) )
+			{
+				// Toast.makeText(this, "location permission granted", Toast.LENGTH_LONG).show();
+				mLocationClient.connect();
+			}
+			else /* wait an entire mSleepInterval before retrying */
+			{
+				Toast.makeText(this, "location permission NOT GRANTED will wait for " + mSleepInterval + "ms", Toast.LENGTH_LONG).show();
+				Log.e("ReportDataService.run", " --> --> --> ! no location permission granted ! RETRY IN " + mSleepInterval + " ms <-- <-- ");
+				mHandler.postDelayed(this, mSleepInterval);
+			}
 		}
 		else /* check in a while */
 		{
-			// log("I: run: not yet time");
+			Log.e("ReportDataService.run", " --> --> --> ! not yet time to run trying in " + mCheckIfNeedRunIntervalMillis + " ms <-- <-- ");
 			mHandler.postDelayed(this, mCheckIfNeedRunIntervalMillis);
 		}
 	}

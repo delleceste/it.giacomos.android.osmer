@@ -779,5 +779,14 @@ Please note: requests devoid of the full name and date will be ignored.\n\n</str
         Download free app:\nhttps://play.google.com/store/apps/details?id=it.giacomos.android.osmer\n\n
         Download Meteo.FVG pro:\nhttps://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro\n\n
         </string>
-
+     <string name="request_location_permission_rationale"  >This application uses location services to show your location on the map,
+          provide rain notification alerts and enable the possibility to ask for weather in a given location on the map (Menu->Reports)
+          and receive report notifications from other users. No information about your account or any other personal data, 
+          except the nickname you provide in the weather request form is given. Please grant the permission to location services
+          to fully take advantage of the application. The application also needs to read and write from and to external storage
+          in order to temporary save radar and webcam images.</string> 
+          
+     <string name="proceed">Proceed</string>
+    <string name="nothanks">No, thanks</string>	
+	
 </resources>

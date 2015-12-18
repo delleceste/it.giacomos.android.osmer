@@ -38,8 +38,11 @@ import it.giacomos.android.osmer.widgets.map.report.OnTiltChangeListener;
 import it.giacomos.android.osmer.widgets.map.report.ReportOverlay;
 import it.giacomos.android.osmer.widgets.map.report.network.PostReportAsyncTaskPool;
 import it.giacomos.android.osmer.widgets.map.report.network.PostType;
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -187,7 +190,11 @@ RadarAnimationListener, OnMapReadyCallback
 	public void onResume()
 	{
 		super.onResume();
-		mMap.setMyLocationEnabled(true);
+		if ( (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED) 
+                || (ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED) )
+			mMap.setMyLocationEnabled(true);
 
 		if(mRadarAnimation.getState().animationInProgress())
 			mRadarAnimation.restore();

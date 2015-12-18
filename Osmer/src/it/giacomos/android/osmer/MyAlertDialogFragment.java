@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ public class MyAlertDialogFragment extends DialogFragment implements DialogInter
 
 	public static final int OPTION_OPEN_GEOLOCALIZATION_SETTINGS = 1;
 	public static final int OPTION_OPEN_NETWORK_SETTINGS = 2;
+	public static final int OPTION_GRANT_LOCATION_PERMISSION = 3;
 	
 	private int mOption = 0;
 
@@ -51,6 +53,12 @@ public class MyAlertDialogFragment extends DialogFragment implements DialogInter
 	public static void MakeGenericInfo(String message, FragmentActivity a)
 	{
 		MyAlertDialogFragment.newInstance(R.string.info, message, R.drawable.ic_dialog_info)
+		.show(a.getSupportFragmentManager(), "InfoDialog");
+	}
+	
+	public static void MakeGenericInfo(int message, FragmentActivity a, int option)
+	{
+		MyAlertDialogFragment.newInstance(R.string.info, message, R.drawable.ic_dialog_info, option)
 		.show(a.getSupportFragmentManager(), "InfoDialog");
 	}
 
@@ -120,6 +128,13 @@ public class MyAlertDialogFragment extends DialogFragment implements DialogInter
 			builder.setPositiveButton(R.string.open_network_settings, this);
 			builder.setNeutralButton(R.string.cancel_button, this);	
 		}
+		else if(bu.containsKey("option") && bu.getInt("option") == OPTION_GRANT_LOCATION_PERMISSION)
+		{
+			Log.e("onCreateDialog", "grant location perm");
+			mOption = bu.getInt("option");
+			builder.setPositiveButton(R.string.proceed, this);
+			builder.setNeutralButton(R.string.nothanks, this);	
+		}
 		else
 		{
 			builder.setPositiveButton(R.string.ok_button, this);
@@ -136,6 +151,12 @@ public class MyAlertDialogFragment extends DialogFragment implements DialogInter
 				intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 			else if(mOption == OPTION_OPEN_NETWORK_SETTINGS)
 				intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+			else if(mOption == OPTION_GRANT_LOCATION_PERMISSION)
+			{
+				Log.e("onCreateDialog", "grant location perm");
+				LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(
+					    new Intent(OsmerActivity.ACTION_GRANT_LOCATION_PERMISSION));
+			}
 			if(intent != null)
 			{
 				intent.putExtra("option", mOption);

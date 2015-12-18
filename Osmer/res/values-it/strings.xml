@@ -957,5 +957,18 @@ mio android id è il seguente:\n\n
         alla versione gratuita:\nhttps://play.google.com/store/apps/details?id=it.giacomos.android.osmer\n\nLink
         alla versione di Meteo.FVG pro:\nhttps://play.google.com/store/apps/details?id=it.giacomos.android.osmer.pro"\n\n
         </string>
+        
+    <string name="request_location_permission_rationale"  >Questa applicazione utilizza il servizio di geolocalizzazione
+        per indicare la tua posizione sulla mappa, fornirti notifiche di pioggia in avvicinamento e per darti la 
+        possibilità; di chiedere e ricevere segnalazioni meteo in un punto sulla mappa (vedi menu->;segnalazioni).
+        Non viene inoltrata nessuna informazione sul tuo account, numero di telefono o qualsiasi altra informazione
+        personale, eccetto il nickname di tua scelta fornito nella finestra di dialogo
+        di richiesta meteo su un punto della mappa. Abilita questa funzionalità per sfruttare al massimo l\'applicazione.
+        L\'applicazione legge e scrive anche 
+        
+       </string>
+         
+     <string name="allow">Concedi</string>
+    <string name="deny">Nega</string>	
     
 </resources>

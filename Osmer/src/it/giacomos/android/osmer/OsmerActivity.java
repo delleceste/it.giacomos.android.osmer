@@ -76,8 +76,11 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -86,9 +89,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -110,6 +116,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+import android.Manifest;
 
 
 import io.presage.Presage;
@@ -159,10 +166,12 @@ InAppUpgradeManagerListener
 	{
 		super.onCreate(savedInstanceState);
 
-//		Log.e("OsmerActivity.onCreate", "onCreate called");
+		mGrantLocationPermissionBroadcastReceiver = new LocalBroadcastReceiver(this);
+
+		//		Log.e("OsmerActivity.onCreate", "onCreate called");
 
 		mSettings = new Settings(this);
-		
+
 		/* create the location update client and connect it to the location service */
 		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 		if(resultCode == ConnectionResult.SUCCESS)
@@ -176,13 +185,17 @@ InAppUpgradeManagerListener
 			mGoogleServicesAvailable = false;
 			GooglePlayServicesUtil.getErrorDialog(resultCode, this, 0).show();
 		}
-		
+
 		/* if a user has purchased the application using the inApp method, do not
 		 * show ads
 		 */
 		int inAppPurchaseStatus = mSettings.getInAppPurchaseStatus();
 		mAdsEnabled = (this.getPackageName().compareTo("it.giacomos.android.osmer") == 0)
 				&& (inAppPurchaseStatus == 0);
+		
+		/* wating for presage for android 6 */
+		mAdsEnabled = mAdsEnabled && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M;
+		
 		if(mAdsEnabled)
 		{
 			Log.e("OsmerActivity.onCreate", "inAppPurchaseStatus is 0: activating Ads");
@@ -200,18 +213,56 @@ InAppUpgradeManagerListener
 		InAppUpgradeManager iaum = new InAppUpgradeManager();
 		iaum.addInAppUpgradeManagerListener(this);
 		iaum.checkIfPurchased(this);
-
 	}
 
 	public void onResume()
 	{	
 		super.onResume();
-//		Log.e("OsmerActivity.onResume", "onResume called");
+		//		Log.e("OsmerActivity.onResume", "onResume called");
 		if(!mGoogleServicesAvailable)
 			return;
 
-		/* (re)connect the location update client */
-		mLocationService.connect();
+		/* register receiver to get responses from the dialog explaining the reason why meteo.fvg needs
+		 * location. If the user grants the permission to access location services, then inside the onReceive
+		 * method of the private class LocalBroadcastReceiver declared at the bottom of this file will 
+		 * 
+		 */
+		LocalBroadcastManager.getInstance(this).registerReceiver(mGrantLocationPermissionBroadcastReceiver, 
+				new IntentFilter(ACTION_GRANT_LOCATION_PERMISSION));
+		
+		if ( (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+				!= PackageManager.PERMISSION_GRANTED) &&
+				(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) 
+						!= PackageManager.PERMISSION_GRANTED) && mSettings.timeToShowPermissionRationale() )
+		{
+			// Should we show an explanation?
+			if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+					Manifest.permission.ACCESS_COARSE_LOCATION)
+					|| ActivityCompat.shouldShowRequestPermissionRationale(this,
+							Manifest.permission.READ_EXTERNAL_STORAGE) ) 
+			{
+				Log.e("OsmerActivity.onResume", "we should show an explanation");	
+				MyAlertDialogFragment.MakeGenericInfo(R.string.request_location_permission_rationale, this,
+						MyAlertDialogFragment.OPTION_GRANT_LOCATION_PERMISSION);
+				mSettings.setPermissionRationaleShownNow();
+			} 
+			else
+			{
+				// No explanation needed, we can request the permission.
+				Log.e("OsmerActivity.onResume", "No explanation needed, we can request the permission");
+				ActivityCompat.requestPermissions(this,
+						new String[] { 
+						Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
+						Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
+				}, MY_PERMISSIONS_REQUEST_LOCATION);
+			}
+		}
+		else
+		{
+			/* (re)connect the location update client */
+			mLocationService.connect();
+		}
+
 		m_downloadManager.onResume(this);
 
 		/* remove notifications from the notification bar */
@@ -219,7 +270,7 @@ InAppUpgradeManagerListener
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(ReportRequestNotification.REQUEST_NOTIFICATION_ID);
 		mNotificationManager.cancel(ReportNotification.REPORT_NOTIFICATION_ID);
-		
+
 		/*
 		 * mAdsEnabled is true if (since version code 920)
 		 * - not purchased, not first execution of the app
@@ -236,22 +287,22 @@ InAppUpgradeManagerListener
 		{
 			Presage.getInstance().adToServe("interstitial", new IADHandler() {
 
-		    @Override
-		    public void onAdNotFound() {
-		      Log.e("PRESAGE", "ad not found");
-		    }
+				@Override
+				public void onAdNotFound() {
+					Log.e("PRESAGE", "ad not found");
+				}
 
-		    @Override
-		    public void onAdFound() {
-		      Log.e("PRESAGE", "ad found");
-		      mSettings.setAdsShownNow();
-		    }
+				@Override
+				public void onAdFound() {
+					Log.e("PRESAGE", "ad found");
+					mSettings.setAdsShownNow();
+				}
 
-		    @Override
-		    public void onAdClosed() {
-		      Log.e("PRESAGE", "ad closed");
-		    }
-		  });
+				@Override
+				public void onAdClosed() {
+					Log.e("PRESAGE", "ad closed");
+				}
+			});
 		}
 	}
 
@@ -274,6 +325,8 @@ InAppUpgradeManagerListener
 
 		if(mPersonalMessageDataFetchTask != null && mPersonalMessageDataFetchTask.getStatus() != AsyncTask.Status.FINISHED)
 			mPersonalMessageDataFetchTask.cancel(false);
+
+		LocalBroadcastManager.getInstance(this).unregisterReceiver( mGrantLocationPermissionBroadcastReceiver);
 		
 		/* no ads when resuming after onPause.
 		 * Actually, since version code 920, we rely only on mSettings.timeToShowAds()
@@ -288,7 +341,7 @@ InAppUpgradeManagerListener
 	 */
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
-		
+
 		super.onPostCreate(savedInstanceState);
 		if(!mGoogleServicesAvailable)
 			return;
@@ -317,15 +370,15 @@ InAppUpgradeManagerListener
 				getIntent().removeExtra("NotificationRainAlert");
 			}
 		}
-	//	Log.e("onPostCreate", "force drawer item " + forceDrawerItem);
+		//	Log.e("onPostCreate", "force drawer item " + forceDrawerItem);
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
-		
+
 		/* do not show ads when savedInstanceState is not null (e.g. after screen rotation 
 		 * Actually, since version code 920, we rely only on mSettings.timeToShowAds()
 		 * to determine if it's time to show ads or not.
 		 */
-//		if(savedInstanceState != null)
-//			mAdsEnabled = false;
+		//		if(savedInstanceState != null)
+		//			mAdsEnabled = false;
 	}
 
 	@Override
@@ -353,9 +406,34 @@ InAppUpgradeManagerListener
 			}
 			//			Log.e("OsmerActivity.onNewIntent", "switching to item " + drawerItem);
 			mActionBarManager.drawerItemChanged(drawerItem);
-			
+
 			// since version code 920
 			// mAdsEnabled = false;
+		}
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode,
+			String permissions[], int[] grantResults) {
+		switch (requestCode) 
+		{
+		case MY_PERMISSIONS_REQUEST_LOCATION:
+		{
+			// If request is cancelled, the result arrays are empty.
+			if (grantResults.length > 0
+					&& grantResults[0] == PackageManager.PERMISSION_GRANTED) 
+			{
+				// permission was granted, yay! Do the
+				// contacts-related task you need to do.
+				mLocationService.connect();
+			} 
+			else 
+			{
+				// permission denied, boo! Disable the
+				// functionality that depends on this permission.
+			}
+			return;
+		}
 		}
 	}
 
@@ -410,7 +488,7 @@ InAppUpgradeManagerListener
 
 	public void init()
 	{
-				
+
 		mCurrentFragmentId = -1;
 		mLastTouchedY = -1;
 
@@ -430,9 +508,9 @@ InAppUpgradeManagerListener
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		this.setSupportActionBar(toolbar);
-		
+
 		mProgressBar = (ProgressBar) findViewById (R.id.mainProgressBar);
- 
+
 		mDrawerItems = getResources().getStringArray(R.array.drawer_text_items);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -447,15 +525,15 @@ InAppUpgradeManagerListener
 		ArrayList <HashMap <String, String> > alist = new ArrayList <HashMap <String, String> >();
 		for(int i = 0; i < drawerListIcons.length; i++)
 		{
-			 HashMap<String, String> hm = new HashMap<String,String>();
-			 hm.put("ITEM", mDrawerItems[i]);
-			 hm.put("ICON", Integer.toString(drawerListIcons[i]));
-			 alist.add(hm);
+			HashMap<String, String> hm = new HashMap<String,String>();
+			hm.put("ITEM", mDrawerItems[i]);
+			hm.put("ICON", Integer.toString(drawerListIcons[i]));
+			alist.add(hm);
 		}
-		 String[] from = { "ITEM", "ICON" };
-		 		 
+		String[] from = { "ITEM", "ICON" };
+
 		int[] to   = { R.id.drawerItemText,  R.id.drawerItemIcon };
-		 
+
 		/* Action bar stuff.  */
 		mActionBarManager = new ActionBarManager(this);
 		/* Set the adapter for the list view */
@@ -485,7 +563,7 @@ InAppUpgradeManagerListener
 		 * OMapFragment.onMapReady
 		 */
 		m_observationsCache = new ObservationsCache();
-		
+
 		OMapFragment map = getMapFragment();
 		m_observationsCache.installObservationsCacheUpdateListener(map);
 
@@ -536,11 +614,11 @@ InAppUpgradeManagerListener
 		/* hide fab if the user scrolls with his finger down, setting a minimum scroll y length */
 		final float floatingActionButtonHideYThresholdDPI = 12.0f;
 		final float density = getResources().getDisplayMetrics().density;
-		
+
 		mFloatingActionButtonHideYThreshold = density * floatingActionButtonHideYThresholdDPI;
 		SlidingTabLayout stl = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
 		stl.setOnPageChangeListener(this);
-		
+
 		getMapFragment().setRadarOverlayUpdateListener(this);
 		getMapFragment().setMapFragmentListener(this);
 	}
@@ -794,7 +872,7 @@ InAppUpgradeManagerListener
 	@Override
 	public void onStateChanged(long previousState, long state) 
 	{
-		
+
 	}
 
 	/** implemented from PostActionResultListener.
@@ -908,7 +986,7 @@ InAppUpgradeManagerListener
 
 	public void onSelectionDone(ObservationType observationType, MapMode mapMode) 
 	{
-//		Log.e("OsmerActivity.onSelectionDone", " type " + observationType + " mode " + mapMode);
+		//		Log.e("OsmerActivity.onSelectionDone", " type " + observationType + " mode " + mapMode);
 		/* switch the working mode of the map view. Already in PAGE_MAP view flipper page */
 		OMapFragment map = getMapFragment();
 		if((mapMode != MapMode.REPORT) || (mapMode == MapMode.REPORT && mReportConditionsAccepted))
@@ -946,7 +1024,7 @@ InAppUpgradeManagerListener
 		if(itemId == R.id.centerMapButton)
 			omv.centerMap();
 		else if(itemId ==  R.id.mapNormalViewButton)
-				omv.setNormalViewEnabled(menuItem.isChecked());
+			omv.setNormalViewEnabled(menuItem.isChecked());
 
 		else if(itemId == R.id.satelliteViewButton)
 			omv.setSatEnabled(menuItem.isChecked());
@@ -1273,7 +1351,7 @@ InAppUpgradeManagerListener
 			stl.setVisibility(View.VISIBLE);
 		else
 			stl.setVisibility(View.GONE);
-		
+
 		/* hide fab if in observations, radar or webcam mode */
 		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabNewReport);
 		if( /* fab.isVisible() && */ (this.mCurrentFragmentId == 1 && id != ViewType.REPORT))
@@ -1615,6 +1693,7 @@ InAppUpgradeManagerListener
 	public static final int REPORT_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 100;
 	public static final int TUTORIAL_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 101;
 	public static final int SETTINGS_ACTIVITY_FOR_RESULT_ID = Activity.RESULT_FIRST_USER + 102;
+	public static final String ACTION_GRANT_LOCATION_PERMISSION = "ACTION_GRANT_LOCATION_PERMISSION";
 
 	private MyPendingAlertDialog mMyPendingAlertDialog;
 	private ImgTouchEventData mForecastImgTouchEventData;
@@ -1625,8 +1704,10 @@ InAppUpgradeManagerListener
 
 	private float mLastTouchedY;
 	private float mFloatingActionButtonHideYThreshold;
-	
+
 	private ProgressBar mProgressBar;
+	private final int MY_PERMISSIONS_REQUEST_LOCATION = 0;
+	private BroadcastReceiver mGrantLocationPermissionBroadcastReceiver;
 
 	public void openMeteoFVGUrl() 
 	{
@@ -1642,7 +1723,7 @@ InAppUpgradeManagerListener
 			appUrl = new Urls().getMeteoFVGProAppStoreUrl();
 		else
 			appUrl = new Urls().getMeteoFVGAppStoreUrl();
-		
+
 		Intent sendIntent = new Intent();
 		sendIntent.setAction(Intent.ACTION_SEND);
 		sendIntent.putExtra(Intent.EXTRA_TEXT, appUrl);
@@ -1654,7 +1735,7 @@ InAppUpgradeManagerListener
 	@Override
 	public void onPurchaseComplete(boolean ok, String error, boolean b) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -1666,6 +1747,31 @@ InAppUpgradeManagerListener
 	@Override
 	public void onInAppSetupComplete(boolean success, String message) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	private class LocalBroadcastReceiver  extends BroadcastReceiver {
+
+		private Activity mActivity;
+		LocalBroadcastReceiver(Activity a)
+		{
+			mActivity = a;
+		}
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// safety check
+			if (intent != null && 
+					intent.getAction() != null && 
+					intent.getAction().equals(ACTION_GRANT_LOCATION_PERMISSION))
+			{
+				Log.e("LocalBroadcastReceiver.onReceive", "Enabled LOCATION permission from broadcast receiver (DIALOG)!");
+				ActivityCompat.requestPermissions(mActivity,
+						new String[] { 
+						Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION
+				}, MY_PERMISSIONS_REQUEST_LOCATION);
+			}
+
+		}
+
 	}
 }
