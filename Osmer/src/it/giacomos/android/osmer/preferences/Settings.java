@@ -1,5 +1,9 @@
 package it.giacomos.android.osmer.preferences;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -605,5 +609,35 @@ public class Settings
 		long lastShown = mSharedPreferences.getLong("PERMISSION_RATIONALE_SHOWN", 0L);
 		long now = System.currentTimeMillis();
 		return (now - lastShown) >  10 * 24 * 60 *  60 * 1000;
+	}
+
+	public boolean after2016January7()
+	{
+		boolean after = false;
+	    Calendar rightNow = Calendar.getInstance();
+	    Calendar january7 = new GregorianCalendar(2016, Calendar.JANUARY, 7);
+	    try{
+	    	after = rightNow.after(january7);
+	    }
+	    catch(IllegalArgumentException e)
+	    {
+	    	
+	    }
+	    return after;
+	}
+	
+	public boolean userRecentlyPublished() 
+	{
+		long lastPublishedTimeMillis = mSharedPreferences.getLong("USER_RECENTLY_PUBLISHED", 0L);
+		final long interval = 24 * 60 * 60 * 1000;
+		boolean recent = System.currentTimeMillis() - lastPublishedTimeMillis < interval;
+		return recent;
+	}
+	
+	public void setUserPublishedNow()
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putLong("USER_RECENTLY_PUBLISHED", System.currentTimeMillis());
+		e.commit();
 	}
 }

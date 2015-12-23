@@ -282,7 +282,14 @@ InAppUpgradeManagerListener
 		 * 
 		 */
 		mAdsEnabled = mAdsEnabled && (this.getPackageName().compareTo("it.giacomos.android.osmer") == 0)
-				&& (inAppPurchaseStatus == 0) &&	mSettings.timeToShowAds();
+				&& (inAppPurchaseStatus == 0)  /* &&	mSettings.timeToShowAds()  */;
+		
+		boolean outsidePromotion = !mSettings.userRecentlyPublished() || mSettings.after2016January7();
+		mAdsEnabled = mAdsEnabled && outsidePromotion;
+		
+		Log.e("OsmerActivity.onResume", "ADS ENABLED " + mAdsEnabled + " recently published " + 
+				mSettings.userRecentlyPublished() + " after 7 january " + mSettings.after2016January7());
+		
 		if(mAdsEnabled) /* not purchased, not executed for the first time */
 		{
 			Presage.getInstance().adToServe("interstitial", new IADHandler() {
@@ -891,7 +898,11 @@ InAppUpgradeManagerListener
 		if(!error && postType == PostType.REQUEST && Integer.parseInt(message) > 0)
 			Toast.makeText(this, message + " " + getString(R.string.users_poked), Toast.LENGTH_SHORT).show();
 		else if(!error && (postType == PostType.REQUEST || postType == PostType.REPORT) )
+		{
 			Toast.makeText(this, R.string.reportDataSentOk, Toast.LENGTH_SHORT).show();
+			if(postType == PostType.REPORT)
+				mSettings.setUserPublishedNow();
+		}
 		else if(error)
 		{
 			String m = this.getResources().getString(R.string.reportError) + "\n" + message;
@@ -907,6 +918,7 @@ InAppUpgradeManagerListener
 			getMapFragment().onPostActionResult(error, message, postType);
 			updateReport(true);
 		}
+		
 	}
 
 	/** implements ReportRequestListener interface
@@ -1433,6 +1445,7 @@ InAppUpgradeManagerListener
 						locality, reportLocation.getLatitude(), reportLocation.getLongitude(), 
 						data.getIntExtra("sky", 0), data.getIntExtra("wind", 0), 
 						data.getStringExtra("temperature"), data.getStringExtra("comment"), this);
+				
 			}
 		}
 		else if(requestCode == TUTORIAL_ACTIVITY_FOR_RESULT_ID)

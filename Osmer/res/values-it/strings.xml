@@ -964,7 +964,8 @@ mio android id è il seguente:\n\n
         Non viene inoltrata nessuna informazione sul tuo account, numero di telefono o qualsiasi altra informazione
         personale, eccetto il nickname di tua scelta fornito nella finestra di dialogo
         di richiesta meteo su un punto della mappa. Abilita questa funzionalità per sfruttare al massimo l\'applicazione.
-        L\'applicazione legge e scrive anche 
+        L\'applicazione legge e scrive anche dalla memoria esterna, per salvare le immagini temporanee del radar e quelle
+        delle webcam.
         
        </string>
          
