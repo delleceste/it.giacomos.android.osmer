@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="950"
-    android:versionName="3.4.0" >
+    android:versionCode="960"
+    android:versionName="3.5.0" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -25,12 +25,13 @@
     
     <!--  presage -->
     
-		<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!-- 
+    	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 		<uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
 		<uses-permission android:name="com.android.browser.permission.WRITE_HISTORY_BOOKMARKS" />
 		<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 		<uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
-	
+	-->
 	<!--  end presage -->	
 		
     <!-- GET_ACCOUNTS needed on versions lower than 4.0.4. 4.0.3 and 4.0.4 is 15 -->

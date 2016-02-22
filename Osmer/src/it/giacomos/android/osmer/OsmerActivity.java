@@ -119,9 +119,6 @@ import android.widget.ToggleButton;
 import android.Manifest;
 
 
-import io.presage.Presage;
-import io.presage.utils.IADHandler;
-
 /** 
  * 
  * @author giacomo
@@ -149,7 +146,6 @@ InAppUpgradeManagerListener
 {
 	private final DownloadManager m_downloadManager;
 	private final DownloadStatus mDownloadStatus;
-	private boolean mAdsEnabled;
 
 	public OsmerActivity()
 	{
@@ -185,34 +181,8 @@ InAppUpgradeManagerListener
 			mGoogleServicesAvailable = false;
 			GooglePlayServicesUtil.getErrorDialog(resultCode, this, 0).show();
 		}
-
-		/* if a user has purchased the application using the inApp method, do not
-		 * show ads
-		 */
-		int inAppPurchaseStatus = mSettings.getInAppPurchaseStatus();
-		mAdsEnabled = (this.getPackageName().compareTo("it.giacomos.android.osmer") == 0)
-				&& (inAppPurchaseStatus == 0);
 		
-		/* wating for presage for android 6 */
-		mAdsEnabled = mAdsEnabled && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M;
-		
-		if(mAdsEnabled)
-		{
-			Log.e("OsmerActivity.onCreate", "inAppPurchaseStatus is 0: activating Ads");
-			Presage.getInstance().setContext(this.getBaseContext());
-			Presage.getInstance().start();
-		}
-		else
-		{
-			Log.e("OsmerActivity.onCreate", "inAppPurchaseStatus is " + inAppPurchaseStatus + " or time to show ads " +
-					mSettings.timeToShowAds());
-		}
-		/* check if purchased. If purchased, inAppPurchaseStatus will be set to 1 in preferences.
-		 * If not purchased, inAppPurchaseStatus will be 0 and on the next onCreate the ad will be initialized.
-		 */
-		InAppUpgradeManager iaum = new InAppUpgradeManager();
-		iaum.addInAppUpgradeManagerListener(this);
-		iaum.checkIfPurchased(this);
+	/* Since 3.5.0, ads have been removed */
 	}
 
 	public void onResume()
@@ -271,46 +241,6 @@ InAppUpgradeManagerListener
 		mNotificationManager.cancel(ReportRequestNotification.REQUEST_NOTIFICATION_ID);
 		mNotificationManager.cancel(ReportNotification.REPORT_NOTIFICATION_ID);
 
-		/*
-		 * mAdsEnabled is true if (since version code 920)
-		 * - not purchased, not first execution of the app
-		 * - not shown within a certain period of time
-		 */
-		int inAppPurchaseStatus = mSettings.getInAppPurchaseStatus();
-		/* 
-		 * Please NOTE: make an end with the mAdsEnabled value set in onCreate 
-		 * 
-		 */
-		mAdsEnabled = mAdsEnabled && (this.getPackageName().compareTo("it.giacomos.android.osmer") == 0)
-				&& (inAppPurchaseStatus == 0)  /* &&	mSettings.timeToShowAds()  */;
-		
-		boolean outsidePromotion = !mSettings.userRecentlyPublished() || mSettings.after2016January7();
-		mAdsEnabled = mAdsEnabled && outsidePromotion;
-		
-		Log.e("OsmerActivity.onResume", "ADS ENABLED " + mAdsEnabled + " recently published " + 
-				mSettings.userRecentlyPublished() + " after 7 january " + mSettings.after2016January7());
-		
-		if(mAdsEnabled) /* not purchased, not executed for the first time */
-		{
-			Presage.getInstance().adToServe("interstitial", new IADHandler() {
-
-				@Override
-				public void onAdNotFound() {
-					Log.e("PRESAGE", "ad not found");
-				}
-
-				@Override
-				public void onAdFound() {
-					Log.e("PRESAGE", "ad found");
-					mSettings.setAdsShownNow();
-				}
-
-				@Override
-				public void onAdClosed() {
-					Log.e("PRESAGE", "ad closed");
-				}
-			});
-		}
 	}
 
 	public void onPause()
@@ -334,12 +264,7 @@ InAppUpgradeManagerListener
 			mPersonalMessageDataFetchTask.cancel(false);
 
 		LocalBroadcastManager.getInstance(this).unregisterReceiver( mGrantLocationPermissionBroadcastReceiver);
-		
-		/* no ads when resuming after onPause.
-		 * Actually, since version code 920, we rely only on mSettings.timeToShowAds()
-		 * to determine if it's time to show ads or not.
-		 */
-		// mAdsEnabled = false;
+
 	}
 
 	/**
@@ -379,13 +304,6 @@ InAppUpgradeManagerListener
 		}
 		//	Log.e("onPostCreate", "force drawer item " + forceDrawerItem);
 		mActionBarManager.init(savedInstanceState, forceDrawerItem);
-
-		/* do not show ads when savedInstanceState is not null (e.g. after screen rotation 
-		 * Actually, since version code 920, we rely only on mSettings.timeToShowAds()
-		 * to determine if it's time to show ads or not.
-		 */
-		//		if(savedInstanceState != null)
-		//			mAdsEnabled = false;
 	}
 
 	@Override
@@ -413,9 +331,6 @@ InAppUpgradeManagerListener
 			}
 			//			Log.e("OsmerActivity.onNewIntent", "switching to item " + drawerItem);
 			mActionBarManager.drawerItemChanged(drawerItem);
-
-			// since version code 920
-			// mAdsEnabled = false;
 		}
 	}
 
