@@ -125,13 +125,13 @@
 
         <!-- ++++++++++++++++++++++++++++++++++++++++++ Meteo.FVG PRO +++++++++++++++++++++++++++++++++++++++++ -->
 
-<!--
-      
+
+      <!--
      <meta-data android:name="com.google.android.maps.v2.API_KEY" 
   			android:value="AIzaSyCO_r5ZYrWaqA5ExtIxAVHwRn6KiGAJ_Ps"/>
-    
--->
+    -->
 
+     
         <!-- ++++++++++++++++++++++++++++++++++++++++++ end Meteo.FVG PRO API KEY ++++++++++++++++++++++++++++ -->
 
 
@@ -147,6 +147,7 @@
       <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBhRcwqzgppnwzQApAHcV7-Rer1JhXiDQs" />
+
         
             
         <!-- ========================================== end Meteo.FVG API KEY ============================== -->
