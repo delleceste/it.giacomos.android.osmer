@@ -39,7 +39,8 @@ public class SyncImages
 	{
 		boolean file1Success = true, file0Success = true;
 		String document = "";
-		String[] filepaths = null;
+		String[] config = null;
+		String imgData = "";
 		
 		HttpPostParametrizer parametrizer = new HttpPostParametrizer();
 	    parametrizer.add("cli", CLI);
@@ -67,13 +68,16 @@ public class SyncImages
 				 *
 				 */
 				String [] lines = document.split("\n");
-				if(lines.length == 2)
+				if(lines.length == 3)
 				{
+					imgData = lines[0];
 					/* oldest image */
-					String[] parts0 = lines[0].split("->");
-					String[] parts1 = lines[1].split("->");
-					if(parts0.length == 2 && parts1.length == 2)
+                    String[] imgDataParts = imgData.split(",");
+					String[] parts0 = lines[1].split("->");
+					String[] parts1 = lines[2].split("->");
+					if(parts0.length == 2 && parts1.length == 2 && imgDataParts.length == 3)
 					{
+                        String radarSource = imgDataParts[0];
 						String date1 = parts0[0];
 						String remoteFilePath1 = parts0[1];
 						/* last image */
@@ -85,9 +89,9 @@ public class SyncImages
 						String file0 = "radar-" + remoteFilePath0.substring(remoteFilePath0.lastIndexOf('/') + 1);
 						if(!fileHelper.exists(file1, cacheDir))
 							/* try to download it */
-							file1Success = SaveImage(remoteFilePath1, file1, cacheDir);
+							file1Success = SaveImage(remoteFilePath1, file1, cacheDir, radarSource);
 						if(!fileHelper.exists(file0, cacheDir))
-							file0Success = SaveImage(remoteFilePath0, file0, cacheDir);
+							file0Success = SaveImage(remoteFilePath0, file0, cacheDir, radarSource);
 
 						/* if file0 or file1 already exist, then the file1Success and file0Success retain their 'true'
 						 * value from initialization at the beginning of the method.
@@ -95,9 +99,10 @@ public class SyncImages
 						if(file1Success && file0Success)
 						{
 							/* successfully downloaded and saved images into storage */
-							filepaths = new String[2];
-							filepaths[0] = file0;
-							filepaths[1] = file1;
+							config = new String[3];
+							config[0] = imgData;
+							config[1] = file0;
+							config[2] = file1;
 							/* remove unneeded files left over by precedent downloads */
 							ArrayList<String> neededFiles = new ArrayList<String>();
 							neededFiles.add(file1);
@@ -116,7 +121,7 @@ public class SyncImages
 		
 		}
 
-		return filepaths;
+		return config;
 	}
 
 	private int removeUnneededFiles(ArrayList<String> needed, String cacheDirPath)
@@ -133,18 +138,18 @@ public class SyncImages
 				deleted = file.delete();
 				if(deleted)
 				{
-					Log.e("SyncImages.removeUnneededFiles", "successfully removed unneeded file " + fName);
+					Log.e("SyncImgs.remUneedFiles", "successfully removed unneeded file " + fName);
 					removed++;
 				}
 				else
-					Log.e("SyncImages.removeUnneededFiles", "failed to delete unneeded file " + fName);
+					Log.e("SyncImgs.remUneedFiles", "failed to delete unneeded file " + fName);
 			}	
 
 		}
 		return removed;
 	}
 
-	private boolean SaveImage(String relativePath, String outFileName, String cacheDirP)
+	private boolean SaveImage(String relativePath, String outFileName, String cacheDirP, String radarSrc)
 	{
 		FileHelper fileHelper = new FileHelper();
 		try
@@ -152,7 +157,7 @@ public class SyncImages
 			try{
 				int nRead;
 				/* get radar image. radarHistoricalImagesFolderUrl() returns the trailing "/" */
-				URL url = new URL(new Urls().radarHistoricalImagesFolderUrl()  + relativePath);
+				URL url = new URL(new Urls().radarHistoricalImagesFolderUrl(radarSrc)  + relativePath);
 				InputStream inputStream = (InputStream) url.openStream();
 				/* get bytes from input stream */
 				ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
@@ -167,7 +172,7 @@ public class SyncImages
 				{
 					mErrorMsg = "Error saving image on external storage " +
 							fileHelper.getErrorMessage();
-					Log.e("SyncImages.doInBackground", "failed to save " + outFileName + " on external storage: " + fileHelper.getErrorMessage());
+					Log.e("SyncImages.SaveImage", "failed to save " + outFileName + " on external storage: " + fileHelper.getErrorMessage());
 				}
 				else
 					return true;
@@ -175,13 +180,14 @@ public class SyncImages
 			catch(MalformedURLException e)
 			{
 				mErrorMsg = "Malformed URL: \"" + relativePath + "\":\n\"" + e.getLocalizedMessage() + "\"";
-				Log.e("SyncImages.doInBackground", "Malformed URL" + mErrorMsg);
+				Log.e("SyncImages.SaveImage", "Malformed URL" + mErrorMsg);
 			}
 
 		}
 		catch(IOException e)
 		{
 			mErrorMsg = "IOException: URL: \"" + relativePath + "\":\n\"" + e.getLocalizedMessage() + "\"";
+			Log.e("SyncImages.SaveImage", "IO exception: " + mErrorMsg + " | radarSource : "  + radarSrc + "|");
 		}
 		return false;
 	}

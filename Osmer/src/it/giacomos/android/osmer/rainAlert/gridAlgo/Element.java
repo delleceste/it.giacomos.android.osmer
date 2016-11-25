@@ -11,29 +11,29 @@ public class Element {
 
 	public Index index;
 	public double xend = 0.0, xstart = 0.0, ystart = 0.0, yend = 0.0;
-	public float dbz;
+	public float intensity;
 	private boolean increased;
 	
 	public ArrayList<ContiguousElementData> contiguousElementDataList; /* contiguousElementData */
 	
 	public Element(int nrows, int ncols) 
 	{
-		/* if calculateDbz is not called (null bitmap), init dbz to 0.0 */
-		dbz = 0.0f; 
+		/* if calculateDbz is not called (null bitmap), init intensity to 0.0 */
+		intensity = 0.0f;
 		index = new Index(nrows, ncols);
 		contiguousElementDataList = new ArrayList<ContiguousElementData>();
 	}
 
-	/** Calculates the average value of dbz of this element.
+	/** Calculates the average value of intensity of this element.
 	 * 
 	 * @param image the bitmap to analyze 
 	 * @param xc
 	 * @param yc
 	 * @param imgParams a specific implementation of ImgParamsInterface representing the 
-	 *        color map that associates dbz to colors. For instance MeteoFVGParams, that
+	 *        color map that associates intensity to colors. For instance MeteoFVGParams, that
 	 *        uses tones from violet to green to yellow to red to brown.
 	 *        
-	 * This method calculates the value of dbz inside the region of interest enclosed inside this Element.
+	 * This method calculates the value of intensity inside the region of interest enclosed inside this Element.
 	 *        
 	 */
 	public void calculateDbz(Bitmap image,	ImgParamsInterface imgParams) 
@@ -50,7 +50,7 @@ public class Element {
 		int nc = endY - startY;
 		int npix = nr * nc;
 		
-		this.dbz = 0;
+		this.intensity = 0;
 		
 		
 		for(int r = startX; r < endX; r++)
@@ -59,14 +59,14 @@ public class Element {
 			{
 				argb = image.getPixel(r, c);
 				int [] arr_rgb = {Color.red(argb), Color.green(argb), Color.blue(argb)};
-				this.dbz += imgParams.getDbzForColor(arr_rgb);
+				this.intensity += imgParams.getIntensityForColor(arr_rgb);
 			}
 		}
 
 		/* normalize dBZ */
-		this.dbz /= npix;
+		this.intensity /= npix;
 		
-	//	Log.e("Element.calculateDbz", "index [ " + index.i  + ", " + index.j + "] "  + " [" + startX +"," + startY + ", " + endX + "," + endY  + "], dbz " + dbz);	
+	//	Log.e("Element.calculateDbz", "index [ " + index.i  + ", " + index.j + "] "  + " [" + startX +"," + startY + ", " + endX + "," + endY  + "], intensity " + intensity);
 		
 		/* Functions drawing on image would follow. See img_overlay_grid.php, Element class.
 		 * 

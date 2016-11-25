@@ -21,17 +21,19 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 	private String mExternalStorageDirPath;
 	private String m_errorMessage;
 	private String mDownloadUrls;
+	private String mRadarSource;
 	private AnimationTaskListener mAnimationTaskListener;
 	private int mTotSteps;
 	private boolean mOffline;
 
-	public AnimationTask(String externalStorageDirPath)
+	public AnimationTask(String externalStorageDirPath, String radarSource)
 	{
 		mAnimationTaskListener = null;
 		mTotSteps = 0;
 		mDownloadUrls = "";
 		mExternalStorageDirPath = externalStorageDirPath;
 		mOffline = false;
+		mRadarSource = radarSource;
 	}
 
 	void setAnimationTaskListener(AnimationTaskListener atl)
@@ -151,7 +153,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 		{			
 			if(fileHelper.exists(fName, mExternalStorageDirPath))
 			{
-				Log.e("AnimationTask.doInBackground", " file " + fName + " already exists on " + mExternalStorageDirPath);
+				Log.e("AnimTask.doInBackground", " file " + fName + " already exists on " + mExternalStorageDirPath);
 				/* file exists, no need to download it */
 				stepCnt++;
 
@@ -180,7 +182,7 @@ public class AnimationTask extends AsyncTask <String, Integer, Integer>
 			}
 			else
 			{
-				surl = myurls.radarHistoricalImagesFolderUrl() + fName;
+				surl = myurls.radarHistoricalImagesFolderUrl(mRadarSource) + fName;
 				/* download it and save on file */
 				try
 				{

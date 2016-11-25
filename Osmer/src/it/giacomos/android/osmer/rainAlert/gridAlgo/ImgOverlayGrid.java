@@ -42,8 +42,8 @@ public class ImgOverlayGrid extends ImgOverlayBase
 		mGrid.init(configurationAsString, this.getCenterX(), this.getCenterY());
 	}
 	
-	/** Calculates the value of the dbz in the grid. After this call ends, all the elements
-	 * in the grid will have their dbz value calculated.
+	/** Calculates the value of the intensity in the grid. After this call ends, all the elements
+	 * in the grid will have their intensity value calculated.
 	 */
 	@Override
 	public void processImage(ImgParamsInterface imgParams) 

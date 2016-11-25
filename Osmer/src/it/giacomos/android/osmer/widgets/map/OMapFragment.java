@@ -104,7 +104,61 @@ RadarAnimationListener, OnMapReadyCallback
 	@Override
 	public void onMapReady(GoogleMap googleMap) 
 	{
-		
+		mMapReady = true;
+		mMap = googleMap;
+		OsmerActivity oActivity = (OsmerActivity) getActivity();
+		mSettings = new Settings(oActivity.getApplicationContext());
+		/* restore last used map type */
+		mMap.setMapType(mSettings.getMapType());
+		/* restore last camera position */
+		mSavedCameraPosition = mSettings.getCameraPosition();
+		if(mSavedCameraPosition == null) /* never saved */
+			mCenterOnUpdate = true;
+		mMap.setOnCameraChangeListener(this);
+		if ( (ContextCompat.checkSelfPermission(getActivity(),
+				Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED)
+				|| (ContextCompat.checkSelfPermission(getActivity(),
+				Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED) )
+			mMap.setMyLocationEnabled(true);
+
+		UiSettings uiS = mMap.getUiSettings();
+		//	uiS.setRotateGesturesEnabled(false);
+		uiS.setZoomControlsEnabled(false);		/* restore last used map type */
+		mSettings = new Settings(oActivity.getApplicationContext());
+		/* restore last used map type */
+		mMap.setMapType(mSettings.getMapType());
+
+		/* create a radar overlay */
+		mRadarOverlay = new RadarOverlay(mMap);
+		/* add to overlays because when refreshed by mRefreshRadarImage
+		 * a GroundOverlay is attached to the map and when switching the mode
+		 * it must be in the list of overlays in order to be cleared.
+		 */
+		mOverlays.add(mRadarOverlay);
+
+		mMapClickOnBaloonImageHintEnabled = mSettings.isMapClickOnBaloonImageHintEnabled();
+
+		/* register for radar image bitmap updates, and get updates even if the
+		 * bitmap hasn't changed between subsequent updates. We want to receive
+		 * all updates in order to save the time when the image was last
+		 * downloaded.
+		 */
+		oActivity.getDataPool().setForceUpdateEvenOnSameBitmap(BitmapType.RADAR, true);
+		oActivity.getDataPool().registerBitmapListener(BitmapType.RADAR, this);
+		DataPoolCacheUtils dpcu = new DataPoolCacheUtils();
+		/* initialize radar bitmap */
+		onBitmapChanged(dpcu.loadFromStorage(BitmapType.RADAR,
+				oActivity.getApplicationContext()), BitmapType.RADAR, true);
+
+		/* map updates the observation data in ItemizedOverlay when new observations are available
+		 *
+		 */
+
+
+//		FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.actionNewReport);
+//		fab.setOnClickListener((OsmerActivity) this.getActivity());
+//		fab.setColor(getResources().getColor(R.color.accent));
+//		fab.setDrawable(getResources().getDrawable(R.drawable.ic_menu_edit_fab));
 	}
 	
 	@Override
@@ -190,11 +244,8 @@ RadarAnimationListener, OnMapReadyCallback
 	public void onResume()
 	{
 		super.onResume();
-		if ( (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED) 
-                || (ContextCompat.checkSelfPermission(getActivity(),
-                        Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED) )
-			mMap.setMyLocationEnabled(true);
+
+		this.getMapAsync(this);
 
 		if(mRadarAnimation.getState().animationInProgress())
 			mRadarAnimation.restore();
@@ -221,8 +272,11 @@ RadarAnimationListener, OnMapReadyCallback
 			/* save the map type */
 			mSettings.setMapType(mMap.getMapType());
 		}
-		
-		if(mMap != null)
+
+		if ( mMap != null && ((ContextCompat.checkSelfPermission(getActivity(),
+				Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED)
+				|| (ContextCompat.checkSelfPermission(getActivity(),
+				Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED) ) )
 			mMap.setMyLocationEnabled(false);
 		mRadarAnimation.onPause();
 		/* call onPause only if current mode is REPORT. Otherwise, the mode switch
@@ -245,79 +299,73 @@ RadarAnimationListener, OnMapReadyCallback
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		mMap = getMap();
-		UiSettings uiS = mMap.getUiSettings();
-		//	uiS.setRotateGesturesEnabled(false);
-		uiS.setZoomControlsEnabled(false);
-		
 		OsmerActivity oActivity = (OsmerActivity) getActivity();
 		mSettings = new Settings(oActivity.getApplicationContext());
-		/* restore last used map type */
-		mMap.setMapType(mSettings.getMapType());
+
 		/* restore last camera position */
 		mSavedCameraPosition = mSettings.getCameraPosition();
 		if(mSavedCameraPosition == null) /* never saved */
 			mCenterOnUpdate = true;
-		mMap.setOnCameraChangeListener(this);
 
 		/* create a radar overlay */
 		mRadarOverlay = new RadarOverlay(mMap);
-		/* add to overlays because when refreshed by mRefreshRadarImage 
+		/* add to overlays because when refreshed by mRefreshRadarImage
 		 * a GroundOverlay is attached to the map and when switching the mode
 		 * it must be in the list of overlays in order to be cleared.
 		 */
 		mOverlays.add(mRadarOverlay);
 
 		mMapClickOnBaloonImageHintEnabled = mSettings.isMapClickOnBaloonImageHintEnabled();
-		
+
 		/* register for radar image bitmap updates, and get updates even if the
 		 * bitmap hasn't changed between subsequent updates. We want to receive
-		 * all updates in order to save the time when the image was last 
+		 * all updates in order to save the time when the image was last
 		 * downloaded.
 		 */
 		oActivity.getDataPool().setForceUpdateEvenOnSameBitmap(BitmapType.RADAR, true);
 		oActivity.getDataPool().registerBitmapListener(BitmapType.RADAR, this);
 		DataPoolCacheUtils dpcu = new DataPoolCacheUtils();
 		/* initialize radar bitmap */
-		onBitmapChanged(dpcu.loadFromStorage(BitmapType.RADAR, 
+		onBitmapChanged(dpcu.loadFromStorage(BitmapType.RADAR,
 				oActivity.getApplicationContext()), BitmapType.RADAR, true);
-		
+
 		/* map updates the observation data in ItemizedOverlay when new observations are available
 		 *
 		 */
-		
-		
+
+
 //		FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.actionNewReport);
 //		fab.setOnClickListener((OsmerActivity) this.getActivity());
 //		fab.setColor(getResources().getColor(R.color.accent));
 //		fab.setDrawable(getResources().getDrawable(R.drawable.ic_menu_edit_fab));
-		
+
 		/* set html text on Radar info text view */
 		TextView radarInfoTextView = (TextView) getActivity().findViewById(R.id.radarInfoTextView);
 		radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
 		radarInfoTextView.setVisibility(View.GONE);
-		
+
 		/* when the activity creates us, it passes the initialization stuff through arguments */
 		mSetMode(mMode);
-		
+
 //		if(mMode.currentMode == MapMode.DAILY_OBSERVATIONS || mMode.currentMode == MapMode.LATEST_OBSERVATIONS)
 //			updateObservations(mObservationsCache.getObservationData(mMode.currentMode));
-		
+
 		/* radar animation setup */
 		mRadarAnimation = new RadarAnimation(this);
+		mRadarAnimation.setRadarSource("slo");
 		mRadarAnimation.registerRadarAnimationListener(this);
-		
+
 		/* restoreState just initializes internal variables. We do not restore animation
 		 * here. Animation is restored inside setMode, when the mode is MapMode.RADAR.
 		 */
 		if(savedInstanceState != null)
 			mRadarAnimation.restoreState(savedInstanceState);
-		
+
 		((ToggleButton) (oActivity.findViewById(R.id.playPauseButton))).setOnClickListener(mRadarAnimation);
 		((ToggleButton) (oActivity.findViewById(R.id.stopButton))).setOnClickListener(mRadarAnimation);
 		((Button)(oActivity.findViewById(R.id.previousButton))).setOnClickListener(mRadarAnimation);
 		((Button)(oActivity.findViewById(R.id.nextButton))).setOnClickListener(mRadarAnimation);
-		
+
 		/* hide all animation controls */
 		oActivity.findViewById(R.id.animationButtonsLinearLayout).setVisibility(View.GONE);
 		oActivity.findViewById(R.id.radarAnimTime).setVisibility(View.GONE);
@@ -332,7 +380,7 @@ RadarAnimationListener, OnMapReadyCallback
 	{
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
-	
+
 	@Override
 	public void onBitmapChanged(Bitmap bmp, BitmapType t, boolean fromCache) 
 	{
@@ -375,6 +423,13 @@ RadarAnimationListener, OnMapReadyCallback
 			mRadarOverlayUpdateListener.onRadarImageUpdated();				
 		}
 	}
+
+
+	public GoogleMap getMap()
+	{
+		return mMap;
+	}
+
 
 	public void centerMap() 
 	{
@@ -787,7 +842,7 @@ RadarAnimationListener, OnMapReadyCallback
 	{
 		if(mMode.currentMode == MapMode.REPORT && mReportOverlay != null)
 		{
-			Log.e("OMapFragment.updateReport", "forcing " + force);
+			Log.e("OMapFrag.updateReport", "forcing " + force);
 			OsmerActivity a = (OsmerActivity) getActivity();
 			mReportOverlay.update(a.getApplicationContext(), force, a.getLocationService().getCurrentLocation());
 		}

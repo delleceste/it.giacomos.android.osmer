@@ -38,7 +38,7 @@ public class AnimatedImageView extends ImageView {
 	{
 		mErrorFlag = true;
 		this.clearAnimation();
-		this.setImageResource(R.drawable.ic_menu_task_attention);
+		this.setImageResource(R.drawable.ic_dialog_alert);
 	}
 
 	public void resetErrorFlag()
@@ -53,8 +53,8 @@ public class AnimatedImageView extends ImageView {
 //			Log.e("start() in AnimatedImageView", "starting animation............... " + toString());
 			this.setVisibility(View.VISIBLE);
 			this.setImageResource(R.drawable.spinner_20_inner_holo);
-			Animation anim = AnimationUtils.loadAnimation(getContext(), R.drawable.animated_refresh_actionbar_image);
-			startAnimation(anim);
+		//	Animation anim = AnimationUtils.loadAnimation(getContext(), R.drawable.animated_refresh_actionbar_image);
+		//	startAnimation(anim);
 		}
 	}
 

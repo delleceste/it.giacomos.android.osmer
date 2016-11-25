@@ -37,6 +37,7 @@ implements RadarImageSyncAndCalculationTaskListener, ConnectionCallbacks, OnConn
 	private GoogleApiClient mLocationClient;
 	private Location mLocation;
 	private long mTimestampSecs;
+	private String mRadarSource;
 
 	public RadarSyncAndRainGridDetectService()
 	{
@@ -51,9 +52,12 @@ implements RadarImageSyncAndCalculationTaskListener, ConnectionCallbacks, OnConn
 	{
 		if(!mIsStarted)
 		{
-			Log.e("RadarSyncAndRainGridDetectService.onStartCommand", "starting service");
+			Log.e("RadarSyncServiceAnd..", "starting service");
 			if(intent != null)
+			{
 				mTimestampSecs = intent.getLongExtra("timestamp", 0L);
+				mRadarSource = intent.getStringExtra("radarSource");
+			}
 			else
 				mTimestampSecs = 0L;
 			if(mLocationClient == null)
@@ -66,14 +70,14 @@ implements RadarImageSyncAndCalculationTaskListener, ConnectionCallbacks, OnConn
 		}
 		else
 		{
-			Log.e("RadarSyncAndRainGridDetectService.onStartCommand", "* service is already running");
+			Log.e("RadarSyncServiceAnd..", "* service is already running");
 		}
 		return Service.START_STICKY;
 	}
 
 	protected void startSyncImagesAndRainDetect(double mylatitude, double mylongitude) 
 	{
-		Log.e("RadarSyncAndRainGridDetectService.startSyncImagesAndRainDetect", "getting image and calculating");
+		Log.e("RadarSyncServiceAnd..", "getting image and calculating");
 		AssetManager assetManager = getApplicationContext().getAssets();
 		InputStream input;
 		String gridConf = "";
@@ -85,9 +89,11 @@ implements RadarImageSyncAndCalculationTaskListener, ConnectionCallbacks, OnConn
 			input.close();
 			gridConf = new String(buffer);
 			String radarImgFilePath = this.getApplicationContext().getCacheDir().getPath();
+			Settings s = new Settings(this);
+			String radarSource = s.getRadarSource();
 			RadarImageSyncAndGridCalculationTask mCalcTask = new RadarImageSyncAndGridCalculationTask(mylatitude,
 					mylongitude, this);
-			String [] configurations = {gridConf, radarImgFilePath, new Urls().radarHistoricalFileListUrl()};
+			String [] configurations = {gridConf, radarImgFilePath, new Urls().radarHistoricalFileListUrl(radarSource)};
 			mCalcTask.execute(configurations);
 		} 
 		catch (IOException e) {
@@ -105,16 +111,20 @@ implements RadarImageSyncAndCalculationTaskListener, ConnectionCallbacks, OnConn
 	@Override
 	public void onConnectionFailed(ConnectionResult arg0) {
 		// TODO Auto-generated method stub
-		Log.e("RadarSyncAndRainGridDetectService.onConnectionFailed", "connection to location failed. Stopping service. Will wait for the next time");
+		Log.e("RadarSyncServiceAnd..", "connection to location failed. Stopping service. Will wait for the next time");
 		this.stopSelf();
 	}
 
 	@Override
 	public void onConnected(Bundle arg0) 
 	{
-		Log.e("RadarSyncAndRainGridDetectService.onConnected", "getting last location");
+		Log.e("RadarSyncServiceAnd..", "getting last location");
 		try{
 			mLocation = LocationServices.FusedLocationApi.getLastLocation(mLocationClient);
+		}
+		catch (SecurityException se)
+		{
+			mLocation = null;
 		}
 		catch(IllegalStateException e)
 		{
@@ -127,7 +137,7 @@ implements RadarImageSyncAndCalculationTaskListener, ConnectionCallbacks, OnConn
 
 		}
 		else  /* wait an entire mSleepInterval before retrying */
-			Log.e("RadarSyncAndRainGridDetectService", "location is not available. Cannot calculate rain probability");
+			Log.e("RadarSyncServiceAnd..", "location is not available. Cannot calculate rain probability");
 
 		/* in any case, our work stops here */
 		this.stopSelf();
@@ -138,7 +148,7 @@ implements RadarImageSyncAndCalculationTaskListener, ConnectionCallbacks, OnConn
 	{
 		if(result != null && new Settings(this).useInternalRainDetection())
 		{
-			Log.e("RadarSyncAndRainGridDetectService.onRainDetectionDone", "will rain " + result.willRain + " dbz " + result.dbz);
+			Log.e("RadarSyncServiceAnd", "will rain " + result.willRain + " intensity " + result.dbz);
 			boolean willRain = result.willRain;
 			float dbZ = result.dbz;
 			RainNotification rainNotif = new RainNotification(result.willRain, mTimestampSecs, dbZ, 
@@ -166,12 +176,12 @@ implements RadarImageSyncAndCalculationTaskListener, ConnectionCallbacks, OnConn
 					
 					mNotificationManager.notify(rainNotif.getTag(), rainNotif.getId(),  notification);
 					/* update notification data */
-					Log.e("RadarSyncAndRainGridDetectService.onRainDetectionDone", "notification setting notified " + rainNotif.getTag() + ", " + true);
+					Log.e("RadarSyncServiceAnd", "notification setting notified " + rainNotif.getTag() + ", " + true);
 					sharedData.updateCurrentRequest(rainNotif, true);
 				}
 				else /* it will not rain, remove notification if present */
 				{
-					Log.e("RadarSyncAndRainGridDetectService.onRainDetectionDone", "rain alert notification to be cancelled");
+					Log.e("RadarSyncServiceAnd", "rain alert notification to be cancelled");
 					RainNotification previousRainNotification = (RainNotification) sharedData.get(NotificationData.TYPE_RAIN);
 					if(previousRainNotification != null && previousRainNotification.IsGoingToRain())
 						mNotificationManager.cancel(rainNotif.getTag(), rainNotif.getId());

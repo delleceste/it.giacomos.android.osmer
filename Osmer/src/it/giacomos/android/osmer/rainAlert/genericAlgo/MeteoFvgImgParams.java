@@ -37,7 +37,7 @@ public class MeteoFvgImgParams implements ImgParamsInterface {
 	}
 	
 	@Override
-	public double getDbzForColor(int[] arr_rgb)
+	public double getIntensityForColor(int[] arr_rgb)
 	{
 		/* green to yellow (255, 254, 6) */
 		int [] g1 = {2, 66, 3};

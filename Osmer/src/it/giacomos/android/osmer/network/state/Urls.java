@@ -51,18 +51,26 @@ public class Urls {
 		return "http://www.giacomos.it/meteo.fvg/latest_observations.txt";
 	}
 
-	public String radarImageUrl() 
+	public String radarImageUrl(String src)
 	{
+		if(src.compareTo("slo") == 0)
+			return "http://www.giacomos.it/meteo.fvg/get_last_slo_radar_image_png.php";
 		return "http://www.giacomos.it/meteo.fvg/get_last_radar_image_png.php";
 	}
 	
-	public String radarHistoricalImagesFolderUrl()
+	public String radarHistoricalImagesFolderUrl(String radarSource)
 	{
-		return "http://www.giacomos.it/meteo.fvg/data/radar/";
+		if(radarSource.compareToIgnoreCase("slo") == 0)
+			return "http://www.giacomos.it/meteo.fvg/data/radar/slo/";
+		else
+			return "http://www.giacomos.it/meteo.fvg/data/radar/";
 	}
 	
-	public String radarHistoricalFileListUrl()
+	public String radarHistoricalFileListUrl(String src)
 	{
+		if(src.compareTo("slo") == 0)
+			return "http://www.giacomos.it/meteo.fvg/get_slo_radar_files.php";
+
 		return "http://www.giacomos.it/meteo.fvg/get_radar_files.php";
 	}
 	

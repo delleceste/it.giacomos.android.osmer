@@ -20,7 +20,7 @@ public class Grid
 	
 	public ArrayList<Element>elements; /* array of Element */
 	
-	/** calculates the dbz on the image provided
+	/** calculates the intensity on the image provided
 	  */
 	public void calculateDbz(Bitmap image, ImgParamsInterface imgParams)
 	{

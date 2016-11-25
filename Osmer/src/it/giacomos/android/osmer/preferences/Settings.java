@@ -640,4 +640,16 @@ public class Settings
 		e.putLong("USER_RECENTLY_PUBLISHED", System.currentTimeMillis());
 		e.commit();
 	}
+
+	public void setRadarSource(String rs)
+	{
+		SharedPreferences.Editor e = mSharedPreferences.edit();
+		e.putString("RADAR_SOURCE", rs);
+		e.commit();
+	}
+
+	public String getRadarSource()
+	{
+		return mSharedPreferences.getString("RADAR_SOURCE", "slo");
+	}
 }

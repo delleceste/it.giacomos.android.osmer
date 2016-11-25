@@ -724,7 +724,7 @@ InAppUpgradeManagerListener
 	void radar()
 	{
 		findViewById(R.id.mapProgressBar).setVisibility(View.VISIBLE);
-		m_downloadManager.getRadarImage();
+		m_downloadManager.getRadarImage(mSettings.getRadarSource());
 	}
 
 	void updateReport(boolean force)

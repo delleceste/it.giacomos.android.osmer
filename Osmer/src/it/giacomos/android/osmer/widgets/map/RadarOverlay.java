@@ -31,10 +31,11 @@ public class RadarOverlay implements OOverlayInterface
 	private Bitmap mBitmap;
 	private Bitmap mBlackAndWhiteBitmap;
 	private boolean mBitmapChanged;
+	private String mRadarSource;
 	
 
 	public static final long ACCEPTABLE_RADAR_DIFF_TIMESTAMP_MILLIS = 1000 * 60 * 60 * 4;
-	
+
 // test	public static final long ACCEPTABLE_RADAR_DIFF_TIMESTAMP_MILLIS = 1000 * 5;
 	
 	RadarOverlay(GoogleMap googleMap) 
@@ -43,9 +44,10 @@ public class RadarOverlay implements OOverlayInterface
 		/* ground overlay: the radar image */
 		mGroundOverlay = null;
 		mGroundOverlayCircle = null;
+		mRadarSource = "SLO"; /* the new arso slovenian radar image */
 		mGroundOverlayOptions = new GroundOverlayOptions();
-		mGroundOverlayOptions.positionFromBounds(GeoCoordinates.radarImageBounds);
 		mGroundOverlayOptions.transparency(0.58f);
+		mGroundOverlayOptions.positionFromBounds(GeoCoordinates.getRadarImageBounds(mRadarSource));
 		
 		/* circle: delimits the radar area */
 		int color = Color.argb(120, 150, 160, 245);
@@ -55,18 +57,17 @@ public class RadarOverlay implements OOverlayInterface
 		mCircleOptions.strokeColor(color);
 		mCircleOptions.strokeWidth(1);
 		
-		/* VMI scale image */
-		mScaleImageOverlay = null;
-		mScaleImageOverlayOptions = new GroundOverlayOptions();
-		mScaleImageOverlayOptions.position(GeoCoordinates.radarScaleTopLeft, 20000);
-		mScaleImageOverlayOptions.transparency(0.45f);
-		mScaleImageOverlayOptions.image(BitmapDescriptorFactory.fromResource(R.drawable.scala_vmi_4));
+//		/* VMI scale image */
+//		mScaleImageOverlay = null;
+//		mScaleImageOverlayOptions = new GroundOverlayOptions();
+//		mScaleImageOverlayOptions.position(GeoCoordinates.radarScaleTopLeft, 20000);
+//		mScaleImageOverlayOptions.transparency(0.45f);
+//		mScaleImageOverlayOptions.image(BitmapDescriptorFactory.fromResource(R.drawable.scala_vmi_4));
 		
 		mBlackAndWhiteBitmap = null;
 		mBitmap = null;
 		mBitmapChanged = true;
 	}
-
 	
 	@Override /* no info windows on radar layer */
 	public void hideInfoWindow()
@@ -175,7 +176,7 @@ public class RadarOverlay implements OOverlayInterface
 		if(mGroundOverlayCircle == null)
 			mGroundOverlayCircle = mMap.addCircle(mCircleOptions);
 		
-		if(mScaleImageOverlay == null)
+		if(mScaleImageOverlay == null && mRadarSource.compareToIgnoreCase("SLO") != 0)
 			mScaleImageOverlay = mMap.addGroundOverlay(mScaleImageOverlayOptions);
 		
 		/* specify the image before the ovelay is added */
@@ -217,6 +218,15 @@ public class RadarOverlay implements OOverlayInterface
 		mBitmap = null;
 		mBlackAndWhiteBitmap = null;
 	}
-	
+
+	public void setRadarSource(String src)
+	{
+		mRadarSource = src;
+	}
+
+	public String getRadarSource()
+	{
+		return mRadarSource;
+	}
 
 }

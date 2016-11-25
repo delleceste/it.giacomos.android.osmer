@@ -139,7 +139,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 		}
 	}
 
-	public void getRadarImage()
+	public void getRadarImage(String source)
 	{
 		/* always refresh radar image on request because it changes frequently.
 		 * This call actually always returns true and the call is placed for analogy
@@ -147,7 +147,7 @@ public class Online extends State implements BitmapTaskListener, TextTaskListene
 		 */
 		if(!dDownloadStatus.radarImageDownloaded())
 		{
-			startBitmapTask(m_urls.radarImageUrl(), BitmapType.RADAR);
+			startBitmapTask(m_urls.radarImageUrl(source), BitmapType.RADAR);
 		}
 	}
 	

@@ -99,9 +99,9 @@ public class DownloadManager  implements NetworkStatusMonitorListener,
 		m_state.getFourDaysForecast();
 	}
 	
-	public void getRadarImage()
+	public void getRadarImage(String source)
 	{
-		m_state.getRadarImage();
+		m_state.getRadarImage(source);
 	}
 	
 	public void getWebcamList() 

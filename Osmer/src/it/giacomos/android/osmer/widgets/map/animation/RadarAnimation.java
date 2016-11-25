@@ -38,6 +38,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	private GroundOverlay mGroundOverlay;
 	private String mUrlList;
 	private long mTimeZoneOffset;
+	private String mRadarSource;
 
 	/* The animation task, which downloads all necessary data from the internet (text file
 	 * with the list of the URLs of the images and all the images.
@@ -61,10 +62,11 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	public RadarAnimation(OMapFragment mapf)
 	{
 		mMapFrag = mapf;
+		mRadarSource = "";
 		/* stores the number of frame that was set on the map in onSaveInstanceState */
 		mResetProgressVariables();
 		/* button listeners */
-		Log.e("RadarAnimation.RadarAnimation", " activity " + mMapFrag.getActivity());
+		Log.e("RadAnim.RadarAnimation", " activity " + mMapFrag.getActivity());
 	
 		mAnimationListeners = new ArrayList<RadarAnimationListener>();
 		mAnimationData = new SparseArray<AnimationData>();
@@ -136,7 +138,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		DownloadStatus downloadStatus = DownloadStatus.Instance();
 		
 		mUrlList = "";
-		Buffering buffering = new Buffering(this, mAnimationTask, mState, mUrlList, isStart);
+		Buffering buffering = new Buffering(this, mAnimationTask, mState, mUrlList, isStart, mRadarSource);
 		if(!downloadStatus.isOnline)
 			Toast.makeText(mMapFrag.getActivity().getApplicationContext(), R.string.radarAnimationOffline, Toast.LENGTH_LONG).show();
 		buffering.setOfflineMode(!downloadStatus.isOnline);
@@ -219,6 +221,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		outState.putInt("animationDownloadProgress", downloadStep);
 		outState.putString("urlList", mUrlList);
 		outState.putBoolean("controlsVisible", (mMapFrag.getActivity().findViewById(R.id.playPauseButton).getVisibility() == View.VISIBLE));
+		outState.putString("radarSource", mRadarSource);
 	}
 
 	public void restoreState(Bundle savedInstanceState) 
@@ -226,6 +229,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		int savedFrameNo = savedInstanceState.getInt("animationFrameNo", 0);
 		int savedDownloadProgress = savedInstanceState.getInt("animationDownloadProgress", 0);
 		String urlList = savedInstanceState.getString("urlList", "");
+		mRadarSource = savedInstanceState.getString("radarSource");
 		int savedAnimationStatusAsInt = savedInstanceState.getInt("animationStatus", 0);
 
 		/* NotRunning state already set in the constructor: look for 1 and 3 */
@@ -255,7 +259,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 			mUrlList = interrupted.getUrlList();
 			boolean isStart = true;
 			Buffering buffering = new Buffering(this, mAnimationTask,
-					mState, mUrlList, isStart);
+					mState, mUrlList, isStart, mRadarSource);
 			mState = buffering;
 
 			/* to tell the following Running state that it must post the mSavedFrameNo frame and go to pause */
@@ -296,6 +300,11 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 	public void onResume()
 	{
 		restore();
+	}
+
+	public void setRadarSource(String radarSource)
+	{
+		mRadarSource = radarSource;
 	}
 
 	@Override
@@ -429,7 +438,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 		}
 		else if(to == RadarAnimationStatus.BUFFERING)
 		{
-			mState = new Buffering(this, mAnimationTask, mState, mUrlList);
+			mState = new Buffering(this, mAnimationTask, mState, mUrlList, mRadarSource);
 			mState.enter();
 		}
 		else if(from == RadarAnimationStatus.RUNNING && to == RadarAnimationStatus.PAUSED)

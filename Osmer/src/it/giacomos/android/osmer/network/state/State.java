@@ -60,7 +60,7 @@ public abstract class State
 
 	protected DownloadManagerUpdateListener m_downloadManagerUpdateListener;
 
-	public void getRadarImage() {
+	public void getRadarImage(String source) {
 		
 		
 	}

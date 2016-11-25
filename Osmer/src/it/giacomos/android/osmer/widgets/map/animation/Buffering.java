@@ -37,23 +37,26 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 	private String mUrlList;
 	private boolean mIsStart;
 	private boolean mOffline;
+	private String mRadarSource;
 	
 	Buffering(RadarAnimation radarAnimation, AnimationTask animationTask,
-			State previousState, String urlList) 
+			State previousState, String urlList, String radarSource)
 	{
 		super(radarAnimation, animationTask, previousState);
 		dAnimationStatus = RadarAnimationStatus.BUFFERING;
 		mUrlList = urlList;
 		mIsStart = mOffline = false;
+		mRadarSource = radarSource;
 	}
 	
 	Buffering(RadarAnimation radarAnimation, AnimationTask animationTask,
-			State previousState, String urlList, boolean isStart) 
+			State previousState, String urlList, boolean isStart, String radarSource)
 	{
 		super(radarAnimation, animationTask, previousState);
 		dAnimationStatus = RadarAnimationStatus.BUFFERING;
 		mUrlList = urlList;
 		mIsStart = isStart;
+		mRadarSource = radarSource;
 		if(isStart)
 			dTotSteps = dDownloadStep = dFrameNo = 0;
 	}
@@ -126,7 +129,7 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		 */
 		if(mIsStart)
 		{
-			dAnimationTask = new AnimationTask(mapFrag.getActivity().getApplicationContext().getExternalFilesDir(null).getPath());
+			dAnimationTask = new AnimationTask(mapFrag.getActivity().getApplicationContext().getExternalFilesDir(null).getPath(), mRadarSource);
 		}
 		
 		dAnimationTask.setDownloadUrls(mUrlList);
@@ -134,7 +137,7 @@ public class Buffering extends ProgressState  implements  AnimationTaskListener
 		if(mIsStart)
 		{
 			dAnimationTask.setOfflineMode(mOffline);
-			dAnimationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().radarHistoricalFileListUrl());
+			dAnimationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Urls().radarHistoricalFileListUrl(mRadarSource));
 		}
 	}
 

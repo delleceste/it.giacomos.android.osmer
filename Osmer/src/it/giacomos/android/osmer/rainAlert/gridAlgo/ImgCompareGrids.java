@@ -30,11 +30,11 @@ public class ImgCompareGrids implements ImgCompareI {
 		
 		int ret = 0;
 		
-		float last_dbz = 0.0f;
+		float last_intensity = 0.0f;
 		
 		if(lr == pr && lc == pc) /* grids must be same size */
 		{	
-			double lastDbzInCenter = lastGrid.get((int)Math.floor(lr/2), (int)Math.floor(lc/2)).dbz;
+			double lastDbzInCenter = lastGrid.get((int)Math.floor(lr/2), (int)Math.floor(lc/2)).intensity;
 			boolean rainAlready = (lastDbzInCenter > img_params_i.getThreshold());
 			/* start from the border squares of the last grid: row 0, col 0, rowN, colN */
 			/* first row */
@@ -44,10 +44,10 @@ public class ImgCompareGrids implements ImgCompareI {
 			Element pe; /* previous grid element */
 			Element lastLinkedEl; /* an element of the previous grid, linked to pe */
 			double linkedElWeight; /* the weight factor of the element linked to pe in the grid */
-			float lastEldbz, prevEldbz; /* the dbz value of the last && previous element in the grid */
-			double requiredDbz; /* the value of dbz above which we can consider the rain is approaching */
-			boolean bigIncrease; /* if true, a big increase of the dbz towards the center has been detected */
-			boolean increase; /* if true, an increase of the dbz value has been detected while moving towards the center */
+			float lastElintensity, prevElintensity; /* the intensity value of the last && previous element in the grid */
+			double requiredIntensity; /* the value of intensity above which we can consider the rain is approaching */
+			boolean bigIncrease; /* if true, a big increase of the intensity towards the center has been detected */
+			boolean increase; /* if true, an increase of the intensity value has been detected while moving towards the center */
 		
 			/* initialize matrix result */
 			// res.deltas_matrix = new float[pr][pc];
@@ -60,30 +60,30 @@ public class ImgCompareGrids implements ImgCompareI {
 				{
 					lastLinkedEl = lastGrid.idxGet(contiguousElement.index);
 					linkedElWeight = contiguousElement.weight;
-					lastEldbz = lastLinkedEl.dbz;
-					prevEldbz = pe.dbz;
+					lastElintensity = lastLinkedEl.intensity;
+					prevElintensity = pe.intensity;
 					
-					requiredDbz = prevEldbz * linkedElWeight;
+					requiredIntensity = prevElintensity * linkedElWeight;
 					
-					bigIncrease = (rainAlready && (lastEldbz >= requiredDbz + img_params_i.getBigIncreaseValue()));
+					bigIncrease = (rainAlready && (lastElintensity >= requiredIntensity + img_params_i.getBigIncreaseValue()));
 					
 					/* if it already rains set increase to true only if a big increase is foreseen.
 					 * Otherwise, if it already rains, no need to warn.
-					 * lastEldbz >= requiredDbz means that there has been an increase in the dbZ value between the
-					 * previous value (requiredDbz) && the current one (lastEldbz).
+					 * lastElintensity >= requiredDbz means that there has been an increase in the dbZ value between the
+					 * previous value (requiredDbz) && the current one (lastElintensity).
 					 */
-					increase = ( (!rainAlready && (lastEldbz > img_params_i.getThreshold() && lastEldbz >= requiredDbz) ) 
+					increase = ( (!rainAlready && (lastElintensity > img_params_i.getThreshold() && lastElintensity >= requiredIntensity) )
 							|| bigIncrease);
 					
 					if(increase)
 						lastLinkedEl.setHasIncreased(increase);
 					
-					/* save max dbz value only if the element is relevant */
-					if(increase && lastEldbz > last_dbz)
-						last_dbz = lastEldbz;
+					/* save max intensity value only if the element is relevant */
+					if(increase && lastElintensity > last_intensity)
+						last_intensity = lastElintensity;
 					
-//					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: ("  + prevEldbz + ") -> [" +
-//							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastEldbz + ")"
+//					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: ("  + prevElintensity + ") -> [" +
+//							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastElintensity + ")"
 //					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret); 
 					 
 					if(increase)
@@ -99,27 +99,27 @@ public class ImgCompareGrids implements ImgCompareI {
 				{
 					lastLinkedEl = lastGrid.idxGet(contiguousElement.index);
 					linkedElWeight = contiguousElement.weight;
-					lastEldbz = lastLinkedEl.dbz;
-					prevEldbz = pe.dbz;
+					lastElintensity = lastLinkedEl.intensity;
+					prevElintensity = pe.intensity;
 					
-					requiredDbz = prevEldbz * linkedElWeight;
+					requiredIntensity = prevElintensity * linkedElWeight;
 					
-					bigIncrease = (rainAlready && (lastEldbz >= requiredDbz + img_params_i.getBigIncreaseValue()));
+					bigIncrease = (rainAlready && (lastElintensity >= requiredIntensity + img_params_i.getBigIncreaseValue()));
 					
 					/* if it already rains set increase to true only if a big increase is foreseen.
 					 * Otherwise, if it already rains, no need to warn
 					 */
-					increase = ( (!rainAlready && (lastEldbz > img_params_i.getThreshold() && lastEldbz >= requiredDbz) ) 
+					increase = ( (!rainAlready && (lastElintensity > img_params_i.getThreshold() && lastElintensity >= requiredIntensity) )
 							|| bigIncrease);
 					
 					if(increase)
 						lastLinkedEl.setHasIncreased(increase);
 						
-					if(increase && lastEldbz > last_dbz)
-						last_dbz = lastEldbz;
+					if(increase && lastElintensity > last_intensity)
+						last_intensity = lastElintensity;
 					
-//					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: ("  + prevEldbz + ")  -> [" +
-//							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastEldbz + ")"
+//					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: ("  + prevElintensity + ")  -> [" +
+//							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastElintensity + ")"
 //					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret); 
 
 					if(increase)
@@ -136,27 +136,27 @@ public class ImgCompareGrids implements ImgCompareI {
 				{
 					lastLinkedEl = lastGrid.idxGet(contiguousElement.index);
 					linkedElWeight = contiguousElement.weight;
-					lastEldbz = lastLinkedEl.dbz;
-					prevEldbz = pe.dbz;
+					lastElintensity = lastLinkedEl.intensity;
+					prevElintensity = pe.intensity;
 					
-					requiredDbz = prevEldbz * linkedElWeight;
+					requiredIntensity = prevElintensity * linkedElWeight;
 					
-					bigIncrease = (rainAlready && (lastEldbz >= requiredDbz + img_params_i.getBigIncreaseValue()));
+					bigIncrease = (rainAlready && (lastElintensity >= requiredIntensity + img_params_i.getBigIncreaseValue()));
 					
 					/* if it already rains set increase to true only if a big increase is foreseen.
 					 * Otherwise, if it already rains, no need to warn
 					 */
-					increase = ( (!rainAlready && (lastEldbz > img_params_i.getThreshold() && lastEldbz >= requiredDbz) ) 
+					increase = ( (!rainAlready && (lastElintensity > img_params_i.getThreshold() && lastElintensity >= requiredIntensity) )
 							|| bigIncrease);
 					
 					if(increase)
 						lastLinkedEl.setHasIncreased(increase);
 						
-					if(increase && lastEldbz > last_dbz)
-						last_dbz = lastEldbz;
+					if(increase && lastElintensity > last_intensity)
+						last_intensity = lastElintensity;
 						
-//					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: (" + prevEldbz + ") -> [" +
-//							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastEldbz + ")"
+//					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: (" + prevElintensity + ") -> [" +
+//							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastElintensity + ")"
 //					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret); 
 
 					if(increase)
@@ -172,27 +172,27 @@ public class ImgCompareGrids implements ImgCompareI {
 				{
 					lastLinkedEl = lastGrid.idxGet(contiguousElement.index);
 					linkedElWeight = contiguousElement.weight;
-					lastEldbz = lastLinkedEl.dbz;
-					prevEldbz = pe.dbz;
+					lastElintensity = lastLinkedEl.intensity;
+					prevElintensity = pe.intensity;
 					
-					requiredDbz = prevEldbz * linkedElWeight;
+					requiredIntensity = prevElintensity * linkedElWeight;
 					
-					bigIncrease = (rainAlready && (lastEldbz >= requiredDbz + img_params_i.getBigIncreaseValue()));
+					bigIncrease = (rainAlready && (lastElintensity >= requiredIntensity + img_params_i.getBigIncreaseValue()));
 					
 					/* if it already rains set increase to true only if a big increase is foreseen.
 					 * Otherwise, if it already rains, no need to warn
 					 */
-					increase = ( (!rainAlready && (lastEldbz > img_params_i.getThreshold() && lastEldbz >= requiredDbz) ) 
+					increase = ( (!rainAlready && (lastElintensity > img_params_i.getThreshold() && lastElintensity >= requiredIntensity) )
 							|| bigIncrease);
 					
 					if(increase)
 						lastLinkedEl.setHasIncreased(increase);
 						
-					if(increase && lastEldbz > last_dbz)
-						last_dbz = lastEldbz;
+					if(increase && lastElintensity > last_intensity)
+						last_intensity = lastElintensity;
 					
-//					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: ("  + prevEldbz + ") ->  [" +
-//							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastEldbz + ")"
+//					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: ("  + prevElintensity + ") ->  [" +
+//							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastElintensity + ")"
 //					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret); 
 					
 					if(increase)
@@ -204,7 +204,7 @@ public class ImgCompareGrids implements ImgCompareI {
 			Log.e("ImgCompareGrids", "grid dimensions differ");
 			
 		res.willRain = (ret > 0);
-		res.dbz = last_dbz;
+		res.dbz = last_intensity;
 		/* detected an increase towards the center (and not already raining)? */
 		return res;
 	
