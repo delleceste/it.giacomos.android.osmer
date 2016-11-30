@@ -46,7 +46,7 @@ public class RadarOverlay implements OOverlayInterface
 		mGroundOverlayCircle = null;
 		mRadarSource = "SLO"; /* the new arso slovenian radar image */
 		mGroundOverlayOptions = new GroundOverlayOptions();
-		mGroundOverlayOptions.transparency(0.58f);
+		mGroundOverlayOptions.transparency(0.48f);
 		mGroundOverlayOptions.positionFromBounds(GeoCoordinates.getRadarImageBounds(mRadarSource));
 		
 		/* circle: delimits the radar area */
@@ -170,7 +170,8 @@ public class RadarOverlay implements OOverlayInterface
 	{
 		if(bmp == null /* || !mBitmapChanged */)
 			return;
-		
+
+		Log.e("mRefreshBitmap", "saving old ground overlay " + mGroundOverlay);
 		GroundOverlay previousGndOverlay = mGroundOverlay;
 		
 		if(mGroundOverlayCircle == null && mRadarSource.compareToIgnoreCase("SLO") != 0)
@@ -183,10 +184,14 @@ public class RadarOverlay implements OOverlayInterface
 		BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bmp);
 		mGroundOverlayOptions.image(bitmapDescriptor);
 		mGroundOverlay = mMap.addGroundOverlay(mGroundOverlayOptions);
+		Log.e("mRefreshBitmap", "ADDED new ground overlay " + mGroundOverlay);
 		
 		/* remove previous overlay after adding the new one in order to prevent flickering */
 		if(previousGndOverlay != null)
+		{
+			Log.e("mRefreshBitmap", "REMOVED old ground overlay " + previousGndOverlay);
 			previousGndOverlay.remove();
+		}
 	}
 	
 	public boolean bitmapValid()
