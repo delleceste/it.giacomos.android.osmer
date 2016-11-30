@@ -173,7 +173,7 @@ public class RadarOverlay implements OOverlayInterface
 		
 		GroundOverlay previousGndOverlay = mGroundOverlay;
 		
-		if(mGroundOverlayCircle == null)
+		if(mGroundOverlayCircle == null && mRadarSource.compareToIgnoreCase("SLO") != 0)
 			mGroundOverlayCircle = mMap.addCircle(mCircleOptions);
 		
 		if(mScaleImageOverlay == null && mRadarSource.compareToIgnoreCase("SLO") != 0)

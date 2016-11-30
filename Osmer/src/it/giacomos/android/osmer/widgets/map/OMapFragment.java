@@ -9,8 +9,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import it.giacomos.android.osmer.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
@@ -57,14 +60,14 @@ import android.os.Bundle;
 
 public class OMapFragment extends SupportMapFragment 
 implements ObservationsCacheUpdateListener,
-GoogleMap.OnCameraChangeListener,
+GoogleMap.OnCameraIdleListener,
 WebcamOverlayChangeListener,
 MeasureOverlayChangeListener,
 DataPoolBitmapListener,
-RadarAnimationListener, OnMapReadyCallback
+RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
 {
 	private float mOldZoomLevel;
-	private boolean mCenterOnUpdate;
+	private boolean mCenterOnFirstRun;
 	private boolean mMapReady; /* a map is considered ready after first camera update */
 	private RadarOverlay mRadarOverlay;
 	private ObservationsOverlay mObservationsOverlay = null;
@@ -88,7 +91,6 @@ RadarAnimationListener, OnMapReadyCallback
 	public OMapFragment() 
 	{
 		super();
-		mCenterOnUpdate = false;
 		mMapReady = false;
 		mOldZoomLevel = -1.0f;
 		mZoomChangeListener = null;
@@ -106,27 +108,41 @@ RadarAnimationListener, OnMapReadyCallback
 	{
 		mMapReady = true;
 		mMap = googleMap;
+        mMapFragmentListener.onCameraReady();
+
 		OsmerActivity oActivity = (OsmerActivity) getActivity();
 		mSettings = new Settings(oActivity.getApplicationContext());
 		/* restore last used map type */
 		mMap.setMapType(mSettings.getMapType());
 		/* restore last camera position */
-		mSavedCameraPosition = mSettings.getCameraPosition();
-		if(mSavedCameraPosition == null) /* never saved */
-			mCenterOnUpdate = true;
-		mMap.setOnCameraChangeListener(this);
+
+		mMap.setOnCameraIdleListener(this);
+        mMap.setOnMapLoadedCallback(this);
+
 		if ( (ContextCompat.checkSelfPermission(getActivity(),
 				Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED)
 				|| (ContextCompat.checkSelfPermission(getActivity(),
 				Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED) )
 			mMap.setMyLocationEnabled(true);
 
+
+		/// TEST FOR PLACING
+			BitmapDescriptor marker0BitmapDescriptor =
+				BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+		BitmapDescriptor marker1BitmapDescriptor =
+				BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+
+		mMap.addMarker(new MarkerOptions().icon(marker0BitmapDescriptor).title("Radar 0").position(new LatLng(46.09875, 14.228297))
+				.snippet(getString(R.string.pasja_ravan_radar)));
+
+		mMap.addMarker(new MarkerOptions().icon(marker1BitmapDescriptor).title("Radar 1").position(new LatLng(46.068001, 15.285119))
+				.snippet(getString(R.string.lisca_radar)));
+
+
+
 		UiSettings uiS = mMap.getUiSettings();
 		//	uiS.setRotateGesturesEnabled(false);
 		uiS.setZoomControlsEnabled(false);		/* restore last used map type */
-		mSettings = new Settings(oActivity.getApplicationContext());
-		/* restore last used map type */
-		mMap.setMapType(mSettings.getMapType());
 
 		/* create a radar overlay */
 		mRadarOverlay = new RadarOverlay(mMap);
@@ -154,52 +170,46 @@ RadarAnimationListener, OnMapReadyCallback
 		 *
 		 */
 
+		 mSavedCameraPosition = mSettings.getCameraPosition();
+		if(mSavedCameraPosition != null && !(mSavedCameraPosition.target.latitude == 0.0 && mSavedCameraPosition.target.longitude == 0.0))
+        {
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mSavedCameraPosition));
+            mSavedCameraPosition = null; /* restore camera just once! */
+        }
+        else
+        {
+			CameraPosition cameraPosition = mMap.getCameraPosition();
+            if(mOldZoomLevel != cameraPosition.zoom && mZoomChangeListener != null)
+                mZoomChangeListener.onZoomLevelChanged(cameraPosition.zoom);
+            mOldZoomLevel = cameraPosition.zoom;
+        }
 
-//		FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.actionNewReport);
-//		fab.setOnClickListener((OsmerActivity) this.getActivity());
-//		fab.setColor(getResources().getColor(R.color.accent));
-//		fab.setDrawable(getResources().getDrawable(R.drawable.ic_menu_edit_fab));
 	}
-	
-	@Override
-	public void onCameraChange(CameraPosition cameraPosition) 
-	{
-		/* mCenterOnUpdate is true if mSettings.getCameraPosition() returns null.
-		 * This happens when the application is launched for the first time.
-		 */
-		if(mCenterOnUpdate)
+
+    @Override
+    public void onMapLoaded()
+    {
+		 /* When the application is launched for the first time restore last camera position */
+        mSavedCameraPosition = mSettings.getCameraPosition();
+        if(mSavedCameraPosition  == null || (mSavedCameraPosition.target.latitude == 0.0 && mSavedCameraPosition.target.longitude == 0.0)) /* never saved */
 		{
 			/* center just once */
-			mCenterOnUpdate = false;
-			CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(GeoCoordinates.regionBounds, 20);
-			mMap.animateCamera(cu);
-		}
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(GeoCoordinates.regionBounds, 20);
+            mMap.animateCamera(cu);
+        }
+    }
 
+	@Override
+	public void onCameraIdle()
+	{
+        CameraPosition cameraPosition = mMap.getCameraPosition();
 		if(getActivity() != null && getActivity().findViewById(R.id.mapMessageTextView) != null)
 		{
 			OAnimatedTextView radarUpdateTimestampText = (OAnimatedTextView) getActivity().findViewById(R.id.mapMessageTextView);
 			if(mMapReady && radarUpdateTimestampText.getVisibility() == View.VISIBLE && !radarUpdateTimestampText.animationHasStarted())
-				radarUpdateTimestampText.animateHide();	
+				radarUpdateTimestampText.animateHide();
 		}
 
-		if(mSavedCameraPosition != null)
-		{
-			mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mSavedCameraPosition));
-			mSavedCameraPosition = null; /* restore camera just once! */
-		}
-		else
-		{
-			if(mOldZoomLevel != cameraPosition.zoom && mZoomChangeListener != null)
-				mZoomChangeListener.onZoomLevelChanged(cameraPosition.zoom);
-			mOldZoomLevel = cameraPosition.zoom;
-		}
-
-		if(!mMapReady)
-		{
-			mMapReady = true;
-			mMapFragmentListener.onCameraReady();
-		}
-		
 		if(mOnTiltChangeListener != null)
 			mOnTiltChangeListener.onTiltChanged(cameraPosition.tilt);
 	} 
@@ -235,8 +245,8 @@ RadarAnimationListener, OnMapReadyCallback
 	{
 		super.onCreate(savedInstanceState);
 		
-		/* get the GoogleMap object. Must be called after onCreateView is called.
-		 * If it returns null, then Google Play services is not available.
+		/*
+		 * get map asynch, called inside onCreate.
 		 */
 		getMapAsync(this);
 	}
@@ -301,11 +311,6 @@ RadarAnimationListener, OnMapReadyCallback
 
 		OsmerActivity oActivity = (OsmerActivity) getActivity();
 		mSettings = new Settings(oActivity.getApplicationContext());
-
-		/* restore last camera position */
-		mSavedCameraPosition = mSettings.getCameraPosition();
-		if(mSavedCameraPosition == null) /* never saved */
-			mCenterOnUpdate = true;
 
 		/* create a radar overlay */
 		mRadarOverlay = new RadarOverlay(mMap);

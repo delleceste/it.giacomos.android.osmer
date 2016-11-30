@@ -41,7 +41,7 @@ public class GeoCoordinates {
 	public static final LatLng fvgBottomRight = new LatLng(45580838/1e6, 13918819/1e6 );
 	
 	/* LatLngBounds southwest, northeast */
-	public static final LatLngBounds radarImageBounds = new LatLngBounds(new LatLng(44.569090, 11.828366), 
+	private static final LatLngBounds radarImageBounds = new LatLngBounds(new LatLng(44.569090, 11.828366),
 			new LatLng(46.830517, 15.1057));
 	
 	//public static final LatLngBounds radarImageBounds = new LatLngBounds(new LatLng(44.6052, 11.9294), 
@@ -74,7 +74,7 @@ public class GeoCoordinates {
 		if(mRadarSource.compareToIgnoreCase("SLO") == 0)
 			/*                                  south       west                   north     east      */
 			// from  calculation return new LatLngBounds(new LatLng(44.792496, 12.185306), new LatLng(47.403526, 16.696444));
-			return new LatLngBounds(new LatLng(44.858496, 12.185306), new LatLng(47.312526, 16.696444));
+			return new LatLngBounds(new LatLng(44.906496, 12.182306), new LatLng(47.26726, 16.693444));
 		else
 			return radarImageBounds;
 	}

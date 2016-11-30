@@ -5,7 +5,7 @@
     <string name="app_broadcast_receiver">Meteo.FVG.BootReceiver</string>
     <string name="version">versione</string>
     <string name="data_source">Fonte dati: http://www.meteo.fvg.it</string>
-    <string name="author">&#169; 2015</string>
+    <string name="author">&#169; 2016</string>
     <string name="author_web">http://www.giacomos.it</string>
     <string name="yes">sì</string>
     <string name="no">no</string>
@@ -970,6 +970,8 @@ mio android id è il seguente:\n\n
        </string>
          
      <string name="allow">Concedi</string>
-    <string name="deny">Nega</string>	
-    
+    <string name="deny">Nega</string>
+    <string name="pasja_ravan_radar">Radar di Pasja Ravan</string>
+    <string name="lisca_radar">Radar di Lisca</string>
+
 </resources>

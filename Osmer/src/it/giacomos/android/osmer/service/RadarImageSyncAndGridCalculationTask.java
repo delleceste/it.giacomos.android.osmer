@@ -47,10 +47,10 @@ public class RadarImageSyncAndGridCalculationTask extends
          * public static final LatLngBounds radarImageBounds = new LatLngBounds(new LatLng(44.6052, 11.9294),
 		 *		new LatLng(46.8080, 15.0857));
 		 */
-        double topLeftLat = GeoCoordinates.radarImageBounds.northeast.latitude;
-        double topLeftLon = GeoCoordinates.radarImageBounds.southwest.longitude;
-        double botRightLat = GeoCoordinates.radarImageBounds.southwest.latitude;
-        double botRightLon = GeoCoordinates.radarImageBounds.northeast.longitude;
+        double topLeftLat =  0.0;
+        double topLeftLon =  0.0;
+        double botRightLat = 0.0;
+        double botRightLon = 0.0;
 
         double widthKm = 240.337;
         double heightKm = 244.153;
@@ -165,7 +165,7 @@ public class RadarImageSyncAndGridCalculationTask extends
     public void onCancelled(RainDetectResult result)
     {
 		/* no need to call  onRainDetectionDone on mRadarImageSyncTaskListener */
-        Log.e("RadarImageSyncAndGridCalculationTask.onCancelled", "task cancelled");
+        Log.e("RadarImageSync...", "task cancelled");
     }
 
 }

@@ -52,13 +52,13 @@ implements LatestObservationCacheChangeListener
 				densityDpi == DisplayMetrics.DENSITY_LOW)
 			mFontSize = 10;
 		else if(densityDpi == DisplayMetrics.DENSITY_HIGH)
-			mFontSize = 20;
+			mFontSize = 14;
 		else if(densityDpi == DisplayMetrics.DENSITY_XHIGH)
 			mFontSize = 25;
 		else if(densityDpi == DisplayMetrics.DENSITY_XXHIGH)
-			mFontSize = 30;
+			mFontSize = 31;
 		else if(densityDpi == DisplayMetrics.DENSITY_XXXHIGH)
-			mFontSize = 34;
+			mFontSize = 36;
 		else /* shouldn't happen */
 			mFontSize = 36;
 		/* in this class we use mPaint which is allocated in superclass */
@@ -149,7 +149,7 @@ implements LatestObservationCacheChangeListener
 		mObsRects.clear();
 		String temp = ""; /* temperature */
 		/* mPaint is allocated in the superclass */
-		mPaint.setTextSize(21);
+		mPaint.setTextSize(mFontSize);
 
 		float startOfXText = 0;
 		float yCopyrightText = this.getHeight() - 5;

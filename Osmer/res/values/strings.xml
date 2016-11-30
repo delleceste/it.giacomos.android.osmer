@@ -5,7 +5,7 @@
     <string name="app_broadcast_receiver">Meteo.FVG.BootReceiver</string>
     <string name="version">version</string>
     <string name="data_source">Data source: http://www.meteo.fvg.it</string>
-    <string name="author">&#169; 2015</string>
+    <string name="author">&#169; 2016</string>
     <string name="author_web">http://www.giacomos.it</string>
     <string name="home_title">Home</string>
     <string name="today_title">Today</string>
@@ -787,6 +787,8 @@ Please note: requests devoid of the full name and date will be ignored.\n\n</str
           in order to temporary save radar and webcam images.</string> 
           
      <string name="proceed">Proceed</string>
-    <string name="nothanks">No, thanks</string>	
-	
+    <string name="nothanks">No, thanks</string>
+    <string name="pasja_ravan_radar">Pasja Ravan</string>
+    <string name="lisca_radar">Lisca Radar</string>
+
 </resources>

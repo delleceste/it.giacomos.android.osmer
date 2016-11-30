@@ -490,7 +490,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 				if(mGroundOverlayOptions == null)
 				{
 					mGroundOverlayOptions = new GroundOverlayOptions();
-					mGroundOverlayOptions.positionFromBounds(GeoCoordinates.radarImageBounds);
+					mGroundOverlayOptions.positionFromBounds(GeoCoordinates.getRadarImageBounds(mRadarSource));
 					mGroundOverlayOptions.transparency(0.65f);
 				}
 				/* specify the image before the ovelay is added */
