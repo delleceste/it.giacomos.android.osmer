@@ -82,6 +82,7 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
 	private RadarOverlayUpdateListener mRadarOverlayUpdateListener;
 	private RadarAnimation mRadarAnimation;
 	private ReportOverlay mReportOverlay;
+	private boolean mIsInitialising;
 
 	/* MapFragmentListener: the activity must implement this in order to be notified when 
 	 * the GoogleMap is ready.
@@ -98,7 +99,6 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
 		mMapFragmentListener = null;
 		mOverlays = new ArrayList<OOverlayInterface>();
 		mMode = new MapViewMode(ObservationType.NONE, MapMode.RADAR);
-		mMode.isInit = true;
 		mRadarAnimation = null;
 		mReportOverlay = null;
 	}
@@ -107,6 +107,7 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
 	public void onMapReady(GoogleMap googleMap) 
 	{
         Log.e("OmMapFrag", "onMapReady");
+		mIsInitialising = true;
 		mMapReady = true;
 		mMap = googleMap;
         mMapFragmentListener.onCameraReady();
@@ -133,21 +134,6 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
 		 * it must be in the list of overlays in order to be cleared.
 		 */
         mOverlays.add(mRadarOverlay);
-
-
-        /// TEST FOR PLACING
-			BitmapDescriptor marker0BitmapDescriptor =
-				BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
-		BitmapDescriptor marker1BitmapDescriptor =
-				BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
-
-		mMap.addMarker(new MarkerOptions().icon(marker0BitmapDescriptor).title("Radar 0").position(new LatLng(46.09875, 14.228297))
-				.snippet(getString(R.string.pasja_ravan_radar)));
-
-		mMap.addMarker(new MarkerOptions().icon(marker1BitmapDescriptor).title("Radar 1").position(new LatLng(46.068001, 15.285119))
-				.snippet(getString(R.string.lisca_radar)));
-
-
 
 		UiSettings uiS = mMap.getUiSettings();
 		//	uiS.setRotateGesturesEnabled(false);
@@ -195,12 +181,14 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
             mReportOverlay.update(a.getApplicationContext(), false, a.getLocationService().getCurrentLocation());
         }
 
+		/* when the activity creates us, it passes the initialization stuff through arguments */
+		mSetMode(mMode);
+
 	}
 
     @Override
     public void onMapLoaded()
     {
-        Log.e("OmMapFrag", "onMapLoaded");
 		 /* When the application is launched for the first time restore last camera position */
         mSavedCameraPosition = mSettings.getCameraPosition();
         if(mSavedCameraPosition  == null || (mSavedCameraPosition.target.latitude == 0.0 && mSavedCameraPosition.target.longitude == 0.0)) /* never saved */
@@ -216,8 +204,6 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
     {
         super.onActivityCreated(savedInstanceState);
 
-
-        Log.e("OmMapFrag", "onActivityCreated");
         OsmerActivity oActivity = (OsmerActivity) getActivity();
         mSettings = new Settings(oActivity.getApplicationContext());
 
@@ -249,12 +235,6 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
         TextView radarInfoTextView = (TextView) getActivity().findViewById(R.id.radarInfoTextView);
         radarInfoTextView.setText(Html.fromHtml(getResources().getString(R.string.radar_info)));
         radarInfoTextView.setVisibility(View.GONE);
-
-		/* when the activity creates us, it passes the initialization stuff through arguments */
-        mSetMode(mMode);
-
-//		if(mMode.currentMode == MapMode.DAILY_OBSERVATIONS || mMode.currentMode == MapMode.LATEST_OBSERVATIONS)
-//			updateObservations(mObservationsCache.getObservationData(mMode.currentMode));
 
 		/* radar animation setup */
         mRadarAnimation = new RadarAnimation(this);
@@ -487,19 +467,20 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
 	public void setMode(MapViewMode m)
 	{
 		if(mMap != null)
+		{
 			mSetMode(m);
+		}
 		else
 		{
 			mMode = m;
-			mMode.isInit = true;
 		}
 	}
 	
 	private void mSetMode(MapViewMode m)
 	{
 		OAnimatedTextView radarTimestampText = (OAnimatedTextView) getActivity().findViewById(R.id.mapMessageTextView);	
-//		Log.e("--->OMapFragment: setMode invoked", "setMode invoked with mode: " + 
-//				m.currentMode + ", time (type): " + m.currentType + " mMap " + mMap);
+	//	Log.e("--->OMapFragment: setMode invoked", "setMode invoked with mode: " +
+	//			m.currentMode + ", time (type): " + m.currentType + " mMap " + mMap + " current mode " + mMode.currentMode + "  current type " + mMode.currentType );
 
 		/* show the radar timestamp text anytime the mode is set to RADAR
 		 * if (!m.equals(mMode)) then the radar timestamp text is scheduled to be shown
@@ -516,8 +497,13 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
 			mRefreshRadarImage();
 		}
 
-		if(m.equals(mMode))
+		if(m.equals(mMode) && !mIsInitialising)
+		{
+			Log.e("OMapFragment", "mMode equals new mode");
 			return;
+		}
+		if(mIsInitialising)
+			mIsInitialising = false;
 
 		/* mMode is still null the first time this method is invoked */
 		if(mMode != null && mMode.currentMode == MapMode.RADAR)
@@ -541,6 +527,7 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
 			/* update the overlay with a previously set bitmap */
 			mRemoveOverlays(); /* this removes any previous overlays... */
 			mRefreshRadarImage();
+			mRadarOverlay.showSloRadarMarkers(getActivity().getApplicationContext());
 			mOverlays.add(mRadarOverlay);
 			radarTimestampText.scheduleShow();
 		} 
@@ -852,6 +839,8 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
 			OsmerActivity a = (OsmerActivity) getActivity();
 			mReportOverlay.update(a.getApplicationContext(), force, a.getLocationService().getCurrentLocation());
 		}
+		else
+			Log.e("OMapFragment.updateReport", "mReportOverlay " + mReportOverlay  + ", mMode.currentMode " + mMode.currentMode);
 		
 	}
 	

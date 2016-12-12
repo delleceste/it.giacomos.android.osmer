@@ -124,6 +124,7 @@ public class ActionBarManager
 			break;
 		case 5:
 			mType = REPORT;
+			Log.e("ActionBarManager", " Switching to type REPORT");
 			mActivity.switchView(ViewType.REPORT);
 			break;
 		case 6:

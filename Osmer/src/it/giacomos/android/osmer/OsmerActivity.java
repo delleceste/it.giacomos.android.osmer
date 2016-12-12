@@ -917,7 +917,10 @@ InAppUpgradeManagerListener
 		/* switch the working mode of the map view. Already in PAGE_MAP view flipper page */
 		OMapFragment map = getMapFragment();
 		if((mapMode != MapMode.REPORT) || (mapMode == MapMode.REPORT && mReportConditionsAccepted))
+		{
+			Log.e("OnSelectionDone", "calling setMode on map, REPORT");
 			map.setMode(new MapViewMode(observationType, mapMode));
+		}
 		else if(mapMode == MapMode.REPORT)
 		{
 			mDrawerList.setItemChecked(0, true);
@@ -979,6 +982,7 @@ InAppUpgradeManagerListener
 		else if(itemId ==  R.id.reportUpdateAction)
 		{
 			/* this forces an update, even if just updated */
+			Log.e("OsmerAct.onMenuItemClick", "report update");
 			updateReport(true);
 		}
 		else if(itemId ==  R.id.reportHelpAction)
@@ -1259,6 +1263,7 @@ InAppUpgradeManagerListener
 			{ }
 			else if(id == ViewType.REPORT)
 			{
+				Log.e("SwitchView", "calling update report (false)");
 				updateReport(false);
 			}
 		}

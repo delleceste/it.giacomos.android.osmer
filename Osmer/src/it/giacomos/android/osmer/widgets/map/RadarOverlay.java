@@ -10,7 +10,11 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -28,6 +32,8 @@ public class RadarOverlay implements OOverlayInterface
 	private CircleOptions mCircleOptions;
 	private GroundOverlayOptions mGroundOverlayOptions, mScaleImageOverlayOptions;
 	private GroundOverlay mScaleImageOverlay;
+	private Marker mMarkerRadar0, mMarkerRadar1;
+
 	private Bitmap mBitmap;
 	private Bitmap mBlackAndWhiteBitmap;
 	private boolean mBitmapChanged;
@@ -38,7 +44,7 @@ public class RadarOverlay implements OOverlayInterface
 
 // test	public static final long ACCEPTABLE_RADAR_DIFF_TIMESTAMP_MILLIS = 1000 * 5;
 	
-	RadarOverlay(GoogleMap googleMap) 
+	RadarOverlay(GoogleMap googleMap)
 	{
 		mMap = googleMap;
 		/* ground overlay: the radar image */
@@ -113,6 +119,10 @@ public class RadarOverlay implements OOverlayInterface
 			mScaleImageOverlay.remove();
 			mScaleImageOverlay = null;
 		}
+		if(mMarkerRadar0 != null)
+			mMarkerRadar0.remove();
+		if(mMarkerRadar1 != null)
+			mMarkerRadar1.remove();
 	}
 	
 	/** updates the image in color.
@@ -232,6 +242,22 @@ public class RadarOverlay implements OOverlayInterface
 	public String getRadarSource()
 	{
 		return mRadarSource;
+	}
+
+	public void showSloRadarMarkers(Context ctx)
+	{
+/// TEST FOR PLACING
+		BitmapDescriptor marker0BitmapDescriptor =
+				BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
+		BitmapDescriptor marker1BitmapDescriptor =
+				BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
+
+		mMarkerRadar0 = mMap.addMarker(new MarkerOptions().icon(marker0BitmapDescriptor).title("Radar 0").position(new LatLng(46.09875, 14.228297))
+				.snippet(ctx.getString(R.string.pasja_ravan_radar)));
+
+		mMarkerRadar1 = mMap.addMarker(new MarkerOptions().icon(marker1BitmapDescriptor).title("Radar 1").position(new LatLng(46.068001, 15.285119))
+				.snippet(ctx.getString(R.string.lisca_radar)));
+
 	}
 
 }
