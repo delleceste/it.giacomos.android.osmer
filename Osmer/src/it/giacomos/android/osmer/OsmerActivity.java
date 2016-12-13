@@ -46,7 +46,6 @@ import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageDataFetc
 import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageManager;
 import it.giacomos.android.osmer.personalMessageActivity.PersonalMessageUpdateListener;
 import it.giacomos.android.osmer.preferences.*;
-import it.giacomos.android.osmer.purhcase.InAppUpgradeManager;
 import it.giacomos.android.osmer.purhcase.InAppUpgradeManagerListener;
 import it.giacomos.android.osmer.service.ServiceManager;
 import it.giacomos.android.osmer.service.sharedData.ReportNotification;

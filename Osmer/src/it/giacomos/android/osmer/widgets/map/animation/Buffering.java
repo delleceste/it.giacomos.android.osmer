@@ -2,18 +2,13 @@ package it.giacomos.android.osmer.widgets.map.animation;
 
 import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.network.DownloadStatus;
 import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
-import it.giacomos.android.osmer.widgets.map.animation.RadarAnimation;
 
 /** This class represents the first step of the download, when we are buffering data.
  * 

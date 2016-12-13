@@ -1,7 +1,5 @@
 package it.giacomos.android.osmer.network.state;
 
-import java.net.URL;
-
 import it.giacomos.android.osmer.network.DownloadManagerUpdateListener;
 import it.giacomos.android.osmer.network.DownloadStatus;
 import it.giacomos.android.osmer.observations.MapMode;

@@ -1,6 +1,5 @@
 package it.giacomos.android.osmer.widgets.map.animation;
 
-import it.giacomos.android.osmer.network.DownloadStatus;
 import android.util.Log;
 
 public class Interrupted extends ProgressState 

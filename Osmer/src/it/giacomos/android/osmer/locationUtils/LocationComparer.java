@@ -1,7 +1,6 @@
 package it.giacomos.android.osmer.locationUtils;
 
 import android.location.Location;
-import android.util.Log;
 
 /* taken from 
  * http://developer.android.com/guide/topics/location/strategies.html

@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 import android.content.Context;
 import android.util.Log;
-import it.giacomos.android.osmer.Logger;
+
 import it.giacomos.android.osmer.preferences.Settings;
 
 /** This class manages the notifications.

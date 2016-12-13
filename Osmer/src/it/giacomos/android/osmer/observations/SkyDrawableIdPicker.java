@@ -5,10 +5,6 @@ package it.giacomos.android.osmer.observations;
 
 import it.giacomos.android.osmer.R;
 
-import java.util.Calendar;
-import java.util.Date;
-import android.util.Log;
-
 
 /**
  * @author giacomo

@@ -2,7 +2,6 @@ package it.giacomos.android.osmer.widgets;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 
 public class HomeTextView extends OTextView{
 

@@ -4,8 +4,6 @@ import it.giacomos.android.osmer.R;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 public class AnimatedImageView extends ImageView {

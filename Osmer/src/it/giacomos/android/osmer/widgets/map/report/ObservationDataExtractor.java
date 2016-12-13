@@ -1,6 +1,5 @@
 package it.giacomos.android.osmer.widgets.map.report;
 
-import android.util.Log;
 import it.giacomos.android.osmer.observations.ObservationData;
 
 public class ObservationDataExtractor 

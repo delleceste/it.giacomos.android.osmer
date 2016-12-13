@@ -1,11 +1,8 @@
 package it.giacomos.android.osmer.locationUtils;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 import java.lang.String;
-
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 

@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
-import android.util.Log;
 import android.view.View;
 
 public class MapBaloonInfoWindowAdapter implements GoogleMap.InfoWindowAdapter 

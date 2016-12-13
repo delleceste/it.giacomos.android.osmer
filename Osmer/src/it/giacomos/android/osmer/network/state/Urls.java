@@ -1,6 +1,5 @@
 package it.giacomos.android.osmer.network.state;
 
-import java.util.Locale;
 import java.lang.String;
 
 public class Urls {

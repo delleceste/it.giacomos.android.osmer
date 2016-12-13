@@ -1,13 +1,9 @@
 package it.giacomos.android.osmer.widgets;
 
 import it.giacomos.android.osmer.R;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
+
 import android.app.Dialog;
 import android.content.Context;
-import android.os.Bundle;
-
-import android.view.LayoutInflater;
 
 public class TextDialog extends Dialog
 {

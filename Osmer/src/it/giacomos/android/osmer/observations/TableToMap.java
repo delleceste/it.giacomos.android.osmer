@@ -1,12 +1,8 @@
 package it.giacomos.android.osmer.observations;
 
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import android.util.Log;
 import it.giacomos.android.osmer.network.state.ViewType;
-import it.giacomos.android.osmer.regexps.Regexps;
 
 public class TableToMap {
 	public HashMap <String, ObservationData> convert(String table, final ViewType t)

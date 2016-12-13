@@ -10,16 +10,11 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.widgets.ForecastTextView;
 import it.giacomos.android.osmer.widgets.MapWithForecastImage;
 import android.support.v4.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ScrollView;
 
 public class ForecastFragment extends Fragment implements DataPoolTextListener, Runnable
 {

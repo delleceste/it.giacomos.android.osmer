@@ -2,24 +2,12 @@ package it.giacomos.android.osmer.service;
 
 import it.giacomos.android.osmer.preferences.Settings;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Calendar;
-
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 public class ConnectivityChangedReceiver extends BroadcastReceiver
 {

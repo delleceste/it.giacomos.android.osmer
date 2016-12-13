@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 public class DataPool implements DownloadListener 
 {	

@@ -1,7 +1,6 @@
 package it.giacomos.android.osmer.preferences;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -11,7 +10,6 @@ import com.google.android.gms.maps.model.LatLng;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.util.Log;
 
 public class Settings 
 {

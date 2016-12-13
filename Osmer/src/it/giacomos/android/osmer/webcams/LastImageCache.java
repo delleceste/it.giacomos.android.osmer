@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 
 public class LastImageCache 
 {

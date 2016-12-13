@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.DeadObjectException;
 import android.os.IBinder;
 import android.util.Log;
 

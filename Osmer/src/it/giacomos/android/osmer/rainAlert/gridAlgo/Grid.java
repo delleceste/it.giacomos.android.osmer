@@ -2,7 +2,6 @@ package it.giacomos.android.osmer.rainAlert.gridAlgo;
 
 import it.giacomos.android.osmer.rainAlert.interfaces.ImgParamsInterface;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import android.graphics.Bitmap;

@@ -2,8 +2,6 @@ package it.giacomos.android.osmer.webcams;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import android.util.Log;
-
 public class WebcamData 
 {
 	public String url = "";

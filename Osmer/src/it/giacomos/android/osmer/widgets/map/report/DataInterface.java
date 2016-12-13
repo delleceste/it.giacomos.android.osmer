@@ -3,7 +3,6 @@ package it.giacomos.android.osmer.widgets.map.report;
 import android.content.Context;
 import android.location.Location;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 

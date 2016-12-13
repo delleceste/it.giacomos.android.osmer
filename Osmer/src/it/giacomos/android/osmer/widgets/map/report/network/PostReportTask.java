@@ -3,11 +3,6 @@ package it.giacomos.android.osmer.widgets.map.report.network;
 import it.giacomos.android.osmer.network.HttpPostParametrizer;
 import it.giacomos.android.osmer.network.HttpWriteRead;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.AsyncTask;
 import android.util.Log;
 

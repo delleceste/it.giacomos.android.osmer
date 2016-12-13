@@ -4,10 +4,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.network.DownloadStatus;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
 
 /** This state listens for AnimationTask progress updates and completes

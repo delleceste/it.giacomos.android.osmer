@@ -1,7 +1,6 @@
 package it.giacomos.android.osmer.observations;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 
 /**
  * class used to store data inside the SituationImage widgets class

@@ -4,7 +4,6 @@ import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.observations.SunsetCalculator;
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;

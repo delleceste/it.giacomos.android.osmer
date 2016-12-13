@@ -3,14 +3,6 @@ package it.giacomos.android.osmer.service;
 import it.giacomos.android.osmer.network.HttpPostParametrizer;
 import it.giacomos.android.osmer.network.HttpWriteRead;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 
 import android.os.AsyncTask;
 import android.util.Log;

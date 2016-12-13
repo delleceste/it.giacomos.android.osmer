@@ -1,10 +1,9 @@
 package it.giacomos.android.osmer.widgets.map.report;
 
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.service.sharedData.ReportRequestNotification;
+
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;

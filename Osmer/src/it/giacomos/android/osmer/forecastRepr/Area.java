@@ -2,17 +2,11 @@ package it.giacomos.android.osmer.forecastRepr;
 
 import it.giacomos.android.osmer.R;
 
-import java.util.HashMap;
-
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.text.Spanned;
-import android.util.Log;
-import android.util.SparseArray;
 
 import com.google.android.gms.maps.model.LatLng;
 

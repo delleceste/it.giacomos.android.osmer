@@ -9,25 +9,17 @@ import it.giacomos.android.osmer.observations.ObservationsCache;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.purhcase.InAppUpgradeManager;
 import it.giacomos.android.osmer.purhcase.InAppUpgradeManagerListener;
 import it.giacomos.android.osmer.widgets.HomeTextView;
 import it.giacomos.android.osmer.widgets.OTextView;
 import it.giacomos.android.osmer.widgets.SituationImage;
 import android.support.v4.app.Fragment;
-import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 
 public class SituationFragment extends Fragment implements DataPoolTextListener, InAppUpgradeManagerListener
 {

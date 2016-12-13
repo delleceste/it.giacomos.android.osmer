@@ -1,7 +1,5 @@
 package it.giacomos.android.osmer.network;
 
-import android.util.Log;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;

@@ -1,24 +1,20 @@
 package it.giacomos.android.osmer.interfaceHelpers;
 
-import it.giacomos.android.osmer.locationUtils.GeocodeAddressTask;
 import it.giacomos.android.osmer.locationUtils.GeocodeAddressUpdateListener;
 import it.giacomos.android.osmer.locationUtils.LocationInfo;
 import it.giacomos.android.osmer.preferences.SettingsActivity;
 import it.giacomos.android.osmer.MyAlertDialogFragment;
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.widgets.SituationImage;
-import android.app.Activity;
+
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 
 public class MenuActionsManager implements GeocodeAddressUpdateListener

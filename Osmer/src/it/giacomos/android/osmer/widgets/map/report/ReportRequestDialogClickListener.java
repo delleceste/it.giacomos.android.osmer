@@ -15,7 +15,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.provider.Settings.Secure;
-import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.EditText;
 

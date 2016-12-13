@@ -1,17 +1,10 @@
 package it.giacomos.android.osmer.widgets.map.report.network;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.location.*;
-
 import android.content.Context;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.util.Log;
 import android.widget.Toast;

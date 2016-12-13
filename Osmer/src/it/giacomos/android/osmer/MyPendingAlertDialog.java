@@ -1,7 +1,5 @@
 package it.giacomos.android.osmer;
 
-import java.util.HashMap;
-
 import android.support.v4.app.FragmentActivity;
 
 

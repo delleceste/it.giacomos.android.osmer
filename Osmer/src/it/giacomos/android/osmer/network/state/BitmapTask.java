@@ -5,7 +5,6 @@ package it.giacomos.android.osmer.network.state;
 
 import android.os.AsyncTask;
 import android.os.Build;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -1,14 +1,8 @@
 package it.giacomos.android.osmer.service.sharedData;
 
-import it.giacomos.android.osmer.Logger;
-import it.giacomos.android.osmer.preferences.Settings;
-
-import java.util.Date;
 import java.util.HashMap;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 public class SharedDataSaveRestore
 {

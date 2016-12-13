@@ -1,6 +1,5 @@
 package it.giacomos.android.osmer.widgets.map.animation;
 
-import android.os.Handler;
 import android.util.Log;
 
 /** Creates a new State with a radarAnimation, an animation task and a handler which

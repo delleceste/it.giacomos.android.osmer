@@ -1,6 +1,5 @@
 package it.giacomos.android.osmer.widgets;
 
-import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
 import it.giacomos.android.osmer.network.state.ViewType;
 import android.content.Context;
 import android.graphics.Color;

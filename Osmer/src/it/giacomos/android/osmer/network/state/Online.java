@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.util.Log;
+
 import it.giacomos.android.osmer.network.DownloadManagerUpdateListener;
 import it.giacomos.android.osmer.network.DownloadReason;
 import it.giacomos.android.osmer.network.DownloadStatus;

@@ -1,15 +1,12 @@
 package it.giacomos.android.osmer.widgets.map;
 
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
-import it.giacomos.android.osmer.locationUtils.LocationServiceAddressUpdateListener;
 import it.giacomos.android.osmer.locationUtils.LocationServiceUpdateListener;
 import it.giacomos.android.osmer.preferences.Settings;
-import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
-import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;

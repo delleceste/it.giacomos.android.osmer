@@ -4,7 +4,6 @@ import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.locationUtils.LocationUtils;
 import android.graphics.PointF;
 import android.location.Location;
-import android.util.Log;
 import android.widget.ImageView;
 
 public class LocationToImgPixelMapper 

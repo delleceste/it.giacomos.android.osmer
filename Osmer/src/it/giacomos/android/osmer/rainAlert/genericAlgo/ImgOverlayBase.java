@@ -1,6 +1,5 @@
 package it.giacomos.android.osmer.rainAlert.genericAlgo;
 
-import android.util.Log;
 import it.giacomos.android.osmer.rainAlert.interfaces.ImgOverlayInterface;
 
 public abstract class ImgOverlayBase implements ImgOverlayInterface
