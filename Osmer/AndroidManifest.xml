@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.giacomos.android.osmer"
     android:installLocation="auto"
-    android:versionCode="974"
-    android:versionName="3.7.0-beta2" >
+    android:versionCode="980"
+    android:versionName="3.7.0" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -49,7 +49,7 @@
     -->
 
     <permission
-        android:name="it.giacomos.android.osmer.permission.C2D_MESSAGE"
+        android:name="${applicationId}.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
     <!--
@@ -59,7 +59,7 @@
                            
                           ========================================
     -->
-    <uses-permission android:name="it.giacomos.android.osmer.permission.C2D_MESSAGE" />
+    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
 
     <!--
     <permission
@@ -112,43 +112,31 @@
         <uses-library android:name="com.google.android.maps" />
 
         <!--
-              starting from versionCode > 231 I created a map key with release and debug SHA1 together.
-        	  This way, the key below applies both to release and debug builds.
+             ***  starting from versionCode > 231 I created a map key with release and debug SHA1 together.
+        	 ***  This way, the key below applies both to release and debug builds.
         -->
-
 
         <!--
-               Meteo.FVG Pro package (Production, not alpha, not beta) 
-         	it.giacomos.android.osmer.pro package name
-        -->
+            *** from version code 978 it.giacomos.android.osmer and it.giacomos.android.osmer.pro (managed by gradle
+            *** build flavors in android studio), SHARE THE SAME MAPS V2 API KEY!!
+            *** No need to change it when building from normal to PRO!
 
-
-        <!-- ++++++++++++++++++++++++++++++++++++++++++ Meteo.FVG PRO +++++++++++++++++++++++++++++++++++++++++ -->
-
-
-      <!--
-     <meta-data android:name="com.google.android.maps.v2.API_KEY" 
+            *** Anyway, the api Key was   <meta-data android:name="com.google.android.maps.v2.API_KEY"
   			android:value="AIzaSyCO_r5ZYrWaqA5ExtIxAVHwRn6KiGAJ_Ps"/>
-    -->
-
-     
-        <!-- ++++++++++++++++++++++++++++++++++++++++++ end Meteo.FVG PRO API KEY ++++++++++++++++++++++++++++ -->
-
-
-        <!--
-              Meteo.FVG package (old and alpha/beta versions) 
-			it.giacomos.android.osmer package name
-        -->
+  			***
+  			*** see https://console.developers.google.com/apis/credentials/key/0?project=it-giacomos-android-osmer
+  			***
+         -->
 
 
-        <!-- ============================================= Meteo.FVG ========================================= -->
+        <!-- ============================================= Meteo.FVG MAPS API v2 ========================================= -->
 
 
       <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBhRcwqzgppnwzQApAHcV7-Rer1JhXiDQs" />
 
-        
+
             
         <!-- ========================================== end Meteo.FVG API KEY ============================== -->
 

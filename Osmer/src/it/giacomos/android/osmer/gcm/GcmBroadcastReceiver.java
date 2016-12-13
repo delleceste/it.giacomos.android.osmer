@@ -1,8 +1,8 @@
 package it.giacomos.android.osmer.gcm;
 
 import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.preferences.Settings;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.rainAlert.SyncImagesListener;
 import it.giacomos.android.osmer.service.RadarSyncAndRainGridDetectService;
 import it.giacomos.android.osmer.service.sharedData.NotificationData;

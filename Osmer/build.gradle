@@ -22,6 +22,12 @@ android {
             keyPassword 'android'
             storeFile file('/home/giacomo/.android/debug_meteo.fvg.keystore')
         }
+        pro_keystore {
+            keyAlias 'androidreleasekeystoreuniudpwd'
+            keyPassword 'dh0926'
+            storeFile file('/home/giacomo/.android/release_meteo.fvg.pro.keystore')
+            storePassword 'dh0926'
+        }
     }
     compileSdkVersion 25
     buildToolsVersion "23.0.2"
@@ -64,14 +70,38 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 25
-        versionNameSuffix '-testradarslo'
+        applicationId 'it.giacomos.android.osmer'
+        versionName '3.7.0'
     }
     productFlavors {
-        APK {
+        BASE {
             minSdkVersion 14
             proguardFile '/home/giacomo/devel/it.giacomos.android.osmer/Osmer/proguard-rules.pro'
             targetSdkVersion 25
             versionName '3.7.0'
+            resValue "string", "app_name", "Meteo.FVG"
+        }
+        PRO {
+            minSdkVersion 14
+            applicationIdSuffix '.pro'
+            proguardFile '/home/giacomo/devel/it.giacomos.android.osmer/Osmer/proguard-rules.pro'
+            targetSdkVersion 25
+            resValue "string", "app_name", "Meteo.FVG Pro"
+            signingConfig signingConfigs.pro_keystore
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def project = "Meteo.FVG"
+            def SEP = "-"
+            def flavor = variant.productFlavors[0].name
+            def buildType = variant.variantData.variantConfiguration.buildType.name
+            def version = variant.versionName
+
+            def newApkName = project + SEP + flavor + SEP + buildType + SEP + version + ".apk"
+
+            output.outputFile = new File(output.outputFile.parent, newApkName)
         }
     }
 }
