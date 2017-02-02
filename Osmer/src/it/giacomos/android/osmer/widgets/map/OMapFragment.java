@@ -61,7 +61,10 @@ GoogleMap.OnCameraIdleListener,
 WebcamOverlayChangeListener,
 MeasureOverlayChangeListener,
 DataPoolBitmapListener,
-RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
+RadarAnimationListener,
+		OnMapReadyCallback,
+		GoogleMap.OnMapLoadedCallback,
+		GoogleMap.OnCameraMoveListener
 {
 	private float mOldZoomLevel;
 	private boolean mCenterOnFirstRun;
@@ -167,6 +170,7 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
                 mZoomChangeListener.onZoomLevelChanged(cameraPosition.zoom);
             mOldZoomLevel = cameraPosition.zoom;
         }
+		mMap.setOnCameraMoveListener(this);
 
         if(mRadarAnimation.getState().animationInProgress())
             mRadarAnimation.restore();
@@ -849,4 +853,16 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
 		return myLocation.distanceTo(pt) < 500;
 	}
 
+	@Override
+	public void onCameraMove()
+	{
+		CameraPosition cameraPosition = mMap.getCameraPosition();
+		if(cameraPosition.zoom != mOldZoomLevel)
+		{
+			if(mZoomChangeListener != null)
+				mZoomChangeListener.onZoomLevelChanged(cameraPosition.zoom);
+			mOldZoomLevel = cameraPosition.zoom;
+		}
+
+	}
 }
