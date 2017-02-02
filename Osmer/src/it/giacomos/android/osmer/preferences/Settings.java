@@ -648,6 +648,6 @@ public class Settings
 
 	public String getRadarSource()
 	{
-		return mSharedPreferences.getString("RADAR_SOURCE", "slo");
+		return mSharedPreferences.getString("RADAR_SOURCE", "");
 	}
 }

@@ -235,7 +235,7 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
 
 		/* radar animation setup */
         mRadarAnimation = new RadarAnimation(this);
-        mRadarAnimation.setRadarSource("slo");
+        mRadarAnimation.setRadarSource(""); /* was "slo" for a period, but didn't work */
         mRadarAnimation.registerRadarAnimationListener(this);
 
 		/* restoreState just initializes internal variables. We do not restore animation
@@ -524,7 +524,7 @@ RadarAnimationListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback
 			/* update the overlay with a previously set bitmap */
 			mRemoveOverlays(); /* this removes any previous overlays... */
 			mRefreshRadarImage();
-			mRadarOverlay.showSloRadarMarkers(getActivity().getApplicationContext());
+			//mRadarOverlay.showSloRadarMarkers(getActivity().getApplicationContext());
 			mOverlays.add(mRadarOverlay);
 			radarTimestampText.scheduleShow();
 		} 
