@@ -49,9 +49,9 @@ public class RadarOverlay implements OOverlayInterface
 		/* ground overlay: the radar image */
 		mGroundOverlay = null;
 		mGroundOverlayCircle = null;
-		mRadarSource = "SLO"; /* the new arso slovenian radar image */
 		mGroundOverlayOptions = new GroundOverlayOptions();
 		mGroundOverlayOptions.transparency(0.48f);
+		mRadarSource = ""; /* slo for the new arso slovenian radar image (not good though) */
 		mGroundOverlayOptions.positionFromBounds(GeoCoordinates.getRadarImageBounds(mRadarSource));
 		
 		/* circle: delimits the radar area */
@@ -62,12 +62,12 @@ public class RadarOverlay implements OOverlayInterface
 		mCircleOptions.strokeColor(color);
 		mCircleOptions.strokeWidth(1);
 		
-//		/* VMI scale image */
-//		mScaleImageOverlay = null;
-//		mScaleImageOverlayOptions = new GroundOverlayOptions();
-//		mScaleImageOverlayOptions.position(GeoCoordinates.radarScaleTopLeft, 20000);
-//		mScaleImageOverlayOptions.transparency(0.45f);
-//		mScaleImageOverlayOptions.image(BitmapDescriptorFactory.fromResource(R.drawable.scala_vmi_4));
+		/* VMI scale image, included in Fossalon image top */
+		mScaleImageOverlay = null;
+		mScaleImageOverlayOptions = new GroundOverlayOptions();
+		mScaleImageOverlayOptions.position(GeoCoordinates.radarScaleTopLeft, 20000);
+		mScaleImageOverlayOptions.transparency(0.45f);
+		mScaleImageOverlayOptions.image(BitmapDescriptorFactory.fromResource(R.drawable.scala_vmi_4));
 		
 		mBlackAndWhiteBitmap = null;
 		mBitmap = null;
@@ -186,8 +186,8 @@ public class RadarOverlay implements OOverlayInterface
 		if(mGroundOverlayCircle == null && mRadarSource.compareToIgnoreCase("SLO") != 0)
 			mGroundOverlayCircle = mMap.addCircle(mCircleOptions);
 		
-		if(mScaleImageOverlay == null && mRadarSource.compareToIgnoreCase("SLO") != 0)
-			mScaleImageOverlay = mMap.addGroundOverlay(mScaleImageOverlayOptions);
+		//if(mScaleImageOverlay == null && mRadarSource.compareToIgnoreCase("SLO") != 0)
+		// 	mScaleImageOverlay = mMap.addGroundOverlay(mScaleImageOverlayOptions);
 		
 		/* specify the image before the ovelay is added */
 		BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bmp);

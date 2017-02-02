@@ -84,7 +84,7 @@ public class ImgCompareGrids implements ImgCompareI {
 					
 //					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: ("  + prevElintensity + ") -> [" +
 //							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastElintensity + ")"
-//					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret); 
+//					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret);
 					 
 					if(increase)
 						ret++;
@@ -120,7 +120,7 @@ public class ImgCompareGrids implements ImgCompareI {
 					
 //					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: ("  + prevElintensity + ")  -> [" +
 //							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastElintensity + ")"
-//					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret); 
+//					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret);
 
 					if(increase)
 						ret++;
@@ -157,7 +157,7 @@ public class ImgCompareGrids implements ImgCompareI {
 						
 //					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: (" + prevElintensity + ") -> [" +
 //							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastElintensity + ")"
-//					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret); 
+//					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret);
 
 					if(increase)
 						ret++;
@@ -193,7 +193,7 @@ public class ImgCompareGrids implements ImgCompareI {
 					
 //					Log.e("ImgCompareGrids", "[" + r + "," + c + "]: ("  + prevElintensity + ") ->  [" +
 //							contiguousElement.index.i  + "," +contiguousElement.index.j + "] (" + lastElintensity + ")"
-//					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret); 
+//					 + ", increase " + increase + ", big incr" + bigIncrease + " RAIN " + ret);
 					
 					if(increase)
 						ret++;

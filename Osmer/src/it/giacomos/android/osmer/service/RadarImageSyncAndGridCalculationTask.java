@@ -59,7 +59,7 @@ public class RadarImageSyncAndGridCalculationTask extends
         String radarSource = "";
 
         double defaultRadius = 20; /* 20km */
-		
+
 		/* sync radar images for rain detection */
         SyncImages syncer = new SyncImages();
         String[] config = syncer.sync(radarImgRemotePath, radarImgLocalPath);
@@ -78,10 +78,10 @@ public class RadarImageSyncAndGridCalculationTask extends
                     prevImgFileName = radarImgLocalPath + "/" + config[2];
 
                     LatLngBounds bounds = null;
-                /* get the bounds according to the radar image dimensions */
-                    if (radarSource.compareToIgnoreCase("slo") == 0)
-                        bounds = GeoCoordinates.getRadarImageBounds("slo");
-                    else
+                    /* get the bounds according to the radar image dimensions */
+//                    if (radarSource.compareToIgnoreCase("slo") == 0)
+//                        bounds = GeoCoordinates.getRadarImageBounds("slo");
+//                    else
                         bounds = GeoCoordinates.getRadarImageBounds("");
 
                     topLeftLat = bounds.northeast.latitude;
@@ -96,15 +96,15 @@ public class RadarImageSyncAndGridCalculationTask extends
 				/* calculate width between topLeftLon and botRightLon (=topRightLon in a rectangle) along southern border */
                     Location.distanceBetween(botRightLat, topLeftLon, botRightLat, botRightLon, result);
 				/* average the two results for best precision */
-                    widthKm = (widthKm + result[0]) / 2.0000; /* result is in meters */
+                    widthKm = (widthKm + result[0]) / 2000.0; /* result is in meters */
 
                     Location.distanceBetween(topLeftLat, topLeftLon, botRightLat, topLeftLon, result);  /* along western side */
                     heightKm = result[0];
                     Location.distanceBetween(topLeftLat, botRightLon, botRightLat, botRightLon, result); /* along eastern side */
-				/* average the results */
-                    heightKm = (heightKm + result[0]) / 2.000; /* result is in meters */
+                    /* average the results */
+                   heightKm = (heightKm + result[0]) / 2000.0; /* result is in meters */
 
-                    Log.e("RadarImageSync..doInBg", "slo radar: width averaged " + widthKm + " height averaged " + heightKm + " img w " + imgW + ", img h " + imgH + " top left lat " + topLeftLat + " top left lon " + topLeftLon
+                    Log.e("RadarImageSync..doInBg", "radar source: " + radarSource + " radar: width averaged " + widthKm + " height averaged " + heightKm + " img w " + imgW + ", img h " + imgH + " top left lat " + topLeftLat + " top left lon " + topLeftLon
                         + " bot right lat " + botRightLat + " bot right lon " + botRightLon);
                 }
                 catch (NumberFormatException e)
@@ -113,7 +113,7 @@ public class RadarImageSyncAndGridCalculationTask extends
                 }
 
                 ImgOverlayGrid imgoverlaygrid_0 = new ImgOverlayGrid(lastImgFileName,
-                        imgW, imgH, topLeftLat, topLeftLon, botRightLat, botRightLon,
+                        501, 501, topLeftLat, topLeftLon, botRightLat, botRightLon,
                         widthKm, heightKm, defaultRadius, mMyLatitude, mMyLongitude);
 
                 ImgOverlayGrid imgoverlaygrid_1 = new ImgOverlayGrid(prevImgFileName,
@@ -127,10 +127,11 @@ public class RadarImageSyncAndGridCalculationTask extends
                 {
                     /* use correct parameters for the image */
                     ImgParamsInterface imgParams = null;
-                    if(radarSource.compareToIgnoreCase("slo") == 0)
-                        imgParams = new SloImgParams();
-                    else
-                        imgParams = new MeteoFvgImgParams();
+//                    if(radarSource.compareToIgnoreCase("slo") == 0)
+//                        imgParams = new SloImgParams();
+//                    else
+
+                    imgParams = new MeteoFvgImgParams();
 
                     imgoverlaygrid_1.processImage(imgParams);
                     imgoverlaygrid_0.processImage(imgParams);
