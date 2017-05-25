@@ -1,8 +1,8 @@
 package it.giacomos.android.osmer.service.sharedData;
 
-import java.util.HashMap;
-
 import android.content.SharedPreferences;
+
+import java.util.HashMap;
 
 public class SharedDataSaveRestore
 {

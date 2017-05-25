@@ -1,9 +1,5 @@
 package it.giacomos.android.osmer.widgets.map;
 
-import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
-import it.giacomos.android.osmer.locationUtils.LocationServiceUpdateListener;
-import it.giacomos.android.osmer.preferences.Settings;
-import it.giacomos.android.osmer.R;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
@@ -18,6 +14,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
+import it.giacomos.android.osmer.locationUtils.LocationServiceUpdateListener;
+import it.giacomos.android.osmer.preferences.Settings;
 
 
 /**

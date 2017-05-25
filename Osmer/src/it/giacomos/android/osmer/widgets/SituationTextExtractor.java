@@ -1,10 +1,9 @@
 package it.giacomos.android.osmer.widgets;
 
-import it.giacomos.android.osmer.regexps.Regexps;
-
-import java.lang.String;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import it.giacomos.android.osmer.regexps.Regexps;
 
 public class SituationTextExtractor {
 	public SituationTextExtractor()

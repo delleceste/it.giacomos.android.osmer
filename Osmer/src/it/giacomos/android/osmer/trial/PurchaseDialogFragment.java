@@ -1,11 +1,12 @@
 package it.giacomos.android.osmer.trial;
 
-import it.giacomos.android.osmer.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
+import it.giacomos.android.osmer.R;
 
 
 

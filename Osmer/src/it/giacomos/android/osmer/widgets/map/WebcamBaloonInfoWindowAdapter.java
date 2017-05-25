@@ -1,6 +1,5 @@
 package it.giacomos.android.osmer.widgets.map;
 
-import it.giacomos.android.osmer.R;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -11,6 +10,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.model.Marker;
+
+import it.giacomos.android.osmer.R;
 
 public class WebcamBaloonInfoWindowAdapter implements InfoWindowAdapter {
 	

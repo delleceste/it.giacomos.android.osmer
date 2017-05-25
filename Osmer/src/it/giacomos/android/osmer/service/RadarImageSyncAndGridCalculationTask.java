@@ -1,5 +1,7 @@
 package it.giacomos.android.osmer.service;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -10,7 +12,6 @@ import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.rainAlert.RainDetectResult;
 import it.giacomos.android.osmer.rainAlert.SyncImages;
 import it.giacomos.android.osmer.rainAlert.genericAlgo.MeteoFvgImgParams;
-import it.giacomos.android.osmer.rainAlert.genericAlgo.SloImgParams;
 import it.giacomos.android.osmer.rainAlert.gridAlgo.ImgCompareGrids;
 import it.giacomos.android.osmer.rainAlert.gridAlgo.ImgOverlayGrid;
 import it.giacomos.android.osmer.rainAlert.interfaces.ImgParamsInterface;
@@ -41,8 +42,8 @@ public class RadarImageSyncAndGridCalculationTask extends
         String gridConf = configurations[0];
         String radarImgLocalPath = configurations[1];
         String radarImgRemotePath = configurations[2];
-        String lastImgFileName = "";
-        String prevImgFileName = "";
+        Bitmap lastBmpImg = null, prevBmpImg = null;
+        String lastImgFileName = "", prevImgFileName = "";
         /* From GeoCoordinates.java:
          * public static final LatLngBounds radarImageBounds = new LatLngBounds(new LatLng(44.6052, 11.9294),
 		 *		new LatLng(46.8080, 15.0857));
@@ -76,48 +77,55 @@ public class RadarImageSyncAndGridCalculationTask extends
                     imgH = Integer.parseInt(imgInfo[2]);
                     lastImgFileName = radarImgLocalPath + "/" + config[1];
                     prevImgFileName = radarImgLocalPath + "/" + config[2];
+                    lastBmpImg = BitmapFactory.decodeFile(lastImgFileName);
+                    prevBmpImg = BitmapFactory.decodeFile(prevImgFileName);
+                    imgW = lastBmpImg.getWidth();
+                    imgH = lastBmpImg.getHeight();
 
-                    LatLngBounds bounds = null;
-                    /* get the bounds according to the radar image dimensions */
-//                    if (radarSource.compareToIgnoreCase("slo") == 0)
-//                        bounds = GeoCoordinates.getRadarImageBounds("slo");
-//                    else
-                        bounds = GeoCoordinates.getRadarImageBounds("");
+                    if(lastBmpImg != null && prevBmpImg != null
+                            && imgH == prevBmpImg.getHeight()
+                            && imgW == prevBmpImg.getWidth())
+                    {
+                        LatLngBounds bounds =  GeoCoordinates.getRadarImageBounds(lastBmpImg);
+                        topLeftLat = bounds.northeast.latitude;
+                        topLeftLon = bounds.southwest.longitude;
+                        botRightLat = bounds.southwest.latitude;
+                        botRightLon = bounds.northeast.longitude;
 
-                    topLeftLat = bounds.northeast.latitude;
-                    topLeftLon = bounds.southwest.longitude;
-                    botRightLat = bounds.southwest.latitude;
-                    botRightLon = bounds.northeast.longitude;
-
-                    float[] result = new float[1];
+                        float[] result = new float[1];
 				/* calculate width between topLeft lon and botRightLon (=topRightLon in a rectangle) along topLeftLat */
-                    Location.distanceBetween(topLeftLat, topLeftLon, topLeftLat, botRightLon, result);
-                    widthKm = result[0]; /* result is in meters */
+                        Location.distanceBetween(topLeftLat, topLeftLon, topLeftLat, botRightLon, result);
+                        widthKm = result[0]; /* result is in meters */
 				/* calculate width between topLeftLon and botRightLon (=topRightLon in a rectangle) along southern border */
-                    Location.distanceBetween(botRightLat, topLeftLon, botRightLat, botRightLon, result);
+                        Location.distanceBetween(botRightLat, topLeftLon, botRightLat, botRightLon, result);
 				/* average the two results for best precision */
-                    widthKm = (widthKm + result[0]) / 2000.0; /* result is in meters */
+                        widthKm = (widthKm + result[0]) / 2000.0; /* result is in meters */
 
-                    Location.distanceBetween(topLeftLat, topLeftLon, botRightLat, topLeftLon, result);  /* along western side */
-                    heightKm = result[0];
-                    Location.distanceBetween(topLeftLat, botRightLon, botRightLat, botRightLon, result); /* along eastern side */
+                        Location.distanceBetween(topLeftLat, topLeftLon, botRightLat, topLeftLon, result);  /* along western side */
+                        heightKm = result[0];
+                        Location.distanceBetween(topLeftLat, botRightLon, botRightLat, botRightLon, result); /* along eastern side */
                     /* average the results */
-                   heightKm = (heightKm + result[0]) / 2000.0; /* result is in meters */
+                        heightKm = (heightKm + result[0]) / 2000.0; /* result is in meters */
 
-                    Log.e("RadarImageSync..doInBg", "radar source: " + radarSource + " radar: width averaged " + widthKm + " height averaged " + heightKm + " img w " + imgW + ", img h " + imgH + " top left lat " + topLeftLat + " top left lon " + topLeftLon
-                        + " bot right lat " + botRightLat + " bot right lon " + botRightLon);
+                        Log.e("RadarImageSync..doInBg", "radar source: " + radarSource + " radar: width averaged " + widthKm + " height averaged " + heightKm + " img w " + imgW + ", img h " + imgH + " top left lat " + topLeftLat + " top left lon " + topLeftLon
+                                + " bot right lat " + botRightLat + " bot right lon " + botRightLon);
+                    }
+                    else
+                        Log.e("RadarImageSync..doInBg", " error decoding bitmap " + lastImgFileName + " or " + prevImgFileName + " or images differ in size ");
+
+
                 }
                 catch (NumberFormatException e)
                 {
                     Log.e("RadarImgSync..doInBg", "error parsing line  " + config[0]);
                 }
 
-                ImgOverlayGrid imgoverlaygrid_0 = new ImgOverlayGrid(lastImgFileName,
-                        501, 501, topLeftLat, topLeftLon, botRightLat, botRightLon,
+                ImgOverlayGrid imgoverlaygrid_0 = new ImgOverlayGrid(lastBmpImg,
+                        topLeftLat, topLeftLon, botRightLat, botRightLon,
                         widthKm, heightKm, defaultRadius, mMyLatitude, mMyLongitude);
 
-                ImgOverlayGrid imgoverlaygrid_1 = new ImgOverlayGrid(prevImgFileName,
-                        501, 501, topLeftLat, topLeftLon, botRightLat,
+                ImgOverlayGrid imgoverlaygrid_1 = new ImgOverlayGrid(prevBmpImg,
+                        topLeftLat, topLeftLon, botRightLat,
                         botRightLon, widthKm, heightKm, defaultRadius, mMyLatitude, mMyLongitude);
 
                 imgoverlaygrid_1.init(gridConf);

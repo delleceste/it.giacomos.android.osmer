@@ -1,12 +1,13 @@
 package it.giacomos.android.osmer.widgets;
 
-import it.giacomos.android.osmer.network.state.ViewType;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
 import android.widget.TextView;
+
+import it.giacomos.android.osmer.network.state.ViewType;
 
 
 public class OTextView extends TextView

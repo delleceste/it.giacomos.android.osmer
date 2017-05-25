@@ -1,7 +1,13 @@
 package it.giacomos.android.osmer.widgets.map;
 
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -14,14 +20,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
-import android.util.Log;
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 
 public class RadarOverlay implements OOverlayInterface
 {
@@ -52,7 +52,7 @@ public class RadarOverlay implements OOverlayInterface
 		mGroundOverlayOptions = new GroundOverlayOptions();
 		mGroundOverlayOptions.transparency(0.48f);
 		mRadarSource = ""; /* slo for the new arso slovenian radar image (not good though) */
-		mGroundOverlayOptions.positionFromBounds(GeoCoordinates.getRadarImageBounds(mRadarSource));
+		// mGroundOverlayOptions.positionFromBounds(GeoCoordinates.getRadarImageBounds(mRadarSource));
 		
 		/* circle: delimits the radar area */
 		int color = Color.argb(120, 150, 160, 245);
@@ -191,6 +191,8 @@ public class RadarOverlay implements OOverlayInterface
 		
 		/* specify the image before the ovelay is added */
 		BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bmp);
+
+		mGroundOverlayOptions.positionFromBounds(GeoCoordinates.getRadarImageBounds(bmp));
 		mGroundOverlayOptions.image(bitmapDescriptor);
 		mGroundOverlay = mMap.addGroundOverlay(mGroundOverlayOptions);
 		Log.e("mRefreshBitmap", "ADDED new ground overlay " + mGroundOverlay);

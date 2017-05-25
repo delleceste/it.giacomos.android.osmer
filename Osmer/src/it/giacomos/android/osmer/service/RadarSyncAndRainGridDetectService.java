@@ -1,23 +1,5 @@
 package it.giacomos.android.osmer.service;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationServices;
-
-import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.network.state.Urls;
-import it.giacomos.android.osmer.preferences.Settings;
-import it.giacomos.android.osmer.rainAlert.RainDetectResult;
-import it.giacomos.android.osmer.rainAlert.RainNotificationBuilder;
-import it.giacomos.android.osmer.service.sharedData.NotificationData;
-import it.giacomos.android.osmer.service.sharedData.RainNotification;
-import it.giacomos.android.osmer.service.sharedData.ServiceSharedData;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -28,6 +10,25 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationServices;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import it.giacomos.android.osmer.OsmerActivity;
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.network.state.Urls;
+import it.giacomos.android.osmer.preferences.Settings;
+import it.giacomos.android.osmer.rainAlert.RainDetectResult;
+import it.giacomos.android.osmer.rainAlert.RainNotificationBuilder;
+import it.giacomos.android.osmer.service.sharedData.NotificationData;
+import it.giacomos.android.osmer.service.sharedData.RainNotification;
+import it.giacomos.android.osmer.service.sharedData.ServiceSharedData;
 
 public class RadarSyncAndRainGridDetectService extends Service 
 implements RadarImageSyncAndCalculationTaskListener, ConnectionCallbacks, OnConnectionFailedListener

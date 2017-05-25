@@ -1,5 +1,15 @@
 package it.giacomos.android.osmer.fragments;
 
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+
+import it.giacomos.android.osmer.OsmerActivity;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.LocationService;
 import it.giacomos.android.osmer.network.Data.DataPool;
 import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
@@ -7,19 +17,10 @@ import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.observations.ObservationsCache;
 import it.giacomos.android.osmer.preferences.Settings;
-import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.purhcase.InAppUpgradeManagerListener;
 import it.giacomos.android.osmer.widgets.HomeTextView;
 import it.giacomos.android.osmer.widgets.OTextView;
 import it.giacomos.android.osmer.widgets.SituationImage;
-import android.support.v4.app.Fragment;
-import android.content.res.Configuration;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 
 public class SituationFragment extends Fragment implements DataPoolTextListener, InAppUpgradeManagerListener
 {

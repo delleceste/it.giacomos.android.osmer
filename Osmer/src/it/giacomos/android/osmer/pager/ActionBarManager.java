@@ -7,9 +7,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
-import it.giacomos.android.osmer.network.state.ViewType;
+
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.network.state.ViewType;
 
 public class ActionBarManager
 {

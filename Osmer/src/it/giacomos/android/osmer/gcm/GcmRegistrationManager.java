@@ -1,14 +1,14 @@
 package it.giacomos.android.osmer.gcm;
 
-import java.io.IOException;
-
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+import java.io.IOException;
 
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.preferences.Settings;

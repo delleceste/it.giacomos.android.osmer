@@ -1,10 +1,10 @@
 package it.giacomos.android.osmer.webcams;
 
+import android.content.Context;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-import android.content.Context;
 
 public class LastImageCache 
 {
@@ -14,7 +14,7 @@ public class LastImageCache
 	{
 		FileOutputStream fos;
 		try {
-			fos = ctx.openFileOutput(CACHE_IMAGE_FILENAME, Context.MODE_WORLD_READABLE);
+			fos = ctx.openFileOutput(CACHE_IMAGE_FILENAME, Context.MODE_PRIVATE);
 			fos.write(bmpBytes);
 			fos.close();
 			return true;

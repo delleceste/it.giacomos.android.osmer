@@ -1,22 +1,5 @@
 package it.giacomos.android.osmer.widgets;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.forecastRepr.Area;
-import it.giacomos.android.osmer.forecastRepr.ForecastDataFactory;
-import it.giacomos.android.osmer.forecastRepr.ForecastDataInterface;
-import it.giacomos.android.osmer.forecastRepr.ForecastDataStringMap;
-import it.giacomos.android.osmer.forecastRepr.ForecastDataType;
-import it.giacomos.android.osmer.forecastRepr.Locality;
-import it.giacomos.android.osmer.forecastRepr.Strip;
-import it.giacomos.android.osmer.forecastRepr.Zone;
-import it.giacomos.android.osmer.forecastRepr.ZoneMapper;
-import it.giacomos.android.osmer.network.state.ViewType;
-import it.giacomos.android.osmer.preferences.Settings;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -34,6 +17,24 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.forecastRepr.Area;
+import it.giacomos.android.osmer.forecastRepr.ForecastDataFactory;
+import it.giacomos.android.osmer.forecastRepr.ForecastDataInterface;
+import it.giacomos.android.osmer.forecastRepr.ForecastDataStringMap;
+import it.giacomos.android.osmer.forecastRepr.ForecastDataType;
+import it.giacomos.android.osmer.forecastRepr.Locality;
+import it.giacomos.android.osmer.forecastRepr.Strip;
+import it.giacomos.android.osmer.forecastRepr.Zone;
+import it.giacomos.android.osmer.forecastRepr.ZoneMapper;
+import it.giacomos.android.osmer.network.state.ViewType;
+import it.giacomos.android.osmer.preferences.Settings;
 
 public class MapWithForecastImage extends MapWithLocationImage implements OnLongClickListener
 {

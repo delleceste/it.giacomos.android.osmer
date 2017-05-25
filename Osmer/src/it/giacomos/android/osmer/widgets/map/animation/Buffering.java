@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;

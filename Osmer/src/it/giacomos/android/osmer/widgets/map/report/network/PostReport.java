@@ -1,7 +1,8 @@
 package it.giacomos.android.osmer.widgets.map.report.network;
 
-import it.giacomos.android.osmer.network.state.Urls;
 import android.os.AsyncTask;
+
+import it.giacomos.android.osmer.network.state.Urls;
 
 /** This class manages posting a report on the server.
  *  Since it is launched by a dialog instantiated by the main activity.

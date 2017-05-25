@@ -1,8 +1,8 @@
 package it.giacomos.android.osmer.widgets.map.report.network;
 
-import java.util.ArrayList;
-
 import android.os.AsyncTask;
+
+import java.util.ArrayList;
 
 /**
  * This class collects all threads whose cancellation is not directly managed by

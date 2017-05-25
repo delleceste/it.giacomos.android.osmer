@@ -1,7 +1,5 @@
 package it.giacomos.android.osmer.widgets.map.report;
 
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.observations.SunsetCalculator;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.observations.SunsetCalculator;
 
 public class IconTextSpinnerAdapter extends ArrayAdapter<String> {
 

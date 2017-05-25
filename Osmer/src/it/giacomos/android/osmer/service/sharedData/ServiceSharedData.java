@@ -1,11 +1,11 @@
 package it.giacomos.android.osmer.service.sharedData;
 
+import android.content.Context;
+import android.util.Log;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-
-import android.content.Context;
-import android.util.Log;
 
 import it.giacomos.android.osmer.preferences.Settings;
 

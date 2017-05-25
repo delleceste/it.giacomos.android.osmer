@@ -3,7 +3,6 @@
  */
 package it.giacomos.android.osmer.personalMessageActivity;
 
-import it.giacomos.android.osmer.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +11,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+
+import it.giacomos.android.osmer.R;
 
 /**
  * @author giacomo

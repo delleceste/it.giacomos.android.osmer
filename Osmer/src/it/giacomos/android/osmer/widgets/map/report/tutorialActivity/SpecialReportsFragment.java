@@ -1,14 +1,15 @@
 package it.giacomos.android.osmer.widgets.map.report.tutorialActivity;
 
-import it.giacomos.android.osmer.R;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import it.giacomos.android.osmer.R;
 
 public class SpecialReportsFragment extends Fragment {
 

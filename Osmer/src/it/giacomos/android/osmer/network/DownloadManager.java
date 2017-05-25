@@ -1,5 +1,9 @@
 package it.giacomos.android.osmer.network;
 
+import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.network.Data.DownloadListener;
 import it.giacomos.android.osmer.network.state.BitmapType;
@@ -9,9 +13,6 @@ import it.giacomos.android.osmer.network.state.State;
 import it.giacomos.android.osmer.network.state.StateName;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.observations.MapMode;
-import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.net.ConnectivityManager;
 
 /** the State context 
  * 

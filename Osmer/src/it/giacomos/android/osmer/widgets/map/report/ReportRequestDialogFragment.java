@@ -1,16 +1,11 @@
 package it.giacomos.android.osmer.widgets.map.report;
 
-import android.support.v4.app.DialogFragment;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.preferences.Settings;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +15,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
+
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.preferences.Settings;
 
 
 public class ReportRequestDialogFragment extends DialogFragment 

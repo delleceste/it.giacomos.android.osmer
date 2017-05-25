@@ -1,5 +1,14 @@
 package it.giacomos.android.osmer.widgets.map.report;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.os.AsyncTask;
+import android.provider.Settings.Secure;
+import android.widget.CheckBox;
+import android.widget.EditText;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import it.giacomos.android.osmer.OsmerActivity;
@@ -9,14 +18,6 @@ import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.preferences.Settings;
 import it.giacomos.android.osmer.widgets.map.report.network.PostReportRequestTask;
 import it.giacomos.android.osmer.widgets.map.report.network.PostType;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.os.AsyncTask;
-import android.provider.Settings.Secure;
-import android.widget.CheckBox;
-import android.widget.EditText;
 
 public class ReportRequestDialogClickListener implements OnClickListener {
 

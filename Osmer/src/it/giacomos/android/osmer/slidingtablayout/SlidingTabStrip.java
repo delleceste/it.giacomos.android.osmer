@@ -16,7 +16,6 @@ package it.giacomos.android.osmer.slidingtablayout;
  * limitations under the License.
  */
 
-import it.giacomos.android.osmer.R;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;

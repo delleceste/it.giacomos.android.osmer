@@ -1,20 +1,21 @@
 package it.giacomos.android.osmer.fragments;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import it.giacomos.android.osmer.OsmerActivity;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.LocationService;
 import it.giacomos.android.osmer.network.Data.DataPool;
 import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
 import it.giacomos.android.osmer.network.Data.DataPoolTextListener;
 import it.giacomos.android.osmer.network.state.ViewType;
-import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.widgets.ForecastTextView;
 import it.giacomos.android.osmer.widgets.MapWithForecastImage;
-import android.support.v4.app.Fragment;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 public class ForecastFragment extends Fragment implements DataPoolTextListener, Runnable
 {

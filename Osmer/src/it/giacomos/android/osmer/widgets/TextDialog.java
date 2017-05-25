@@ -1,7 +1,5 @@
 package it.giacomos.android.osmer.widgets;
 
-import it.giacomos.android.osmer.R;
-
 import android.app.Dialog;
 import android.content.Context;
 

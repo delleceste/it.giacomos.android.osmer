@@ -1,7 +1,5 @@
 package it.giacomos.android.osmer.preferences;
 
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.service.ServiceManager;
 import android.app.Activity;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -10,6 +8,9 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 import android.widget.Toast;
+
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.service.ServiceManager;
 
 public class SettingsFragment extends PreferenceFragment  implements OnPreferenceChangeListener 
 {

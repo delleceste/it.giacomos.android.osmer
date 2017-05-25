@@ -1,7 +1,6 @@
 package it.giacomos.android.osmer;
 
 
-import it.giacomos.android.osmer.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;

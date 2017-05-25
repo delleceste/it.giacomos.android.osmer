@@ -1,13 +1,13 @@
 package it.giacomos.android.osmer.service;
 
-import it.giacomos.android.osmer.preferences.Settings;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+
+import it.giacomos.android.osmer.preferences.Settings;
 
 public class ConnectivityChangedReceiver extends BroadcastReceiver
 {

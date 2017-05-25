@@ -1,10 +1,10 @@
 package it.giacomos.android.osmer.trial;
 
-import it.giacomos.android.osmer.network.HttpPostParametrizer;
-import it.giacomos.android.osmer.network.HttpWriteRead;
-
 import android.os.AsyncTask;
 import android.util.Log;
+
+import it.giacomos.android.osmer.network.HttpPostParametrizer;
+import it.giacomos.android.osmer.network.HttpWriteRead;
 
 public class ExpirationCheckTask extends AsyncTask<String, Integer, String> 
 {

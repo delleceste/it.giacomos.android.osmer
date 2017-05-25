@@ -3,6 +3,7 @@ package it.giacomos.android.osmer.rainAlert.gridAlgo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+
 import it.giacomos.android.osmer.rainAlert.genericAlgo.ImgOverlayBase;
 import it.giacomos.android.osmer.rainAlert.interfaces.ImgParamsInterface;
 
@@ -12,9 +13,7 @@ public class ImgOverlayGrid extends ImgOverlayBase
 {
 	private Grid mGrid;
 	
-	public ImgOverlayGrid(String imgFilename,
-			int imgW,
-			int imgH, 
+	public ImgOverlayGrid(Bitmap bmp,
 			double topLeftLat, 
 			double topLeftLon, 
 			double botRightLat,
@@ -25,7 +24,7 @@ public class ImgOverlayGrid extends ImgOverlayBase
 			double lat, 
 			double lon) 
 	{
-		super(imgFilename, imgW, imgH, topLeftLat, topLeftLon, botRightLat,
+		super(bmp, topLeftLat, topLeftLon, botRightLat,
 				botRightLon, widthKm, heightKm, radiusKm, lat, lon);
 	}
 
@@ -37,7 +36,7 @@ public class ImgOverlayGrid extends ImgOverlayBase
 	public void init(String configurationAsString)
 	{
 		mGrid = new Grid();
-		mGrid.setImgSize(getImgH(), getImgH());
+		mGrid.setImgSize(getImgW(), getImgH());
 		mGrid.setSize(getWidth(), getHeight());
 		mGrid.init(configurationAsString, this.getCenterX(), this.getCenterY());
 	}
@@ -48,15 +47,13 @@ public class ImgOverlayGrid extends ImgOverlayBase
 	@Override
 	public void processImage(ImgParamsInterface imgParams) 
 	{
-		Log.e("ImgOverlayGrid.processImage", "decoding bitmap " + image_filename);
-		Bitmap radar_image = BitmapFactory.decodeFile(this.image_filename);		
-		if(radar_image != null)
+		if(image != null)
 		{			
-			this.mGrid.calculateDbz(radar_image, imgParams);
+			this.mGrid.calculateDbz(image, imgParams);
 		}
 		else
 		{
-			Log.e("ImgOverlayGrid.processImage", "Failed to decode image from file " + image_filename);
+			Log.e("ImgOvGrid.processImage", "Image is null!");
 		}
 		
 	}

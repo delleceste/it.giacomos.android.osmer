@@ -4,9 +4,9 @@
       <root url="jar:///archivi/devel/it.giacomos.android.osmer/Osmer/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.0.1/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="file:///archivi/devel/it.giacomos.android.osmer/Osmer/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.0.1/res" />
-      <root url="jar:///archivi/devel/it.giacomos.android.osmer/Osmer/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.0.1/jars/classes.jar!/" />
-      <root url="jar:///archivi/devel/it.giacomos.android.osmer/Osmer/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.0.1/jars/libs/internal_impl-25.0.1.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/5cafe28425f406b5010f36a6735d7c17e7117034/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/5cafe28425f406b5010f36a6735d7c17e7117034/output/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.android/build-cache/5cafe28425f406b5010f36a6735d7c17e7117034/output/jars/libs/internal_impl-25.0.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

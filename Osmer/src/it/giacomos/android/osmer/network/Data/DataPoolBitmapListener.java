@@ -1,7 +1,8 @@
 package it.giacomos.android.osmer.network.Data;
 
-import it.giacomos.android.osmer.network.state.BitmapType;
 import android.graphics.Bitmap;
+
+import it.giacomos.android.osmer.network.state.BitmapType;
 
 public interface DataPoolBitmapListener {
 	

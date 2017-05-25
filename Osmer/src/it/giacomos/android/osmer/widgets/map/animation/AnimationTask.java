@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.widgets.map.animation;
 
-import it.giacomos.android.osmer.network.state.Urls;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -13,8 +14,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import android.os.AsyncTask;
-import android.util.Log;
+import it.giacomos.android.osmer.network.state.Urls;
 
 public class AnimationTask extends AsyncTask <String, Integer, Integer>
 {

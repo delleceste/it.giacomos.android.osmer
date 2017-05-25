@@ -1,13 +1,13 @@
 package it.giacomos.android.osmer.network.Data;
 
-import it.giacomos.android.osmer.network.state.BitmapType;
-import it.giacomos.android.osmer.network.state.ViewType;
+import android.content.Context;
+import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import android.content.Context;
-import android.graphics.Bitmap;
+import it.giacomos.android.osmer.network.state.BitmapType;
+import it.giacomos.android.osmer.network.state.ViewType;
 
 public class DataPool implements DownloadListener 
 {	

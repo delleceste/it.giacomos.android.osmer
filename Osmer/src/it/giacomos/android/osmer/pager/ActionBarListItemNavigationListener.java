@@ -1,10 +1,11 @@
 package it.giacomos.android.osmer.pager;
 
-import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.network.state.ViewType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+
+import it.giacomos.android.osmer.OsmerActivity;
+import it.giacomos.android.osmer.network.state.ViewType;
 
 public class ActionBarListItemNavigationListener implements OnItemSelectedListener
 {

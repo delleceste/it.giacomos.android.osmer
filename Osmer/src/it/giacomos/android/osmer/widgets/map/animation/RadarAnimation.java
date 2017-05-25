@@ -1,15 +1,14 @@
 package it.giacomos.android.osmer.widgets.map.animation;
 
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
-import it.giacomos.android.osmer.network.DownloadStatus;
-import it.giacomos.android.osmer.widgets.map.OMapFragment;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.util.Log;
+import android.util.SparseArray;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -17,15 +16,16 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.util.Log;
-import android.util.SparseArray;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
-import android.view.View.OnClickListener;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
+import it.giacomos.android.osmer.network.DownloadStatus;
+import it.giacomos.android.osmer.widgets.map.OMapFragment;
 
 public class RadarAnimation implements OnClickListener,  RadarAnimationStateChangeListener
 {
@@ -487,7 +487,7 @@ public class RadarAnimation implements OnClickListener,  RadarAnimationStateChan
 				if(mGroundOverlayOptions == null)
 				{
 					mGroundOverlayOptions = new GroundOverlayOptions();
-					mGroundOverlayOptions.positionFromBounds(GeoCoordinates.getRadarImageBounds(mRadarSource));
+					mGroundOverlayOptions.positionFromBounds(GeoCoordinates.getRadarImageBounds(bmp));
 					mGroundOverlayOptions.transparency(0.65f);
 				}
 				/* specify the image before the ovelay is added */

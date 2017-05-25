@@ -1,11 +1,11 @@
 package it.giacomos.android.osmer.network.state;
 
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
 
 import it.giacomos.android.osmer.network.DownloadManagerUpdateListener;
 import it.giacomos.android.osmer.network.DownloadReason;

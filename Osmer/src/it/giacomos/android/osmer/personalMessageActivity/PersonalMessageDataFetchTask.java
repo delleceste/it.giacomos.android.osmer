@@ -1,10 +1,10 @@
 package it.giacomos.android.osmer.personalMessageActivity;
 
-import it.giacomos.android.osmer.network.HttpPostParametrizer;
-import it.giacomos.android.osmer.network.HttpWriteRead;
-
 import android.os.AsyncTask;
 import android.util.Log;
+
+import it.giacomos.android.osmer.network.HttpPostParametrizer;
+import it.giacomos.android.osmer.network.HttpWriteRead;
 
 public class PersonalMessageDataFetchTask extends AsyncTask<String, Integer, String> 
 {

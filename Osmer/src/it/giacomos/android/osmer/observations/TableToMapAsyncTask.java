@@ -1,10 +1,10 @@
 package it.giacomos.android.osmer.observations;
 
-import it.giacomos.android.osmer.network.state.ViewType;
+import android.os.AsyncTask;
 
 import java.util.HashMap;
 
-import android.os.AsyncTask;
+import it.giacomos.android.osmer.network.state.ViewType;
 
 public class TableToMapAsyncTask extends AsyncTask<String, Integer, 
 HashMap<String, ObservationData> > {

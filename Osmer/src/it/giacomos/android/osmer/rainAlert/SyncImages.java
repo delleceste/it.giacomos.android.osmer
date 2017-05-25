@@ -1,9 +1,6 @@
 package it.giacomos.android.osmer.rainAlert;
 
-import it.giacomos.android.osmer.network.HttpPostParametrizer;
-import it.giacomos.android.osmer.network.HttpWriteRead;
-import it.giacomos.android.osmer.network.state.Urls;
-import it.giacomos.android.osmer.widgets.map.animation.FileHelper;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -13,7 +10,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import android.util.Log;
+import it.giacomos.android.osmer.network.HttpPostParametrizer;
+import it.giacomos.android.osmer.network.HttpWriteRead;
+import it.giacomos.android.osmer.network.state.Urls;
+import it.giacomos.android.osmer.widgets.map.animation.FileHelper;
 
 public class SyncImages
 {

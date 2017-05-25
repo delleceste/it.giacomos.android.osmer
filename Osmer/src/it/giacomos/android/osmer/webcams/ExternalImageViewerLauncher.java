@@ -12,7 +12,7 @@ public class ExternalImageViewerLauncher
 	 	/* Context.getFilesDir()
 	 	 * Returns the absolute path to the directory on the filesystem where files created with openFileOutput(String, int) are stored.
 	 	 */
-		String filename = "file://" + activity.getApplicationContext().getFilesDir().getAbsolutePath();
+		String filename = "content://" + activity.getApplicationContext().getFilesDir().getAbsolutePath();
 		filename += "/" + LastImageCache.CACHE_IMAGE_FILENAME;
 		Intent intent = new Intent(); 
 		intent.setAction(Intent.ACTION_VIEW);

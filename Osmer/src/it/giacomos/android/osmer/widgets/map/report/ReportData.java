@@ -1,7 +1,5 @@
 package it.giacomos.android.osmer.widgets.map.report;
 
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.observations.SunsetCalculator;
 import android.content.Context;
 import android.content.res.Resources;
 
@@ -10,6 +8,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.observations.SunsetCalculator;
 
 public class ReportData extends DataInterface
 {

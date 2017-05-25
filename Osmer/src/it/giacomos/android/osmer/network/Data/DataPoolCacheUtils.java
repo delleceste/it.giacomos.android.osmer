@@ -1,8 +1,9 @@
 package it.giacomos.android.osmer.network.Data;
 
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.network.state.BitmapType;
-import it.giacomos.android.osmer.network.state.ViewType;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -15,10 +16,9 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.network.state.BitmapType;
+import it.giacomos.android.osmer.network.state.ViewType;
 
 public class DataPoolCacheUtils 
 {

@@ -3,6 +3,10 @@
  */
 package it.giacomos.android.osmer.network.state;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 
@@ -10,10 +14,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 /**
  * @author giacomo

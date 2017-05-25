@@ -1,31 +1,5 @@
 package it.giacomos.android.osmer.service;
 
-import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
-import it.giacomos.android.osmer.network.state.Urls;
-import it.giacomos.android.osmer.preferences.Settings;
-import it.giacomos.android.osmer.rainAlert.RainNotificationBuilder;
-import it.giacomos.android.osmer.service.sharedData.NotificationData;
-import it.giacomos.android.osmer.service.sharedData.NotificationDataFactory;
-import it.giacomos.android.osmer.service.sharedData.RainNotification;
-import it.giacomos.android.osmer.service.sharedData.ServiceSharedData;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationServices;
-
 import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -45,6 +19,32 @@ import android.provider.Settings.Secure;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationServices;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import it.giacomos.android.osmer.OsmerActivity;
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.gcm.GcmRegistrationManager;
+import it.giacomos.android.osmer.network.state.Urls;
+import it.giacomos.android.osmer.preferences.Settings;
+import it.giacomos.android.osmer.rainAlert.RainNotificationBuilder;
+import it.giacomos.android.osmer.service.sharedData.NotificationData;
+import it.giacomos.android.osmer.service.sharedData.NotificationDataFactory;
+import it.giacomos.android.osmer.service.sharedData.RainNotification;
+import it.giacomos.android.osmer.service.sharedData.ServiceSharedData;
 
 public class ReportDataService extends Service 
 implements  FetchRequestsTaskListener, Runnable, ConnectionCallbacks, OnConnectionFailedListener

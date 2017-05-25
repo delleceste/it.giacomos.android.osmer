@@ -1,7 +1,5 @@
 package it.giacomos.android.osmer.forecastRepr;
 
-import it.giacomos.android.osmer.R;
-
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;

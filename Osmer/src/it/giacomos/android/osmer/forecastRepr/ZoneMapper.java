@@ -1,11 +1,12 @@
 package it.giacomos.android.osmer.forecastRepr;
 
-import it.giacomos.android.osmer.widgets.LocationToImgPixelMapper;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.widget.ImageView;
+
+import it.giacomos.android.osmer.widgets.LocationToImgPixelMapper;
 
 public class ZoneMapper 
 {

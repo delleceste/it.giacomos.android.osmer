@@ -1,10 +1,11 @@
 package it.giacomos.android.osmer.pager;
 
-import it.giacomos.android.osmer.OsmerActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import it.giacomos.android.osmer.OsmerActivity;
 
 public class MyActionBarDrawerToggle extends ActionBarDrawerToggle
 {

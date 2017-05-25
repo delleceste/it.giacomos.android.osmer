@@ -1,9 +1,6 @@
 package it.giacomos.android.osmer.trial;
 
 
-import it.giacomos.android.osmer.network.NetworkStatusMonitor;
-import it.giacomos.android.osmer.network.NetworkStatusMonitorListener;
-import it.giacomos.android.osmer.preferences.Settings;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -11,6 +8,10 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.provider.Settings.Secure;
 import android.util.Log;
+
+import it.giacomos.android.osmer.network.NetworkStatusMonitor;
+import it.giacomos.android.osmer.network.NetworkStatusMonitorListener;
+import it.giacomos.android.osmer.preferences.Settings;
 
 public class ExpirationChecker implements NetworkStatusMonitorListener,
 ExpirationCheckTaskListener

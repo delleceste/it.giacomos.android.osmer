@@ -1,8 +1,9 @@
 package it.giacomos.android.osmer.network.Data;
 
+import android.graphics.Bitmap;
+
 import it.giacomos.android.osmer.network.state.BitmapType;
 import it.giacomos.android.osmer.network.state.ViewType;
-import android.graphics.Bitmap;
 
 public interface DownloadListener 
 {

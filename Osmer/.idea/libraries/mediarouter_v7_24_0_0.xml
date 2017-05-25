@@ -4,9 +4,9 @@
       <root url="jar:///archivi/devel/it.giacomos.android.osmer/Osmer/build/intermediates/exploded-aar/com.android.support/mediarouter-v7/24.0.0/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar:///archivi/devel/it.giacomos.android.osmer/Osmer/build/intermediates/exploded-aar/com.android.support/mediarouter-v7/24.0.0/jars/classes.jar!/" />
-      <root url="jar:///archivi/devel/it.giacomos.android.osmer/Osmer/build/intermediates/exploded-aar/com.android.support/mediarouter-v7/24.0.0/jars/libs/internal_impl-24.0.0.jar!/" />
-      <root url="file:///archivi/devel/it.giacomos.android.osmer/Osmer/build/intermediates/exploded-aar/com.android.support/mediarouter-v7/24.0.0/res" />
+      <root url="file://$USER_HOME$/.android/build-cache/fdc9eb6e78f7d257a1ac4ab3fa5f1d374ed53e39/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/fdc9eb6e78f7d257a1ac4ab3fa5f1d374ed53e39/output/jars/libs/internal_impl-24.0.0.jar!/" />
+      <root url="jar://$USER_HOME$/.android/build-cache/fdc9eb6e78f7d257a1ac4ab3fa5f1d374ed53e39/output/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

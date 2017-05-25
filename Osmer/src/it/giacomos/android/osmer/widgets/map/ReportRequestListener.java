@@ -1,8 +1,8 @@
 package it.giacomos.android.osmer.widgets.map;
 
-import it.giacomos.android.osmer.widgets.map.report.network.PostType;
-
 import com.google.android.gms.maps.model.LatLng;
+
+import it.giacomos.android.osmer.widgets.map.report.network.PostType;
 
 /** OsmerActivity implements this interface 
  * 

@@ -1,7 +1,21 @@
 package it.giacomos.android.osmer.widgets.map;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.location.Location;
+import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.text.Html;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -12,6 +26,11 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import it.giacomos.android.osmer.OsmerActivity;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.fragments.MapFragmentListener;
 import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
 import it.giacomos.android.osmer.network.Data.DataPoolBitmapListener;
@@ -24,13 +43,11 @@ import it.giacomos.android.osmer.observations.ObservationDrawableIdPicker;
 import it.giacomos.android.osmer.observations.ObservationType;
 import it.giacomos.android.osmer.observations.ObservationsCacheUpdateListener;
 import it.giacomos.android.osmer.preferences.Settings;
-import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.webcams.WebcamXMLAssetLoader;
 import it.giacomos.android.osmer.webcams.ExternalImageViewerLauncher;
 import it.giacomos.android.osmer.webcams.LastImageCache;
-import it.giacomos.android.osmer.webcams.WebcamXMLDecoder;
 import it.giacomos.android.osmer.webcams.WebcamData;
+import it.giacomos.android.osmer.webcams.WebcamXMLAssetLoader;
+import it.giacomos.android.osmer.webcams.WebcamXMLDecoder;
 import it.giacomos.android.osmer.widgets.OAnimatedTextView;
 import it.giacomos.android.osmer.widgets.map.animation.RadarAnimation;
 import it.giacomos.android.osmer.widgets.map.animation.RadarAnimationListener;
@@ -38,22 +55,6 @@ import it.giacomos.android.osmer.widgets.map.report.OnTiltChangeListener;
 import it.giacomos.android.osmer.widgets.map.report.ReportOverlay;
 import it.giacomos.android.osmer.widgets.map.report.network.PostReportAsyncTaskPool;
 import it.giacomos.android.osmer.widgets.map.report.network.PostType;
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.support.v4.content.ContextCompat;
-import android.text.Html;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
-import android.location.Location;
-import android.os.Bundle;
 
 public class OMapFragment extends SupportMapFragment 
 implements ObservationsCacheUpdateListener,

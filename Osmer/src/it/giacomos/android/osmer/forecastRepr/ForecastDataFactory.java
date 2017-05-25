@@ -1,16 +1,17 @@
 package it.giacomos.android.osmer.forecastRepr;
 
-import java.util.ArrayList;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import it.giacomos.android.osmer.R;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.text.Html;
+
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
+
+import it.giacomos.android.osmer.R;
 
 public class ForecastDataFactory 
 {

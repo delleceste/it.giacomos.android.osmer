@@ -17,7 +17,6 @@ package it.giacomos.android.osmer.slidingtablayout;
  */
 
 
-
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,13 +27,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.fragments.ForecastFragment;
 import it.giacomos.android.osmer.fragments.SituationFragment;
 import it.giacomos.android.osmer.network.state.ViewType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A basic sample which shows how to use {@link com.example.android.common.view.SlidingTabLayout}

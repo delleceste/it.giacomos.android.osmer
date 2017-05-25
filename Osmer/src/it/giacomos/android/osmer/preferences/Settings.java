@@ -1,15 +1,15 @@
 package it.giacomos.android.osmer.preferences;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager.NameNotFoundException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class Settings 
 {

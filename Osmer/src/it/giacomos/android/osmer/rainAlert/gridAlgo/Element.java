@@ -1,11 +1,12 @@
 package it.giacomos.android.osmer.rainAlert.gridAlgo;
 
-import java.util.ArrayList;
-
-import it.giacomos.android.osmer.rainAlert.interfaces.ImgParamsInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
+
+import java.util.ArrayList;
+
+import it.giacomos.android.osmer.rainAlert.interfaces.ImgParamsInterface;
 
 public class Element {
 

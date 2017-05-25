@@ -8,12 +8,13 @@ import android.os.AsyncTask;
 import android.provider.Settings.Secure;
 import android.util.Log;
 import android.widget.Toast;
+
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.locationUtils.LocationService;
 import it.giacomos.android.osmer.locationUtils.LocationServiceUpdateListener;
+import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
 import it.giacomos.android.osmer.network.NetworkStatusMonitor;
 import it.giacomos.android.osmer.network.NetworkStatusMonitorListener;
-import it.giacomos.android.osmer.network.Data.DataPoolCacheUtils;
 import it.giacomos.android.osmer.network.state.Urls;
 import it.giacomos.android.osmer.network.state.ViewType;
 

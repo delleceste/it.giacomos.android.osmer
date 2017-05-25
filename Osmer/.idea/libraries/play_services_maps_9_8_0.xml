@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="play-services-maps-9.8.0">
     <CLASSES>
-      <root url="jar:///archivi/devel/it.giacomos.android.osmer/Osmer/build/intermediates/exploded-aar/com.google.android.gms/play-services-maps/9.8.0/jars/classes.jar!/" />
-      <root url="file:///archivi/devel/it.giacomos.android.osmer/Osmer/build/intermediates/exploded-aar/com.google.android.gms/play-services-maps/9.8.0/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/b526f261358fa885fb1e8e86d6d37af3315af5bb/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/b526f261358fa885fb1e8e86d6d37af3315af5bb/output/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

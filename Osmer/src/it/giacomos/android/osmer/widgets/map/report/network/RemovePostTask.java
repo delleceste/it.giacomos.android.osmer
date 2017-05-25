@@ -1,10 +1,10 @@
 package it.giacomos.android.osmer.widgets.map.report.network;
 
-import it.giacomos.android.osmer.network.HttpPostParametrizer;
-import it.giacomos.android.osmer.network.HttpWriteRead;
-
 import android.os.AsyncTask;
 import android.util.Log;
+
+import it.giacomos.android.osmer.network.HttpPostParametrizer;
+import it.giacomos.android.osmer.network.HttpWriteRead;
 
 /** 
  * This class uses PostReportAsyncTaskPool in order to be cancelled when the Activity

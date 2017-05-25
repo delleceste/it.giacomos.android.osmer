@@ -39,27 +39,27 @@ public class MeteoFvgImgParams implements ImgParamsInterface {
 	@Override
 	public double getIntensityForColor(int[] arr_rgb)
 	{
-		/* green to yellow (255, 254, 6) */
-		int [] g1 = {2, 66, 3};
-		int []  g2 = {2, 121, 3};
-		int []  g3 =  {6, 192, 2};
-		int []  g4 =  {0, 255, 1};
-		int []  g5 = {151, 252, 0};
+		/* green to yellow (255, 255, 8) */
+		int [] g1 = {0, 64, 0};
+		int []  g2 = {0, 120, 0};
+		int []  g3 =  {0, 192, 0};
+		int []  g4 =  {0, 255, 0};
+		int []  g5 = {152, 255, 0};
 
 		/* yellow */
-		int [] y1 = {255, 254, 6};
+		int [] y1 = {255, 255, 8};
 
 		/* orange */
-		int [] o1 = {255, 199, 2};
-		int [] o2 = {252, 105, 1};
+		int [] o1 = {255, 200, 0};
+		int [] o2 = {252, 104, 0};
 
 		/* red */
-		int [] r1 = {254, 0, 0};
-		int [] r2 = {155, 6, 0};
+		int [] r1 = {255, 0, 0};
+		int [] r2 = {160, 8, 0};
 
 		/* brown */
-		int [] b1 = {115, 85, 0};
-		int [] b2 ={160, 119, 1};
+		int [] b1 = {112, 88, 0};
+		int [] b2 ={160, 120, 0};
 		
 		double dbz = 0;
 		

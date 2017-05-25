@@ -1,7 +1,5 @@
 package it.giacomos.android.osmer.rainAlert;
 
-import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -10,6 +8,9 @@ import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
+
+import it.giacomos.android.osmer.OsmerActivity;
+import it.giacomos.android.osmer.R;
 
 public class RainNotificationBuilder {
 

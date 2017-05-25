@@ -1,10 +1,10 @@
 package it.giacomos.android.osmer.widgets.map.animation;
 
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.widgets.map.OMapFragment;
-
 import android.util.Log;
 import android.view.View;
+
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.widgets.map.OMapFragment;
 
 public class NotRunning extends State 
 {

@@ -1,10 +1,11 @@
 package it.giacomos.android.osmer.personalMessageActivity;
 
+import android.content.Intent;
+import android.widget.Toast;
+
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.service.ServiceManager;
-import android.content.Intent;
-import android.widget.Toast;
 
 public class PersonalMessageManager 
 {

@@ -1,9 +1,5 @@
 package it.giacomos.android.osmer.widgets.map.report.tutorialActivity;
 
-import it.giacomos.android.osmer.R;
-
-import java.util.Locale;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,6 +14,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.Locale;
+
+import it.giacomos.android.osmer.R;
 
 public class TutorialPresentationActivity extends AppCompatActivity 
 implements ReportConditionsAcceptedListener

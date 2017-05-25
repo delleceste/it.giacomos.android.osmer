@@ -1,9 +1,5 @@
 package it.giacomos.android.osmer.locationUtils;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.location.Address;
@@ -11,6 +7,10 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class GeocodeAddressTask extends AsyncTask<Location, Integer, LocationInfo>
 {

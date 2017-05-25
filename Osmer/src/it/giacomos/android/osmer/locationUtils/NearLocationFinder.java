@@ -1,11 +1,11 @@
 package it.giacomos.android.osmer.locationUtils;
 
-import java.util.ArrayList;
-
 import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
 
 public class NearLocationFinder 
 {

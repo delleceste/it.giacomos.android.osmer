@@ -1,20 +1,20 @@
 package it.giacomos.android.osmer.rainAlert.genericAlgo;
 
-import android.util.Log;
+import android.graphics.Bitmap;
 
 import it.giacomos.android.osmer.rainAlert.interfaces.ImgOverlayInterface;
 
 public abstract class ImgOverlayBase implements ImgOverlayInterface
 {
-	public ImgOverlayBase(String imgFilename, int imgWi, int imgHe, 
-			double topLeftLa,  double topLeftLo, 
-			double botRightLa, double $botRightLo,
-			double widthK, double heightK, double radiusK,
-			double la,  double lo)
+	public ImgOverlayBase(Bitmap bmp,
+						  double topLeftLa, double topLeftLo,
+						  double botRightLa, double $botRightLo,
+						  double widthK, double heightK, double radiusK,
+						  double la, double lo)
 	{
-		imgW = imgWi;
-		imgH = imgHe;
-		image_filename = imgFilename;
+		imgW = bmp.getWidth();
+		imgH = bmp.getHeight();
+		image = bmp;
 		
 		topLeftLat = topLeftLa;
 		topLeftLon = topLeftLo;
@@ -38,7 +38,7 @@ public abstract class ImgOverlayBase implements ImgOverlayInterface
 	
 	protected double widthKm = 0.0,  heightKm = 0.0,  radiusKm = 0.0;
 	
-	protected String image_filename = "";
+	protected Bitmap image = null;
 	
 	public boolean isValid()
 	{

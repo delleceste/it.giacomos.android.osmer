@@ -1,10 +1,10 @@
 package it.giacomos.android.osmer.service.sharedData;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-import android.util.Log;
 
 public abstract class NotificationData 
 {

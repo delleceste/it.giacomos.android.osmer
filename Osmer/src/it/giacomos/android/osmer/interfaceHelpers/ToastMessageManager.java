@@ -1,13 +1,11 @@
 package it.giacomos.android.osmer.interfaceHelpers;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.widgets.AnimatedImageView;
-
-import java.lang.String;
-
-import android.content.Context;
-import android.widget.Toast;
 
 public class ToastMessageManager 
 {

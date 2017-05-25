@@ -1,15 +1,14 @@
 package it.giacomos.android.osmer.interfaceHelpers;
 
-import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.locationUtils.LocationService;
-import it.giacomos.android.osmer.network.DownloadStatus;
-
-import java.util.Date;
-
 import android.app.Activity;
 import android.location.Location;
 
 import java.text.DateFormat;
+import java.util.Date;
+
+import it.giacomos.android.osmer.OsmerActivity;
+import it.giacomos.android.osmer.locationUtils.LocationService;
+import it.giacomos.android.osmer.network.DownloadStatus;
 public class ConfigInfo {
 
 	public String gatherInfo(Activity mActivity) 

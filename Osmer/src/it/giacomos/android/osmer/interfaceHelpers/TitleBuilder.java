@@ -1,14 +1,14 @@
 package it.giacomos.android.osmer.interfaceHelpers;
+
 import android.content.res.Resources;
+
+import it.giacomos.android.osmer.OsmerActivity;
+import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.network.DownloadStatus;
 import it.giacomos.android.osmer.network.state.ViewType;
 import it.giacomos.android.osmer.observations.MapMode;
-import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
 import it.giacomos.android.osmer.widgets.map.MapViewMode;
 import it.giacomos.android.osmer.widgets.map.OMapFragment;
-
-import java.lang.String;
 
 public class TitleBuilder 
 {

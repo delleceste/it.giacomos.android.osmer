@@ -1,20 +1,5 @@
 package it.giacomos.android.osmer.gcm;
 
-import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.preferences.Settings;
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.rainAlert.SyncImagesListener;
-import it.giacomos.android.osmer.service.RadarSyncAndRainGridDetectService;
-import it.giacomos.android.osmer.service.sharedData.NotificationData;
-import it.giacomos.android.osmer.service.sharedData.NotificationDataFactory;
-import it.giacomos.android.osmer.service.sharedData.RainNotification;
-import it.giacomos.android.osmer.service.sharedData.ReportRequestNotification;
-import it.giacomos.android.osmer.service.sharedData.ServiceSharedData;
-
-import java.util.ArrayList;
-
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -27,6 +12,21 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+import java.util.ArrayList;
+
+import it.giacomos.android.osmer.OsmerActivity;
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.preferences.Settings;
+import it.giacomos.android.osmer.rainAlert.SyncImagesListener;
+import it.giacomos.android.osmer.service.RadarSyncAndRainGridDetectService;
+import it.giacomos.android.osmer.service.sharedData.NotificationData;
+import it.giacomos.android.osmer.service.sharedData.NotificationDataFactory;
+import it.giacomos.android.osmer.service.sharedData.RainNotification;
+import it.giacomos.android.osmer.service.sharedData.ReportRequestNotification;
+import it.giacomos.android.osmer.service.sharedData.ServiceSharedData;
 
 public class GcmBroadcastReceiver extends BroadcastReceiver implements SyncImagesListener
 {

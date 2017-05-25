@@ -3,19 +3,6 @@
  */
 package it.giacomos.android.osmer.widgets.map;
 
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
-import it.giacomos.android.osmer.observations.MapMode;
-import it.giacomos.android.osmer.observations.ObservationData;
-import it.giacomos.android.osmer.observations.ObservationType;
-import it.giacomos.android.osmer.observations.SkyDrawableIdPicker;
-import it.giacomos.android.osmer.preferences.Settings;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Vector;
-
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +15,19 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Vector;
+
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
+import it.giacomos.android.osmer.observations.MapMode;
+import it.giacomos.android.osmer.observations.ObservationData;
+import it.giacomos.android.osmer.observations.ObservationType;
+import it.giacomos.android.osmer.observations.SkyDrawableIdPicker;
+import it.giacomos.android.osmer.preferences.Settings;
 
 /**
  * @author giacomo

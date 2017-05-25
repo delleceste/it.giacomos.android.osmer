@@ -1,7 +1,8 @@
 package it.giacomos.android.osmer.widgets.map.report;
 
-import java.util.ArrayList;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 public class DataParser 
 {

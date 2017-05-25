@@ -1,9 +1,9 @@
 package it.giacomos.android.osmer.widgets;
 
-import it.giacomos.android.osmer.R;
-
 import android.content.Context;
 import android.util.AttributeSet;
+
+import it.giacomos.android.osmer.R;
 
 public class ForecastTextView extends OTextView implements AreaTouchListener 
 {

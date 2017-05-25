@@ -1,18 +1,4 @@
 package it.giacomos.android.osmer.widgets.map;
-import it.giacomos.android.osmer.network.state.WebcamBitmapTask;
-import it.giacomos.android.osmer.network.state.WebcamBitmapTaskListener;
-import it.giacomos.android.osmer.preferences.Settings;
-import it.giacomos.android.osmer.OsmerActivity;
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.webcams.WebcamXMLAssetLoader;
-import it.giacomos.android.osmer.webcams.WebcamXMLDecoder;
-import it.giacomos.android.osmer.webcams.WebcamData;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -32,6 +18,21 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import it.giacomos.android.osmer.OsmerActivity;
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.network.state.WebcamBitmapTask;
+import it.giacomos.android.osmer.network.state.WebcamBitmapTaskListener;
+import it.giacomos.android.osmer.preferences.Settings;
+import it.giacomos.android.osmer.webcams.WebcamData;
+import it.giacomos.android.osmer.webcams.WebcamXMLAssetLoader;
+import it.giacomos.android.osmer.webcams.WebcamXMLDecoder;
 
 public class WebcamOverlay implements 
 WebcamBitmapTaskListener, 

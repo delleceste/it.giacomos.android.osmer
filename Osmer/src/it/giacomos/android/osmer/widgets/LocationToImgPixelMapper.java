@@ -1,10 +1,11 @@
 package it.giacomos.android.osmer.widgets;
 
-import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
-import it.giacomos.android.osmer.locationUtils.LocationUtils;
 import android.graphics.PointF;
 import android.location.Location;
 import android.widget.ImageView;
+
+import it.giacomos.android.osmer.locationUtils.GeoCoordinates;
+import it.giacomos.android.osmer.locationUtils.LocationUtils;
 
 public class LocationToImgPixelMapper 
 {

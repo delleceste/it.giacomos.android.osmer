@@ -1,7 +1,5 @@
 package it.giacomos.android.osmer.locationUtils;
 
-import java.util.HashSet;
-
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
@@ -14,6 +12,8 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
+import java.util.HashSet;
 
 
 public class LocationService implements LocationListener,

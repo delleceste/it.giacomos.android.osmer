@@ -1,5 +1,12 @@
 package it.giacomos.android.osmer.widgets.map.report;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import it.giacomos.android.osmer.R;
@@ -8,12 +15,6 @@ import it.giacomos.android.osmer.widgets.map.report.network.PostActionResultList
 import it.giacomos.android.osmer.widgets.map.report.network.PostType;
 import it.giacomos.android.osmer.widgets.map.report.network.RemovePostTask;
 import it.giacomos.android.osmer.widgets.map.report.network.RemovePostTaskListener;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 
 public class RemovePostConfirmDialog extends DialogFragment implements RemovePostTaskListener,
 DialogInterface.OnClickListener

@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.2'
     }
 }
 apply plugin: 'com.android.application'
@@ -30,7 +30,7 @@ android {
         }
     }
     compileSdkVersion 25
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '25.0.2'
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -71,14 +71,13 @@ android {
         minSdkVersion 14
         targetSdkVersion 25
         applicationId 'it.giacomos.android.osmer'
-        versionName '3.8.0'
+        versionName '3.11.0'
     }
     productFlavors {
         BASE {
             minSdkVersion 14
             proguardFile '/home/giacomo/devel/it.giacomos.android.osmer/Osmer/proguard-rules.pro'
             targetSdkVersion 25
-            versionName '3.8.0'
             resValue "string", "app_name", "Meteo.FVG"
         }
         PRO {

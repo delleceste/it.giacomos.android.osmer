@@ -1,9 +1,7 @@
 package it.giacomos.android.osmer.network;
 
 
-import java.lang.String;
-
-public class DownloadTask 
+public class DownloadTask
 {
 	public DownloadTask(DownloadTaskType t, String urlStr, int id, int priority)
 	{

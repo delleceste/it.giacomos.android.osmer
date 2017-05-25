@@ -1,5 +1,6 @@
 package it.giacomos.android.osmer.locationUtils;
 
+import android.graphics.Bitmap;
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -66,16 +67,27 @@ public class GeoCoordinates {
 	
 	public static final LatLng radarScaleTopLeft = new LatLng(45.801082, 15.351009);
 
-	public static LatLngBounds getRadarImageBounds(String mRadarSource)
+//	public static LatLngBounds getRadarImageBounds(String mRadarSource)
+//	{
+//		/* slo
+//		 * south: premantura
+//		 */
+//		if(mRadarSource.compareToIgnoreCase("SLO") == 0)
+//			/*                                  south       west                   north     east      */
+//			// from  calculation return new LatLngBounds(new LatLng(44.792496, 12.185306), new LatLng(47.403526, 16.696444));
+//			return new LatLngBounds(new LatLng(44.906496, 12.182306), new LatLng(47.26726, 16.693444));
+//		else
+//			return radarImageBounds;
+//	}
+
+	public static LatLngBounds getRadarImageBounds(Bitmap bmp)
 	{
-		/* slo
-		 * south: premantura
-		 */
-		if(mRadarSource.compareToIgnoreCase("SLO") == 0)
-			/*                                  south       west                   north     east      */
-			// from  calculation return new LatLngBounds(new LatLng(44.792496, 12.185306), new LatLng(47.403526, 16.696444));
-			return new LatLngBounds(new LatLng(44.906496, 12.182306), new LatLng(47.26726, 16.693444));
-		else
-			return radarImageBounds;
+		if(bmp.getWidth() == 512 && bmp.getHeight() == 600) /* ARPAV */
+		{
+			return new LatLngBounds(new LatLng(44.230090, 11.115066),
+					new LatLng(47.000517, 14.4337));
+		}
+		return radarImageBounds;
+
 	}
 }

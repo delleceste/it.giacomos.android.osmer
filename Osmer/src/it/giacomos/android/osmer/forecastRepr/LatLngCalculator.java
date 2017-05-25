@@ -1,8 +1,8 @@
 package it.giacomos.android.osmer.forecastRepr;
 
-import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
-
 import com.google.android.gms.maps.model.LatLng;
+
+import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
 
 public class LatLngCalculator {
 

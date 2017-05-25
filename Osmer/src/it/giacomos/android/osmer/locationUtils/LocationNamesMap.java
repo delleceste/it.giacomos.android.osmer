@@ -1,10 +1,9 @@
 package it.giacomos.android.osmer.locationUtils;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.HashMap;
 import java.util.Vector;
-import java.lang.String;
-
-import com.google.android.gms.maps.model.LatLng;
 
 public class LocationNamesMap {
 

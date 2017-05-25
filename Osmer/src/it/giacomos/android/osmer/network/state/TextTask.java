@@ -1,12 +1,14 @@
 package it.giacomos.android.osmer.network.state;
+
+import android.annotation.TargetApi;
+import android.os.AsyncTask;
+import android.os.Build;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import android.annotation.TargetApi;
-import android.os.AsyncTask;
-import android.os.Build;
 
 public class TextTask extends AsyncTask<URL, Integer, String> {
 

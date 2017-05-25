@@ -1,8 +1,8 @@
 package it.giacomos.android.osmer.service.sharedData;
 
-import java.util.Date;
-
 import android.util.Log;
+
+import java.util.Date;
 
 public class RainNotification extends NotificationData {
 

@@ -1,15 +1,5 @@
 package it.giacomos.android.osmer.widgets;
 
-import java.util.HashMap;
-
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
-import it.giacomos.android.osmer.network.state.ViewType;
-import it.giacomos.android.osmer.observations.ObservationData;
-import it.giacomos.android.osmer.observations.ObservationType;
-import it.giacomos.android.osmer.observations.ObservationsCache;
-import it.giacomos.android.osmer.observations.SituationImageObservationData;
-import it.giacomos.android.osmer.observations.SkyDrawableIdPicker;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -20,12 +10,23 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.location.Location;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
-import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.HashMap;
+
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
+import it.giacomos.android.osmer.network.state.ViewType;
+import it.giacomos.android.osmer.observations.ObservationData;
+import it.giacomos.android.osmer.observations.ObservationType;
+import it.giacomos.android.osmer.observations.ObservationsCache;
+import it.giacomos.android.osmer.observations.SituationImageObservationData;
+import it.giacomos.android.osmer.observations.SkyDrawableIdPicker;
 
 public class SituationImage extends MapWithLocationImage
 implements LatestObservationCacheChangeListener

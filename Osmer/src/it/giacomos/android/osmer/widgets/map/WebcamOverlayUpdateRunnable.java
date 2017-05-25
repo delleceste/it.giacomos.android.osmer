@@ -1,8 +1,8 @@
 package it.giacomos.android.osmer.widgets.map;
 
-import it.giacomos.android.osmer.webcams.WebcamData;
-
 import java.util.ArrayList;
+
+import it.giacomos.android.osmer.webcams.WebcamData;
 
 public class WebcamOverlayUpdateRunnable implements Runnable {
 

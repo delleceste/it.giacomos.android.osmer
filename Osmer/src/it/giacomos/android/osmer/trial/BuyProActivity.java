@@ -1,11 +1,16 @@
 package it.giacomos.android.osmer.trial;
 
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.preferences.Settings;
-import it.giacomos.android.osmer.purhcase.InAppUpgradeManager;
-import it.giacomos.android.osmer.purhcase.InAppUpgradeManagerListener;
-import android.os.Bundle;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.os.Build;
+import android.os.Bundle;
+import android.provider.Settings.Secure;
+import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,15 +19,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
-import android.support.v4.app.NavUtils;
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.os.Build;
-import android.provider.Settings.Secure;
+
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.preferences.Settings;
+import it.giacomos.android.osmer.purhcase.InAppUpgradeManager;
+import it.giacomos.android.osmer.purhcase.InAppUpgradeManagerListener;
 
 public class BuyProActivity extends Activity implements 
 OnClickListener, InAppUpgradeManagerListener, DialogInterface.OnClickListener, OnCheckedChangeListener

@@ -1,13 +1,14 @@
 package it.giacomos.android.osmer.observations;
-import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
-import it.giacomos.android.osmer.locationUtils.NearLocationFinder;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import it.giacomos.android.osmer.locationUtils.LocationNamesMap;
+import it.giacomos.android.osmer.locationUtils.NearLocationFinder;
 
 public class NearestObservationData {
 

@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.rainAlert.gridAlgo;
 
 import android.util.Log;
+
 import it.giacomos.android.osmer.rainAlert.RainDetectResult;
 import it.giacomos.android.osmer.rainAlert.interfaces.ImgCompareI;
 import it.giacomos.android.osmer.rainAlert.interfaces.ImgOverlayInterface;

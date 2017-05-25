@@ -1,6 +1,7 @@
 package it.giacomos.android.osmer.interfaceHelpers;
 
 import android.support.v7.widget.Toolbar;
+
 import it.giacomos.android.osmer.OsmerActivity;
 import it.giacomos.android.osmer.R;
 

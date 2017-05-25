@@ -1,6 +1,5 @@
 package it.giacomos.android.osmer.floatingactionbutton;
 
-import it.giacomos.android.osmer.R;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -21,6 +20,8 @@ import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.AbsListView;
+
+import it.giacomos.android.osmer.R;
 
 public class FloatingActionButton extends View {
 

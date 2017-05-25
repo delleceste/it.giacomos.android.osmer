@@ -1,8 +1,5 @@
 package it.giacomos.android.osmer.widgets;
 
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.locationUtils.LocationServiceAddressUpdateListener;
-import it.giacomos.android.osmer.locationUtils.LocationServiceUpdateListener;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -14,6 +11,10 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.locationUtils.LocationServiceAddressUpdateListener;
+import it.giacomos.android.osmer.locationUtils.LocationServiceUpdateListener;
 
 /** Class extending image view that is able to draw the location on demand.
  * 

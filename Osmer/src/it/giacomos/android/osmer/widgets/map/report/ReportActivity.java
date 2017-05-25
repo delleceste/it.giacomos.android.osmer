@@ -1,25 +1,26 @@
 package it.giacomos.android.osmer.widgets.map.report;
 
-import it.giacomos.android.osmer.R;
-import it.giacomos.android.osmer.preferences.Settings;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Button;
+
+import it.giacomos.android.osmer.R;
+import it.giacomos.android.osmer.preferences.Settings;
 
 public class ReportActivity extends AppCompatActivity implements OnClickListener, OnItemSelectedListener
 {

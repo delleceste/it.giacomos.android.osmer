@@ -1,11 +1,10 @@
 package it.giacomos.android.osmer.service;
 
-import it.giacomos.android.osmer.network.HttpPostParametrizer;
-import it.giacomos.android.osmer.network.HttpWriteRead;
-
-
 import android.os.AsyncTask;
 import android.util.Log;
+
+import it.giacomos.android.osmer.network.HttpPostParametrizer;
+import it.giacomos.android.osmer.network.HttpWriteRead;
 
 public class UpdateMyLocationTask extends AsyncTask<String, Integer, String> {
 

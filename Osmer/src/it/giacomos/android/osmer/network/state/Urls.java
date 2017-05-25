@@ -1,7 +1,5 @@
 package it.giacomos.android.osmer.network.state;
 
-import java.lang.String;
-
 public class Urls {
 	public Urls() { }
 	

@@ -1,8 +1,9 @@
 package it.giacomos.android.osmer.widgets;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
-import android.util.Log;
 import it.giacomos.android.osmer.forecastRepr.ForecastDataInterface;
 
 public class ForecastDataIdMapper {
